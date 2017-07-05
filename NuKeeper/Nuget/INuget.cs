@@ -6,6 +6,6 @@ namespace NuKeeper.Nuget
     {
         Task<VersionComparisonResult> CompareVersions(NugetPackage package);
 
-        Task UpdatePackage(NugetPackage package);
+        Task UpdatePackage(NugetPackage package, string pathToSolutionFile);
     }
 }

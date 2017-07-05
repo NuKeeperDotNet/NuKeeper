@@ -10,10 +10,10 @@ namespace NuKeeper.Git
         private readonly IExternalProcess _externalProcess;
         private readonly string _tempDirectory;
 
-        public Git(IExternalProcess externalProcess = null)
+        public Git(string repoStoragePath, IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
-            _tempDirectory = Path.Combine(Path.GetTempPath(), "NuKeeper\\" + Guid.NewGuid().ToString("N"));
+            _tempDirectory = repoStoragePath;
         }
 
         public async Task Clone(Uri pullEndpoint)
