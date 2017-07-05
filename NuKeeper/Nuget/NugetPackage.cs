@@ -2,13 +2,13 @@
 {
     public class NugetPackage
     {
-        public NugetPackage(string name, string version)
+        public NugetPackage(string id, string version)
         {
-            Name = name;
+            Id = id;
             Version = version;
         }
 
-        public string Name { get; }
+        public string Id { get; }
         public string Version { get; }
     }
 }
