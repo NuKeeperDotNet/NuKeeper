@@ -3,7 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <RootNamespace>Greenkeeper</RootNamespace>
+    <RootNamespace>NuKeeper</RootNamespace>
+    <AssemblyName>NuKeeper</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Greenkeeper.Nuget
+﻿namespace NuKeeper.Nuget
 {
     public class VersionComparisonResult
     {

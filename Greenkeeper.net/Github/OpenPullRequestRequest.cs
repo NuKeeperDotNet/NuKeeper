@@ -1,4 +1,4 @@
-﻿namespace Greenkeeper.Github
+﻿namespace NuKeeper.Github
 {
     public class OpenPullRequestRequest
     {

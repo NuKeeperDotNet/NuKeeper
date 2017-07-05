@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace Greenkeeper.Github
+namespace NuKeeper.Github
 {
     public class OpenPullRequestResult
     {

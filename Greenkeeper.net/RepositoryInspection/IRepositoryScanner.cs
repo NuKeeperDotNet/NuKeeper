@@ -1,7 +1,7 @@
-﻿using Greenkeeper.Nuget;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NuKeeper.Nuget;
 
-namespace Greenkeeper.RepositoryInspection
+namespace NuKeeper.RepositoryInspection
 {
     interface IRepositoryScanner
     {
