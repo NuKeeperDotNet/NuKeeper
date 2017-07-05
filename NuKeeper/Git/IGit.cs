@@ -9,7 +9,7 @@ namespace NuKeeper.Git
 
         Task Checkout(string branchName);
 
-        Task Commit();
+        Task Commit(string message);
 
         Task Push(string remoteName, string branchName);
     }

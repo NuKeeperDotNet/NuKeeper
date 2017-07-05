@@ -26,9 +26,9 @@ namespace NuKeeper.Git
             await RunExternalCommand($"cd {_tempDirectory} & git checkout -b {branchName}");
         }
 
-        public async Task Commit()
+        public async Task Commit(string message)
         {
-            await RunExternalCommand($"cd {_tempDirectory} & git commit -a -m \"Update nuget package\"");
+            await RunExternalCommand($"cd {_tempDirectory} & git commit -a -m \"{message}\"");
         }
 
         public async Task Push(string remoteName, string branchName)
