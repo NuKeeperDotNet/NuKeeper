@@ -21,7 +21,7 @@ namespace NuKeeper.RepositoryInspection
             var packagesNode = xml.Element("packages");
             if (packagesNode == null)
             {
-                return new List<NugetPackage>();
+                return Enumerable.Empty<NugetPackage>();
             }
 
             var packageNodeList = packagesNode.Elements()
