@@ -42,13 +42,13 @@ namespace NuKeeper.RepositoryInspection
                 if (string.Equals(fileName, "packages.config"))
                 {
                     var fullName = Path.Combine(dir, fileName);
-                    var packages = PackagesFileReader.Read(fullName);
+                    var packages = PackagesFileReader.ReadFile(fullName);
                     result.AddRange(packages);
                 }
                 else if (fileName.EndsWith(".csproj"))
                 {
                     var fullName = Path.Combine(dir, fileName);
-                    var packages = ProjectFileReader.Read(fullName);
+                    var packages = ProjectFileReader.ReadFile(fullName);
                     result.AddRange(packages);
                 }
             }

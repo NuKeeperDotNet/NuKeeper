@@ -2,13 +2,15 @@
 {
     public class NugetPackage
     {
-        public NugetPackage(string name, string version)
+        public NugetPackage(string id, string version, string targetFramework)
         {
-            Name = name;
+            Id = id;
             Version = version;
+            TargetFramework = targetFramework;
         }
 
-        public string Name { get; }
+        public string Id { get; }
         public string Version { get; }
+        public string TargetFramework { get; }
     }
 }
