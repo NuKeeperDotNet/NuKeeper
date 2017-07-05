@@ -19,6 +19,11 @@ namespace NuKeeper.RepositoryInspection
             var xml = XDocument.Parse(fileContents);
             var project = xml.Element("Project");
 
+            if (project == null)
+            {
+                return Enumerable.Empty<NugetPackage>();
+            }
+
             var itemGroups = project.Elements("ItemGroup");
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements("PackageReference"));
 
