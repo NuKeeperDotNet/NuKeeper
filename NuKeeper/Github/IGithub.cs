@@ -4,6 +4,6 @@ namespace NuKeeper.Github
 {
     interface IGithub
     {
-        Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest);
+        Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request);
     }
 }
