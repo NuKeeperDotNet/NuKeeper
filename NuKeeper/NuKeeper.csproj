@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.0.0" />
   </ItemGroup>
 
 </Project>

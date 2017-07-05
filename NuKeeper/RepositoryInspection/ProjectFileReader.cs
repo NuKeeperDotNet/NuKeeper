@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NuKeeper.Nuget;
 
 namespace NuKeeper.RepositoryInspection
 {

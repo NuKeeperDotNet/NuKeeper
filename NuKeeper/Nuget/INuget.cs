@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Nuget
 {

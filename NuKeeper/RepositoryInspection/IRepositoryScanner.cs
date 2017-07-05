@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NuKeeper.Nuget;
 
 namespace NuKeeper.RepositoryInspection
 {
