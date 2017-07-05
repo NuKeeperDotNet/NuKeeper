@@ -5,12 +5,12 @@ namespace NuKeeper.Git
 {
     interface IGit
     {
-        Task Pull(Uri pullEndpoint);
+        Task Clone(Uri pullEndpoint);
 
-        void Checkout(string branchName);
+        Task Checkout(string branchName);
 
-        void Commit();
+        Task Commit();
 
-        void Push(string remoteName, string branchName);
+        Task Push(string remoteName, string branchName);
     }
 }

@@ -7,9 +7,11 @@ namespace NuKeeper.ProcessRunner
     {
         public async Task<ProcessOutput> Run(string command)
         {
-            var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command);
-            processInfo.CreateNoWindow = true;
-            processInfo.RedirectStandardOutput = true;
+            var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true
+            };
 
             var process = Process.Start(processInfo);
 

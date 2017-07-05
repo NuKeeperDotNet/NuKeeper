@@ -1,28 +1,49 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.Git
 {
     class Git : IGit
     {
-        public Task Pull(Uri pullEndpoint)
+        private readonly IExternalProcess _externalProcess;
+        private readonly string _tempDirectory;
+
+        public Git(IExternalProcess externalProcess = null)
         {
-            throw new NotImplementedException();
+            _externalProcess = externalProcess ?? new ExternalProcess();
+            _tempDirectory = Path.Combine(Path.GetTempPath(), "NuKeeper\\" + Guid.NewGuid().ToString("N"));
         }
 
-        public void Checkout(string branchName)
+        public async Task Clone(Uri pullEndpoint)
         {
-            throw new NotImplementedException();
+            await RunExternalCommand($"git clone {pullEndpoint} {_tempDirectory}");
         }
 
-        public void Commit()
+        public async Task Checkout(string branchName)
         {
-            throw new NotImplementedException();
+            await RunExternalCommand($"cd {_tempDirectory} & git checkout -b {branchName}");
         }
 
-        public void Push(string remoteName, string branchName)
+        public async Task Commit()
         {
-            throw new NotImplementedException();
+            await RunExternalCommand($"cd {_tempDirectory} & git commit -a -m \"Update nuget package\"");
+        }
+
+        public async Task Push(string remoteName, string branchName)
+        {
+            await RunExternalCommand($"cd {_tempDirectory} & git push {remoteName} {branchName}");
+        }
+
+        private async Task RunExternalCommand(string command)
+        {
+            var result = await _externalProcess.Run($"{command}");
+
+            if (!result.Success)
+            {
+                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}");
+            }
         }
     }
 }
