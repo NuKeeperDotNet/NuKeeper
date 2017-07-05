@@ -31,6 +31,34 @@ namespace NuKeeper.Tests.RepositoryInspection
 </Project>";
 
         [Test]
+        public void NoProjectCanBeRead()
+        {
+            const string NoProject =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
+<foo>
+</foo>";
+
+            var packages = ProjectFileReader.Read(NoProject);
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Empty);
+        }
+
+        [Test]
+        public void EmptyProjectCanBeRead()
+        {
+            const string NoProject =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project>
+</Project>";
+
+            var packages = ProjectFileReader.Read(NoProject);
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Empty);
+        }
+
+        [Test]
         public void ProjectWithoutPackageListCanBeRead()
         {
             var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithoutPackages);

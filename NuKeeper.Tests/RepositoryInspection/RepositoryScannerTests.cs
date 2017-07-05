@@ -43,6 +43,11 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private static string GetOwnRootDir()
         {
+            // If the test is running on (real example)
+            // "C:\Code\NuKeeper\NuKeeper.Tests\bin\Debug\netcoreapp1.1\NuKeeper.dll"
+            // then the app root directory to scan is "C:\Code\NuKeeper\"
+            // So go up four dir levels to the root
+            // Self is a convenient source of a valid project to scan
             var fullPath = typeof(RepositoryScanner).GetTypeInfo().Assembly.Location;
             var runDir = Path.GetDirectoryName(fullPath);
 
