@@ -18,13 +18,14 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
-        public void ValidDirectoryWorks()
+        public void ValidEmptyDirectoryWorks()
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNugetPackages(Path.GetTempPath());
+            var results = scanner.FindAllNugetPackages(FileHelper.MakeUniqueTemporaryPath());
 
             Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Empty);
         }
 
         [Test]
