@@ -9,7 +9,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace NuKeeper.Nuget
 {
-    public class PackageLookup
+    public class NugetPackageLookup : INugetPackageLookup
     {
         public async Task<IPackageSearchMetadata> LookupLatest(string packageName)
         {
@@ -17,7 +17,7 @@ namespace NuKeeper.Nuget
             return versions.FirstOrDefault();
         }
 
-        public async Task<IList<IPackageSearchMetadata>> Lookup(string packageName)
+        private async Task<IEnumerable<IPackageSearchMetadata>> Lookup(string packageName)
         {
             var sourceRepository = BuildSourceRepository();
             var searchResource = await sourceRepository.GetResourceAsync<PackageSearchResource>();
@@ -35,7 +35,7 @@ namespace NuKeeper.Nuget
             return new SourceRepository(packageSource, providers);
         }
 
-        private static async Task<List<IPackageSearchMetadata>> SearchForPackages(PackageSearchResource searchResource, string packageName)
+        private static async Task<IEnumerable<IPackageSearchMetadata>> SearchForPackages(PackageSearchResource searchResource, string packageName)
         {
             var logger = new NugetLogger();
             var filter = new SearchFilter(false);
@@ -43,7 +43,7 @@ namespace NuKeeper.Nuget
             var packages = await searchResource
                 .SearchAsync(packageName, filter, 0, 10, logger, CancellationToken.None);
 
-            return packages.ToList();
+            return packages;
         }
     }
 }
