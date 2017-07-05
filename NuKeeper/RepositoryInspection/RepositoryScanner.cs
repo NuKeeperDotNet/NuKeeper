@@ -19,7 +19,7 @@ namespace NuKeeper.RepositoryInspection
 
         private IEnumerable<NugetPackage> FindNugetPackagesInDirRecursive(string dir)
         {
-            var current = FindNugetPackagesInDir(dir);
+            var current = ScanForNugetPackages(dir);
 
             var subdirs = Directory.EnumerateDirectories(dir);
                 
@@ -32,7 +32,7 @@ namespace NuKeeper.RepositoryInspection
             return current;
         }
 
-        private List<NugetPackage> FindNugetPackagesInDir(string dir)
+        private List<NugetPackage> ScanForNugetPackages(string dir)
         {
             var result = new List<NugetPackage>();
             var files = Directory.EnumerateFiles(dir);
