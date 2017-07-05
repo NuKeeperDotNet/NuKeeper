@@ -8,8 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Github\" />
-    <Folder Include="Nuget\" />
   </ItemGroup>
 
 </Project>

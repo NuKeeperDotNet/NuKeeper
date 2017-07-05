@@ -34,9 +34,8 @@ namespace NuKeeper.RepositoryInspection
         {
             var id = el.Attribute("id")?.Value;
             var version = el.Attribute("version")?.Value;
-            var targetFramework = el.Attribute("targetFramework")?.Value;
 
-            return new NugetPackage(id, version, targetFramework);
+            return new NugetPackage(id, version);
         }
     }
 }

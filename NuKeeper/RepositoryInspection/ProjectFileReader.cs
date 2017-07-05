@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using NuKeeper.Nuget;
 
 namespace NuKeeper.RepositoryInspection
@@ -14,8 +16,23 @@ namespace NuKeeper.RepositoryInspection
 
         public static IEnumerable<NugetPackage> Read(string fileContents)
         {
-            return new List<NugetPackage>
-                {new NugetPackage("foo", "bar", "fish")};
+            var xml = XDocument.Parse(fileContents);
+            var project = xml.Element("Project");
+
+            var itemGroups = project.Elements("ItemGroup");
+            var packageRefs = itemGroups.SelectMany(ig => ig.Elements("PackageReference"));
+
+            return packageRefs
+                .Select(XmlToPackage)
+                .ToList();
+        }
+
+        private static NugetPackage XmlToPackage(XElement el)
+        {
+            var id = el.Attribute("Include")?.Value;
+            var version = el.Attribute("Version")?.Value;
+
+            return new NugetPackage(id, version);
         }
     }
 }

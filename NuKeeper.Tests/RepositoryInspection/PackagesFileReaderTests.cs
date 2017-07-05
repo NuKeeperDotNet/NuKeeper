@@ -10,7 +10,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void EmptyPackagesListShouldBeParsed()
         {
-            var emptyContents =
+            const string emptyContents =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
 </packages>";
@@ -24,7 +24,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeRead()
         {
-            var singlePackage = 
+            const string singlePackage = 
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
@@ -39,7 +39,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeCorrect()
         {
-            var singlePackage =
+            const string singlePackage =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
@@ -51,20 +51,19 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo("1.2.3.4"));
-            Assert.That(package.TargetFramework, Is.EqualTo("net45"));
         }
 
         [Test]
         public void TwoPackagesShouldBeRead()
         {
-            var singlePackage =
+            const string packagesFile =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
   <package id=""bar"" version=""2.3.4.5"" targetFramework=""net45"" />
 </packages>";
 
-            var packages = PackagesFileReader.Read(singlePackage)
+            var packages = PackagesFileReader.Read(packagesFile)
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
