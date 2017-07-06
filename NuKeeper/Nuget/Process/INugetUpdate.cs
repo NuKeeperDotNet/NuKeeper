@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Nuget
+namespace NuKeeper.Nuget.Process
 {
     public interface INugetUpdate
     {
