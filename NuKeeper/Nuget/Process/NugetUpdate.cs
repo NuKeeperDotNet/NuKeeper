@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NuKeeper.RepositoryInspection;
@@ -9,14 +10,16 @@ namespace NuKeeper.Nuget.Process
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NugetUpdate(IExternalProcess externalProcess)
+        public NugetUpdate(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task UpdatePackage(NugetPackage package, string pathToSolutionFile)
+        public async Task UpdatePackage(NugetPackage package)
         {
-            var updateCommand = $"nuget update {pathToSolutionFile} -Id {package.Id} -Version {package.Version} - NonInteractive";
+
+            var updateCommand = $"cd foo & dotnet add package -Id {package.Id} -v {package.Version}";
+            Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);
         }
 

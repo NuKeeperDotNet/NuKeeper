@@ -5,6 +5,6 @@ namespace NuKeeper.Nuget.Process
 {
     public interface INugetUpdate
     {
-        Task UpdatePackage(NugetPackage package, string pathToSolutionFile);
+        Task UpdatePackage(NugetPackage package);
     }
 }

@@ -15,6 +15,8 @@ namespace NuKeeper.Nuget.Api
         public NugetPackage CurrentPackage { get; }
         public PackageIdentity NewPackageIdentity { get; }
 
+        public string PackageId => CurrentPackage.Id;
+
         public NuGetVersion OldVersion => CurrentPackage.Version;
         public NuGetVersion NewVersion => NewPackageIdentity.Version;
     }
