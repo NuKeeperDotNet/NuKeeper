@@ -1,22 +1,26 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
+using NuKeeper.Nuget.Api;
 using NuKeeper.ProcessRunner;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Nuget.Process
 {
-    public class NugetUpdate : INugetUpdate
+    public class NugetUpdater : INugetUpdater
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NugetUpdate(IExternalProcess externalProcess)
+        public NugetUpdater(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task UpdatePackage(NugetPackage package, string pathToSolutionFile)
+        public async Task UpdatePackage(PackageUpdate update)
         {
-            var updateCommand = $"nuget update {pathToSolutionFile} -Id {package.Id} -Version {package.Version} - NonInteractive";
+            var dirName = Path.GetDirectoryName(update.CurrentPackage.SourceFilePath);
+            var updateCommand = $"cd {dirName} & dotnet add package {update.PackageId} -v {update.NewVersion}";
+            Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);
         }
 

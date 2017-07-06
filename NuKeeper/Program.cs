@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Threading.Tasks;
-using NuKeeper.ProcessRunner;
+using NuKeeper.Nuget.Api;
 
 namespace NuKeeper
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            MainAsync().GetAwaiter().GetResult();
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
-        }
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Supply a git url");
+                return;
+            }
+            var gitArg = args[0];
 
-        private static async Task MainAsync()
-        {
-            IExternalProcess proc = new ExternalProcess();
-            var output = await proc.Run("dir");
+            var gitUri = new Uri(gitArg);
 
-            Console.WriteLine($"Exit code: {output.ExitCode}");
-            Console.WriteLine(output.Output);
+            var engine = new Engine(new PackageUpdatesLookup(new ApiPackageLookup()));
+            engine.Run(gitUri)
+                .GetAwaiter().GetResult();
         }
     }
 }

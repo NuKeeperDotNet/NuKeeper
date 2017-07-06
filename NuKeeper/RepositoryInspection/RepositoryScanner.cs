@@ -40,19 +40,29 @@ namespace NuKeeper.RepositoryInspection
             {
                 if (string.Equals(fileName, "packages.config"))
                 {
-                    var fullName = Path.Combine(dir, fileName);
-                    var packages = PackagesFileReader.ReadFile(fullName);
+                    var packagesFullPath = Path.Combine(dir, fileName);
+                    var packages = PackagesFileReader.ReadFile(packagesFullPath);
+                    SetSourceFilePath(packages, packagesFullPath);
                     result.AddRange(packages);
                 }
                 else if (fileName.EndsWith(".csproj"))
                 {
-                    var fullName = Path.Combine(dir, fileName);
-                    var packages = ProjectFileReader.ReadFile(fullName);
+                    var csprojFullPath = Path.Combine(dir, fileName);
+                    var packages = ProjectFileReader.ReadFile(csprojFullPath);
+                    SetSourceFilePath(packages, csprojFullPath);
                     result.AddRange(packages);
                 }
             }
 
             return result;
+        }
+
+        private void SetSourceFilePath(IEnumerable<NugetPackage> packages, string sourceFilePath)
+        {
+            foreach (var package in packages)
+            {
+                package.SourceFilePath = sourceFilePath;
+            }
         }
     }
 }

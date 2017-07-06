@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNugetPackages(FileHelper.MakeUniqueTemporaryPath());
+            var results = scanner.FindAllNugetPackages(TempFiles.MakeUniqueTemporaryPath());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);

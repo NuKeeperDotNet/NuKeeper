@@ -3,7 +3,7 @@ using System.IO;
 
 namespace NuKeeper
 {
-    public static class FileHelper
+    public static class TempFiles
     {
         public static string GetUniqueTemporaryPath()
         {
