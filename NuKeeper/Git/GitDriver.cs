@@ -4,12 +4,12 @@ using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.Git
 {
-    class Git : IGit
+    class GitDriver : IGitDriver
     {
         private readonly IExternalProcess _externalProcess;
         private readonly string _tempDirectory;
 
-        public Git(string repoStoragePath, IExternalProcess externalProcess = null)
+        public GitDriver(string repoStoragePath, IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
             _tempDirectory = repoStoragePath;

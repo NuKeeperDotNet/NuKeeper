@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Git;
 using NuKeeper.Nuget.Api;
 using NuKeeper.Nuget.Process;
 using NuKeeper.RepositoryInspection;
@@ -25,7 +26,7 @@ namespace NuKeeper
 
             // clone the repo
             Console.WriteLine($"Git url: {gitUrl}");
-            var git = new Git.Git(tempDir);
+            var git = new GitDriver(tempDir);
             await git.Clone(gitUrl);
 
             Console.WriteLine("Git clone complete");
