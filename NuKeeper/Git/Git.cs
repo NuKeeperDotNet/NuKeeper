@@ -17,7 +17,7 @@ namespace NuKeeper.Git
 
         public async Task Clone(Uri pullEndpoint)
         {
-            await RunExternalCommand($"git clone {pullEndpoint} {_tempDirectory}");
+            await RunExternalCommand($"git clone {pullEndpoint} {_tempDirectory} --depth 1");
         }
 
         public async Task Checkout(string branchName)
