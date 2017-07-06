@@ -37,6 +37,7 @@ namespace NuKeeper.Git
 
         private async Task RunExternalCommand(string command)
         {
+            Console.WriteLine("git command: " + command);
             var result = await _externalProcess.Run($"{command}");
 
             if (!result.Success)

@@ -19,7 +19,7 @@ namespace NuKeeper.Nuget.Process
         public async Task UpdatePackage(PackageUpdate update)
         {
             var dirName = Path.GetDirectoryName(update.CurrentPackage.SourceFilePath);
-            var updateCommand = $"cd {dirName} & dotnet add package -Id {update.PackageId} -v {update.NewVersion}";
+            var updateCommand = $"cd {dirName} & dotnet add package {update.PackageId} -v {update.NewVersion}";
             Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Nuget.Api;
@@ -63,10 +63,17 @@ namespace NuKeeper
             var nugetUpdater = new NugetUpdater();
             await nugetUpdater.UpdatePackage(applicable);
 
+            Console.WriteLine("Commiting");
             var commitMessage = MakeCommitMessage(applicable);
             await git.Commit(commitMessage);
 
+            Console.WriteLine($"Pushing branch '{branchName}'");
             await git.Push("origin", branchName);
+
+            // delete the temp folder
+            Console.WriteLine($"Deleting temp dir {tempDir}");
+            Directory.Delete(tempDir, true);
+            Console.WriteLine("Done");
         }
 
         private string MakeCommitMessage(PackageUpdate update)
