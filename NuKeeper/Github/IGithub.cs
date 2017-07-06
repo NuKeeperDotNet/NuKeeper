@@ -2,7 +2,7 @@
 
 namespace NuKeeper.Github
 {
-    interface IGithub
+    public interface IGithub
     {
         Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request);
     }

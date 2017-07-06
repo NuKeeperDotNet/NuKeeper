@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NuKeeper": {
+      "commandName": "Project",
+      "commandLineArgs": "https://github.com/AnthonySteele/JustEat.StatsD.git fa9fffeec1ea342bc5fd85afe0d63d0b34229673 "
+    }
+  }
+}
