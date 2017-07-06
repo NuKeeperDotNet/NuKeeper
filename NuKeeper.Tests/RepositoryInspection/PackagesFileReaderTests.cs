@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -50,7 +51,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var package = packages.FirstOrDefault();
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Id, Is.EqualTo("foo"));
-            Assert.That(package.Version, Is.EqualTo("1.2.3.4"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
         }
 
         [Test]
