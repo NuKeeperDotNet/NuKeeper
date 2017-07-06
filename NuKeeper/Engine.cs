@@ -55,13 +55,13 @@ namespace NuKeeper
             var applicable = updates.First();
 
             // branch
-            var branchName = $"update-{applicable.PackageId}-from-{applicable.OldVersion}-to-{applicable.NewVersion}";
+            var branchName = $"nukeeper-update-{applicable.PackageId}-from-{applicable.OldVersion}-to-{applicable.NewVersion}";
             await git.Checkout(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            var nugetUpdate = new NugetUpdate();
-            await nugetUpdate.UpdatePackage(applicable.CurrentPackage);
+            var nugetUpdater = new NugetUpdater();
+            await nugetUpdater.UpdatePackage(applicable);
 
             var commitMessage = MakeCommitMessage(applicable);
             await git.Commit(commitMessage);

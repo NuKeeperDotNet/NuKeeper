@@ -16,5 +16,6 @@ namespace NuKeeper.RepositoryInspection
 
         public string Id { get; }
         public NuGetVersion Version { get; }
+        public string SourceFilePath { get; set; }
     }
 }
