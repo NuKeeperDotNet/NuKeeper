@@ -4,22 +4,24 @@ using NuKeeper.ProcessRunner;
 
 namespace NuKeeper
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            MainAsync().GetAwaiter().GetResult();
-            Console.WriteLine("Hello World!");
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Supply a git url");
+                return;
+            }
+            var gitArg = args[0];
+
+            var gitUri = new Uri(gitArg);
+
+            var engine = new Engine();
+            engine.Run(gitUri)
+                .GetAwaiter().GetResult();
+
             Console.ReadLine();
-        }
-
-        private static async Task MainAsync()
-        {
-            IExternalProcess proc = new ExternalProcess();
-            var output = await proc.Run("dir");
-
-            Console.WriteLine($"Exit code: {output.ExitCode}");
-            Console.WriteLine(output.Output);
         }
     }
 }
