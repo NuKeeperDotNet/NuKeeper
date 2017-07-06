@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Github;
 using NuKeeper.Git;
 using NuKeeper.Nuget.Api;
 using NuKeeper.Nuget.Process;
@@ -12,22 +13,24 @@ namespace NuKeeper
     public class Engine
     {
         private readonly IPackageUpdatesLookup _packageLookup;
+        private readonly Settings _settings;
 
-        public Engine(IPackageUpdatesLookup packageLookup)
+        public Engine(IPackageUpdatesLookup packageLookup, Settings settings)
         {
             _packageLookup = packageLookup;
+            _settings = settings;
         }
 
-        public async Task Run(Uri gitUrl)
+        public async Task Run()
         {
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();
             Console.WriteLine($"Using temp dir: {tempDir}");
 
             // clone the repo
-            Console.WriteLine($"Git url: {gitUrl}");
+            Console.WriteLine($"Git url: {_settings.GitUri}");
             var git = new GitDriver(tempDir);
-            await git.Clone(gitUrl);
+            await git.Clone(_settings.GitUri);
 
             Console.WriteLine("Git clone complete");
 
@@ -71,18 +74,37 @@ namespace NuKeeper
             Console.WriteLine($"Pushing branch '{branchName}'");
             await git.Push("origin", branchName);
 
+            Console.WriteLine($"Making PR on '{_settings.GithubBaseUri} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
+
+            // open github PR
+            var pr = new OpenPullRequestRequest
+            {
+                Data = new PullRequestData
+                {
+                    Title = commitMessage,
+                    Body = MakeCommitDetails(applicable),
+                    Base = "master",
+                    Head = branchName
+                },
+                RepositoryOwner = _settings.RepositoryOwner,
+                RepositoryName = _settings.RepositoryName
+            };
+
+            var github = new GithubClient(_settings);
+            await github.OpenPullRequest(pr);
+
             // delete the temp folder
-            Console.WriteLine($"Deleting temp dir {tempDir}");
             TryDelete(tempDir);
             Console.WriteLine("Done");
         }
 
         private static void TryDelete(string tempDir)
         {
+            Console.WriteLine($"Attempting delete of temp dir {tempDir}");
+
             try
             {
                 Directory.Delete(tempDir, true);
-
             }
             catch (Exception)
             {
@@ -93,8 +115,13 @@ namespace NuKeeper
         private string MakeCommitMessage(PackageUpdate update)
         {
             return $"Automatic update of {update.PackageId} from {update.OldVersion} to {update.NewVersion}";
-            //$"Nukeeper has generated an update of `{update.PackageId}` from version {update.OldVersion} to {update.NewVersion}" + EscapedNewLine +
-            //"This is an automated update. Merge if it passes tests";
+        }
+
+        private string MakeCommitDetails(PackageUpdate update)
+        {
+            return MakeCommitMessage(update) + Environment.NewLine +
+            $"NuKeeper has generated an update of `{update.PackageId}` from version {update.OldVersion} to {update.NewVersion}" + Environment.NewLine +
+            "This is an automated update. Merge if it passes tests";
         }
     }
 }
