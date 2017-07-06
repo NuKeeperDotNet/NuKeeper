@@ -72,15 +72,28 @@ namespace NuKeeper
 
             // delete the temp folder
             Console.WriteLine($"Deleting temp dir {tempDir}");
-            Directory.Delete(tempDir, true);
+            TryDelete(tempDir);
             Console.WriteLine("Done");
+        }
+
+        private static void TryDelete(string tempDir)
+        {
+            try
+            {
+                Directory.Delete(tempDir, true);
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Delete failed. Continuing");
+            }
         }
 
         private string MakeCommitMessage(PackageUpdate update)
         {
-            return $"Automatic update of {update.PackageId} from {update.OldVersion} to {update.NewVersion}" + Environment.NewLine +
-            $"Nukeeper has generated an update of `{update.PackageId}` from version {update.OldVersion} to {update.NewVersion}" + Environment.NewLine +
-            "This is an automated update. Merge if it passes tests";
+            return $"Automatic update of {update.PackageId} from {update.OldVersion} to {update.NewVersion}";
+            //$"Nukeeper has generated an update of `{update.PackageId}` from version {update.OldVersion} to {update.NewVersion}" + EscapedNewLine +
+            //"This is an automated update. Merge if it passes tests";
         }
     }
 }
