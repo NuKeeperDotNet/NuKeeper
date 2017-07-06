@@ -1,4 +1,4 @@
-﻿namespace NuKeeper.Nuget
+﻿namespace NuKeeper.RepositoryInspection
 {
     public class NugetPackage
     {
