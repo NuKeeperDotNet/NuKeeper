@@ -18,13 +18,14 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
-        public void ValidDirectoryWorks()
+        public void ValidEmptyDirectoryWorks()
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNugetPackages(Path.GetTempPath());
+            var results = scanner.FindAllNugetPackages(FileHelper.MakeUniqueTemporaryPath());
 
             Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Empty);
         }
 
         [Test]
@@ -43,6 +44,11 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private static string GetOwnRootDir()
         {
+            // If the test is running on (real example)
+            // "C:\Code\NuKeeper\NuKeeper.Tests\bin\Debug\netcoreapp1.1\NuKeeper.dll"
+            // then the app root directory to scan is "C:\Code\NuKeeper\"
+            // So go up four dir levels to the root
+            // Self is a convenient source of a valid project to scan
             var fullPath = typeof(RepositoryScanner).GetTypeInfo().Assembly.Location;
             var runDir = Path.GetDirectoryName(fullPath);
 
