@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-using NuKeeper.ProcessRunner;
+using NuKeeper.Nuget.Api;
 
 namespace NuKeeper
 {
@@ -17,11 +16,9 @@ namespace NuKeeper
 
             var gitUri = new Uri(gitArg);
 
-            var engine = new Engine();
+            var engine = new Engine(new PackageUpdatesLookup(new ApiPackageLookup()));
             engine.Run(gitUri)
                 .GetAwaiter().GetResult();
-
-            Console.ReadLine();
         }
     }
 }
