@@ -7,9 +7,9 @@ using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
-namespace NuKeeper.Nuget
+namespace NuKeeper.Nuget.Api
 {
-    public class NugetPackageLookup : INugetPackageLookup
+    public class ApiPackageLookup : IApiPackageLookup
     {
         public async Task<IPackageSearchMetadata> LookupLatest(string packageName)
         {
@@ -37,7 +37,7 @@ namespace NuKeeper.Nuget
 
         private static async Task<IEnumerable<IPackageSearchMetadata>> SearchForPackages(PackageSearchResource searchResource, string packageName)
         {
-            var logger = new NugetLogger();
+            var logger = new ConsoleLogger();
             var filter = new SearchFilter(false);
 
             var packages = await searchResource

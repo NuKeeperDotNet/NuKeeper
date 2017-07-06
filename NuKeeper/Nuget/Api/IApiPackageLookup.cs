@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using NuGet.Protocol.Core.Types;
 
-namespace NuKeeper.Nuget
+namespace NuKeeper.Nuget.Api
 {
-    public interface INugetPackageLookup
+    public interface IApiPackageLookup
     {
         Task<IPackageSearchMetadata> LookupLatest(string packageName);
     }

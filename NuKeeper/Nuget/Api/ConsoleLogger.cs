@@ -1,9 +1,9 @@
 ﻿using System;
 using NuGet.Common;
 
-namespace NuKeeper.Nuget
+namespace NuKeeper.Nuget.Api
 {
-    public class NugetLogger : ILogger
+    public class ConsoleLogger : ILogger
     {
         public void LogDebug(string data) => WriteLine($"DEBUG: {data}");
         public void LogVerbose(string data) => WriteLine($"VERBOSE: {data}");
