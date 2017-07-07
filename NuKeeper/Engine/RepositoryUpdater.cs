@@ -4,23 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Github;
 using NuKeeper.Git;
+using NuKeeper.Github;
 using NuKeeper.Nuget.Api;
 using NuKeeper.Nuget.Process;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper
+namespace NuKeeper.Engine
 {
-    public class Engine
+    public class RepositoryUpdater
     {
         private readonly IPackageUpdatesLookup _packageLookup;
         private readonly RepositoryModeSettings _settings;
         private readonly string _tempDir;
         private readonly IGitDriver _git;
-        private IGithub _github;
+        private readonly IGithub _github;
 
-        public Engine(IPackageUpdatesLookup packageLookup, IGithub github, RepositoryModeSettings settings)
+        public RepositoryUpdater(IPackageUpdatesLookup packageLookup, IGithub github, RepositoryModeSettings settings)
         {
             _packageLookup = packageLookup;
             _settings = settings;

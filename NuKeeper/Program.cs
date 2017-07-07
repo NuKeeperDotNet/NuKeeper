@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NuKeeper.Configuration;
+using NuKeeper.Engine;
 using NuKeeper.Github;
 using NuKeeper.Nuget.Api;
 
@@ -19,7 +20,8 @@ namespace NuKeeper
 
             var lookups = new PackageUpdatesLookup(new ApiPackageLookup());
             var github = new GithubClient(settings);
-            var engine = new Engine(lookups, github, settings.Repository);
+            var engine = new RepositoryUpdater(lookups, github, settings.Repository);
+
             engine.Run()
                 .GetAwaiter().GetResult();
 
