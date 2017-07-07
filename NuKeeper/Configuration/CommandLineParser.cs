@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace NuKeeper
+namespace NuKeeper.Configuration
 {
     public static class CommandLineParser
     {
@@ -24,16 +23,16 @@ namespace NuKeeper
             switch (operationMode)
             {
                 case RepositoryMode:
-                    return ReadSettingsForRepositoryMode(args);
+                    return new Settings(ReadSettingsForRepositoryMode(args));
                 case OrganisationMode:
-                    return ReadSettingsForOrganisationMode(args);
+                    return new Settings(ReadSettingsForOrganisationMode(args));
                 default:
                     Console.WriteLine($"Mode {operationMode} not supported");
                     return null;
             }
         }
 
-        private static Settings ReadSettingsForRepositoryMode(string[] args)
+        private static RepositoryModeSettings ReadSettingsForRepositoryMode(string[] args)
         {
             if (args.Length < 3)
             {
@@ -54,7 +53,7 @@ namespace NuKeeper
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            return new Settings
+            return new RepositoryModeSettings
             {
                 GitUri = gitRepoUri,
                 GithubToken = gitToken,
@@ -64,7 +63,7 @@ namespace NuKeeper
             };
         }
 
-        private static Settings ReadSettingsForOrganisationMode(string[] arg)
+        private static OrganisationModeSettings ReadSettingsForOrganisationMode(string[] arg)
         {
             throw new NotImplementedException();
         }

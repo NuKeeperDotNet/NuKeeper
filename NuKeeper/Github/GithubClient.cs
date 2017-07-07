@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using NuKeeper.Configuration;
 
 namespace NuKeeper.Github
 {
@@ -19,7 +20,7 @@ namespace NuKeeper.Github
         public GithubClient(Settings settings)
         {
             _settings = settings;
-            _requestBuilder = new GithubRequestBuilder(settings.GithubToken);
+            _requestBuilder = new GithubRequestBuilder(settings.Repository.GithubToken);
         }
 
         private async Task<HttpResponseMessage> PostAsync<T>(Uri uri, T content)
@@ -46,7 +47,7 @@ namespace NuKeeper.Github
 
         public async Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request)
         {
-            var uri = new Uri(_settings.GithubBaseUri, $"/repos/{request.RepositoryOwner}/{request.RepositoryName}/pulls");
+            var uri = new Uri(_settings.Repository.GithubBaseUri, $"/repos/{request.RepositoryOwner}/{request.RepositoryName}/pulls");
             var response = await PostAsync(uri, request.Data);
 
             if (!response.IsSuccessStatusCode)
