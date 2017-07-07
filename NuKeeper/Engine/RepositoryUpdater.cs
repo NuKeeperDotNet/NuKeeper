@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -65,6 +66,9 @@ namespace NuKeeper.Engine
             // All packages that need update
             var updatesByPackage = updates.GroupBy(p => p.PackageId);
 
+            // limit!!!
+            updatesByPackage = updatesByPackage.Take(2);
+
             foreach (var packageUpdates in updatesByPackage)
             {
                 await UpdatePackageInProjects(packageUpdates.Key, packageUpdates.ToList());
@@ -77,7 +81,12 @@ namespace NuKeeper.Engine
 
         private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)
         {
-            var oldVersionsString = OldVersionsString(updates);
+            var oldVersions = updates
+                .Select(u => u.OldVersion.ToString())
+                .Distinct();
+
+            var oldVersionsString = string.Join(",", oldVersions);
+
             var firstUpdate = updates.First();
 
             Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {firstUpdate.NewVersion} in {updates.Count} projects");
@@ -98,7 +107,7 @@ namespace NuKeeper.Engine
             }
 
             Console.WriteLine("Commiting");
-            var commitMessage = MakeCommitMessage(updates, false);
+            var commitMessage = MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
@@ -138,56 +147,58 @@ namespace NuKeeper.Engine
             }
         }
 
-        private string MakeCommitMessage(List<PackageUpdate> updates, bool codeQuote)
+        private string MakeCommitMessage(List<PackageUpdate> updates)
         {
-            var oldVersionsString = OldVersionsString(updates);
-            var newVersion = updates[0].NewVersion;
-            var packageId = updates[0].PackageId;
-            if (codeQuote)
-            {
-                packageId = "`" + packageId + "`";
-            }
-
-            var pluralPackage = updates.Count == 1 ? "project" : "projects";
-            return $"Automatic update of {packageId} from {oldVersionsString} to {newVersion} in {updates.Count} {pluralPackage}";
+            return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
         }
 
         private string MakeCommitDetails(List<PackageUpdate> updates)
         {
-            var oldVersionsString = OldVersionsString(updates);
-            var newVersion = updates[0].NewVersion;
-            var packageId = updates[0].PackageId;
+            var oldVersions = updates
+                .Select(u => CodeQuote(u.OldVersion.ToString()))
+                .Distinct()
+                .ToList();
 
-            var paths = updates
-                .Select(u => u.CurrentPackage.SourceFilePath.Replace(_tempDir, String.Empty))
-                .Select(p => $"`{p}`");
-            var pathsString = string.Join(",", paths);
+            var oldVersionsString = string.Join(",", oldVersions);
+            var newVersion = CodeQuote(updates[0].NewVersion.ToString());
+            var packageId = CodeQuote(updates[0].PackageId);
 
-            string updatePathsLine;
+            var builder = new StringBuilder();
+
+            var headline = $"NuKeeper has generated an update of {packageId} from {oldVersionsString} to {newVersion}";
+            builder.AppendLine(headline);
+
+            if (oldVersions.Count > 1)
+            {
+                builder.AppendLine($"{oldVersions} versions were found in use: {oldVersionsString}");
+            }
 
             if (updates.Count == 1)
             {
-                updatePathsLine = $"Updated in 1 file: {pathsString}";
+                builder.AppendLine("One project update:");
             }
             else
             {
-                updatePathsLine = $"Updated in {updates.Count} files: {pathsString}";
+                builder.AppendLine($"{updates.Count} project updates:");
             }
 
-            return
-                MakeCommitMessage(updates, true) + Environment.NewLine +
-                $"NuKeeper has generated an update of `{packageId}` from version {oldVersionsString} to {newVersion}" + Environment.NewLine +
-                updatePathsLine + Environment.NewLine +
-                "This is an automated update. Merge only if it passes tests";
+            foreach (var update in updates)
+            {
+                var relativePath = update.CurrentPackage.SourceFilePath.Replace(_tempDir, String.Empty);
+                var line = $"Updated `{relativePath}` to {packageId} `{update.NewVersion}` from `{update.OldVersion}`";
+
+                builder.AppendLine(line);
+            }
+
+            builder.AppendLine("This is an automated update. Merge only if it passes tests");
+            builder.AppendLine("");
+            builder.AppendLine("**NuKeeper**: https://github.com/AnthonySteele/NuKeeper");
+            return builder.ToString();
         }
 
-        private static string OldVersionsString(IEnumerable<PackageUpdate> updates)
+        private static string CodeQuote(string value)
         {
-            var oldVersions = updates
-                .Select(u => u.OldVersion.ToString())
-                .Distinct();
-
-            return string.Join(",", oldVersions);
+            return "`" + value + "`";
         }
     }
 }
