@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,29 +15,32 @@ namespace NuKeeper
     {
         private readonly IPackageUpdatesLookup _packageLookup;
         private readonly Settings _settings;
+        private readonly string _tempDir;
+        private readonly IGitDriver _git;
 
         public Engine(IPackageUpdatesLookup packageLookup, Settings settings)
         {
             _packageLookup = packageLookup;
             _settings = settings;
+
+            // get some storage space
+            _tempDir = TempFiles.MakeUniqueTemporaryPath();
+            _git = new GitDriver(_tempDir);
         }
 
         public async Task Run()
         {
-            // get some storage space
-            var tempDir = TempFiles.MakeUniqueTemporaryPath();
-            Console.WriteLine($"Using temp dir: {tempDir}");
+            Console.WriteLine($"Using temp dir: {_tempDir}");
 
             // clone the repo
             Console.WriteLine($"Git url: {_settings.GitUri}");
-            var git = new GitDriver(tempDir);
-            await git.Clone(_settings.GitUri);
+            await _git.Clone(_settings.GitUri);
 
             Console.WriteLine("Git clone complete");
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNugetPackages(tempDir)
+            var packages = repoScanner.FindAllNugetPackages(_tempDir)
                 .ToList();
 
             var packageNames = string.Join(",", packages.Take(10).Select(p => p.Id));
@@ -55,24 +59,47 @@ namespace NuKeeper
                 return;
             }
 
-            // pick an update 
-            var applicable = updates.First();
+            // All packages that need update
+            var updatesByPackage = updates.GroupBy(p => p.PackageId);
+
+            foreach (var packageUpdates in updatesByPackage)
+            {
+                await UpdatePackageInProjects(packageUpdates.Key, packageUpdates.ToList());
+            }
+
+            // delete the temp folder
+            TryDelete(_tempDir);
+            Console.WriteLine("Done");
+        }
+
+        private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)
+        {
+            var oldVersionsString = OldVersionsString(updates);
+            var firstUpdate = updates.First();
+
+            Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {firstUpdate.NewVersion} in {updates.Count} projects");
+
+            await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{applicable.PackageId}-from-{applicable.OldVersion}-to-{applicable.NewVersion}";
-            await git.Checkout(branchName);
+            var branchName = $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+            await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
 
             var nugetUpdater = new NugetUpdater();
-            await nugetUpdater.UpdatePackage(applicable);
+
+            foreach (var update in updates)
+            {
+                await nugetUpdater.UpdatePackage(update);
+            }
 
             Console.WriteLine("Commiting");
-            var commitMessage = MakeCommitMessage(applicable);
-            await git.Commit(commitMessage);
+            var commitMessage = MakeCommitMessage(updates, false);
+            await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
-            await git.Push("origin", branchName);
+            await _git.Push("origin", branchName);
 
             Console.WriteLine($"Making PR on '{_settings.GithubBaseUri} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 
@@ -82,7 +109,7 @@ namespace NuKeeper
                 Data = new PullRequestData
                 {
                     Title = commitMessage,
-                    Body = MakeCommitDetails(applicable),
+                    Body = MakeCommitDetails(updates),
                     Base = "master",
                     Head = branchName
                 },
@@ -92,10 +119,7 @@ namespace NuKeeper
 
             var github = new GithubClient(_settings);
             await github.OpenPullRequest(pr);
-
-            // delete the temp folder
-            TryDelete(tempDir);
-            Console.WriteLine("Done");
+            await _git.Checkout("master");
         }
 
         private static void TryDelete(string tempDir)
@@ -112,16 +136,56 @@ namespace NuKeeper
             }
         }
 
-        private string MakeCommitMessage(PackageUpdate update)
+        private string MakeCommitMessage(List<PackageUpdate> updates, bool codeQuote)
         {
-            return $"Automatic update of {update.PackageId} from {update.OldVersion} to {update.NewVersion}";
+            var oldVersionsString = OldVersionsString(updates);
+            var newVersion = updates[0].NewVersion;
+            var packageId = updates[0].PackageId;
+            if (codeQuote)
+            {
+                packageId = "`" + packageId + "`";
+            }
+
+            var pluralPackage = updates.Count == 1 ? "project" : "projects";
+            return $"Automatic update of {packageId} from {oldVersionsString} to {newVersion} in {updates.Count} {pluralPackage}";
         }
 
-        private string MakeCommitDetails(PackageUpdate update)
+        private string MakeCommitDetails(List<PackageUpdate> updates)
         {
-            return MakeCommitMessage(update) + Environment.NewLine +
-            $"NuKeeper has generated an update of `{update.PackageId}` from version {update.OldVersion} to {update.NewVersion}" + Environment.NewLine +
-            "This is an automated update. Merge if it passes tests";
+            var oldVersionsString = OldVersionsString(updates);
+            var newVersion = updates[0].NewVersion;
+            var packageId = updates[0].PackageId;
+
+            var paths = updates
+                .Select(u => u.CurrentPackage.SourceFilePath.Replace(_tempDir, String.Empty))
+                .Select(p => $"`{p}`");
+            var pathsString = string.Join(",", paths);
+
+            string updatePathsLine;
+
+            if (updates.Count == 1)
+            {
+                updatePathsLine = $"Updated in 1 file: {pathsString}";
+            }
+            else
+            {
+                updatePathsLine = $"Updated in {updates.Count} files: {pathsString}";
+            }
+
+            return
+                MakeCommitMessage(updates, true) + Environment.NewLine +
+                $"NuKeeper has generated an update of `{packageId}` from version {oldVersionsString} to {newVersion}" + Environment.NewLine +
+                updatePathsLine + Environment.NewLine +
+                "This is an automated update. Merge only if it passes tests";
+        }
+
+        private static string OldVersionsString(IEnumerable<PackageUpdate> updates)
+        {
+            var oldVersions = updates
+                .Select(u => u.OldVersion.ToString())
+                .Distinct();
+
+            return string.Join(",", oldVersions);
         }
     }
 }
