@@ -15,11 +15,6 @@ namespace NuKeeper.Engine
             _baseDir = baseDir;
         }
 
-        public string MakeBranchName(string packageId, string oldVersionsString, PackageUpdate firstUpdate)
-        {
-            return $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
-        }
-
         public string MakeCommitMessage(List<PackageUpdate> updates)
         {
             return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
@@ -58,7 +53,7 @@ namespace NuKeeper.Engine
             foreach (var update in updates)
             {
                 var relativePath = update.CurrentPackage.SourceFilePath.Replace(_baseDir, String.Empty);
-                var line = $"Updated `{relativePath}` to {packageId} `{update.NewVersion}` from `{update.OldVersion}`";
+                var line = $"Updated {CodeQuote(relativePath)} to {packageId} {CodeQuote(update.NewVersion.ToString())} from {CodeQuote(update.OldVersion.ToString())}";
 
                 builder.AppendLine(line);
             }
@@ -73,6 +68,5 @@ namespace NuKeeper.Engine
         {
             return "`" + value + "`";
         }
-
     }
 }

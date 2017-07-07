@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -75,7 +73,7 @@ namespace NuKeeper.Engine
             }
 
             // delete the temp folder
-            TryDelete(_tempDir);
+            TempFiles.TryDelete(_tempDir);
             Console.WriteLine("Done");
         }
 
@@ -94,8 +92,8 @@ namespace NuKeeper.Engine
             await _git.Checkout("master");
 
             // branch
-            var reporter = new CommitReport(_tempDir);
-            var branchName = reporter.MakeBranchName(packageId, oldVersionsString, firstUpdate);
+            var branchName = $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+
             await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
@@ -109,6 +107,7 @@ namespace NuKeeper.Engine
 
             Console.WriteLine("Commiting");
 
+            var reporter = new CommitReport(_tempDir);
             var commitMessage = reporter.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
@@ -133,20 +132,6 @@ namespace NuKeeper.Engine
 
             await _github.OpenPullRequest(pr);
             await _git.Checkout("master");
-        }
-
-        private static void TryDelete(string tempDir)
-        {
-            Console.WriteLine($"Attempting delete of temp dir {tempDir}");
-
-            try
-            {
-                Directory.Delete(tempDir, true);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Delete failed. Continuing");
-            }
         }
     }
 }
