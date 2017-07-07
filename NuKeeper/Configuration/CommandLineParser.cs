@@ -5,9 +5,6 @@ namespace NuKeeper.Configuration
 {
     public static class CommandLineParser
     {
-        public const string RepositoryMode = "repository";
-        public const string OrganisationMode = "organisation";
-
         public static Settings ReadSettings(string[] args)
         {
             if (args.Length == 0)
@@ -22,9 +19,9 @@ namespace NuKeeper.Configuration
 
             switch (operationMode)
             {
-                case RepositoryMode:
+                case Settings.RepositoryMode:
                     return new Settings(ReadSettingsForRepositoryMode(args));
-                case OrganisationMode:
+                case Settings.OrganisationMode:
                     return new Settings(ReadSettingsForOrganisationMode(args));
                 default:
                     Console.WriteLine($"Mode {operationMode} not supported");
@@ -40,12 +37,12 @@ namespace NuKeeper.Configuration
                 return null;
             }
 
-            var gitRepoUri = new Uri(args[1]);
-            var gitToken = args[2];
+            var githubToken = args[1];
+            var githubRepoUri = new Uri(args[2]);
 
             // general pattern is https://github.com/owner/reponame.git
-            var gitHost = "https://api." + gitRepoUri.Host;
-            var path = gitRepoUri.AbsolutePath;
+            var githubHost = "https://api." + githubRepoUri.Host;
+            var path = githubRepoUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
@@ -55,17 +52,32 @@ namespace NuKeeper.Configuration
 
             return new RepositoryModeSettings
             {
-                GitUri = gitRepoUri,
-                GithubToken = gitToken,
-                GithubBaseUri = new Uri(gitHost),
+                GithubUri = githubRepoUri,
+                GithubToken = githubToken,
+                GithubBaseUri = new Uri(githubHost),
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner
             };
         }
 
-        private static OrganisationModeSettings ReadSettingsForOrganisationMode(string[] arg)
+        private static OrganisationModeSettings ReadSettingsForOrganisationMode(string[] args)
         {
-            throw new NotImplementedException();
+            if (args.Length < 4)
+            {
+                Console.WriteLine("Not enough arguments");
+                return null;
+            }
+
+            var githubToken = args[1];
+            var githubHost = new Uri(args[2]);
+            var githubOrganisationName = args[3];
+
+            return new OrganisationModeSettings()
+            {
+                GithubBase = githubHost,
+                GithubToken = githubToken,
+                OrganisationName = githubOrganisationName
+            };
         }
     }
 }

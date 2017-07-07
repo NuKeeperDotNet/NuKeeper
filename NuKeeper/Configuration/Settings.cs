@@ -1,17 +1,23 @@
 ﻿using System;
+using static NuKeeper.Configuration.Settings;
 
 namespace NuKeeper.Configuration
 {
     public class Settings
     {
+        public const string RepositoryMode = "repository";
+        public const string OrganisationMode = "organisation";
+
         public Settings(RepositoryModeSettings repositoryModeSettings)
         {
             Repository = repositoryModeSettings;
+            Mode = RepositoryMode;
         }
 
         public Settings(OrganisationModeSettings organisationModeSettings)
         {
             Organisation = organisationModeSettings;
+            Mode = OrganisationMode;
         }
 
         public Settings(RepositoryModeSettings repository, OrganisationModeSettings organisation)
@@ -22,5 +28,9 @@ namespace NuKeeper.Configuration
 
         public RepositoryModeSettings Repository { get; }
         public OrganisationModeSettings Organisation { get; }
+
+        public string GithubToken => Repository?.GithubToken ?? Organisation?.GithubToken;
+
+        public string Mode { get; }
     }
 }
