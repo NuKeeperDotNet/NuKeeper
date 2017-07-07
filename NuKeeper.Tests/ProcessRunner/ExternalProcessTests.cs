@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NUnit.Framework;
 
@@ -8,7 +9,7 @@ namespace NuKeeper.Tests.ProcessRunner
     public class ExternalProcessTests
     {
         [Test]
-        public async Task SuccessCase()
+        public async Task ValidCommandShouldSucceed()
         {
             var process = new ExternalProcess();
             var result = await process.Run("dir");
@@ -19,10 +20,10 @@ namespace NuKeeper.Tests.ProcessRunner
         }
 
         [Test]
-        public async Task FailureCase()
+        public async Task InvalidCommandShouldFail()
         {
             var process = new ExternalProcess();
-            var result = await process.Run("dirt");
+            var result = await process.Run(Guid.NewGuid().ToString("N"));
 
             Assert.That(result.ExitCode, Is.Not.EqualTo(0));
             Assert.That(result.Success, Is.False);
