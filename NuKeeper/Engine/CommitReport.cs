@@ -15,6 +15,11 @@ namespace NuKeeper.Engine
             _baseDir = baseDir;
         }
 
+        public string MakeBranchName(string packageId, string oldVersionsString, PackageUpdate firstUpdate)
+        {
+            return $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+        }
+
         public string MakeCommitMessage(List<PackageUpdate> updates)
         {
             return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";

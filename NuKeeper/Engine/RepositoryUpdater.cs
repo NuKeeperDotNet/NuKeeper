@@ -94,7 +94,8 @@ namespace NuKeeper.Engine
             await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+            var reporter = new CommitReport(_tempDir);
+            var branchName = reporter.MakeBranchName(packageId, oldVersionsString, firstUpdate);
             await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
@@ -107,7 +108,6 @@ namespace NuKeeper.Engine
             }
 
             Console.WriteLine("Commiting");
-            var reporter = new CommitReport(_tempDir);
 
             var commitMessage = reporter.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
