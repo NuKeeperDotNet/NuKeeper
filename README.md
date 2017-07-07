@@ -1,2 +1,2 @@
 # NuKeeper
-Automagically update nuget packages in .Net projects
+Automagically update nuget packages in .NET projects
