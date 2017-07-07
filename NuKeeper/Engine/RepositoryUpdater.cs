@@ -185,7 +185,7 @@ namespace NuKeeper.Engine
             foreach (var update in updates)
             {
                 var relativePath = update.CurrentPackage.SourceFilePath.Replace(_tempDir, String.Empty);
-                var line = $"Updated to `{update.NewVersion}` from `{update.OldVersion}` in `{relativePath}`";
+                var line = $"Updated `{relativePath}` to {packageId} `{update.NewVersion}` from `{update.OldVersion}`";
 
                 builder.AppendLine(line);
             }
