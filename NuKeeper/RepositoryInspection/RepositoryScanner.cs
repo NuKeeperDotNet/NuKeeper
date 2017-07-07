@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NuKeeper.RepositoryInspection
 {
@@ -20,15 +21,35 @@ namespace NuKeeper.RepositoryInspection
         {
             var current = ScanForNugetPackages(dir);
 
-            var subdirs = Directory.EnumerateDirectories(dir);
+            var subDirs = Directory.EnumerateDirectories(dir);
                 
-            foreach (var subdir in subdirs)
+            foreach (var subDir in subDirs)
             {
-                var subdirPackages = FindNugetPackagesInDirRecursive(subdir);
-                current.AddRange(subdirPackages);
+                // subDir is a full path, check the last part
+                var dirName = new DirectoryInfo(subDir).Name;
+                if (!IsExcluded(dirName))
+                {
+                    var subdirPackages = FindNugetPackagesInDirRecursive(subDir);
+                    current.AddRange(subdirPackages);
+                }
             }
 
             return current;
+        }
+
+        private readonly List<string> _excludedDirNames = new List<string>
+        {
+            ".git",
+            ".vs",
+            "obj",
+            "bin",
+            "node_modules",
+            "packages"
+        };
+
+        private bool IsExcluded(string dirName)
+        {
+            return _excludedDirNames.Any(s => string.Equals(s, dirName, StringComparison.OrdinalIgnoreCase));
         }
 
         private List<NugetPackage> ScanForNugetPackages(string dir)
