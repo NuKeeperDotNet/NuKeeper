@@ -23,17 +23,10 @@ namespace NuKeeper
             var github = new GithubClient(settings);
 
             var repositoryDiscovery = new GithubRepositoryDiscovery(github);
-            IEnumerable<RepositoryModeSettings> repositorySettings = Enumerable.Empty<RepositoryModeSettings>();
-            if (settings.Mode == Settings.OrganisationMode)
-            {
-                repositorySettings = repositoryDiscovery.FromOrganisation(settings.Organisation);
-            }
-            else if(settings.Mode == Settings.RepositoryMode)
-            {
-                repositorySettings = new[] {settings.Repository};
-            }
 
-            foreach (var repository in repositorySettings)
+            var repositories = repositoryDiscovery.GetRepositories(settings);
+
+            foreach (var repository in repositories)
             {
                 var engine = new RepositoryUpdater(lookups, github, repository);
                 engine.Run()
