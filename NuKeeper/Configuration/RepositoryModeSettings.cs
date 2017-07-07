@@ -4,7 +4,7 @@ namespace NuKeeper.Configuration
 {
     public class RepositoryModeSettings
     {
-        public Uri GitUri { get; set; }
+        public Uri GithubUri { get; set; }
 
         public Uri GithubBaseUri { get; set; }
         public string GithubToken { get; set; }

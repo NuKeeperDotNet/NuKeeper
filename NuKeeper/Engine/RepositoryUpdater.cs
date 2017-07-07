@@ -36,8 +36,8 @@ namespace NuKeeper.Engine
             Console.WriteLine($"Using temp dir: {_tempDir}");
 
             // clone the repo
-            Console.WriteLine($"Git url: {_settings.GitUri}");
-            await _git.Clone(_settings.GitUri);
+            Console.WriteLine($"Git url: {_settings.GithubUri}");
+            await _git.Clone(_settings.GithubUri);
 
             Console.WriteLine("Git clone complete");
 

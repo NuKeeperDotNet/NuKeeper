@@ -20,7 +20,7 @@ namespace NuKeeper.Github
         public GithubClient(Settings settings)
         {
             _settings = settings;
-            _requestBuilder = new GithubRequestBuilder(settings.Repository.GithubToken);
+            _requestBuilder = new GithubRequestBuilder(settings.GithubToken);
         }
 
         private async Task<HttpResponseMessage> PostAsync<T>(Uri uri, T content)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -20,10 +21,24 @@ namespace NuKeeper
 
             var lookups = new PackageUpdatesLookup(new ApiPackageLookup());
             var github = new GithubClient(settings);
-            var engine = new RepositoryUpdater(lookups, github, settings.Repository);
 
-            engine.Run()
-                .GetAwaiter().GetResult();
+            var repositoryDiscovery = new GithubRepositoryDiscovery(github);
+            IEnumerable<RepositoryModeSettings> repositorySettings = Enumerable.Empty<RepositoryModeSettings>();
+            if (settings.Mode == Settings.OrganisationMode)
+            {
+                repositorySettings = repositoryDiscovery.FromOrganisation(settings.Organisation);
+            }
+            else if(settings.Mode == Settings.RepositoryMode)
+            {
+                repositorySettings = new[] {settings.Repository};
+            }
+
+            foreach (var repository in repositorySettings)
+            {
+                var engine = new RepositoryUpdater(lookups, github, repository);
+                engine.Run()
+                    .GetAwaiter().GetResult();
+            }
 
             return 0;
         }
