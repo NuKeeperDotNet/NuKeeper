@@ -22,6 +22,11 @@ namespace NuKeeper.Git
 
         public async Task Checkout(string branchName)
         {
+            await RunExternalCommand($"cd {_tempDirectory} & git checkout {branchName}");
+        }
+
+        public async Task CheckoutNewBranch(string branchName)
+        {
             await RunExternalCommand($"cd {_tempDirectory} & git checkout -b {branchName}");
         }
 

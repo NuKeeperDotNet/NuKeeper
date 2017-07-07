@@ -9,6 +9,8 @@ namespace NuKeeper.Git
 
         Task Checkout(string branchName);
 
+        Task CheckoutNewBranch(string branchName);
+
         Task Commit(string message);
 
         Task Push(string remoteName, string branchName);
