@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using NuGet.Protocol;
 
 namespace NuKeeper.Github
 {
@@ -12,11 +11,10 @@ namespace NuKeeper.Github
         private readonly Settings _settings;
         private readonly GithubRequestBuilder _requestBuilder;
 
-        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             ContractResolver = new LowercaseContractResolver()
         };
-
 
         public GithubClient(Settings settings)
         {
@@ -32,14 +30,18 @@ namespace NuKeeper.Github
             }
 
             var requestUri = _requestBuilder.AddSecretToken(uri);
-
-            var requestBody = JsonConvert.SerializeObject(content, jsonSettings);
-
             var request = _requestBuilder.ConstructRequestMessage(requestUri, HttpMethod.Post);
-            request.Content = new StringContent(requestBody, Encoding.UTF8, "application/vnd.github.v3.text+json");
+            request.Content = ToJsonContent(content);
 
             var client = new HttpClient();
             return await client.SendAsync(request);
+        }
+
+        private HttpContent ToJsonContent<T>(T content)
+        {
+            var requestBody = JsonConvert.SerializeObject(content, JsonSettings);
+            const string gitHubApiJsonType = "application/vnd.github.v3.text+json";
+            return new StringContent(requestBody, Encoding.UTF8, gitHubApiJsonType);
         }
 
         public async Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request)
