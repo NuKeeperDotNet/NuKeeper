@@ -6,21 +6,27 @@ using System.Text.RegularExpressions;
 
 namespace NuKeeper.Github
 {
-    public static class GithubResponseParser { 
+    public static class GithubResponseParser
+    { 
         public static Uri GetNextUri(HttpResponseHeaders headers)
         {
             IEnumerable<string> linkCollection;
             var didGetLink = headers.TryGetValues("Link", out linkCollection);
 
             if (!didGetLink)
+            {
                 return null;
+            }
 
             return GetNextUri(linkCollection.First());
         }
 
         public static Uri GetNextUri(string link)
         {
-            if (string.IsNullOrWhiteSpace(link)) throw new ArgumentNullException(nameof(link));
+            if (string.IsNullOrWhiteSpace(link))
+            {
+                throw new ArgumentNullException(nameof(link));
+            }
 
             var regex = @".*<(.*)>.*next.*\z";
 

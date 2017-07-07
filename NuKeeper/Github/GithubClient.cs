@@ -25,7 +25,9 @@ namespace NuKeeper.Github
         private async Task<HttpResponseMessage> PostAsync<T>(string path, T content)
         {
             if (string.IsNullOrWhiteSpace(path))
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             var uri = new Uri(_settings.GithubApiBase, path);
             var requestUri = _requestBuilder.AddSecretToken(uri);
@@ -64,7 +66,9 @@ namespace NuKeeper.Github
         public async Task<IEnumerable<T1>> GetListOf<T1>(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             var uri = new Uri(_settings.GithubApiBase, path);
 

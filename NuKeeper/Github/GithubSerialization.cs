@@ -24,7 +24,9 @@ namespace NuKeeper.Github
         public static string SerializeObject(object input)
         {
             if (input == null)
+            {
                 throw new ArgumentNullException(nameof(input));
+            }
 
             return JsonConvert.SerializeObject(input, SerializerSettings);
         }

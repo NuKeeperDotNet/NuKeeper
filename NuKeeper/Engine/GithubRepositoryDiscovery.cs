@@ -8,8 +8,8 @@ namespace NuKeeper.Engine
 {
     public class GithubRepositoryDiscovery
     {
-        private GithubClient _github;
-        private Settings _settings;
+        private readonly GithubClient _github;
+        private readonly Settings _settings;
 
         public GithubRepositoryDiscovery(GithubClient github, Settings settings)
         {
