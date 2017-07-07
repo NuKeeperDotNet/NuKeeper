@@ -1,5 +1,4 @@
 ﻿using System;
-using static NuKeeper.Configuration.Settings;
 
 namespace NuKeeper.Configuration
 {
@@ -30,6 +29,7 @@ namespace NuKeeper.Configuration
         public OrganisationModeSettings Organisation { get; }
 
         public string GithubToken => Repository?.GithubToken ?? Organisation?.GithubToken;
+        public Uri GithubApiBase => Repository?.GithubApiBase ?? Organisation?.GithubApiBase;
 
         public string Mode { get; }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -21,9 +22,9 @@ namespace NuKeeper
             var lookups = new PackageUpdatesLookup(new ApiPackageLookup());
             var github = new GithubClient(settings);
 
-            var repositoryDiscovery = new GithubRepositoryDiscovery(github);
+            var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
 
-            var repositories = repositoryDiscovery.GetRepositories(settings);
+            var repositories = repositoryDiscovery.GetRepositories().GetAwaiter().GetResult();
 
             RunAll(repositories, lookups, github).GetAwaiter().GetResult();
 
@@ -36,8 +37,15 @@ namespace NuKeeper
         {
             foreach (var repository in repositories)
             {
-                var engine = new RepositoryUpdater(lookups, github, repository);
-                await engine.Run();
+                try
+                {
+                    var engine = new RepositoryUpdater(lookups, github, repository);
+                    await engine.Run();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
     }
