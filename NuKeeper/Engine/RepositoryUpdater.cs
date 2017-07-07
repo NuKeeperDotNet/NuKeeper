@@ -191,7 +191,8 @@ namespace NuKeeper.Engine
             }
 
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
-            builder.AppendLine("NuKeeper: https://github.com/AnthonySteele/NuKeeper");
+            builder.AppendLine("");
+            builder.AppendLine("**NuKeeper**: https://github.com/AnthonySteele/NuKeeper");
             return builder.ToString();
         }
 
