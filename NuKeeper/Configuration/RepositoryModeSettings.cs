@@ -16,7 +16,6 @@ namespace NuKeeper.Configuration
             GithubUri = new Uri(repository.HtmlUrl);
             RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;
-
         }
 
         public Uri GithubUri { get; set; }
