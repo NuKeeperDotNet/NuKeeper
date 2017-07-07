@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Github;
@@ -26,14 +27,20 @@ namespace NuKeeper
 
             var repositories = repositoryDiscovery.GetRepositories(settings);
 
+            RunAll(repositories, lookups, github).GetAwaiter().GetResult();
+
+            return 0;
+        }
+
+        private static async Task RunAll(IEnumerable<RepositoryModeSettings> repositories,
+            PackageUpdatesLookup lookups,
+            GithubClient github)
+        {
             foreach (var repository in repositories)
             {
                 var engine = new RepositoryUpdater(lookups, github, repository);
-                engine.Run()
-                    .GetAwaiter().GetResult();
+                await engine.Run();
             }
-
-            return 0;
         }
     }
 }
