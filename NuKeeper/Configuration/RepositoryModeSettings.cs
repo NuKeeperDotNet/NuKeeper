@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace NuKeeper
+namespace NuKeeper.Configuration
 {
-    public class Settings
+    public class RepositoryModeSettings
     {
         public Uri GitUri { get; set; }
 
