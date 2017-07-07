@@ -10,7 +10,7 @@ You will need [a github api token](https://github.com/blog/1509-personal-api-tok
 
 ## Repository mode
 
-Will PR a a single repository. Point it at the https url of a github repo, like this:
+Will PR a single repository. Point it at the https url of a github repo, like this:
 
 syntax:
 ```
