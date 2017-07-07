@@ -54,7 +54,7 @@ namespace NuKeeper.Configuration
             {
                 GithubUri = githubRepoUri,
                 GithubToken = githubToken,
-                GithubBaseUri = new Uri(githubHost),
+                GithubApiBase = new Uri(githubHost),
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner
             };
@@ -74,7 +74,7 @@ namespace NuKeeper.Configuration
 
             return new OrganisationModeSettings()
             {
-                GithubBase = githubHost,
+                GithubApiBase = githubHost,
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName
             };
