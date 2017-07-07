@@ -3,7 +3,7 @@ using System.Linq;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
 
-namespace NuKeeper
+namespace NuKeeper.Engine
 {
     public class GithubRepositoryDiscovery
     {
