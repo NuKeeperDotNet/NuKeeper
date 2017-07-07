@@ -28,7 +28,8 @@ namespace NuKeeper
                 case OrganisationMode:
                     return ReadSettingsForOrganisationMode(args);
                 default:
-                    throw new ArgumentException($"Mode {operationMode} not supported");
+                    Console.WriteLine($"Mode {operationMode} not supported");
+                    return null;
             }
         }
 
