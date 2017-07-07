@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -75,7 +73,7 @@ namespace NuKeeper.Engine
             }
 
             // delete the temp folder
-            TryDelete(_tempDir);
+            TempFiles.TryDelete(_tempDir);
             Console.WriteLine("Done");
         }
 
@@ -95,6 +93,7 @@ namespace NuKeeper.Engine
 
             // branch
             var branchName = $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+
             await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
@@ -107,7 +106,9 @@ namespace NuKeeper.Engine
             }
 
             Console.WriteLine("Commiting");
-            var commitMessage = MakeCommitMessage(updates);
+
+            var reporter = new CommitReport(_tempDir);
+            var commitMessage = reporter.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
@@ -121,7 +122,7 @@ namespace NuKeeper.Engine
                 Data = new PullRequestData
                 {
                     Title = commitMessage,
-                    Body = MakeCommitDetails(updates),
+                    Body = reporter.MakeCommitDetails(updates),
                     Base = "master",
                     Head = branchName
                 },
@@ -131,74 +132,6 @@ namespace NuKeeper.Engine
 
             await _github.OpenPullRequest(pr);
             await _git.Checkout("master");
-        }
-
-        private static void TryDelete(string tempDir)
-        {
-            Console.WriteLine($"Attempting delete of temp dir {tempDir}");
-
-            try
-            {
-                Directory.Delete(tempDir, true);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Delete failed. Continuing");
-            }
-        }
-
-        private string MakeCommitMessage(List<PackageUpdate> updates)
-        {
-            return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
-        }
-
-        private string MakeCommitDetails(List<PackageUpdate> updates)
-        {
-            var oldVersions = updates
-                .Select(u => CodeQuote(u.OldVersion.ToString()))
-                .Distinct()
-                .ToList();
-
-            var oldVersionsString = string.Join(",", oldVersions);
-            var newVersion = CodeQuote(updates[0].NewVersion.ToString());
-            var packageId = CodeQuote(updates[0].PackageId);
-
-            var builder = new StringBuilder();
-
-            var headline = $"NuKeeper has generated an update of {packageId} from {oldVersionsString} to {newVersion}";
-            builder.AppendLine(headline);
-
-            if (oldVersions.Count > 1)
-            {
-                builder.AppendLine($"{oldVersions} versions were found in use: {oldVersionsString}");
-            }
-
-            if (updates.Count == 1)
-            {
-                builder.AppendLine("One project update:");
-            }
-            else
-            {
-                builder.AppendLine($"{updates.Count} project updates:");
-            }
-
-            foreach (var update in updates)
-            {
-                var relativePath = update.CurrentPackage.SourceFilePath.Replace(_tempDir, String.Empty);
-                var line = $"Updated `{relativePath}` to {packageId} `{update.NewVersion}` from `{update.OldVersion}`";
-
-                builder.AppendLine(line);
-            }
-
-            builder.AppendLine("This is an automated update. Merge only if it passes tests");
-            builder.AppendLine("");
-            builder.AppendLine("**NuKeeper**: https://github.com/AnthonySteele/NuKeeper");
-            return builder.ToString();
-        }
-
-        private static string CodeQuote(string value)
-        {
-            return "`" + value + "`";
         }
     }
 }

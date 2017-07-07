@@ -17,5 +17,19 @@ namespace NuKeeper
             Directory.CreateDirectory(uniquePath);
             return uniquePath;
         }
+
+        public static void TryDelete(string tempDir)
+        {
+            Console.WriteLine($"Attempting delete of temp dir {tempDir}");
+
+            try
+            {
+                Directory.Delete(tempDir, true);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Delete failed. Continuing");
+            }
+        }
     }
 }
