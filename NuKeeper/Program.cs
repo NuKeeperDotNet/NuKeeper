@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Github;
-using NuKeeper.Nuget.Api;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper
 {

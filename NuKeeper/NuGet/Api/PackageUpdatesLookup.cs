@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NuGet.Protocol.Core.Types;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Nuget.Api
+namespace NuKeeper.NuGet.Api
 {
     public class PackageUpdatesLookup : IPackageUpdatesLookup
     {
@@ -15,7 +15,7 @@ namespace NuKeeper.Nuget.Api
             _packageLookup = packageLookup;
         }
 
-        public async Task<List<PackageUpdate>> FindUpdatesForPackages(List<NugetPackage> packages)
+        public async Task<List<PackageUpdate>> FindUpdatesForPackages(List<NuGetPackage> packages)
         {
             var result = new List<PackageUpdate>();
 
@@ -34,7 +34,7 @@ namespace NuKeeper.Nuget.Api
             return result;
         }
 
-        private async Task<Dictionary<string, IPackageSearchMetadata>> BuildVersionsDictionary(IEnumerable<NugetPackage> packages)
+        private async Task<Dictionary<string, IPackageSearchMetadata>> BuildVersionsDictionary(IEnumerable<NuGetPackage> packages)
         {
             var result = new Dictionary<string, IPackageSearchMetadata>();
 

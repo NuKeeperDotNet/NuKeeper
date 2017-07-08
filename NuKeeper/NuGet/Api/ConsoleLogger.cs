@@ -1,7 +1,7 @@
 ﻿using System;
 using NuGet.Common;
 
-namespace NuKeeper.Nuget.Api
+namespace NuKeeper.NuGet.Api
 {
     public class ConsoleLogger : ILogger
     {

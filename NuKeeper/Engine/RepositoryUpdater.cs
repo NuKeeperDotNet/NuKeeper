@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
-using NuKeeper.Nuget.Api;
-using NuKeeper.Nuget.Process;
+using NuKeeper.NuGet.Api;
+using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
@@ -42,7 +42,7 @@ namespace NuKeeper.Engine
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNugetPackages(_tempDir)
+            var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
             var packageNames = string.Join(",", packages.Take(10).Select(p => p.Id));
@@ -98,7 +98,7 @@ namespace NuKeeper.Engine
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            var nugetUpdater = new NugetUpdater();
+            var nugetUpdater = new NuGetUpdater();
 
             foreach (var update in updates)
             {
