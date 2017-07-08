@@ -8,6 +8,12 @@ namespace NuKeeper.Tests.RepositoryInspection
     [TestFixture]
     public class PackagesFileReaderTests
     {
+        private const string PackagesFileWithPackages = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<packages>
+  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+  <package id=""bar"" version=""2.3.4.5"" targetFramework=""net45"" />
+</packages>";
+
         [Test]
         public void EmptyPackagesListShouldBeParsed()
         {
@@ -57,20 +63,28 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBeRead()
         {
-            const string packagesFile =
-                @"<?xml version=""1.0"" encoding=""utf-8""?>
-<packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
-  <package id=""bar"" version=""2.3.4.5"" targetFramework=""net45"" />
-</packages>";
-
-            var packages = PackagesFileReader.Read(packagesFile)
+            var packages = PackagesFileReader.Read(PackagesFileWithPackages)
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages.Count, Is.EqualTo(2));
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
             Assert.That(packages[1].Id, Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public void ResultIsReiterable()
+        {
+            const string marker = "marker";
+
+            var packages = PackagesFileReader.Read(PackagesFileWithPackages);
+
+            foreach (var package in packages)
+            {
+                package.SourceFilePath = marker;
+            }
+
+            Assert.That(packages.Select(p => p.SourceFilePath), Is.All.EqualTo(marker));
         }
     }
 }

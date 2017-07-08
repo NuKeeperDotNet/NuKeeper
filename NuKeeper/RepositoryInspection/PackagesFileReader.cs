@@ -26,7 +26,7 @@ namespace NuKeeper.RepositoryInspection
             var packageNodeList = packagesNode.Elements()
                 .Where(x => x.Name == "package");
 
-            return packageNodeList.Select(XmlToPackage);
+            return packageNodeList.Select(XmlToPackage).ToList();
         }
 
         private static NugetPackage XmlToPackage(XElement el)

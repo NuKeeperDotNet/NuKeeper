@@ -125,5 +125,20 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
             Assert.That(packages[1].Id, Is.EqualTo("bar"));
         }
+
+        [Test]
+        public void ResultIsReiterable()
+        {
+            const string marker = "marker";
+
+            var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithPackages);
+
+            foreach (var package in packages)
+            {
+                package.SourceFilePath = marker;
+            }
+
+            Assert.That(packages.Select(p=>p.SourceFilePath), Is.All.EqualTo(marker));
+        }
     }
 }
