@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using EasyConfig;
 
 namespace NuKeeper.Configuration
 {
@@ -13,32 +14,26 @@ namespace NuKeeper.Configuration
                 return null;
             }
 
-            var operationMode = args[0];
+            var settings = Config.Populate<CommandLineArguments>(args);
 
-            Console.WriteLine($"Running NuKeeper in {operationMode} mode");
+            Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
 
-            switch (operationMode)
+            switch (settings.Mode)
             {
                 case Settings.RepositoryMode:
-                    return new Settings(ReadSettingsForRepositoryMode(args));
+                    return new Settings(ReadSettingsForRepositoryMode(settings));
                 case Settings.OrganisationMode:
-                    return new Settings(ReadSettingsForOrganisationMode(args));
+                    return new Settings(ReadSettingsForOrganisationMode(settings));
                 default:
-                    Console.WriteLine($"Mode {operationMode} not supported");
+                    Console.WriteLine($"Mode {settings.Mode} not supported");
                     return null;
             }
         }
 
-        private static RepositoryModeSettings ReadSettingsForRepositoryMode(string[] args)
+        private static RepositoryModeSettings ReadSettingsForRepositoryMode(CommandLineArguments settings)
         {
-            if (args.Length < 3)
-            {
-                Console.WriteLine("Not enough arguments");
-                return null;
-            }
-
-            var githubToken = args[1];
-            var githubRepoUri = new Uri(args[2]);
+            var githubToken = settings.GithubToken;
+            var githubRepoUri = settings.GithubRepositoryUri;
 
             // general pattern is https://github.com/owner/reponame.git
             var githubHost = "https://api." + githubRepoUri.Host;
@@ -60,19 +55,13 @@ namespace NuKeeper.Configuration
             };
         }
 
-        private static OrganisationModeSettings ReadSettingsForOrganisationMode(string[] args)
+        private static OrganisationModeSettings ReadSettingsForOrganisationMode(CommandLineArguments settings)
         {
-            if (args.Length < 4)
-            {
-                Console.WriteLine("Not enough arguments");
-                return null;
-            }
+            var githubToken = settings.GithubToken;
+            var githubHost = settings.GithubApiEndpoint;
+            var githubOrganisationName = settings.GithubOrganisationName;
 
-            var githubToken = args[1];
-            var githubHost = new Uri(args[2]);
-            var githubOrganisationName = args[3];
-
-            return new OrganisationModeSettings()
+            return new OrganisationModeSettings
             {
                 GithubApiBase = githubHost,
                 GithubToken = githubToken,
