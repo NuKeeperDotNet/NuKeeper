@@ -2,6 +2,17 @@
 
 Automagically update nuget packages in .NET projects.
 
+## Why
+ 
+Because .Net devs are bad at applying nuget package updates.
+
+## What
+
+**NuKeeper** will compare the nuget packages used in your solution to the latest versions available on [Nuget.org](https://www.nuget.org/), and make PRs containg updates.
+
+
+## How
+
 Written in .Net core.
 
 You will need command line versions of `git` and `dotnet`.
