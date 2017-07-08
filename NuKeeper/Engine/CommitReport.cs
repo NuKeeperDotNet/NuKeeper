@@ -5,14 +5,14 @@ using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Engine
 {
-    public class CommitReport
+    public static class CommitReport
     { 
-        public string MakeCommitMessage(List<PackageUpdate> updates)
+        public static string MakeCommitMessage(List<PackageUpdate> updates)
         {
             return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
         }
 
-        public string MakeCommitDetails(List<PackageUpdate> updates)
+        public static string MakeCommitDetails(List<PackageUpdate> updates)
         {
             var oldVersions = updates
                 .Select(u => CodeQuote(u.OldVersion.ToString()))
