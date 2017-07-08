@@ -7,20 +7,20 @@ namespace NuKeeper.RepositoryInspection
 {
     public static class PackagesFileReader
     {
-        public static IEnumerable<NugetPackage> ReadFile(string fileName)
+        public static IEnumerable<NuGetPackage> ReadFile(string fileName)
         {
             var fileContents = File.ReadAllText(fileName);
             return Read(fileContents);
         }
 
-        public static IEnumerable<NugetPackage> Read(string fileContents)
+        public static IEnumerable<NuGetPackage> Read(string fileContents)
         {
             var xml = XDocument.Parse(fileContents);
 
             var packagesNode = xml.Element("packages");
             if (packagesNode == null)
             {
-                return Enumerable.Empty<NugetPackage>();
+                return Enumerable.Empty<NuGetPackage>();
             }
 
             var packageNodeList = packagesNode.Elements()
@@ -29,12 +29,12 @@ namespace NuKeeper.RepositoryInspection
             return packageNodeList.Select(XmlToPackage).ToList();
         }
 
-        private static NugetPackage XmlToPackage(XElement el)
+        private static NuGetPackage XmlToPackage(XElement el)
         {
             var id = el.Attribute("id")?.Value;
             var version = el.Attribute("version")?.Value;
 
-            return new NugetPackage(id, version);
+            return new NuGetPackage(id, version);
         }
     }
 }

@@ -7,7 +7,7 @@ using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
-namespace NuKeeper.Nuget.Api
+namespace NuKeeper.NuGet.Api
 {
     public class ApiPackageLookup : IApiPackageLookup
     {

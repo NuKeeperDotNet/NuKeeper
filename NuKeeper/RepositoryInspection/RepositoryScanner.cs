@@ -7,19 +7,19 @@ namespace NuKeeper.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
-        public IEnumerable<NugetPackage> FindAllNugetPackages(string rootDirectory)
+        public IEnumerable<NuGetPackage> FindAllNuGetPackages(string rootDirectory)
         {
             if (!Directory.Exists(rootDirectory))
             {
               throw new Exception($"No such directory: '{rootDirectory}'");
             }
 
-            return FindNugetPackagesInDirRecursive(rootDirectory);
+            return FindNuGetPackagesInDirRecursive(rootDirectory);
         }
 
-        private IEnumerable<NugetPackage> FindNugetPackagesInDirRecursive(string dir)
+        private IEnumerable<NuGetPackage> FindNuGetPackagesInDirRecursive(string dir)
         {
-            var current = ScanForNugetPackages(dir);
+            var current = ScanForNuGetPackages(dir);
 
             var subDirs = Directory.EnumerateDirectories(dir);
                 
@@ -29,7 +29,7 @@ namespace NuKeeper.RepositoryInspection
                 var dirName = new DirectoryInfo(subDir).Name;
                 if (!IsExcluded(dirName))
                 {
-                    var subdirPackages = FindNugetPackagesInDirRecursive(subDir);
+                    var subdirPackages = FindNuGetPackagesInDirRecursive(subDir);
                     current.AddRange(subdirPackages);
                 }
             }
@@ -52,9 +52,9 @@ namespace NuKeeper.RepositoryInspection
             return _excludedDirNames.Any(s => string.Equals(s, dirName, StringComparison.OrdinalIgnoreCase));
         }
 
-        private List<NugetPackage> ScanForNugetPackages(string dir)
+        private List<NuGetPackage> ScanForNuGetPackages(string dir)
         {
-            var result = new List<NugetPackage>();
+            var result = new List<NuGetPackage>();
             var files = Directory.EnumerateFiles(dir);
 
             foreach (var fileName in files)
@@ -77,7 +77,7 @@ namespace NuKeeper.RepositoryInspection
             return result;
         }
 
-        private void SetSourceFilePath(IEnumerable<NugetPackage> packages, string sourceFilePath)
+        private void SetSourceFilePath(IEnumerable<NuGetPackage> packages, string sourceFilePath)
         {
             foreach (var package in packages)
             {
