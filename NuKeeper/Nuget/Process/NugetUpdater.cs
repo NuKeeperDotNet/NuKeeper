@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Nuget.Api;
 using NuKeeper.ProcessRunner;
-using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Nuget.Process
 {

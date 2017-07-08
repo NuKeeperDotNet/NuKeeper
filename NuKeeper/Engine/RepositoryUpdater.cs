@@ -107,7 +107,7 @@ namespace NuKeeper.Engine
 
             Console.WriteLine("Commiting");
 
-            var reporter = new CommitReport(_tempDir);
+            var reporter = new CommitReport();
             var commitMessage = reporter.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
