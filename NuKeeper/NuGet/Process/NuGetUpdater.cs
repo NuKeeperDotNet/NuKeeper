@@ -28,7 +28,7 @@ namespace NuKeeper.NuGet.Process
 
             if (!result.Success)
             {
-                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}");
+                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
             }
         }
     }
