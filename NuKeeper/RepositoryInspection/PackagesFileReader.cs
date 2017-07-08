@@ -7,13 +7,13 @@ namespace NuKeeper.RepositoryInspection
 {
     public static class PackagesFileReader
     {
-        public static IEnumerable<NugetPackage> ReadFile(string fileName)
+        public static IEnumerable<NugetPackage> ReadFile(PackagePath path)
         {
-            var fileContents = File.ReadAllText(fileName);
-            return Read(fileContents);
+            var fileContents = File.ReadAllText(path.FullPath);
+            return Read(fileContents, path);
         }
 
-        public static IEnumerable<NugetPackage> Read(string fileContents)
+        public static IEnumerable<NugetPackage> Read(string fileContents, PackagePath path)
         {
             var xml = XDocument.Parse(fileContents);
 
@@ -26,15 +26,17 @@ namespace NuKeeper.RepositoryInspection
             var packageNodeList = packagesNode.Elements()
                 .Where(x => x.Name == "package");
 
-            return packageNodeList.Select(XmlToPackage).ToList();
+            return packageNodeList
+                .Select(el => XmlToPackage(el, path))
+                .ToList();
         }
 
-        private static NugetPackage XmlToPackage(XElement el)
+        private static NugetPackage XmlToPackage(XElement el, PackagePath path)
         {
             var id = el.Attribute("id")?.Value;
             var version = el.Attribute("version")?.Value;
 
-            return new NugetPackage(id, version);
+            return new NugetPackage(id, version, path);
         }
     }
 }

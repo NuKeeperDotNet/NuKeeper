@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NuKeeper.Nuget.Api;
@@ -7,14 +6,7 @@ using NuKeeper.Nuget.Api;
 namespace NuKeeper.Engine
 {
     public class CommitReport
-    {
-        private readonly string _baseDir;
-
-        public CommitReport(string baseDir)
-        {
-            _baseDir = baseDir;
-        }
-
+    { 
         public string MakeCommitMessage(List<PackageUpdate> updates)
         {
             return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
@@ -52,8 +44,7 @@ namespace NuKeeper.Engine
 
             foreach (var update in updates)
             {
-                var relativePath = update.CurrentPackage.SourceFilePath.Replace(_baseDir, String.Empty);
-                var line = $"Updated {CodeQuote(relativePath)} to {packageId} {CodeQuote(update.NewVersion.ToString())} from {CodeQuote(update.OldVersion.ToString())}";
+                var line = $"Updated {CodeQuote(update.CurrentPackage.Path.RelativePath)} to {packageId} {CodeQuote(update.NewVersion.ToString())} from {CodeQuote(update.OldVersion.ToString())}";
 
                 builder.AppendLine(line);
             }

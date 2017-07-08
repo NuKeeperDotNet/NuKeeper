@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 <packages>
 </packages>";
 
-            var packages = PackagesFileReader.Read(emptyContents);
+            var packages = PackagesFileReader.Read(emptyContents, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -37,7 +37,7 @@ namespace NuKeeper.Tests.RepositoryInspection
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
 </packages>";
 
-            var packages = PackagesFileReader.Read(singlePackage);
+            var packages = PackagesFileReader.Read(singlePackage, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -52,7 +52,7 @@ namespace NuKeeper.Tests.RepositoryInspection
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
 </packages>";
 
-            var packages = PackagesFileReader.Read(singlePackage);
+            var packages = PackagesFileReader.Read(singlePackage, TempPath());
 
             var package = packages.FirstOrDefault();
             Assert.That(package, Is.Not.Null);
@@ -63,7 +63,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBeRead()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithPackages)
+            var packages = PackagesFileReader.Read(PackagesFileWithPackages, TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -75,16 +75,21 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void ResultIsReiterable()
         {
-            const string marker = "marker";
+            var path = TempPath();
 
-            var packages = PackagesFileReader.Read(PackagesFileWithPackages);
+            var packages = PackagesFileReader.Read(PackagesFileWithPackages, path);
 
             foreach (var package in packages)
             {
-                package.SourceFilePath = marker;
+                Assert.That(package, Is.Not.Null);
             }
 
-            Assert.That(packages.Select(p => p.SourceFilePath), Is.All.EqualTo(marker));
+            Assert.That(packages.Select(p => p.Path), Is.All.EqualTo(path));
+        }
+
+        private PackagePath TempPath()
+        {
+            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config");
         }
     }
 }

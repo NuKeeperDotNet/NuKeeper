@@ -39,7 +39,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 <foo>
 </foo>";
 
-            var packages = ProjectFileReader.Read(NoProject);
+            var packages = ProjectFileReader.Read(NoProject, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -53,7 +53,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 <Project>
 </Project>";
 
-            var packages = ProjectFileReader.Read(NoProject);
+            var packages = ProjectFileReader.Read(NoProject, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -62,7 +62,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void ProjectWithoutPackageListCanBeRead()
         {
-            var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithoutPackages);
+            var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithoutPackages, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -73,7 +73,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", "");
 
-            var packages = ProjectFileReader.Read(projectFile);
+            var packages = ProjectFileReader.Read(projectFile, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -86,7 +86,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
-            var packages = ProjectFileReader.Read(projectFile);
+            var packages = ProjectFileReader.Read(projectFile, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -99,7 +99,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
-            var packages = ProjectFileReader.Read(projectFile);
+            var packages = ProjectFileReader.Read(projectFile, TempPath());
 
             var package = packages.FirstOrDefault();
 
@@ -117,7 +117,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
-            var packages = ProjectFileReader.Read(projectFile)
+            var packages = ProjectFileReader.Read(projectFile, TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -129,16 +129,21 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void ResultIsReiterable()
         {
-            const string marker = "marker";
+            var path = TempPath();
 
-            var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithPackages);
+            var packages = ProjectFileReader.Read(Vs2017ProjectFileTemplateWithPackages, path);
 
             foreach (var package in packages)
             {
-                package.SourceFilePath = marker;
+                Assert.That(package, Is.Not.Null);
             }
 
-            Assert.That(packages.Select(p=>p.SourceFilePath), Is.All.EqualTo(marker));
+            Assert.That(packages.Select(p=>p.Path), Is.All.EqualTo(path));
+        }
+
+        private PackagePath TempPath()
+        {
+            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config");
         }
     }
 }
