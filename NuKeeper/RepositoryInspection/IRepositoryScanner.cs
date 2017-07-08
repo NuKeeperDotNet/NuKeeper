@@ -4,6 +4,6 @@ namespace NuKeeper.RepositoryInspection
 {
     public interface IRepositoryScanner
     {
-        IEnumerable<NugetPackage> FindAllNugetPackages(string rootDirectory);
+        IEnumerable<NuGetPackage> FindAllNuGetPackages(string rootDirectory);
     }
 }

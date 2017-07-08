@@ -14,7 +14,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var scanner = new RepositoryScanner();
 
-            Assert.Throws<Exception>(() => scanner.FindAllNugetPackages("fish"));
+            Assert.Throws<Exception>(() => scanner.FindAllNuGetPackages("fish"));
         }
 
         [Test]
@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNugetPackages(TempFiles.MakeUniqueTemporaryPath());
+            var results = scanner.FindAllNuGetPackages(TempFiles.MakeUniqueTemporaryPath());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -35,7 +35,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNugetPackages(basePath);
+            var results = scanner.FindAllNuGetPackages(basePath);
 
             Assert.That(results, Is.Not.Null, "in folder" + basePath);
             Assert.That(results, Is.Not.Empty, "in folder" + basePath);

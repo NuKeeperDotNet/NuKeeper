@@ -2,17 +2,17 @@
 
 namespace NuKeeper.RepositoryInspection
 {
-    public class NugetPackage
+    public class NuGetPackage
     {
-        public NugetPackage(string id, NuGetVersion version, PackagePath packagePath)
+        public NuGetPackage(string id, NuGetVersion version, PackagePath path)
         {
             Id = id;
             Version = version;
-            Path = packagePath;
+			Path = path;
         }
 
-        public NugetPackage(string id, string version, PackagePath packagePath) 
-            : this(id, new NuGetVersion(version), packagePath)
+        public NuGetPackage(string id, string version,PackagePath path): 
+		  this(id, new NuGetVersion(version), path)
         {
         }
 

@@ -2,17 +2,17 @@
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Nuget.Api
+namespace NuKeeper.NuGet.Api
 {
     public class PackageUpdate
     {
-        public PackageUpdate(NugetPackage currentPackage, PackageIdentity newPackageIdentity)
+        public PackageUpdate(NuGetPackage currentPackage, PackageIdentity newPackageIdentity)
         {
             CurrentPackage = currentPackage;
             NewPackageIdentity = newPackageIdentity;
         }
 
-        public NugetPackage CurrentPackage { get; }
+        public NuGetPackage CurrentPackage { get; }
         public PackageIdentity NewPackageIdentity { get; }
 
         public string PackageId => CurrentPackage.Id;

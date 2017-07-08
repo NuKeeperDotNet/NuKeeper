@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NuKeeper.Nuget.Api;
+using NuKeeper.NuGet.Api;
 using NuKeeper.ProcessRunner;
 
-namespace NuKeeper.Nuget.Process
+namespace NuKeeper.NuGet.Process
 {
-    public class NugetUpdater : INugetUpdater
+    public class NuGetUpdater : INuGetUpdater
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NugetUpdater(IExternalProcess externalProcess = null)
+        public NuGetUpdater(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }

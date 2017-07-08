@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using NuKeeper.Nuget.Api;
+using NuKeeper.NuGet.Api;
 
-namespace NuKeeper.Nuget.Process
+namespace NuKeeper.NuGet.Process
 {
-    public interface INugetUpdater
+    public interface INuGetUpdater
     {
         Task UpdatePackage(PackageUpdate update);
     }

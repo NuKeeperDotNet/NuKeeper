@@ -6,7 +6,7 @@ namespace NuKeeper.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
-        public IEnumerable<NugetPackage> FindAllNugetPackages(string rootDirectory)
+        public IEnumerable<NuGetPackage> FindAllNuGetPackages(string rootDirectory)
         {
             if (!Directory.Exists(rootDirectory))
             {
@@ -16,7 +16,7 @@ namespace NuKeeper.RepositoryInspection
             return FindNugetPackagesInDirRecursive(rootDirectory, rootDirectory);
         }
 
-        private IEnumerable<NugetPackage> FindNugetPackagesInDirRecursive(string rootDir, string dir)
+        private IEnumerable<NuGetPackage> FindNugetPackagesInDirRecursive(string rootDir, string dir)
         {
             var current = ScanForNugetPackages(rootDir, dir);
 
@@ -34,9 +34,9 @@ namespace NuKeeper.RepositoryInspection
             return current;
         }
 
-        private List<NugetPackage> ScanForNugetPackages(string rootDir, string dir)
+        private List<NuGetPackage> ScanForNugetPackages(string rootDir, string dir)
         {
-            var result = new List<NugetPackage>();
+            var result = new List<NuGetPackage>();
             var files = Directory.EnumerateFiles(dir);
 
             foreach (var fileName in files)

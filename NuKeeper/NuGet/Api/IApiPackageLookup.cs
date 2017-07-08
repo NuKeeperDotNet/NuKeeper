@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NuGet.Protocol.Core.Types;
 
-namespace NuKeeper.Nuget.Api
+namespace NuKeeper.NuGet.Api
 {
     public interface IApiPackageLookup
     {

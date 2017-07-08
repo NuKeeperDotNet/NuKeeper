@@ -7,20 +7,20 @@ namespace NuKeeper.RepositoryInspection
 {
     public static class ProjectFileReader
     {
-        public static IEnumerable<NugetPackage> ReadFile(PackagePath path)
+        public static IEnumerable<NuGetPackage> ReadFile(PackagePath path)
         {
             var fileContents = File.ReadAllText(path.FullPath);
             return Read(fileContents, path);
         }
 
-        public static IEnumerable<NugetPackage> Read(string fileContents, PackagePath path)
+        public static IEnumerable<NuGetPackage> Read(string fileContents, PackagePath path)
         {
             var xml = XDocument.Parse(fileContents);
             var project = xml.Element("Project");
 
             if (project == null)
             {
-                return Enumerable.Empty<NugetPackage>();
+                return Enumerable.Empty<NuGetPackage>();
             }
 
             var itemGroups = project.Elements("ItemGroup");
@@ -31,12 +31,12 @@ namespace NuKeeper.RepositoryInspection
                 .ToList();
         }
 
-        private static NugetPackage XmlToPackage(XElement el, PackagePath path)
+        private static NuGetPackage XmlToPackage(XElement el, PackagePath path)
         {
             var id = el.Attribute("Include")?.Value;
             var version = el.Attribute("Version")?.Value;
 
-            return new NugetPackage(id, version, path);
+            return new NuGetPackage(id, version, path);
         }
     }
 }
