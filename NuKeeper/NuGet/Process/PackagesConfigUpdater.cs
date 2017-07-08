@@ -1,15 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using NuKeeper.NuGet.Api;
+﻿using NuKeeper.NuGet.Api;
 using NuKeeper.ProcessRunner;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class NuGetUpdater : INuGetUpdater
+    public class PackagesConfigUpdater : INuGetUpdater
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NuGetUpdater(IExternalProcess externalProcess = null)
+        public PackagesConfigUpdater(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
@@ -17,7 +18,10 @@ namespace NuKeeper.NuGet.Process
         public async Task UpdatePackage(PackageUpdate update)
         {
             var dirName = update.CurrentPackage.Path.FullDirectory;
-            var updateCommand = $"cd {dirName} & dotnet add package {update.PackageId} -v {update.NewVersion}";
+            var nuget = GetNuGetPath();
+            var updateCommand = $"cd {dirName}"
+                + $" & {nuget} restore packages.config"
+                + $" & {nuget} update packages.config -Id {update.PackageId} -Version {update.NewVersion}";
             Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);
         }
@@ -30,6 +34,13 @@ namespace NuKeeper.NuGet.Process
             {
                 throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
             }
+        }
+
+        private string GetNuGetPath()
+        {
+            var profile = Environment.GetEnvironmentVariable("userprofile");
+
+            return Path.GetFullPath(Path.Combine(profile, ".nuget\\packages\\nuget.commandline\\4.1.0\\tools\\NuGet.exe"));
         }
     }
 }
