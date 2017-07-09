@@ -4,22 +4,22 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageInProject
     {
-        public PackageInProject(string id, NuGetVersion version, PackagePath path, PackageReferenceType packageReferenceType)
+        public PackageInProject(string id, NuGetVersion version, PackagePath path)
         {
             Id = id;
             Version = version;
             Path = path;
-            PackageReferenceType = packageReferenceType;
         }
 
-        public PackageInProject(string id, string version, PackagePath path, PackageReferenceType packageReferenceType) :
-            this(id, new NuGetVersion(version), path, packageReferenceType)
+        public PackageInProject(string id, string version, PackagePath path) :
+            this(id, new NuGetVersion(version), path)
         {
         }
 
-        public PackageReferenceType PackageReferenceType { get; }
         public string Id { get; }
         public NuGetVersion Version { get; }
         public PackagePath Path { get; }
+
+        public PackageReferenceType PackageReferenceType => Path.PackageReferenceType;
     }
 }

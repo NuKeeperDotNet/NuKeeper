@@ -36,7 +36,7 @@ namespace NuKeeper.RepositoryInspection
             var id = el.Attribute("id")?.Value;
             var version = el.Attribute("version")?.Value;
 
-            return new PackageInProject(id, version, path, PackageReferenceType.PackagesConfig);
+            return new PackageInProject(id, version, path);
         }
     }
 }

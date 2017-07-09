@@ -144,7 +144,8 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private PackagePath TempPath()
         {
-            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config");
+            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
+                PackageReferenceType.ProjectFile);
         }
     }
 }
