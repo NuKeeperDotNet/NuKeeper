@@ -98,11 +98,13 @@ namespace NuKeeper.Engine
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            var nugetUpdater = new NuGetUpdater();
-
             foreach (var update in updates)
             {
-                await nugetUpdater.UpdatePackage(update);
+                var updater = update.CurrentPackage.PackageType == PackageType.ProjectFileReference
+                    ? (INuGetUpdater) new NuGetUpdater()
+                    : new PackagesConfigUpdater();
+
+                await updater.UpdatePackage(update);
             }
 
             Console.WriteLine("Commiting");

@@ -106,6 +106,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3")));
+            Assert.That(package.PackageType, Is.EqualTo(PackageType.ProjectFileReference));
         }
 
         [Test]

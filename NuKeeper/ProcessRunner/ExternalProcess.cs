@@ -10,17 +10,20 @@ namespace NuKeeper.ProcessRunner
             var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
             {
                 CreateNoWindow = true,
-                RedirectStandardOutput = true
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
             var process = Process.Start(processInfo);
 
             var textOut = await process.StandardOutput.ReadToEndAsync();
+            var errorOut = await process.StandardError.ReadToEndAsync();
+
             process.WaitForExit();
 
             var exitCode = process.ExitCode;
 
-            return new ProcessOutput(textOut, exitCode);
+            return new ProcessOutput(textOut, errorOut, exitCode);
         }
     }
 }
