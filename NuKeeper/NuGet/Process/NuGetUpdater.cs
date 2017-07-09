@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.NuGet.Api;
 using NuKeeper.ProcessRunner;
@@ -17,7 +16,7 @@ namespace NuKeeper.NuGet.Process
 
         public async Task UpdatePackage(PackageUpdate update)
         {
-            var dirName = Path.GetDirectoryName(update.CurrentPackage.SourceFilePath);
+            var dirName = update.CurrentPackage.Path.FullDirectory;
             var updateCommand = $"cd {dirName} & dotnet add package {update.PackageId} -v {update.NewVersion}";
             Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);

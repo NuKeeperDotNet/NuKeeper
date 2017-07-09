@@ -107,8 +107,7 @@ namespace NuKeeper.Engine
 
             Console.WriteLine("Commiting");
 
-            var reporter = new CommitReport(_tempDir);
-            var commitMessage = reporter.MakeCommitMessage(updates);
+            var commitMessage = CommitReport.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
@@ -122,7 +121,7 @@ namespace NuKeeper.Engine
                 Data = new PullRequestData
                 {
                     Title = commitMessage,
-                    Body = reporter.MakeCommitDetails(updates),
+                    Body = CommitReport.MakeCommitDetails(updates),
                     Base = "master",
                     Head = branchName
                 },

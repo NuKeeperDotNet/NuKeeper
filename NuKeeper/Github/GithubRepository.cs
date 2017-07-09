@@ -1,6 +1,4 @@
-﻿using NuKeeper.Configuration;
-
-namespace NuKeeper.Github
+﻿namespace NuKeeper.Github
 {
     public class GithubRepository
     {

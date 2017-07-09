@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace NuKeeper.RepositoryInspection
 {
@@ -14,22 +13,20 @@ namespace NuKeeper.RepositoryInspection
               throw new Exception($"No such directory: '{rootDirectory}'");
             }
 
-            return FindNuGetPackagesInDirRecursive(rootDirectory);
+            return FindNugetPackagesInDirRecursive(rootDirectory, rootDirectory);
         }
 
-        private IEnumerable<NuGetPackage> FindNuGetPackagesInDirRecursive(string dir)
+        private IEnumerable<NuGetPackage> FindNugetPackagesInDirRecursive(string rootDir, string dir)
         {
-            var current = ScanForNuGetPackages(dir);
+            var current = ScanForNugetPackages(rootDir, dir);
 
             var subDirs = Directory.EnumerateDirectories(dir);
                 
             foreach (var subDir in subDirs)
             {
-                // subDir is a full path, check the last part
-                var dirName = new DirectoryInfo(subDir).Name;
-                if (!IsExcluded(dirName))
+                if (!DirectoryExclusions.PathIsExcluded(subDir))
                 {
-                    var subdirPackages = FindNuGetPackagesInDirRecursive(subDir);
+                    var subdirPackages = FindNugetPackagesInDirRecursive(rootDir, subDir);
                     current.AddRange(subdirPackages);
                 }
             }
@@ -37,22 +34,7 @@ namespace NuKeeper.RepositoryInspection
             return current;
         }
 
-        private readonly List<string> _excludedDirNames = new List<string>
-        {
-            ".git",
-            ".vs",
-            "obj",
-            "bin",
-            "node_modules",
-            "packages"
-        };
-
-        private bool IsExcluded(string dirName)
-        {
-            return _excludedDirNames.Any(s => string.Equals(s, dirName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private List<NuGetPackage> ScanForNuGetPackages(string dir)
+        private List<NuGetPackage> ScanForNugetPackages(string rootDir, string dir)
         {
             var result = new List<NuGetPackage>();
             var files = Directory.EnumerateFiles(dir);
@@ -60,16 +42,17 @@ namespace NuKeeper.RepositoryInspection
             foreach (var fileName in files)
             {
                 var fileNameWithoutPath = Path.GetFileName(fileName);
+
                 if (string.Equals(fileNameWithoutPath, "packages.config"))
                 {
-                    var packages = PackagesFileReader.ReadFile(fileName);
-                    SetSourceFilePath(packages, fileName);
+                    var path = MakePackagePath(rootDir, fileName);
+                    var packages = PackagesFileReader.ReadFile(path);
                     result.AddRange(packages);
                 }
                 else if (fileName.EndsWith(".csproj"))
                 {
-                    var packages = ProjectFileReader.ReadFile(fileName);
-                    SetSourceFilePath(packages, fileName);
+                    var path = MakePackagePath(rootDir, fileName);
+                    var packages = ProjectFileReader.ReadFile(path);
                     result.AddRange(packages);
                 }
             }
@@ -77,12 +60,10 @@ namespace NuKeeper.RepositoryInspection
             return result;
         }
 
-        private void SetSourceFilePath(IEnumerable<NuGetPackage> packages, string sourceFilePath)
+        private PackagePath MakePackagePath(string rootDir, string fileName)
         {
-            foreach (var package in packages)
-            {
-                package.SourceFilePath = sourceFilePath;
-            }
+            var relativeFileName = fileName.Replace(rootDir, string.Empty);
+            return new PackagePath(rootDir, relativeFileName);
         }
     }
 }
