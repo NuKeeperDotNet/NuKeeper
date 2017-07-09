@@ -1,16 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <RootNamespace>NuKeeper</RootNamespace>
     <AssemblyName>NuKeeper</AssemblyName>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="EasyConfig.Net.Core" Version="1.0.4" />
+    <PackageReference Include="EasyConfig.Net.Core" Version="1.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.0.0" />
   </ItemGroup>
-
 </Project>
