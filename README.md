@@ -25,7 +25,7 @@ Will PR a single repository. Point it at the https url of a github repo, like th
 
 syntax:
 ```
-C:\Code\NuKeeper\NuKeeper>dotnet run repository <GitToken> <RepoUrl>
+C:\Code\NuKeeper\NuKeeper>dotnet run mode=repository github_token=<GitToken> github_repository_uri=<RepoUrl>
 ```
 
 ## Organisation mode
@@ -33,7 +33,7 @@ C:\Code\NuKeeper\NuKeeper>dotnet run repository <GitToken> <RepoUrl>
 Will discover repositories in that organisation and update them.
 
 ```
-C:\Code\NuKeeper\NuKeeper>dotnet run organisation <GitToken> https://api.github.com/ <OrgName>
+C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> github_api_endpoint=https://api.github.com/ github_organisation_name=<OrgName>
 ```
 
 Inspired by [Greenkeeper](https://greenkeeper.io/).
