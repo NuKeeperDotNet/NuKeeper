@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
@@ -26,6 +27,53 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
+        }
+
+        [Test]
+        public void FindsPackagesConfig()
+        {
+            const string singlePackage =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
+<packages>
+  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+</packages>";
+
+            var scanner = new RepositoryScanner();
+
+            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
+
+            using (var file = File.CreateText(Path.Combine(temporaryPath, "packages.config")))
+            {
+                file.WriteLine(singlePackage);
+            }
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            Assert.That(results, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void FindsCsprojFile()
+        {
+            const string Vs2017ProjectFileTemplateWithPackages =
+                @"<Project>
+  <ItemGroup>
+<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
+  </ItemGroup>
+</Project>";
+
+            var scanner = new RepositoryScanner();
+
+            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
+
+            using (var file = File.CreateText(Path.Combine(temporaryPath, "sample.csproj")))
+            {
+                file.WriteLine(Vs2017ProjectFileTemplateWithPackages);
+            }
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            Assert.That(results, Has.Count.EqualTo(1));
         }
 
         [Test]

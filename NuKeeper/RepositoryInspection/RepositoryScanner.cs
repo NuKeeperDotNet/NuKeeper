@@ -37,19 +37,20 @@ namespace NuKeeper.RepositoryInspection
         private List<NuGetPackage> ScanForNugetPackages(string rootDir, string dir)
         {
             var result = new List<NuGetPackage>();
-            var files = Directory.EnumerateFiles(dir);
 
-            foreach (var fileName in files)
+            var packagesConfigPath = Path.Combine(dir, "packages.config");
+
+            if (File.Exists(packagesConfigPath))
             {
-                var fileNameWithoutPath = Path.GetFileName(fileName);
+                var path = MakePackagePath(rootDir, packagesConfigPath);
+                var packages = PackagesFileReader.ReadFile(path);
+                result.AddRange(packages);
+            }
+            else
+            {
+                var files = Directory.GetFiles(dir, "*.csproj", SearchOption.TopDirectoryOnly);
 
-                if (string.Equals(fileNameWithoutPath, "packages.config"))
-                {
-                    var path = MakePackagePath(rootDir, fileName);
-                    var packages = PackagesFileReader.ReadFile(path);
-                    result.AddRange(packages);
-                }
-                else if (fileName.EndsWith(".csproj"))
+                foreach (var fileName in files)
                 {
                     var path = MakePackagePath(rootDir, fileName);
                     var packages = ProjectFileReader.ReadFile(path);
