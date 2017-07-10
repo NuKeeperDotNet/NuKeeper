@@ -13,7 +13,7 @@ namespace NuKeeper.Tests.Engine
     public class CommitReportTests
     {
         [Test]
-        public void MakeCommitMessage_OneUpdateHasMessage()
+        public void MakeCommitMessage_OneUpdateIsCorrect()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
@@ -25,7 +25,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitMessage_TwoUpdatesIsNotEmpty()
+        public void MakeCommitMessage_TwoUpdatesIsCorrect()
         {
             var updates = new List<PackageUpdate>
             {
@@ -41,7 +41,24 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdateIsNotEmpty()
+        public void MakeCommitMessage_TwoUpdatesSameVersionIsCorrect()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110(),
+                MakePackageUpdateFromV110inProject3()
+            };
+
+            var report = CommitReport.MakeCommitMessage(updates);
+
+            Assert.That(report, Is.Not.Null);
+            Assert.That(report, Is.Not.Empty);
+            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+        }
+
+
+        [Test]
+        public void OneUpdate_MakeCommitDetails_IsNotEmpty()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
@@ -52,22 +69,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesIsNotEmpty()
-        {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
-
-            var report = CommitReport.MakeCommitDetails(updates);
-
-            Assert.That(report, Is.Not.Null);
-            Assert.That(report, Is.Not.Empty);
-        }
-
-        [Test]
-        public void MakeCommitDetails_OneUpdateContainsKeyParts()
+        public void OneUpdate_MakeCommitDetails_ContainsKeyParts()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
@@ -77,11 +79,10 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("foo.bar"));
             Assert.That(report, Does.Contain("1.1.0"));
             Assert.That(report, Does.Contain("1.2.3"));
-            Assert.That(report, Does.Contain("1 project update:"));
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdateHasStandardTexts()
+        public void OneUpdate_MakeCommitDetails_HasStandardTexts()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
@@ -91,7 +92,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdateHasVersionInfo()
+        public void OneUpdate_MakeCommitDetails_HasVersionInfo()
         {
             var updates = new List<PackageUpdate>
             {
@@ -104,7 +105,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdatesHasProjectDetails()
+        public void OneUpdate_MakeCommitDetails_HasProjectDetails()
         {
             var updates = new List<PackageUpdate>
             {
@@ -113,11 +114,28 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitReport.MakeCommitDetails(updates);
 
+            Assert.That(report, Does.Contain("1 project update:"));
             Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesContainsKeyParts()
+        public void TwoUpdates_MakeCommitDetails_NotEmpty()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110(),
+                MakePackageUpdateFromV100()
+            };
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Is.Not.Null);
+            Assert.That(report, Is.Not.Empty);
+        }
+
+
+        [Test]
+        public void TwoUpdates_MakeCommitDetails_ContainsKeyParts()
         {
             var updates = new List<PackageUpdate>
             {
@@ -132,11 +150,10 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("1.0.0"));
             Assert.That(report, Does.Contain("1.1.0"));
             Assert.That(report, Does.Contain("1.2.3"));
-            Assert.That(report, Does.Contain("2 project updates:"));
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesHasStandardTexts()
+        public void TwoUpdates_MakeCommitDetails_HasStandardTexts()
         {
             var updates = new List<PackageUpdate>
             {
@@ -150,7 +167,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesHasVersionInfo()
+        public void TwoUpdates_MakeCommitDetails_HasVersionInfo()
         {
             var updates = new List<PackageUpdate>
             {
@@ -165,7 +182,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesHasProjectList()
+        public void TwoUpdates_MakeCommitDetails_HasProjectList()
         {
             var updates = new List<PackageUpdate>
             {
@@ -175,6 +192,7 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitReport.MakeCommitDetails(updates);
 
+            Assert.That(report, Does.Contain("2 project updates:"));
             Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
             Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
         }
@@ -195,6 +213,17 @@ namespace NuKeeper.Tests.Engine
 
             return new PackageUpdate(currentPackage, newPackage);
         }
+
+        private static PackageUpdate MakePackageUpdateFromV110inProject3()
+        {
+            var path = new PackagePath("c:\\temp", "folder\\src\\project3\\packages.config", PackageReferenceType.PackagesConfig);
+
+            var currentPackage = new PackageInProject("foo.bar", "1.1.0", path);
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+
+            return new PackageUpdate(currentPackage, newPackage);
+        }
+
         private static PackageUpdate MakePackageUpdateFromV100()
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project2\\packages.config", PackageReferenceType.PackagesConfig);
