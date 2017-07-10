@@ -91,7 +91,20 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdatesHasSourceVersion()
+        public void MakeCommitDetails_OneUpdateHasVersionInfo()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110()
+            };
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3` from `1.1.0"));
+        }
+
+        [Test]
+        public void MakeCommitDetails_OneUpdatesHasProjectDetails()
         {
             var updates = new List<PackageUpdate>
             {
@@ -119,7 +132,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("1.0.0"));
             Assert.That(report, Does.Contain("1.1.0"));
             Assert.That(report, Does.Contain("1.2.3"));
-            Assert.That(report, Does.Contain("2 project update:"));
+            Assert.That(report, Does.Contain("2 project updates:"));
         }
 
         [Test]
@@ -137,7 +150,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesHasSourceVersions()
+        public void MakeCommitDetails_TwoUpdatesHasVersionInfo()
         {
             var updates = new List<PackageUpdate>
             {
@@ -147,7 +160,21 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitReport.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain("2 versions were found in use: `1.1.0`,`1.0.0`"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
+            Assert.That(report, Does.Contain("2 versions of `foo.bar` were found in use: `1.1.0`,`1.0.0`"));
+        }
+
+        [Test]
+        public void MakeCommitDetails_TwoUpdatesHasProjectList()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110(),
+                MakePackageUpdateFromV100()
+            };
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
             Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
             Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
         }
