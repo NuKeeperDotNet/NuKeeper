@@ -1,8 +1,8 @@
 ﻿namespace NuKeeper.RepositoryInspection
 {
-    public enum PackageType
+    public enum PackageReferenceType
     {
         PackagesConfig,
-        ProjectFileReference
+        ProjectFile
     }
 }

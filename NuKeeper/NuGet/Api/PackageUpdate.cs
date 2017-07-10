@@ -6,13 +6,13 @@ namespace NuKeeper.NuGet.Api
 {
     public class PackageUpdate
     {
-        public PackageUpdate(NuGetPackage currentPackage, PackageIdentity newPackageIdentity)
+        public PackageUpdate(PackageInProject currentPackage, PackageIdentity newPackageIdentity)
         {
             CurrentPackage = currentPackage;
             NewPackageIdentity = newPackageIdentity;
         }
 
-        public NuGetPackage CurrentPackage { get; }
+        public PackageInProject CurrentPackage { get; }
         public PackageIdentity NewPackageIdentity { get; }
 
         public string PackageId => CurrentPackage.Id;

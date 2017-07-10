@@ -5,7 +5,8 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackagePath
     {
-        public PackagePath(string baseDirectory, string relativePath)
+        public PackagePath(string baseDirectory, string relativePath, 
+            PackageReferenceType packageReferenceType)
         {
             if (string.IsNullOrWhiteSpace(baseDirectory))
             {
@@ -24,6 +25,7 @@ namespace NuKeeper.RepositoryInspection
 
             BaseDirectory = baseDirectory;
             RelativePath = relativePath;
+            PackageReferenceType = packageReferenceType;
 
             FileName = Path.GetFileName(relativePath);
 
@@ -55,5 +57,7 @@ namespace NuKeeper.RepositoryInspection
         /// Full path to the file
         /// </summary>
         public string FullPath { get; }
+
+        public PackageReferenceType PackageReferenceType { get; }
     }
 }

@@ -15,7 +15,7 @@ namespace NuKeeper.NuGet.Api
             _packageLookup = packageLookup;
         }
 
-        public async Task<List<PackageUpdate>> FindUpdatesForPackages(List<NuGetPackage> packages)
+        public async Task<List<PackageUpdate>> FindUpdatesForPackages(List<PackageInProject> packages)
         {
             var result = new List<PackageUpdate>();
 
@@ -34,14 +34,17 @@ namespace NuKeeper.NuGet.Api
             return result;
         }
 
-        private async Task<Dictionary<string, IPackageSearchMetadata>> BuildVersionsDictionary(IEnumerable<NuGetPackage> packages)
+        private async Task<Dictionary<string, IPackageSearchMetadata>> BuildVersionsDictionary(IEnumerable<PackageInProject> packages)
         {
             var result = new Dictionary<string, IPackageSearchMetadata>();
 
-            foreach (var packageId in packages.GroupBy(p => p.Id).Select(p => p.Key))
+            var packageIds = packages
+                .Select(p => p.Id)
+                .Distinct();
+
+            foreach (var packageId in packageIds)
             {
                 var serverVersion = await _packageLookup.LookupLatest(packageId);
-
                 result.Add(packageId, serverVersion);
             }
 
