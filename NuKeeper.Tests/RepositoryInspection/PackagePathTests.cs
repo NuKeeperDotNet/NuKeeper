@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void ConstructorShouldProduceExpectedSimplePropsForPackagesConfigFile()
         {
             var path = new PackagePath("c:\\temp\\somefolder", "\\checkout1\\src\\packages.config",
-                PackageReferenceType.ProjectFile);
+                PackageReferenceType.PackagesConfig);
 
             Assert.That(path.BaseDirectory, Is.EqualTo("c:\\temp\\somefolder"));
             Assert.That(path.RelativePath, Is.EqualTo("checkout1\\src\\packages.config"));
