@@ -69,19 +69,6 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void OneUpdate_MakeCommitDetails_ContainsKeyParts()
-        {
-            var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
-
-            var report = CommitReport.MakeCommitDetails(updates);
-
-            Assert.That(report, Does.Contain("NuKeeper"));
-            Assert.That(report, Does.Contain("foo.bar"));
-            Assert.That(report, Does.Contain("1.1.0"));
-            Assert.That(report, Does.Contain("1.2.3"));
-        }
-
-        [Test]
         public void OneUpdate_MakeCommitDetails_HasStandardTexts()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
@@ -101,7 +88,7 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitReport.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3` from `1.1.0"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3` from `1.1.0`"));
         }
 
         [Test]
@@ -133,25 +120,6 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Is.Not.Empty);
         }
 
-
-        [Test]
-        public void TwoUpdates_MakeCommitDetails_ContainsKeyParts()
-        {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
-
-            var report = CommitReport.MakeCommitDetails(updates);
-
-            Assert.That(report, Does.Contain("NuKeeper"));
-            Assert.That(report, Does.Contain("foo.bar"));
-            Assert.That(report, Does.Contain("1.0.0"));
-            Assert.That(report, Does.Contain("1.1.0"));
-            Assert.That(report, Does.Contain("1.2.3"));
-        }
-
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasStandardTexts()
         {
@@ -164,6 +132,7 @@ namespace NuKeeper.Tests.Engine
             var report = CommitReport.MakeCommitDetails(updates);
 
             AssertContainsStandardText(report);
+            Assert.That(report, Does.Contain("1.0.0"));
         }
 
         [Test]
@@ -213,24 +182,6 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void TwoUpdatesSameVersion_MakeCommitDetails_ContainsKeyParts()
-        {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
-
-            var report = CommitReport.MakeCommitDetails(updates);
-
-            Assert.That(report, Does.Contain("NuKeeper"));
-            Assert.That(report, Does.Contain("foo.bar"));
-            Assert.That(report, Does.Contain("1.0.0"));
-            Assert.That(report, Does.Contain("1.1.0"));
-            Assert.That(report, Does.Contain("1.2.3"));
-        }
-
-        [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasStandardTexts()
         {
             var updates = new List<PackageUpdate>
@@ -270,8 +221,8 @@ namespace NuKeeper.Tests.Engine
             var report = CommitReport.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Contain("2 project updates:"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project3\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
+            Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
+            Assert.That(report, Does.Contain("Updated `folder\\src\\project3\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
         }
 
 
@@ -280,6 +231,13 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
             Assert.That(report, Does.Contain("This is an automated update. Merge only if it passes tests"));
             Assert.That(report, Does.EndWith("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper" + Environment.NewLine));
+            Assert.That(report, Does.Contain("1.1.0"));
+
+            Assert.That(report, Does.Not.Contain("Exception"));
+            Assert.That(report, Does.Not.Contain("System.String"));
+            Assert.That(report, Does.Not.Contain("Generic"));
+            Assert.That(report, Does.Not.Contain("["));
+            Assert.That(report, Does.Not.Contain("]"));
         }
 
         private static PackageUpdate MakePackageUpdateFromV110()
