@@ -13,7 +13,7 @@ namespace NuKeeper.Tests.Engine
     public class CommitReportTests
     {
         [Test]
-        public void MakeCommitMessage_OneUpdatehasMessage()
+        public void MakeCommitMessage_OneUpdateHasMessage()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
@@ -77,16 +77,30 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("foo.bar"));
             Assert.That(report, Does.Contain("1.1.0"));
             Assert.That(report, Does.Contain("1.2.3"));
+            Assert.That(report, Does.Contain("1 project update:"));
         }
 
         [Test]
-        public void MakeCommitDetails_OneUpdateEndsWithFooter()
+        public void MakeCommitDetails_OneUpdateHasStandardTexts()
         {
             var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
 
             var report = CommitReport.MakeCommitDetails(updates);
 
             AssertContainsStandardText(report);
+        }
+
+        [Test]
+        public void MakeCommitDetails_OneUpdatesHasSourceVersion()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110()
+            };
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
         }
 
         [Test]
@@ -105,10 +119,11 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("1.0.0"));
             Assert.That(report, Does.Contain("1.1.0"));
             Assert.That(report, Does.Contain("1.2.3"));
+            Assert.That(report, Does.Contain("2 project update:"));
         }
 
         [Test]
-        public void MakeCommitDetails_TwoUpdatesEndsWithFooter()
+        public void MakeCommitDetails_TwoUpdatesHasStandardTexts()
         {
             var updates = new List<PackageUpdate>
             {
@@ -119,6 +134,22 @@ namespace NuKeeper.Tests.Engine
             var report = CommitReport.MakeCommitDetails(updates);
 
             AssertContainsStandardText(report);
+        }
+
+        [Test]
+        public void MakeCommitDetails_TwoUpdatesHasSourceVersions()
+        {
+            var updates = new List<PackageUpdate>
+            {
+                MakePackageUpdateFromV110(),
+                MakePackageUpdateFromV100()
+            };
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("2 versions were found in use: `1.1.0`,`1.0.0`"));
+            Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
+            Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
         }
 
         private static void AssertContainsStandardText(string report)
