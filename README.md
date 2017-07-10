@@ -1,5 +1,8 @@
 # NuKeeper
 
+
+[![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
+
 Automagically update nuget packages in .NET projects.
 
 ## Why
