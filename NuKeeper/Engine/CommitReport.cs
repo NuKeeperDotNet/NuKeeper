@@ -30,12 +30,12 @@ namespace NuKeeper.Engine
 
             if (oldVersions.Count > 1)
             {
-                builder.AppendLine($"{oldVersions} versions were found in use: {oldVersionsString}");
+                builder.AppendLine($"{oldVersions.Count} versions were found in use: {oldVersionsString}");
             }
 
             if (updates.Count == 1)
             {
-                builder.AppendLine("One project update:");
+                builder.AppendLine("1 project update:");
             }
             else
             {
