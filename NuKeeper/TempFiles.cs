@@ -5,10 +5,24 @@ namespace NuKeeper
 {
     public static class TempFiles
     {
+        private static string NuKeeperTempFilesPath()
+        {
+            return Path.Combine(Path.GetTempPath(), "NuKeeper");
+        }
+
+        public static void DeleteExistingTempDirs()
+        {
+            var dirs = Directory.EnumerateDirectories(NuKeeperTempFilesPath());
+            foreach (var dir in dirs)
+            {
+                TryDelete(dir);
+            }
+        }
+
         public static string GetUniqueTemporaryPath()
         {
             var uniqueName = Guid.NewGuid().ToString("N");
-            return Path.Combine(Path.GetTempPath(), "NuKeeper", uniqueName);
+            return Path.Combine(NuKeeperTempFilesPath(), uniqueName);
         }
 
         public static string MakeUniqueTemporaryPath()
