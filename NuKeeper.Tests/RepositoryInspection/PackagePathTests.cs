@@ -47,7 +47,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
 
             Assert.That(path.FullDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.FullPath, Is.EqualTo($"c{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.FullPath, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
             Assert.That(path.FileName, Is.EqualTo("myproj.csproj"));
         }
 
