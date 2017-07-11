@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace NuKeeper.Tests.ProcessRunner
 {
-    [TestFixture]
+    [TestFixture, Ignore("Windows only for now")]
     public class ExternalProcessTests
     {
         [Test]
