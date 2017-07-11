@@ -12,6 +12,8 @@ namespace NuKeeper
     {
         public static int Main(string[] args)
         {
+            TempFiles.DeleteExistingTempDirs();
+                
             var settings = CommandLineParser.ReadSettings(args);
 
             if (settings == null)
