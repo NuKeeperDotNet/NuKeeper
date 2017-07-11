@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using EasyConfig;
+using EasyConfig.Exceptions;
 
 namespace NuKeeper.Configuration
 {
@@ -8,7 +9,15 @@ namespace NuKeeper.Configuration
     {
         public static Settings ReadSettings(string[] args)
         {
-            var settings = Config.Populate<CommandLineArguments>(args);
+            try
+            {
+                var settings = Config.Populate<CommandLineArguments>(args);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
             
             Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
 
