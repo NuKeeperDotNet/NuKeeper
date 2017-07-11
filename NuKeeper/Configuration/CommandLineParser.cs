@@ -35,12 +35,9 @@ namespace NuKeeper.Configuration
 
         private static RepositoryModeSettings ReadSettingsForRepositoryMode(CommandLineArguments settings)
         {
-            var githubToken = settings.GithubToken;
-            var githubRepoUri = settings.GithubRepositoryUri;
-
             // general pattern is https://github.com/owner/reponame.git
-            var githubHost = "https://api." + githubRepoUri.Host;
-            var path = githubRepoUri.AbsolutePath;
+            // from this we extract owner and repo name
+            var path = settings.GithubRepositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
@@ -50,9 +47,9 @@ namespace NuKeeper.Configuration
 
             return new RepositoryModeSettings
             {
-                GithubUri = githubRepoUri,
-                GithubToken = githubToken,
-                GithubApiBase = new Uri(githubHost),
+                GithubUri = settings.GithubRepositoryUri,
+                GithubToken = settings.GithubToken,
+                GithubApiBase = settings.GithubApiEndpoint,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner
             };
