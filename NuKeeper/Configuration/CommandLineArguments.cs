@@ -17,7 +17,7 @@ namespace NuKeeper.Configuration
         [CommandLine("github_organisation_name")]
         public string GithubOrganisationName;
 
-        [CommandLine("github_api_endpoint")]
+        [CommandLine("github_api_endpoint"), Default("https://api.github.com")]
         public Uri GithubApiEndpoint;
     }
 }
