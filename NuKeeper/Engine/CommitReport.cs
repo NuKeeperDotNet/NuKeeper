@@ -25,17 +25,20 @@ namespace NuKeeper.Engine
 
             var builder = new StringBuilder();
 
-            var headline = $"NuKeeper has generated an update of {packageId} from {oldVersionsString} to {newVersion}";
-            builder.AppendLine(headline);
 
-            if (oldVersions.Count > 1)
+            if (oldVersions.Count == 1)
             {
-                builder.AppendLine($"{oldVersions} versions were found in use: {oldVersionsString}");
+                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion} from {oldVersionsString}");
+            }
+            else
+            {
+                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion}");
+                builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersionsString}");
             }
 
             if (updates.Count == 1)
             {
-                builder.AppendLine("One project update:");
+                builder.AppendLine("1 project update:");
             }
             else
             {

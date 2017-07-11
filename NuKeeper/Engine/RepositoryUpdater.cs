@@ -92,7 +92,7 @@ namespace NuKeeper.Engine
             await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{packageId}-from-{oldVersionsString}-to-{firstUpdate.NewVersion}";
+            var branchName = $"nukeeper-update-{packageId}-to-{firstUpdate.NewVersion}";
 
             await _git.CheckoutNewBranch(branchName);
 
