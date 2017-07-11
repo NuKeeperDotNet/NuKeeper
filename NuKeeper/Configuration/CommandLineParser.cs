@@ -8,14 +8,8 @@ namespace NuKeeper.Configuration
     {
         public static Settings ReadSettings(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("Please supply some command line arguments");
-                return null;
-            }
-
             var settings = Config.Populate<CommandLineArguments>(args);
-
+            
             Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
 
             switch (settings.Mode)

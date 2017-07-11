@@ -5,7 +5,7 @@ namespace NuKeeper.Configuration
 {
     public class CommandLineArguments
     {
-        [CommandLine("mode")]
+        [CommandLine("mode"), Required]
         public string Mode;
 
         [CommandLine("github_token"), Required, SensitiveInformation]
