@@ -18,6 +18,7 @@ namespace NuKeeper
 
             if (settings == null)
             {
+                Console.WriteLine("Exiting early...");
                 return 1;
             }
 
