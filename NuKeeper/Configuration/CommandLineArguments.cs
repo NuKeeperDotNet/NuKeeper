@@ -5,19 +5,19 @@ namespace NuKeeper.Configuration
 {
     public class CommandLineArguments
     {
-        [CommandLine("mode"), Required]
+        [CommandLine("mode", "m"), Required]
         public string Mode;
 
-        [CommandLine("github_token"), Required, SensitiveInformation]
+        [CommandLine("github_token", "t"), Required, SensitiveInformation]
         public string GithubToken;
 
-        [CommandLine("github_repository_uri")]
+        [CommandLine("github_repository_uri", "repo")]
         public Uri GithubRepositoryUri;
 
-        [CommandLine("github_organisation_name")]
+        [CommandLine("github_organisation_name", "org")]
         public string GithubOrganisationName;
 
-        [CommandLine("github_api_endpoint"), Default("https://api.github.com")]
+        [CommandLine("github_api_endpoint", "api"), Default("https://api.github.com")]
         public Uri GithubApiEndpoint;
     }
 }
