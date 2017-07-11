@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using EasyConfig;
-using EasyConfig.Exceptions;
 
 namespace NuKeeper.Configuration
 {
@@ -9,9 +8,10 @@ namespace NuKeeper.Configuration
     {
         public static Settings ReadSettings(string[] args)
         {
+            CommandLineArguments settings;
             try
             {
-                var settings = Config.Populate<CommandLineArguments>(args);
+                 settings = Config.Populate<CommandLineArguments>(args);
             }
             catch(Exception e)
             {
