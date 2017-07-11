@@ -13,3 +13,5 @@ script:
   - dotnet build
   - cd NuKeeper.Tests
   - dotnet test
+
+ 
