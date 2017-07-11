@@ -38,8 +38,18 @@ namespace NuKeeper.Configuration
             var githubToken = settings.GithubToken;
             var githubRepoUri = settings.GithubRepositoryUri;
 
+            Uri githubApiBase;
+            if (settings.GithubApiEndpoint != null)
+            {
+                githubApiBase = settings.GithubApiEndpoint;
+            }
+            else
+            {
+                var generatedApiBase = "https://api." + githubRepoUri.Host;
+                githubApiBase = new Uri(generatedApiBase);
+            }
+
             // general pattern is https://github.com/owner/reponame.git
-            var githubHost = "https://api." + githubRepoUri.Host;
             var path = githubRepoUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -52,7 +62,7 @@ namespace NuKeeper.Configuration
             {
                 GithubUri = githubRepoUri,
                 GithubToken = githubToken,
-                GithubApiBase = new Uri(githubHost),
+                GithubApiBase = githubApiBase,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner
             };
