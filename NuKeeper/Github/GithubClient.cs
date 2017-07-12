@@ -12,7 +12,7 @@ namespace NuKeeper.Github
         private readonly Settings _settings;
         private readonly GithubRequestBuilder _requestBuilder;
         private Uri _next;
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         public GithubClient(Settings settings)
         {
