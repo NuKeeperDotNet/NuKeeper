@@ -49,7 +49,8 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> g
 ## When to use NuKeeper
 
 If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause. 
-e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the consumer.
+e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the consumer. 
+[It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003).
 
 Aggressive updating of packages is a better tactic in an end-product deployable application.
 
@@ -60,7 +61,9 @@ You will need command line versions of `git`, `dotnet` and `nuget` installed.
 
 It currently only runs on windows due to using `cmd` to invoke command-line processes for `git`, `dotnet` and `nuget`.
 
-For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line. Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality. An example of this is [StyleCop.Analyzers](https://www.nuget.org/packages/StyleCop.Analyzers/) which will not update the `<Analyzers>` node in the project file.
+For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line. 
+Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality. 
+An example of this is [StyleCop.Analyzers](https://www.nuget.org/packages/StyleCop.Analyzers/) which will not update the `<Analyzers>` node in the project file.
 
 
 ### Footnote
