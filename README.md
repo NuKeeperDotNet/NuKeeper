@@ -49,10 +49,11 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> g
 ## When to use NuKeeper
 
 If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause. 
-e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the consumer. 
-[It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003).
+e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the application using `MyFancyLib`. 
+[It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003). 
+There is an analogy to, in code, [preferring to use a parameter of a base type or interface](https://msdn.microsoft.com/en-us/library/3hk32yyz.aspx) as it allows wider use.
 
-Aggressive updating of packages is a better tactic in an end-product deployable application.
+In an end-product deployable application, aggressive updating of packages is a better tactic.
 
 
 ## Limitations
