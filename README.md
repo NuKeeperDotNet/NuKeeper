@@ -55,7 +55,7 @@ There is an analogy to, in code, [preferring to use a parameter of a base type o
 
 In an end-product deployable application, aggressive updating of packages is a better tactic.
 
-This is a variation of [Postel's Law](https://en.wikipedia.org/wiki/Robustness_principle): Packages should be liberal in the range of package versions that they can use, and applications should be strict about updating packages.
+This is a variation of [Postel's Law](https://en.wikipedia.org/wiki/Robustness_principle): Packages should be liberal in the range of package versions that they can accept, and applications should be strict about using up to date packages when they run.
 
 ## Limitations
 
