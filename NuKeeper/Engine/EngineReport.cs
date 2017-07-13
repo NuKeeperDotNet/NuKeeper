@@ -10,10 +10,10 @@ namespace NuKeeper.Engine
     {
         public static void PackagesFound(List<PackageInProject> packages)
         {
-            var projectPaths = packages
+            var projectPathCount = packages
                 .Select(p => p.Path)
                 .Distinct()
-                .ToList();
+                .Count();
 
             var packageIds = packages
                 .OrderBy(p => p.Id)
@@ -21,7 +21,7 @@ namespace NuKeeper.Engine
                 .Distinct()
                 .ToList();
 
-            Console.WriteLine($"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPaths.Count} projects.");
+            Console.WriteLine($"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPathCount} projects.");
 
             var packageIdsText = string.Join(", ", packageIds);
             Console.WriteLine(packageIdsText);
