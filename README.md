@@ -59,9 +59,9 @@ This is a variation of [Postel's Law](https://en.wikipedia.org/wiki/Robustness_p
 
 ## Limitations
 
-You will need command line versions of `git`, `dotnet` and `nuget` installed.
+You will need command line versions of `git` and `dotnet` installed.
 
-It currently only runs on windows due to using `cmd` to invoke command-line processes for `git`, `dotnet` and `nuget`.
+It currently only runs on windows due to using `cmd` to invoke command-line processes for `git` and `dotnet`.
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line. 
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality. 
