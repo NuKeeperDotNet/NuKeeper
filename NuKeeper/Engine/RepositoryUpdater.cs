@@ -32,28 +32,18 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
-            Console.WriteLine($"Using temp dir: {_tempDir}");
-
-            // clone the repo
-            Console.WriteLine($"Git url: {_settings.GithubUri}");
-            await _git.Clone(_settings.GithubUri);
-
-            Console.WriteLine("Git clone complete");
+            await GitCloneToTempDir();
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
             var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
-            var packageNames = string.Join(",", packages.Take(10).Select(p => p.Id));
-            Console.WriteLine($"Found {packages.Count} packages: {packageNames}");
+            EngineReport.PackagesFound(packages);
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            var updateDetails = updates.Take(10)
-                .Select(p => $"{p.PackageId} from {p.OldVersion} to {p.NewVersion}");
-
-            Console.WriteLine($"Found {updates.Count} updates: {string.Join(",", updateDetails)}");
+            EngineReport.UpdatesFound(updates);
 
             if (updates.Count == 0)
             {
@@ -61,11 +51,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            // All packages that need update
-            var updatesByPackage = updates.GroupBy(p => p.PackageId);
-
-            // limit!!!
-            updatesByPackage = updatesByPackage.Take(2);
+            var updatesByPackage = GroupUpdatesByPackageId(updates);
 
             foreach (var packageUpdates in updatesByPackage)
             {
@@ -75,6 +61,25 @@ namespace NuKeeper.Engine
             // delete the temp folder
             TempFiles.TryDelete(_tempDir);
             Console.WriteLine("Done");
+        }
+
+        private async Task GitCloneToTempDir()
+        {
+            Console.WriteLine($"Using temp dir: {_tempDir}");
+            Console.WriteLine($"Git url: {_settings.GithubUri}");
+
+            await _git.Clone(_settings.GithubUri);
+
+            Console.WriteLine("Git clone complete");
+        }
+
+        private static IEnumerable<IGrouping<string, PackageUpdate>> GroupUpdatesByPackageId(List<PackageUpdate> updates)
+        {
+            // All packages that need update
+            var updatesByPackage = updates.GroupBy(p => p.PackageId);
+
+            // todo make this number config
+            return updatesByPackage.Take(2);
         }
 
         private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)
@@ -115,6 +120,12 @@ namespace NuKeeper.Engine
             Console.WriteLine($"Pushing branch '{branchName}'");
             await _git.Push("origin", branchName);
 
+            await MakeGitHubPullRequest(updates, commitMessage, branchName);
+            await _git.Checkout("master");
+        }
+
+        private async Task MakeGitHubPullRequest(List<PackageUpdate> updates, string commitMessage, string branchName)
+        {
             Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 
             // open github PR
@@ -132,7 +143,6 @@ namespace NuKeeper.Engine
             };
 
             await _github.OpenPullRequest(pr);
-            await _git.Checkout("master");
         }
     }
 }
