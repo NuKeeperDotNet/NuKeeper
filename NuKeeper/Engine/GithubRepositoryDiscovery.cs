@@ -21,7 +21,9 @@ namespace NuKeeper.Engine
         {
             var repositories = await _github.GetRepositoriesForOrganisation(organisation.OrganisationName);
 
-            return repositories.Select(r => new RepositoryModeSettings(r, _settings.GithubApiBase, _settings.GithubToken));
+            return repositories.Select(r => new RepositoryModeSettings(r, 
+                    _settings.GithubApiBase, _settings.GithubToken, 
+                    organisation.MaxPullRequestsPerRepository));
         }
 
         public async Task<IEnumerable<RepositoryModeSettings>> GetRepositories()

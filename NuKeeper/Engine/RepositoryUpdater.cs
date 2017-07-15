@@ -73,13 +73,12 @@ namespace NuKeeper.Engine
             Console.WriteLine("Git clone complete");
         }
 
-        private static IEnumerable<IGrouping<string, PackageUpdate>> GroupUpdatesByPackageId(List<PackageUpdate> updates)
+        private IEnumerable<IGrouping<string, PackageUpdate>> GroupUpdatesByPackageId(List<PackageUpdate> updates)
         {
             // All packages that need update
             var updatesByPackage = updates.GroupBy(p => p.PackageId);
 
-            // todo make this number config
-            return updatesByPackage.Take(2);
+            return updatesByPackage.Take(_settings.MaxPullRequestsPerRepository);
         }
 
         private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)

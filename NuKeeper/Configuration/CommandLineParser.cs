@@ -52,7 +52,8 @@ namespace NuKeeper.Configuration
                 GithubToken = settings.GithubToken,
                 GithubApiBase = settings.GithubApiEndpoint,
                 RepositoryName = repoName,
-                RepositoryOwner = repoOwner
+                RepositoryOwner = repoOwner,
+                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
             };
         }
 
@@ -66,7 +67,8 @@ namespace NuKeeper.Configuration
             {
                 GithubApiBase = githubHost,
                 GithubToken = githubToken,
-                OrganisationName = githubOrganisationName
+                OrganisationName = githubOrganisationName,
+                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
             };
         }
     }
