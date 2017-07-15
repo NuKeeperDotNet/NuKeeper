@@ -52,9 +52,9 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> g
 
  * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token.
- *  *github_api_endpoint* This defaults to `https://api.github.com`. If you are using an internal github server and not the public one, it will need to be set to the api url for your github server. The correct value will be something like `https://github.mycompany.com/api/v3`. This applies to all modes.
- * *github_repository_uri* The repository to scan in repository mode.
- * *github_organisation_name* the organisation to scan in organisation mode.
+ * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode.
+ * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used `repository` mode.
+ *  *github_api_endpoint* This defaults to `https://api.github.com`. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. The default value is 3.
 
 ## When to use NuKeeper
