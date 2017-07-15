@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
+using NuKeeper.Nuget.Api;
 using NuKeeper.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;

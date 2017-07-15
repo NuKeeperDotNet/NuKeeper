@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Engine;
+using NuKeeper.Nuget.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Engine
+namespace NuKeeper.Tests.Nuget.Api
 {
     [TestFixture]
     public class PackageUpdateSetTests

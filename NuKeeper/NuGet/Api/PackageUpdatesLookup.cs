@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Protocol.Core.Types;
-using NuKeeper.Engine;
+using NuKeeper.Nuget.Api;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Api

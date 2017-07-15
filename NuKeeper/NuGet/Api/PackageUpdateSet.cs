@@ -5,7 +5,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Nuget.Api
 {
     public class PackageUpdateSet
     {

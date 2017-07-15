@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
+using NuKeeper.Nuget.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 

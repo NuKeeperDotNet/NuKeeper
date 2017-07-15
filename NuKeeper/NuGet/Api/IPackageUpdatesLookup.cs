@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Engine;
+using NuKeeper.Nuget.Api;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Api
