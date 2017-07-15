@@ -103,10 +103,10 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var package = packages.FirstOrDefault();
 
-            Assert.That(package, Is.Not.Null);
+            PackageAssert.IsPopulated(package);
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3")));
-            Assert.That(package.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
 
         [Test]
@@ -123,8 +123,14 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages.Count, Is.EqualTo(2));
+
+            PackageAssert.IsPopulated(packages[0]);
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3")));
+
+            PackageAssert.IsPopulated(packages[1]);
             Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
         }
 
         [Test]
@@ -136,7 +142,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             foreach (var package in packages)
             {
-                Assert.That(package, Is.Not.Null);
+                PackageAssert.IsPopulated(package);
             }
 
             Assert.That(packages.Select(p=>p.Path), Is.All.EqualTo(path));

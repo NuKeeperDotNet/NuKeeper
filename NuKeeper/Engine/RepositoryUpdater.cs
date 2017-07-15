@@ -113,7 +113,7 @@ namespace NuKeeper.Engine
         {
             foreach (var current in updateSet.CurrentPackages)
             {
-                var updater = current.PackageReferenceType == PackageReferenceType.ProjectFile
+                var updater = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
                     ? (INuGetUpdater) new NuGetUpdater()
                     : new PackagesConfigUpdater();
 

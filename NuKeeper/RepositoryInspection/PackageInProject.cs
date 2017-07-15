@@ -21,7 +21,5 @@ namespace NuKeeper.RepositoryInspection
 
         public string Id => Identity.Id;
         public NuGetVersion Version => Identity.Version;
-
-        public PackageReferenceType PackageReferenceType => Path.PackageReferenceType;
     }
 }
