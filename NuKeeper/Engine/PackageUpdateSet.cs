@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.NuGet.Api;
+using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
     public class PackageUpdateSet
     {
-        public PackageUpdateSet(PackageIdentity newPackage, IEnumerable<PackageUpdate> currentPackages)
+        public PackageUpdateSet(PackageIdentity newPackage, IEnumerable<PackageInProject> currentPackages)
         {
             if (newPackage == null)
             {
@@ -21,14 +21,23 @@ namespace NuKeeper.Engine
                 throw new ArgumentNullException(nameof(currentPackages));
             }
 
+            if (!currentPackages.Any())
+            {
+                throw new ArgumentException($"{nameof(currentPackages)} is empty");
+            }
+
+            if (currentPackages.Any(p => p.Id != newPackage.Id))
+            {
+                throw new ArgumentException($"Updates must all be for package {newPackage.Id}");
+            }
+
             NewPackage = newPackage;
             CurrentPackages = currentPackages.ToList();
         }
 
-
         public PackageIdentity NewPackage { get; }
 
-        public List<PackageUpdate> CurrentPackages { get; }
+        public List<PackageInProject> CurrentPackages { get; }
 
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;

@@ -79,7 +79,7 @@ namespace NuKeeper.Engine
             var updatesByPackage = updates.GroupBy(p => p.NewPackageIdentity);
 
             return updatesByPackage
-                .Select(g => new PackageUpdateSet(g.Key, g))
+                .Select(g => new PackageUpdateSet(g.Key, g.Select(r => r.CurrentPackage)))
                 .Take(_settings.MaxPullRequestsPerRepository)
                 .ToList();
         }
@@ -87,7 +87,7 @@ namespace NuKeeper.Engine
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
         {
             var oldVersions = updateSet.CurrentPackages
-                .Select(u => u.OldVersion.ToString())
+                .Select(u => u.Version.ToString())
                 .Distinct();
 
             var oldVersionsString = string.Join(",", oldVersions);
@@ -105,7 +105,11 @@ namespace NuKeeper.Engine
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            foreach (var update in updateSet.CurrentPackages)
+            var updates = updateSet.CurrentPackages
+                .Select(c => new PackageUpdate(c, updateSet.NewPackage))
+                .ToList();
+
+            foreach (var update in updates)
             {
                 var updater = update.CurrentPackage.PackageReferenceType == PackageReferenceType.ProjectFile
                     ? (INuGetUpdater) new NuGetUpdater()
@@ -116,13 +120,13 @@ namespace NuKeeper.Engine
 
             Console.WriteLine("Commiting");
 
-            var commitMessage = CommitReport.MakeCommitMessage(updateSet.CurrentPackages);
+            var commitMessage = CommitReport.MakeCommitMessage(updates);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
             await _git.Push("origin", branchName);
 
-            await MakeGitHubPullRequest(updateSet.CurrentPackages, commitMessage, branchName);
+            await MakeGitHubPullRequest(updates, commitMessage, branchName);
             await _git.Checkout("master");
         }
 
