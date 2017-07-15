@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -96,32 +95,33 @@ namespace NuKeeper.Engine
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            var updates = updateSet.CurrentPackages
-                .Select(c => new PackageUpdate(c, updateSet.NewPackage))
-                .ToList();
-
-            foreach (var update in updates)
-            {
-                var updater = update.CurrentPackage.PackageReferenceType == PackageReferenceType.ProjectFile
-                    ? (INuGetUpdater) new NuGetUpdater()
-                    : new PackagesConfigUpdater();
-
-                await updater.UpdatePackage(update);
-            }
+            await UpdateAllCurrentUsages(updateSet);
 
             Console.WriteLine("Commiting");
 
-            var commitMessage = CommitReport.MakeCommitMessage(updates);
+            var commitMessage = CommitReport.MakeCommitMessage(updateSet);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
             await _git.Push("origin", branchName);
 
-            await MakeGitHubPullRequest(updates, commitMessage, branchName);
+            await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
             await _git.Checkout("master");
         }
 
-        private async Task MakeGitHubPullRequest(List<PackageUpdate> updates, string commitMessage, string branchName)
+        private static async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
+        {
+            foreach (var current in updateSet.CurrentPackages)
+            {
+                var updater = current.PackageReferenceType == PackageReferenceType.ProjectFile
+                    ? (INuGetUpdater) new NuGetUpdater()
+                    : new PackagesConfigUpdater();
+
+                await updater.UpdatePackage(updateSet.NewPackage, current);
+            }
+        }
+
+        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName)
         {
             Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 

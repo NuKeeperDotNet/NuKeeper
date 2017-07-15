@@ -1,27 +1,25 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Engine
 {
     public static class CommitReport
     { 
-        public static string MakeCommitMessage(List<PackageUpdate> updates)
+        public static string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $"Automatic update of {updates[0].PackageId} to {updates[0].NewVersion}";
+            return $"Automatic update of {updates.PackageId} to {updates.NewVersion}";
         }
 
-        public static string MakeCommitDetails(List<PackageUpdate> updates)
+        public static string MakeCommitDetails(PackageUpdateSet updates)
         {
-            var oldVersions = updates
-                .Select(u => CodeQuote(u.OldVersion.ToString()))
+            var oldVersions = updates.CurrentPackages
+                .Select(u => CodeQuote(u.Version.ToString()))
                 .Distinct()
                 .ToList();
 
             var oldVersionsString = string.Join(",", oldVersions);
-            var newVersion = CodeQuote(updates[0].NewVersion.ToString());
-            var packageId = CodeQuote(updates[0].PackageId);
+            var newVersion = CodeQuote(updates.NewVersion.ToString());
+            var packageId = CodeQuote(updates.PackageId);
 
             var builder = new StringBuilder();
 
@@ -36,18 +34,18 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersionsString}");
             }
 
-            if (updates.Count == 1)
+            if (updates.CurrentPackages.Count == 1)
             {
                 builder.AppendLine("1 project update:");
             }
             else
             {
-                builder.AppendLine($"{updates.Count} project updates:");
+                builder.AppendLine($"{updates.CurrentPackages.Count} project updates:");
             }
 
-            foreach (var update in updates)
+            foreach (var current in updates.CurrentPackages)
             {
-                var line = $"Updated {CodeQuote(update.CurrentPackage.Path.RelativePath)} to {packageId} {CodeQuote(update.NewVersion.ToString())} from {CodeQuote(update.OldVersion.ToString())}";
+                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.NewVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
 
                 builder.AppendLine(line);
             }
