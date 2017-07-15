@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
-using NuKeeper.Nuget.Api;
+using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {

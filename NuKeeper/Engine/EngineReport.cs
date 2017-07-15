@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Nuget.Api;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
