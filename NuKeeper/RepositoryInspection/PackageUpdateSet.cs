@@ -20,23 +20,25 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentNullException(nameof(currentPackages));
             }
 
-            if (!currentPackages.Any())
+            var currentPackagesList = currentPackages.ToList();
+
+            if (!currentPackagesList.Any())
             {
                 throw new ArgumentException($"{nameof(currentPackages)} is empty");
             }
 
-            if (currentPackages.Any(p => p.Id != newPackage.Id))
+            if (currentPackagesList.Any(p => p.Id != newPackage.Id))
             {
                 throw new ArgumentException($"Updates must all be for package {newPackage.Id}");
             }
 
             NewPackage = newPackage;
-            CurrentPackages = currentPackages.ToList();
+            CurrentPackages = currentPackagesList;
         }
 
         public PackageIdentity NewPackage { get; }
 
-        public List<PackageInProject> CurrentPackages { get; }
+        public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;
