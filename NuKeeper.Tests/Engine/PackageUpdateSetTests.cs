@@ -17,7 +17,7 @@ namespace NuKeeper.Tests.Engine
         {
             var packages = new List<PackageInProject>
             {
-                new PackageInProject("foo", new NuGetVersion("1.0.0"), PathToProjectOne())
+                new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
             Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(null, packages));
@@ -42,7 +42,7 @@ namespace NuKeeper.Tests.Engine
 
             var currentPackages = new List<PackageInProject>
             {
-                new PackageInProject("foo", new NuGetVersion("1.0.0"), PathToProjectOne())
+                new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
             var updates = new PackageUpdateSet(newPackage, currentPackages);
@@ -63,8 +63,8 @@ namespace NuKeeper.Tests.Engine
 
             var currentPackages = new List<PackageInProject>
             {
-                new PackageInProject("foo", new NuGetVersion("1.0.0"), PathToProjectOne()),
-                new PackageInProject("foo", new NuGetVersion("1.0.1"), PathToProjectTwo())
+                new PackageInProject("foo", "1.0.0", PathToProjectOne()),
+                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
             var updates = new PackageUpdateSet(newPackage, currentPackages);
@@ -85,7 +85,7 @@ namespace NuKeeper.Tests.Engine
 
             var currentPackages = new List<PackageInProject>
             {
-                new PackageInProject("bar", new NuGetVersion("1.0.0"), PathToProjectOne())
+                new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
             Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackage, currentPackages));
@@ -98,8 +98,8 @@ namespace NuKeeper.Tests.Engine
 
             var currentPackages = new List<PackageInProject>
             {
-                new PackageInProject("foo", new NuGetVersion("1.0.0"), PathToProjectOne()),
-                new PackageInProject("bar", new NuGetVersion("1.0.0"), PathToProjectOne())
+                new PackageInProject("foo", "1.0.0", PathToProjectOne()),
+                new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
             Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackage, currentPackages));

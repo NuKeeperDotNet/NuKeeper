@@ -46,7 +46,6 @@ namespace NuKeeper.Engine
             foreach (var current in updates.CurrentPackages)
             {
                 var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.NewVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
-
                 builder.AppendLine(line);
             }
 
