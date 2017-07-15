@@ -51,9 +51,11 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var updatesByPackage = GroupUpdatesByPackageId(updates);
+            updates = updates
+                .Take(_settings.MaxPullRequestsPerRepository)
+                .ToList();
 
-            foreach (var updateSet in updatesByPackage)
+            foreach (var updateSet in updates)
             {
                 await UpdatePackageInProjects(updateSet);
             }
@@ -71,17 +73,6 @@ namespace NuKeeper.Engine
             await _git.Clone(_settings.GithubUri);
 
             Console.WriteLine("Git clone complete");
-        }
-
-        private List<PackageUpdateSet> GroupUpdatesByPackageId(List<PackageUpdate> updates)
-        {
-            // All packages that need update
-            var updatesByPackage = updates.GroupBy(p => p.NewPackageIdentity);
-
-            return updatesByPackage
-                .Select(g => new PackageUpdateSet(g.Key, g.Select(r => r.CurrentPackage)))
-                .Take(_settings.MaxPullRequestsPerRepository)
-                .ToList();
         }
 
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
