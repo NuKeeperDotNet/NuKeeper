@@ -47,7 +47,7 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> g
 | github_repository_uri            | repo         |                        |
 | github_organisation_name         | org          |                        |
 | github_api_endpoint              | api          | https://api.github.com |
-| max_pull_requests_per_repository | max          | 3                      |
+| max_pull_requests_per_repository | maxpr        | 3                      |
 
 
  * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
