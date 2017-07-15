@@ -53,9 +53,9 @@ namespace NuKeeper.Engine
 
             var updatesByPackage = GroupUpdatesByPackageId(updates);
 
-            foreach (var packageUpdates in updatesByPackage)
+            foreach (var updateSet in updatesByPackage)
             {
-                await UpdatePackageInProjects(packageUpdates.Key, packageUpdates.ToList());
+                await UpdatePackageInProjects(updateSet);
             }
 
             // delete the temp folder
@@ -73,36 +73,39 @@ namespace NuKeeper.Engine
             Console.WriteLine("Git clone complete");
         }
 
-        private IEnumerable<IGrouping<string, PackageUpdate>> GroupUpdatesByPackageId(List<PackageUpdate> updates)
+        private List<PackageUpdateSet> GroupUpdatesByPackageId(List<PackageUpdate> updates)
         {
             // All packages that need update
-            var updatesByPackage = updates.GroupBy(p => p.PackageId);
+            var updatesByPackage = updates.GroupBy(p => p.NewPackageIdentity);
 
-            return updatesByPackage.Take(_settings.MaxPullRequestsPerRepository);
+            return updatesByPackage
+                .Select(g => new PackageUpdateSet(g.Key, g))
+                .Take(_settings.MaxPullRequestsPerRepository)
+                .ToList();
         }
 
-        private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)
+        private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
         {
-            var oldVersions = updates
+            var oldVersions = updateSet.CurrentPackages
                 .Select(u => u.OldVersion.ToString())
                 .Distinct();
 
             var oldVersionsString = string.Join(",", oldVersions);
+            var packageId = updateSet.NewPackage.Id;
 
-            var firstUpdate = updates.First();
 
-            Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {firstUpdate.NewVersion} in {updates.Count} projects");
+            Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
 
             await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{packageId}-to-{firstUpdate.NewVersion}";
+            var branchName = $"nukeeper-update-{packageId}-to-{updateSet.NewVersion}";
 
             await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            foreach (var update in updates)
+            foreach (var update in updateSet.CurrentPackages)
             {
                 var updater = update.CurrentPackage.PackageReferenceType == PackageReferenceType.ProjectFile
                     ? (INuGetUpdater) new NuGetUpdater()
@@ -113,13 +116,13 @@ namespace NuKeeper.Engine
 
             Console.WriteLine("Commiting");
 
-            var commitMessage = CommitReport.MakeCommitMessage(updates);
+            var commitMessage = CommitReport.MakeCommitMessage(updateSet.CurrentPackages);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
             await _git.Push("origin", branchName);
 
-            await MakeGitHubPullRequest(updates, commitMessage, branchName);
+            await MakeGitHubPullRequest(updateSet.CurrentPackages, commitMessage, branchName);
             await _git.Checkout("master");
         }
 
