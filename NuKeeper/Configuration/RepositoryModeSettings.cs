@@ -9,13 +9,15 @@ namespace NuKeeper.Configuration
         {
         }
 
-        public RepositoryModeSettings(GithubRepository repository, Uri githubApi, string githubToken)
+        public RepositoryModeSettings(GithubRepository repository, 
+            Uri githubApi, string githubToken, int maxPullRequestsPerRepository)
         {
             GithubApiBase = githubApi;
             GithubToken = githubToken;
             GithubUri = new Uri(repository.HtmlUrl);
             RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;
+            MaxPullRequestsPerRepository = maxPullRequestsPerRepository;
         }
 
         public Uri GithubUri { get; set; }
@@ -25,5 +27,7 @@ namespace NuKeeper.Configuration
 
         public string RepositoryOwner { get; set; }
         public string RepositoryName { get; set; }
+
+        public int MaxPullRequestsPerRepository { get; set; }
     }
 }

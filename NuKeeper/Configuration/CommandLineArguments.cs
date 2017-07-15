@@ -19,5 +19,8 @@ namespace NuKeeper.Configuration
 
         [CommandLine("github_api_endpoint", "api"), Default("https://api.github.com")]
         public Uri GithubApiEndpoint;
+
+        [CommandLine("max_pull_requests_per_repository", "max"), Default(3)]
+        public int MaxPullRequestsPerRepository { get; set; }
     }
 }
