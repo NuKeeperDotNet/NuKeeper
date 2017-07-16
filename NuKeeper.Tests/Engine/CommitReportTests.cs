@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
-using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -15,7 +13,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_OneUpdateIsCorrect()
         {
-            var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
+            var updates = UpdateSetFor(MakePackageForV110());
 
             var report = CommitReport.MakeCommitMessage(updates);
 
@@ -27,11 +25,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_TwoUpdatesIsCorrect()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitReport.MakeCommitMessage(updates);
 
@@ -43,11 +37,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_TwoUpdatesSameVersionIsCorrect()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitReport.MakeCommitMessage(updates);
 
@@ -60,7 +50,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_IsNotEmpty()
         {
-            var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
+            var updates = UpdateSetFor(MakePackageForV110());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -71,7 +61,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = new List<PackageUpdate> { MakePackageUpdateFromV110() };
+            var updates = UpdateSetFor(MakePackageForV110());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -81,10 +71,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110()
-            };
+            var updates = UpdateSetFor(MakePackageForV110());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -94,10 +81,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasProjectDetails()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110()
-            };
+            var updates = UpdateSetFor(MakePackageForV110());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -108,11 +92,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_NotEmpty()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -123,11 +103,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -138,11 +114,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -153,11 +125,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasProjectList()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV100()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -169,11 +137,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_NotEmpty()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -184,11 +148,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -198,11 +158,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -212,11 +168,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasProjectList()
         {
-            var updates = new List<PackageUpdate>
-            {
-                MakePackageUpdateFromV110(),
-                MakePackageUpdateFromV110InProject3()
-            };
+            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitReport.MakeCommitDetails(updates);
 
@@ -240,34 +192,36 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Not.Contain("]"));
         }
 
-        private static PackageUpdate MakePackageUpdateFromV110()
+        private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
-            var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config", PackageReferenceType.PackagesConfig);
-
-            var currentPackage = new PackageInProject("foo.bar", "1.1.0", path);
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-
-            return new PackageUpdate(currentPackage, newPackage);
+            return new PackageUpdateSet(NewPackageFooBar123(), packages);
         }
 
-        private static PackageUpdate MakePackageUpdateFromV110InProject3()
+        private static PackageIdentity NewPackageFooBar123()
+        {
+            return new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+        }
+
+        private static PackageInProject MakePackageForV110()
+        {
+            var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
+                PackageReferenceType.PackagesConfig);
+            return new PackageInProject("foo.bar", "1.1.0", path);
+        }
+
+        private static PackageInProject MakePackageForV100()
+        {
+            var path2 = new PackagePath("c:\\temp", "folder\\src\\project2\\packages.config",
+                PackageReferenceType.PackagesConfig);
+            var currentPackage2 = new PackageInProject("foo.bar", "1.0.0", path2);
+            return currentPackage2;
+        }
+
+        private static PackageInProject MakePackageForV110InProject3()
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project3\\packages.config", PackageReferenceType.PackagesConfig);
 
-            var currentPackage = new PackageInProject("foo.bar", "1.1.0", path);
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-
-            return new PackageUpdate(currentPackage, newPackage);
-        }
-
-        private static PackageUpdate MakePackageUpdateFromV100()
-        {
-            var path = new PackagePath("c:\\temp", "folder\\src\\project2\\packages.config", PackageReferenceType.PackagesConfig);
-
-            var currentPackage = new PackageInProject("foo.bar", "1.0.0", path);
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-
-            return new PackageUpdate(currentPackage, newPackage);
+            return  new PackageInProject("foo.bar", "1.1.0", path);
         }
     }
 }

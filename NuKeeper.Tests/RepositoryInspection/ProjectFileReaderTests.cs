@@ -93,6 +93,20 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
+        public void SinglePackageIsPopulated()
+        {
+            const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+
+            var packages = ProjectFileReader.Read(projectFile, TempPath());
+
+            var package = packages.FirstOrDefault();
+
+            PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
         public void SinglePackageIsCorectlyRead()
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
@@ -103,14 +117,13 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var package = packages.FirstOrDefault();
 
-            Assert.That(package, Is.Not.Null);
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3")));
-            Assert.That(package.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
 
         [Test]
-        public void TwoPackagesCanBeRead()
+        public void WhenTwoPackagesAreRead_TheyArePopulated()
         {
             const string packagesText =
                 @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
@@ -123,8 +136,27 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages.Count, Is.EqualTo(2));
+            PackageAssert.IsPopulated(packages[0]);
+            PackageAssert.IsPopulated(packages[1]);
+        }
+
+        [Test]
+        public void WhenTwoPackagesAreRead_ValuesAreCorrect()
+        {
+            const string packagesText =
+                @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
+                  <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+
+            var packages = ProjectFileReader.Read(projectFile, TempPath())
+                .ToList();
+
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3")));
+
             Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
         }
 
         [Test]

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -51,11 +50,13 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var updatesByPackage = GroupUpdatesByPackageId(updates);
+            updates = updates
+                .Take(_settings.MaxPullRequestsPerRepository)
+                .ToList();
 
-            foreach (var packageUpdates in updatesByPackage)
+            foreach (var updateSet in updates)
             {
-                await UpdatePackageInProjects(packageUpdates.Key, packageUpdates.ToList());
+                await UpdatePackageInProjects(updateSet);
             }
 
             // delete the temp folder
@@ -73,57 +74,46 @@ namespace NuKeeper.Engine
             Console.WriteLine("Git clone complete");
         }
 
-        private IEnumerable<IGrouping<string, PackageUpdate>> GroupUpdatesByPackageId(List<PackageUpdate> updates)
+        private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
         {
-            // All packages that need update
-            var updatesByPackage = updates.GroupBy(p => p.PackageId);
-
-            return updatesByPackage.Take(_settings.MaxPullRequestsPerRepository);
-        }
-
-        private async Task UpdatePackageInProjects(string packageId, List<PackageUpdate> updates)
-        {
-            var oldVersions = updates
-                .Select(u => u.OldVersion.ToString())
-                .Distinct();
-
-            var oldVersionsString = string.Join(",", oldVersions);
-
-            var firstUpdate = updates.First();
-
-            Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {firstUpdate.NewVersion} in {updates.Count} projects");
+            EngineReport.OldVersionsToBeUpdated(updateSet);
 
             await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{packageId}-to-{firstUpdate.NewVersion}";
+            var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
 
             await _git.CheckoutNewBranch(branchName);
 
             Console.WriteLine($"Using branch '{branchName}'");
 
-            foreach (var update in updates)
-            {
-                var updater = update.CurrentPackage.PackageReferenceType == PackageReferenceType.ProjectFile
-                    ? (INuGetUpdater) new NuGetUpdater()
-                    : new PackagesConfigUpdater();
-
-                await updater.UpdatePackage(update);
-            }
+            await UpdateAllCurrentUsages(updateSet);
 
             Console.WriteLine("Commiting");
 
-            var commitMessage = CommitReport.MakeCommitMessage(updates);
+            var commitMessage = CommitReport.MakeCommitMessage(updateSet);
             await _git.Commit(commitMessage);
 
             Console.WriteLine($"Pushing branch '{branchName}'");
             await _git.Push("origin", branchName);
 
-            await MakeGitHubPullRequest(updates, commitMessage, branchName);
+            await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
             await _git.Checkout("master");
         }
 
-        private async Task MakeGitHubPullRequest(List<PackageUpdate> updates, string commitMessage, string branchName)
+        private static async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
+        {
+            foreach (var current in updateSet.CurrentPackages)
+            {
+                var updater = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
+                    ? (INuGetUpdater) new NuGetUpdater()
+                    : new PackagesConfigUpdater();
+
+                await updater.UpdatePackage(updateSet.NewVersion, current);
+            }
+        }
+
+        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName)
         {
             Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 

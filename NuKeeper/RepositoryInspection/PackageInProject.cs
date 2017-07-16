@@ -1,25 +1,25 @@
-﻿using NuGet.Versioning;
+﻿using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace NuKeeper.RepositoryInspection
 {
     public class PackageInProject
     {
-        public PackageInProject(string id, NuGetVersion version, PackagePath path)
+        public PackageInProject(PackageIdentity identity, PackagePath path)
         {
-            Id = id;
-            Version = version;
+            Identity = identity;
             Path = path;
         }
 
         public PackageInProject(string id, string version, PackagePath path) :
-            this(id, new NuGetVersion(version), path)
+            this(new PackageIdentity(id, new NuGetVersion(version)), path)
         {
         }
 
-        public string Id { get; }
-        public NuGetVersion Version { get; }
+        public PackageIdentity Identity { get; }
         public PackagePath Path { get; }
 
-        public PackageReferenceType PackageReferenceType => Path.PackageReferenceType;
+        public string Id => Identity.Id;
+        public NuGetVersion Version => Identity.Version;
     }
 }

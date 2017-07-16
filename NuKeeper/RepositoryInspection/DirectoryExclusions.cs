@@ -16,10 +16,10 @@ namespace NuKeeper.RepositoryInspection
 
         private static bool IsExcluded(string dirName)
         {
-            return _excludedDirNames.Any(s => string.Equals(s, dirName, StringComparison.OrdinalIgnoreCase));
+            return ExcludedDirNames.Any(s => string.Equals(s, dirName, StringComparison.OrdinalIgnoreCase));
         }
 
-        private static readonly List<string> _excludedDirNames = new List<string>
+        private static readonly List<string> ExcludedDirNames = new List<string>
         {
             ".git",
             ".vs",

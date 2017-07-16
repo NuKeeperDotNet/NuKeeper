@@ -1,8 +1,9 @@
-﻿using NuKeeper.NuGet.Api;
-using NuKeeper.ProcessRunner;
+﻿using NuKeeper.ProcessRunner;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using NuGet.Versioning;
+using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
@@ -15,13 +16,13 @@ namespace NuKeeper.NuGet.Process
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task UpdatePackage(PackageUpdate update)
+        public async Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage)
         {
-            var dirName = update.CurrentPackage.Path.FullDirectory;
+            var dirName = currentPackage.Path.FullDirectory;
             var nuget = GetNuGetPath();
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
-                + $" & {nuget} update packages.config -Id {update.PackageId} -Version {update.NewVersion}";
+                + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
             Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);
         }

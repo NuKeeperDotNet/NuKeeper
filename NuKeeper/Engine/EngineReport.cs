@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
@@ -27,14 +26,28 @@ namespace NuKeeper.Engine
             Console.WriteLine(packageIdsText);
         }
 
-        public static void UpdatesFound(List<PackageUpdate> updates)
+        public static void UpdatesFound(List<PackageUpdateSet> updates)
         {
             Console.WriteLine($"Found {updates.Count} possible updates:");
 
-            foreach (var up in updates)
+            foreach (var updateSet in updates)
             {
-                Console.WriteLine($"{up.PackageId} from {up.OldVersion} to {up.NewVersion} in {up.CurrentPackage.Path.RelativePath}");
+                foreach (var current in updateSet.CurrentPackages)
+                {
+                    Console.WriteLine($"{updateSet.PackageId} from {current.Version} to {updateSet.NewVersion} in {current.Path.RelativePath}");
+                }
             }
+        }
+
+        public static void OldVersionsToBeUpdated(PackageUpdateSet updateSet)
+        {
+            var oldVersions = updateSet.CurrentPackages
+                .Select(u => u.Version.ToString())
+                .Distinct();
+
+            var oldVersionsString = string.Join(", ", oldVersions);
+
+            Console.WriteLine($"Updating '{updateSet.PackageId}' from {oldVersionsString} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
         }
     }
 }
