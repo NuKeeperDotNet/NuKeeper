@@ -44,7 +44,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
-        public void SinglePackageShouldBeCorrect()
+        public void SinglePackageShouldBePopulated()
         {
             const string singlePackage =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -56,6 +56,20 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
+        public void SinglePackageShouldBeCorrect()
+        {
+            const string singlePackage =
+                @"<?xml version=""1.0"" encoding=""utf-8""?>
+<packages>
+  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+</packages>";
+
+            var packages = PackagesFileReader.Read(singlePackage, TempPath());
+
+            var package = packages.FirstOrDefault();
 
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
@@ -63,7 +77,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
-        public void TwoPackagesShouldBeRead()
+        public void TwoPackagesShouldBePopulated()
         {
             var packages = PackagesFileReader.Read(PackagesFileWithPackages, TempPath())
                 .ToList();
@@ -72,10 +86,20 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(packages.Count, Is.EqualTo(2));
 
             PackageAssert.IsPopulated(packages[0]);
+            PackageAssert.IsPopulated(packages[1]);
+        }
+
+        [Test]
+        public void TwoPackagesShouldBeRead()
+        {
+            var packages = PackagesFileReader.Read(PackagesFileWithPackages, TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(2));
+
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
             Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
 
-            PackageAssert.IsPopulated(packages[1]);
             Assert.That(packages[1].Id, Is.EqualTo("bar"));
             Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
         }
