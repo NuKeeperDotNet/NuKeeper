@@ -117,7 +117,7 @@ namespace NuKeeper.Engine
                     ? (INuGetUpdater) new NuGetUpdater()
                     : new PackagesConfigUpdater();
 
-                await updater.UpdatePackage(updateSet.NewPackage, current);
+                await updater.UpdatePackage(updateSet.NewVersion, current);
             }
         }
 

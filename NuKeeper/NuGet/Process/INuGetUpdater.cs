@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
     public interface INuGetUpdater
     {
-        Task UpdatePackage(PackageIdentity newPackage, PackageInProject currentPackage);
+        Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage);
     }
 }

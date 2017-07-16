@@ -168,7 +168,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             foreach (var package in packages)
             {
-                PackageAssert.IsPopulated(package);
+                Assert.That(package, Is.Not.Null);
             }
 
             Assert.That(packages.Select(p=>p.Path), Is.All.EqualTo(path));
