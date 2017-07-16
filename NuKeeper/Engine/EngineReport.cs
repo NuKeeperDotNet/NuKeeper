@@ -38,5 +38,16 @@ namespace NuKeeper.Engine
                 }
             }
         }
+
+        public static void OldVersionsToBeUpdated(PackageUpdateSet updateSet)
+        {
+            var oldVersions = updateSet.CurrentPackages
+                .Select(u => u.Version.ToString())
+                .Distinct();
+
+            var oldVersionsString = string.Join(", ", oldVersions);
+
+            Console.WriteLine($"Updating '{updateSet.PackageId}' from {oldVersionsString} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
+        }
     }
 }

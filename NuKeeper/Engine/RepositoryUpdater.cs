@@ -76,20 +76,12 @@ namespace NuKeeper.Engine
 
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
         {
-            var oldVersions = updateSet.CurrentPackages
-                .Select(u => u.Version.ToString())
-                .Distinct();
-
-            var oldVersionsString = string.Join(",", oldVersions);
-            var packageId = updateSet.NewPackage.Id;
-
-
-            Console.WriteLine($"Updating '{packageId}' from {oldVersionsString} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
+            EngineReport.OldVersionsToBeUpdated(updateSet);
 
             await _git.Checkout("master");
 
             // branch
-            var branchName = $"nukeeper-update-{packageId}-to-{updateSet.NewVersion}";
+            var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
 
             await _git.CheckoutNewBranch(branchName);
 
