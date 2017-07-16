@@ -8,7 +8,13 @@ namespace NuKeeper.Tests.RepositoryInspection
     [TestFixture]
     public class PackagesFileReaderTests
     {
-        private const string PackagesFileWithPackages = @"<?xml version=""1.0"" encoding=""utf-8""?>
+        const string PackagesFileWithSinglePackage =
+            @"<?xml version=""1.0"" encoding=""utf-8""?>
+<packages>
+  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+</packages>";
+
+        private const string PackagesFileWithTwoPackages = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
   <package id=""bar"" version=""2.3.4.5"" targetFramework=""net45"" />
@@ -31,13 +37,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeRead()
         {
-            const string singlePackage = 
-@"<?xml version=""1.0"" encoding=""utf-8""?>
-<packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
-</packages>";
-
-            var packages = PackagesFileReader.Read(singlePackage, TempPath());
+            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -46,13 +46,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBePopulated()
         {
-            const string singlePackage =
-                @"<?xml version=""1.0"" encoding=""utf-8""?>
-<packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
-</packages>";
-
-            var packages = PackagesFileReader.Read(singlePackage, TempPath());
+            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);
@@ -61,13 +55,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeCorrect()
         {
-            const string singlePackage =
-                @"<?xml version=""1.0"" encoding=""utf-8""?>
-<packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
-</packages>";
-
-            var packages = PackagesFileReader.Read(singlePackage, TempPath());
+            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
 
             var package = packages.FirstOrDefault();
 
@@ -79,7 +67,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBePopulated()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithPackages, TempPath())
+            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -92,7 +80,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBeRead()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithPackages, TempPath())
+            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(2));
@@ -109,7 +97,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var path = TempPath();
 
-            var packages = PackagesFileReader.Read(PackagesFileWithPackages, path);
+            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, path);
 
             foreach (var package in packages)
             {
