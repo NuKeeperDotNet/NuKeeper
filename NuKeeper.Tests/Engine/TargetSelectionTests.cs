@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -13,7 +14,7 @@ namespace NuKeeper.Tests.Engine
     public class TargetSelectionTests
     {
         [Test]
-        public void NoneIn_NoneOut()
+        public void WhenThereAreNoInputs_NoTargetsOut()
         {
             var updateSets = new List<PackageUpdateSet>();
 
@@ -26,9 +27,9 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void OneIn_OneOut()
+        public void WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = new List<PackageUpdateSet> { UpdateFooInOneProject() };
+            var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
 
             var target = OneTargetSelection();
 
@@ -36,15 +37,64 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
         }
 
-        private PackageUpdateSet UpdateFooInOneProject()
+        [Test]
+        public void WhenThereAreTwoInputs_MoreVersionsFirst_FirstIsTheTarget()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateBarFromTwoVersions(),
+                UpdateFooFromOneVersion()
+            };
+
+            var target = OneTargetSelection();
+
+            var results = target.SelectTargets(updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public void WhenThereAreTwoInputs_MoreVersionsSecond_SecondIsTheTarget()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var target = OneTargetSelection();
+
+            var results = target.SelectTargets(updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+        }
+
+        private PackageUpdateSet UpdateFooFromOneVersion()
         {
             var newPackage = LatestVersionOfPackageFoo();
 
             var currentPackages = new List<PackageInProject>
             {
-                new PackageInProject("foo", "1.0.1", PathToProjectOne())
+                new PackageInProject("foo", "1.0.1", PathToProjectOne()),
+                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
+            };
+
+            return new PackageUpdateSet(newPackage, currentPackages);
+        }
+
+        private PackageUpdateSet UpdateBarFromTwoVersions()
+        {
+            var newPackage = LatestVersionOfPackageBar();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("bar", "1.0.1", PathToProjectOne()),
+                new PackageInProject("bar", "1.2.1", PathToProjectTwo())
             };
 
             return new PackageUpdateSet(newPackage, currentPackages);
@@ -55,10 +105,21 @@ namespace NuKeeper.Tests.Engine
             return new PackageIdentity("foo", new NuGetVersion("1.2.3"));
         }
 
+        private PackageIdentity LatestVersionOfPackageBar()
+        {
+            return new PackageIdentity("bar", new NuGetVersion("2.3.4"));
+        }
+
         private PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
         }
+
+        private PackagePath PathToProjectTwo()
+        {
+            return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
+        }
+
         private static TargetSelection OneTargetSelection()
         {
             var repo = new GithubRepository
@@ -70,7 +131,12 @@ namespace NuKeeper.Tests.Engine
                     Login = "test"
                 }
             };
-            var settings = new RepositoryModeSettings(repo, null, string.Empty, 1);
+
+            const int maxPullRequests = 1;
+
+            var settings = new RepositoryModeSettings(
+                repo, new Uri("https://api.github.com"), "dummytoken", 
+                maxPullRequests);
 
             return new TargetSelection(settings);
         }
