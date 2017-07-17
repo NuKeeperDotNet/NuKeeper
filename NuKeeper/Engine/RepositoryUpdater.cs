@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -50,11 +51,10 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            updates = updates
-                .Take(_settings.MaxPullRequestsPerRepository)
-                .ToList();
+            var targetSelection = new TargetSelection(_settings);
+            var targetUpdates = targetSelection.SelectTargets(updates);
 
-            foreach (var updateSet in updates)
+            foreach (var updateSet in targetUpdates)
             {
                 await UpdatePackageInProjects(updateSet);
             }

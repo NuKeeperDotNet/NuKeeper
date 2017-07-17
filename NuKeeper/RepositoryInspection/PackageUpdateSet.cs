@@ -42,5 +42,13 @@ namespace NuKeeper.RepositoryInspection
 
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;
+
+        public int CountCurrentVersions()
+        {
+            return CurrentPackages
+                .Select(p => p.Version)
+                .Distinct()
+                .Count();
+        }
     }
 }
