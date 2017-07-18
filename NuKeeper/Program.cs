@@ -34,7 +34,7 @@ namespace NuKeeper
 
         private static async Task RunAll(
             GithubRepositoryDiscovery repositoryDiscovery,
-            IPackageUpdatesLookup lookups,
+            IPackageUpdatesLookup updatesLookup,
             IGithub github)
         {
             var repositories = await repositoryDiscovery.GetRepositories();
@@ -43,7 +43,8 @@ namespace NuKeeper
             {
                 try
                 {
-                    var repositoryUpdater = new RepositoryUpdater(lookups, github, repository);
+                    var selection = new PackageUpdateSelection(repository);
+                    var repositoryUpdater = new RepositoryUpdater(updatesLookup, github, selection, repository);
                     await repositoryUpdater.Run();
                 }
                 catch (Exception e)

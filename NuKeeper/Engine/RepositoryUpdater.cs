@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -18,16 +17,21 @@ namespace NuKeeper.Engine
         private readonly string _tempDir;
         private readonly IGitDriver _git;
         private readonly IGithub _github;
+        private readonly IPackageUpdateSelection _updateSelection;
 
-        public RepositoryUpdater(IPackageUpdatesLookup packageLookup, IGithub github, RepositoryModeSettings settings)
+        public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
+            IGithub github,
+            IPackageUpdateSelection updateSelection,
+            RepositoryModeSettings settings)
         {
             _packageLookup = packageLookup;
+            _github = github;
+            _updateSelection = updateSelection;
             _settings = settings;
 
             // get some storage space
             _tempDir = TempFiles.MakeUniqueTemporaryPath();
             _git = new GitDriver(_tempDir);
-            _github = github;
         }
 
         public async Task Run()
@@ -51,8 +55,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var targetSelection = new TargetSelection(_settings);
-            var targetUpdates = targetSelection.SelectTargets(updates);
+            var targetUpdates = _updateSelection.SelectTargets(updates);
 
             foreach (var updateSet in targetUpdates)
             {

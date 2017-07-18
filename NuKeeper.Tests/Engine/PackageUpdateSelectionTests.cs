@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class TargetSelectionTests
+    public class PackageUpdateSelectionTests
     {
         [Test]
         public void WhenThereAreNoInputs_NoTargetsOut()
@@ -120,7 +120,7 @@ namespace NuKeeper.Tests.Engine
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static TargetSelection OneTargetSelection()
+        private static IPackageUpdateSelection OneTargetSelection()
         {
             var repo = new GithubRepository
             {
@@ -138,7 +138,7 @@ namespace NuKeeper.Tests.Engine
                 repo, new Uri("https://api.github.com"), "dummytoken", 
                 maxPullRequests);
 
-            return new TargetSelection(settings);
+            return new PackageUpdateSelection(settings);
         }
     }
 }

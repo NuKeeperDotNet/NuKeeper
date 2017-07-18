@@ -5,11 +5,11 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public class TargetSelection
+    public class PackageUpdateSelection : IPackageUpdateSelection
     {
         private readonly RepositoryModeSettings _settings;
 
-        public TargetSelection(RepositoryModeSettings settings)
+        public PackageUpdateSelection(RepositoryModeSettings settings)
         {
             _settings = settings;
         }
