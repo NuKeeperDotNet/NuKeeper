@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Configuration;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
     public class PackageUpdateSelection : IPackageUpdateSelection
     {
-        private readonly RepositoryModeSettings _settings;
+        private readonly int _maxPullRequests;
 
-        public PackageUpdateSelection(RepositoryModeSettings settings)
+        public PackageUpdateSelection(int maxPullRequests)
         {
-            _settings = settings;
+            _maxPullRequests = maxPullRequests;
         }
 
         public List<PackageUpdateSet> SelectTargets(IEnumerable<PackageUpdateSet> potentialUpdates)
         {
             return potentialUpdates
                 .OrderByDescending(Priority)
-                .Take(_settings.MaxPullRequestsPerRepository)
+                .Take(_maxPullRequests)
                 .ToList();
         }
 

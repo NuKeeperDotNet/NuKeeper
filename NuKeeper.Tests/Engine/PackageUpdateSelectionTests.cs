@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
-using NuKeeper.Github;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -122,23 +119,8 @@ namespace NuKeeper.Tests.Engine
 
         private static IPackageUpdateSelection OneTargetSelection()
         {
-            var repo = new GithubRepository
-            {
-                HtmlUrl = "https://foo.com",
-                Name = "test",
-                Owner = new GithubOwner
-                {
-                    Login = "test"
-                }
-            };
-
             const int maxPullRequests = 1;
-
-            var settings = new RepositoryModeSettings(
-                repo, new Uri("https://api.github.com"), "dummytoken", 
-                maxPullRequests);
-
-            return new PackageUpdateSelection(settings);
+            return new PackageUpdateSelection(maxPullRequests);
         }
     }
 }
