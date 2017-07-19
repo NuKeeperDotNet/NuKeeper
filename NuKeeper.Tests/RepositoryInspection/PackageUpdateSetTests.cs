@@ -140,6 +140,53 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackageFoo, currentPackagesFooAndBar));
         }
 
+        [Test]
+        public void CountCurrentVersions_WhenThereIsOneUpdate()
+        {
+            var newPackage = LatestVersionOfPackageFoo();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.1", PathToProjectOne())
+            };
+
+            var updates = new PackageUpdateSet(newPackage, currentPackages);
+
+            Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CountCurrentVersions_WhenThereAreTwoIdenticalUpdates()
+        {
+            var newPackage = LatestVersionOfPackageFoo();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.1", PathToProjectOne()),
+                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
+            };
+
+            var updates = new PackageUpdateSet(newPackage, currentPackages);
+
+            Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CountCurrentVersions_WhenThereAreTwoDifferentUpdates()
+        {
+            var newPackage = LatestVersionOfPackageFoo();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.0", PathToProjectOne()),
+                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
+            };
+
+            var updates = new PackageUpdateSet(newPackage, currentPackages);
+
+            Assert.That(updates.CountCurrentVersions(), Is.EqualTo(2));
+        }
+
         private PackageIdentity LatestVersionOfPackageFoo()
         {
             return new PackageIdentity("foo", new NuGetVersion("1.2.3"));

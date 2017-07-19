@@ -25,8 +25,9 @@ namespace NuKeeper
             var github = new GithubClient(settings);
 
             var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
+            var updateSelection = new PackageUpdateSelection(settings.MaxPullRequestsPerRepository);
 
-            RunAll(repositoryDiscovery, lookups, github)
+            RunAll(repositoryDiscovery, lookups, updateSelection, github)
                 .GetAwaiter().GetResult();
 
             return 0;
@@ -34,7 +35,8 @@ namespace NuKeeper
 
         private static async Task RunAll(
             GithubRepositoryDiscovery repositoryDiscovery,
-            IPackageUpdatesLookup lookups,
+            IPackageUpdatesLookup updatesLookup,
+            IPackageUpdateSelection updateSelection,
             IGithub github)
         {
             var repositories = await repositoryDiscovery.GetRepositories();
@@ -43,7 +45,7 @@ namespace NuKeeper
             {
                 try
                 {
-                    var repositoryUpdater = new RepositoryUpdater(lookups, github, repository);
+                    var repositoryUpdater = new RepositoryUpdater(updatesLookup, github, updateSelection, repository);
                     await repositoryUpdater.Run();
                 }
                 catch (Exception e)

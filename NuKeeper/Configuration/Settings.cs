@@ -31,6 +31,8 @@ namespace NuKeeper.Configuration
         public string GithubToken => Repository?.GithubToken ?? Organisation?.GithubToken;
         public Uri GithubApiBase => Repository?.GithubApiBase ?? Organisation?.GithubApiBase;
 
+        public int MaxPullRequestsPerRepository => Repository?.MaxPullRequestsPerRepository ?? Organisation?.MaxPullRequestsPerRepository ?? 0;
+
         public string Mode { get; }
     }
 }
