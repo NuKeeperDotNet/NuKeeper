@@ -29,7 +29,13 @@ namespace NuKeeper.RepositoryInspection
 
             if (currentPackagesList.Any(p => p.Id != newPackage.Id))
             {
-                throw new ArgumentException($"Updates must all be for package {newPackage.Id}");
+                var errorIds = currentPackagesList
+                    .Select(p => p.Id)
+                    .Distinct()
+                    .Where(id => id != newPackage.Id);
+
+                var errorIdString = string.Join(", ", errorIds);
+                throw new ArgumentException($"Updates must all be for package '{newPackage.Id}', got '{errorIdString}'");
             }
 
             NewPackage = newPackage;
