@@ -50,10 +50,10 @@ namespace NuKeeper.NuGet.Api
             foreach (var packageId in packageIds)
             {
                 var serverVersion = await _packageLookup.LookupLatest(packageId);
-                if (serverVersion != null)
+                if (serverVersion?.Identity != null)
                 {
                     result.Add(packageId, serverVersion);
-                    Console.WriteLine($"Found latest version of {packageId}:  {serverVersion.Identity?.Id} {serverVersion.Identity?.Version}");
+                    Console.WriteLine($"Found latest version of {packageId}:  {serverVersion.Identity.Id} {serverVersion.Identity.Version}");
                 }
             }
 
