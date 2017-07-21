@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Protocol.Core.Types;
@@ -49,7 +50,11 @@ namespace NuKeeper.NuGet.Api
             foreach (var packageId in packageIds)
             {
                 var serverVersion = await _packageLookup.LookupLatest(packageId);
-                result.Add(packageId, serverVersion);
+                if (serverVersion != null)
+                {
+                    result.Add(packageId, serverVersion);
+                    Console.WriteLine($"Found latest version of {packageId}:  {serverVersion.Identity?.Id} {serverVersion.Identity?.Version}");
+                }
             }
 
             return result;
