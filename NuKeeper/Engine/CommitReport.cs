@@ -24,7 +24,6 @@ namespace NuKeeper.Engine
 
             var builder = new StringBuilder();
 
-
             if (oldVersions.Count == 1)
             {
                 builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion} from {oldVersionsString}");

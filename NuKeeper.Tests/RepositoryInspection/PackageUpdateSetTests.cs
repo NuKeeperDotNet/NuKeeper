@@ -127,6 +127,23 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
+        public void WhenPackageDoesNotMatch_ExceptionMessageContainsMismatchedPackages()
+        {
+            var newPackageFoo = LatestVersionOfPackageFoo();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("bar", "1.0.0", PathToProjectOne()),
+                new PackageInProject("bar", "1.0.0", PathToProjectTwo()),
+                new PackageInProject("fish", "1.0.0", PathToProjectOne())
+            };
+
+            var ex = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackageFoo, currentPackages));
+
+            Assert.That(ex.Message, Is.EqualTo("Updates must all be for package 'foo', got 'bar, fish'"));
+        }
+
+        [Test]
         public void CannotHaveUpdateForDifferentPackagesInCurrentList()
         {
             var newPackageFoo = LatestVersionOfPackageFoo();
