@@ -53,7 +53,7 @@ namespace NuKeeper.NuGet.Api
                 if (serverVersion?.Identity != null)
                 {
                     result.Add(packageId, serverVersion);
-                    Console.WriteLine($"Found latest version of {packageId}:  {serverVersion.Identity.Id} {serverVersion.Identity.Version}");
+                    Console.WriteLine($"Found latest version of {packageId}: {serverVersion.Identity.Id} {serverVersion.Identity.Version}");
                 }
             }
 
