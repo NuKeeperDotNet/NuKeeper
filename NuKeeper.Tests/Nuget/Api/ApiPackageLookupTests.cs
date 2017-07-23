@@ -30,7 +30,6 @@ namespace NuKeeper.Tests.Nuget.Api
             Assert.That(package.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
         }
 
-
         [Test]
         public async Task AmbigousPackageName_ShouldReturnCorrectResult()
         {
