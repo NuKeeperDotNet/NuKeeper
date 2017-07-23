@@ -174,6 +174,22 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(packages.Select(p=>p.Path), Is.All.EqualTo(path));
         }
 
+        [Test]
+        public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
+        {
+            const string packagesText =
+                @"<PackageReference Include=""foo"" Version=""notaversion""></PackageReference>
+                  <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+
+            var packages = ProjectFileReader.Read(projectFile, TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(1));
+            PackageAssert.IsPopulated(packages[0]);
+        }
+
         private PackagePath TempPath()
         {
             return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
