@@ -119,7 +119,7 @@ namespace NuKeeper.Tests.Engine
             var report = CommitReport.MakeCommitDetails(updates);
 
             Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
-            Assert.That(report, Does.Contain("2 versions of `foo.bar` were found in use: `1.1.0`,`1.0.0`"));
+            Assert.That(report, Does.Contain("2 versions of `foo.bar` were found in use: `1.1.0`, `1.0.0`"));
         }
 
         [Test]

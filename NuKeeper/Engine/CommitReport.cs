@@ -14,11 +14,11 @@ namespace NuKeeper.Engine
         public static string MakeCommitDetails(PackageUpdateSet updates)
         {
             var oldVersions = updates.CurrentPackages
-                .Select(u => CodeQuote(u.Version.ToString()))
+                .Select(u => u.Version)
                 .Distinct()
+                .Select(v => CodeQuote(v.ToString()))
                 .ToList();
-
-            var oldVersionsString = string.Join(",", oldVersions);
+ 
             var newVersion = CodeQuote(updates.NewVersion.ToString());
             var packageId = CodeQuote(updates.PackageId);
 
@@ -26,12 +26,12 @@ namespace NuKeeper.Engine
 
             if (oldVersions.Count == 1)
             {
-                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion} from {oldVersionsString}");
+                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion} from {oldVersions.JoinWithCommas()}");
             }
             else
             {
                 builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion}");
-                builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersionsString}");
+                builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
             if (updates.CurrentPackages.Count == 1)
