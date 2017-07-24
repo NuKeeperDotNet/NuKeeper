@@ -22,8 +22,7 @@ namespace NuKeeper.Engine
 
             Console.WriteLine($"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPathCount} projects.");
 
-            var packageIdsText = string.Join(", ", packageIds);
-            Console.WriteLine(packageIdsText);
+            Console.WriteLine(packageIds.JoinWithCommas());
         }
 
         public static void UpdatesFound(List<PackageUpdateSet> updates)
@@ -45,9 +44,7 @@ namespace NuKeeper.Engine
                 .Select(u => u.Version.ToString())
                 .Distinct();
 
-            var oldVersionsString = string.Join(", ", oldVersions);
-
-            Console.WriteLine($"Updating '{updateSet.PackageId}' from {oldVersionsString} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
+            Console.WriteLine($"Updating '{updateSet.PackageId}' from {oldVersions.JoinWithCommas()} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
         }
     }
 }
