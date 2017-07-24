@@ -40,8 +40,14 @@ namespace NuKeeper.NuGet.Process
         private string GetNuGetPath()
         {
             var profile = Environment.GetEnvironmentVariable("userprofile");
+            var nugetDir = Path.Combine(profile, ".nuget\\packages\\nuget.commandline\\4.1.0\\tools");
 
-            return Path.GetFullPath(Path.Combine(profile, ".nuget\\packages\\nuget.commandline\\4.1.0\\tools\\NuGet.exe"));
+            if (!Directory.Exists(nugetDir))
+            {
+                throw new Exception("Could not find nuget commandline path: " + nugetDir);
+            }
+
+            return Path.GetFullPath(Path.Combine(nugetDir, "NuGet.exe"));
         }
     }
 }
