@@ -34,8 +34,7 @@ namespace NuKeeper.RepositoryInspection
                     .Distinct()
                     .Where(id => id != newPackage.Id);
 
-                var errorIdString = string.Join(", ", errorIds);
-                throw new ArgumentException($"Updates must all be for package '{newPackage.Id}', got '{errorIdString}'");
+                throw new ArgumentException($"Updates must all be for package '{newPackage.Id}', got '{errorIds.JoinWithCommas()}'");
             }
 
             NewPackage = newPackage;

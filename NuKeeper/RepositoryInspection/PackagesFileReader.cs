@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -28,15 +29,25 @@ namespace NuKeeper.RepositoryInspection
 
             return packageNodeList
                 .Select(el => XmlToPackage(el, path))
+                .Where(el => el != null)
                 .ToList();
         }
 
         private static PackageInProject XmlToPackage(XElement el, PackagePath path)
         {
-            var id = el.Attribute("id")?.Value;
-            var version = el.Attribute("version")?.Value;
+            try
+            {
+                var id = el.Attribute("id")?.Value;
+                var version = el.Attribute("version")?.Value;
 
-            return new PackageInProject(id, version, path);
+                return new PackageInProject(id, version, path);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not read package from {el}: {ex.Message}");
+                return null;
+            }
         }
     }
 }
