@@ -107,6 +107,17 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(packages.Select(p => p.Path), Is.All.EqualTo(path));
         }
 
+        [Test]
+        public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
+        {
+            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion");
+            var packages = PackagesFileReader.Read(badVersion, TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(1));
+            PackageAssert.IsPopulated(packages[0]);
+        }
+
         private PackagePath TempPath()
         {
             return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
