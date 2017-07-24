@@ -49,6 +49,7 @@ namespace NuKeeper.Configuration
             return new RepositoryModeSettings
             {
                 GithubUri = settings.GithubRepositoryUri,
+                GithubUser = settings.GithubUser,
                 GithubToken = settings.GithubToken,
                 GithubApiBase = settings.GithubApiEndpoint,
                 RepositoryName = repoName,
@@ -59,6 +60,7 @@ namespace NuKeeper.Configuration
 
         private static OrganisationModeSettings ReadSettingsForOrganisationMode(CommandLineArguments settings)
         {
+            var githubUser = settings.GithubUser;
             var githubToken = settings.GithubToken;
             var githubHost = settings.GithubApiEndpoint;
             var githubOrganisationName = settings.GithubOrganisationName;
@@ -66,6 +68,7 @@ namespace NuKeeper.Configuration
             return new OrganisationModeSettings
             {
                 GithubApiBase = githubHost,
+                GithubUser = githubUser,
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository

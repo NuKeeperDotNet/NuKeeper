@@ -23,6 +23,7 @@ namespace NuKeeper.Configuration
         public Uri GithubUri { get; set; }
 
         public Uri GithubApiBase { get; set; }
+        public string GithubUser { get; set; }
         public string GithubToken { get; set; }
 
         public string RepositoryOwner { get; set; }

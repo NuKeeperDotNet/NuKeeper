@@ -8,6 +8,9 @@ namespace NuKeeper.Configuration
         [CommandLine("mode", "m"), Required]
         public string Mode;
 
+        [CommandLine("github_user", "u"), Required, SensitiveInformation]
+        public string GithubUser;
+
         [CommandLine("github_token", "t"), Required, SensitiveInformation]
         public string GithubToken;
 

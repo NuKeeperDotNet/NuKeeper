@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.NuGet.Api;
 
@@ -27,7 +28,11 @@ namespace NuKeeper
             var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
             var updateSelection = new PackageUpdateSelection(settings.MaxPullRequestsPerRepository);
 
-            RunAll(repositoryDiscovery, lookups, updateSelection, github)
+            // get some storage space
+            var tempDir = TempFiles.MakeUniqueTemporaryPath();
+            var git = new LibGit2SharpDriver(tempDir, settings.GithubUser, settings.GithubToken);
+
+            RunAll(repositoryDiscovery, lookups, updateSelection, github, git, tempDir)
                 .GetAwaiter().GetResult();
 
             return 0;
@@ -37,7 +42,9 @@ namespace NuKeeper
             GithubRepositoryDiscovery repositoryDiscovery,
             IPackageUpdatesLookup updatesLookup,
             IPackageUpdateSelection updateSelection,
-            IGithub github)
+            IGithub github,
+            IGitDriver git,
+            string tempDir)
         {
             var repositories = await repositoryDiscovery.GetRepositories();
 
@@ -45,7 +52,8 @@ namespace NuKeeper
             {
                 try
                 {
-                    var repositoryUpdater = new RepositoryUpdater(updatesLookup, github, updateSelection, repository);
+
+                    var repositoryUpdater = new RepositoryUpdater(updatesLookup, github, git, tempDir, updateSelection, repository);
                     await repositoryUpdater.Run();
                 }
                 catch (Exception e)

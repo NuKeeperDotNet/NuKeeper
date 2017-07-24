@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace NuKeeper
 {
@@ -12,7 +13,8 @@ namespace NuKeeper
 
         public static void DeleteExistingTempDirs()
         {
-            var dirs = Directory.EnumerateDirectories(NuKeeperTempFilesPath());
+            var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
+            var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
             foreach (var dir in dirs)
             {
                 TryDelete(dir);
@@ -32,13 +34,13 @@ namespace NuKeeper
             return uniquePath;
         }
 
-        public static void TryDelete(string tempDir)
+        public static void TryDelete(DirectoryInfo tempDir)
         {
             Console.WriteLine($"Attempting delete of temp dir {tempDir}");
 
             try
             {
-                Directory.Delete(tempDir, true);
+                tempDir.Delete(true);
             }
             catch (Exception)
             {

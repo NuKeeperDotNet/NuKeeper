@@ -6,6 +6,7 @@ namespace NuKeeper.Configuration
     {
         public Uri GithubApiBase { get; set; }
         public string OrganisationName { get; set; }
+        public string GithubUser { get; set; }
         public string GithubToken { get; set; }
         public int MaxPullRequestsPerRepository { get; set;  }
     }
