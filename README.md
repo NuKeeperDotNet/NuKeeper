@@ -43,6 +43,7 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> g
 | Name                             | Alias | Default value          | Required |
 |----------------------------------|-------|------------------------|-----------------|
 | mode                             | m     |                        | Yes             |
+| github_user                      | u     |                        | Yes             |
 | github_token                     | t     |                        | Yes             |
 | github_repository_uri            | repo  |                        | Depends on mode |
 | github_organisation_name         | org   |                        | Depends on mode |
