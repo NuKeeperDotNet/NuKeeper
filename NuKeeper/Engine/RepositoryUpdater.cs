@@ -79,29 +79,36 @@ namespace NuKeeper.Engine
 
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
         {
-            EngineReport.OldVersionsToBeUpdated(updateSet);
+            try
+            {
+                EngineReport.OldVersionsToBeUpdated(updateSet);
 
-            await _git.Checkout("master");
+                await _git.Checkout("master");
 
-            // branch
-            var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+                // branch
+                var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
 
-            await _git.CheckoutNewBranch(branchName);
+                await _git.CheckoutNewBranch(branchName);
 
-            Console.WriteLine($"Using branch '{branchName}'");
+                Console.WriteLine($"Using branch '{branchName}'");
 
-            await UpdateAllCurrentUsages(updateSet);
+                await UpdateAllCurrentUsages(updateSet);
 
-            Console.WriteLine("Commiting");
+                Console.WriteLine("Commiting");
 
-            var commitMessage = CommitReport.MakeCommitMessage(updateSet);
-            await _git.Commit(commitMessage);
+                var commitMessage = CommitReport.MakeCommitMessage(updateSet);
+                await _git.Commit(commitMessage);
 
-            Console.WriteLine($"Pushing branch '{branchName}'");
-            await _git.Push("origin", branchName);
+                Console.WriteLine($"Pushing branch '{branchName}'");
+                await _git.Push("origin", branchName);
 
-            await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
-            await _git.Checkout("master");
+                await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
+                await _git.Checkout("master");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update failed: {ex.Message}");
+            }
         }
 
         private static async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
