@@ -28,7 +28,6 @@ namespace NuKeeper.Configuration
         public RepositoryModeSettings Repository { get; }
         public OrganisationModeSettings Organisation { get; }
 
-        public string GithubUser => Repository?.GithubUser ?? Organisation?.GithubUser;
         public string GithubToken => Repository?.GithubToken ?? Organisation?.GithubToken;
         public Uri GithubApiBase => Repository?.GithubApiBase ?? Organisation?.GithubApiBase;
 

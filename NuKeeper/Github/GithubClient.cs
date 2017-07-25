@@ -36,11 +36,36 @@ namespace NuKeeper.Github
             return await _client.SendAsync(request);
         }
 
+        private async Task<T> GetAsync<T>(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var uri = new Uri(_settings.GithubApiBase, path);
+            var requestUri = _requestBuilder.AddSecretToken(uri);
+            var request = _requestBuilder.ConstructRequestMessage(requestUri, HttpMethod.Get);
+
+            var response = await _client.SendAsync(request);
+
+            var content = await response.Content.ReadAsStringAsync();
+            return GithubSerialization.DeserializeObject<T>(content);
+        }
+
         private HttpContent ToJsonContent<T>(T content)
         {
             var requestBody = GithubSerialization.SerializeObject(content);
             const string gitHubApiJsonType = "application/vnd.github.v3.text+json";
             return new StringContent(requestBody, Encoding.UTF8, gitHubApiJsonType);
+        }
+
+        public async Task<string> GetCurrentUser()
+        {
+            var path = "/user";
+            var response = await GetAsync<GithubOwner>(path);
+
+            return response.Login;
         }
 
         public async Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request)

@@ -30,7 +30,8 @@ namespace NuKeeper
 
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();
-            var git = new LibGit2SharpDriver(tempDir, settings.GithubUser, settings.GithubToken);
+            var githubUser = github.GetCurrentUser().GetAwaiter().GetResult();
+            var git = new LibGit2SharpDriver(tempDir, githubUser, settings.GithubToken);
 
             RunAll(repositoryDiscovery, lookups, updateSelection, github, git, tempDir)
                 .GetAwaiter().GetResult();
