@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using LibGit2Sharp;
 
 namespace NuKeeper.Git
@@ -16,32 +15,29 @@ namespace NuKeeper.Git
             _githubUser = githubUser;
             _githubToken = githubToken;
         }
-        public Task Clone(Uri pullEndpoint)
+        public void Clone(Uri pullEndpoint)
         {
             Repository.Clone(pullEndpoint.ToString(), _repoStoragePath);
-            return Task.CompletedTask;
         }
 
-        public Task Checkout(string branchName)
+        public void Checkout(string branchName)
         {
             using (var repo = new Repository(_repoStoragePath))
             {
                 Commands.Checkout(repo, repo.Branches[branchName]);
             }
-            return Task.CompletedTask;
         }
 
-        public Task CheckoutNewBranch(string branchName)
+        public void CheckoutNewBranch(string branchName)
         {
             using (var repo = new Repository(_repoStoragePath))
             {
                 var branch = repo.CreateBranch(branchName);
                 Commands.Checkout(repo, branch);
             }
-            return Task.CompletedTask;
         }
 
-        public Task Commit(string message)
+        public void Commit(string message)
         {
             using (var repo = new Repository(_repoStoragePath))
             {
@@ -49,11 +45,9 @@ namespace NuKeeper.Git
                 Commands.Stage(repo, "*");
                 repo.Commit(message, sig, sig);
             }
-            return Task.CompletedTask;
-
         }
 
-        public Task Push(string remoteName, string branchName)
+        public void Push(string remoteName, string branchName)
         {
             using (var repo = new Repository(_repoStoragePath))
             {
@@ -74,7 +68,6 @@ namespace NuKeeper.Git
                     }
                 });
             }
-            return Task.CompletedTask;
         }
     }
 }

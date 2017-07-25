@@ -37,7 +37,7 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
-            await GitCloneToTempDir();
+            GitCloneToTempDir();
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
@@ -68,12 +68,12 @@ namespace NuKeeper.Engine
             Console.WriteLine("Done");
         }
 
-        private async Task GitCloneToTempDir()
+        private void GitCloneToTempDir()
         {
             Console.WriteLine($"Using temp dir: {_tempDir}");
             Console.WriteLine($"Git url: {_settings.GithubUri}");
 
-            await _git.Clone(_settings.GithubUri);
+            _git.Clone(_settings.GithubUri);
 
             Console.WriteLine("Git clone complete");
         }
@@ -84,12 +84,12 @@ namespace NuKeeper.Engine
             {
                 EngineReport.OldVersionsToBeUpdated(updateSet);
 
-                await _git.Checkout("master");
+                _git.Checkout("master");
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
 
-                await _git.CheckoutNewBranch(branchName);
+                 _git.CheckoutNewBranch(branchName);
 
                 Console.WriteLine($"Using branch '{branchName}'");
 
@@ -98,13 +98,13 @@ namespace NuKeeper.Engine
                 Console.WriteLine("Commiting");
 
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
-                await _git.Commit(commitMessage);
+                _git.Commit(commitMessage);
 
                 Console.WriteLine($"Pushing branch '{branchName}'");
-                await _git.Push("origin", branchName);
+                _git.Push("origin", branchName);
 
                 await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
-                await _git.Checkout("master");
+                _git.Checkout("master");
             }
             catch (Exception ex)
             {
