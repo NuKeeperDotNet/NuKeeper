@@ -5,5 +5,6 @@ namespace NuKeeper.Github
     public interface IGithub
     {
         Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request);
+        Task<string> GetCurrentUser();
     }
 }

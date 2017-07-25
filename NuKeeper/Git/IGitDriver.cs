@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.Git
 {
-    interface IGitDriver
+    public interface IGitDriver
     {
         Task Clone(Uri pullEndpoint);
 
