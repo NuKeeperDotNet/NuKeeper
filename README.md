@@ -27,7 +27,7 @@ Will PR a single repository. Point it at the https url of a github repository, l
 
 syntax:
 ```
-C:\Code\NuKeeper\NuKeeper>dotnet run mode=repository github_token=<GitToken> github_repository_uri=<RepoUrl>
+C:\Code\NuKeeper\NuKeeper>dotnet run mode=repository t=<GitToken> github_repository_uri=<RepoUrl>
 ```
 
 ### Organisation mode
@@ -35,27 +35,46 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=repository github_token=<GitToken> git
 Will discover repositories in that organisation and update them.
 
 ```
-C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation github_token=<GitToken> github_api_endpoint=https://api.github.com/ github_organisation_name=<OrgName>
+C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_endpoint=https://api.github.com/ github_organisation_name=<OrgName>
 ```
+### Environment Variables
+
+| Name                             | Required          | Overridable via CLI? |
+|----------------------------------|-------------------|----------------------|
+| NuKeeper_github_token            | If not overridden | Yes (`t`)            |
+
+ * *NuKeeper_github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token. If you have just created this environment variables, remember to restart your terminal and IDE before proceeding.
+
+### Config Json
+
+| Name                             | Required          | Overridable via CLI? |
+|----------------------------------|-------------------|----------------------|
+| github_api_endpoint              | If not overridden | Yes (`api`)          |
+| max_pull_requests_per_repository | If not overridden | Yes (`maxpr`)        |
+ 
+ *  *github_api_endpoint* This is the api endpoint for the github instance you're targetting. Defaulted to `https://api.github.com`. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
+ * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. The default value is 3.
 
 ### Command-line arguments
 
-| Name                             | Alias | Default value          | Required |
-|----------------------------------|-------|------------------------|-----------------|
-| mode                             | m     |                        | Yes             |
-| github_token                     | t     |                        | Yes             |
-| github_repository_uri            | repo  |                        | Depends on mode |
-| github_organisation_name         | org   |                        | Depends on mode |
-| github_api_endpoint              | api   | https://api.github.com | No              |
-| max_pull_requests_per_repository | maxpr | 3                      | No              |
+| Name                             | Required            |
+|----------------------------------|---------------------|
+| mode (m)                         | Yes                 |
+| t                                | No                  |
+| github_repository_uri (repo)     | Depends on mode     |
+| github_organisation_name (org)   | Depends on mode     |
+| api                              | No                  |
+| maxpr                            | No                  |
 
 
  * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
- * *github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token.
- * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode.
- * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used `repository` mode.
- *  *github_api_endpoint* This defaults to `https://api.github.com`. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
- * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. The default value is 3.
+ * *t* Overrides `NuKeeper_github_token` in environment variables.
+ * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode. Aliased to `repo`.
+ * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used `repository` mode. Aliased to `org`.
+ * *api* Overrides `github_api_endpoint` in `config.json`. Must be a fully qualified URL.
+ * *maxpr* Overrides `max_pull_requests_per_repository` in `config.json`.
+
+
 
 ## When to use NuKeeper
 
