@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Nuget.Process
 {
-    [TestFixture]
+    [TestFixture, Ignore("Windows only for now")]
     public class NugetPathTests
     {
         [Test]
