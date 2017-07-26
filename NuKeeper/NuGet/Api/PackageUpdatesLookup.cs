@@ -41,8 +41,6 @@ namespace NuKeeper.NuGet.Api
 
         private async Task<Dictionary<string, IPackageSearchMetadata>> BuildLatestVersionsDictionary(IEnumerable<PackageInProject> packages)
         {
-            var result = new Dictionary<string, IPackageSearchMetadata>();
-
             var packageIds = packages
                 .Select(p => p.Id)
                 .Distinct();
@@ -52,6 +50,8 @@ namespace NuKeeper.NuGet.Api
                 .ToList();
 
             await Task.WhenAll(lookupTasks);
+
+            var result = new Dictionary<string, IPackageSearchMetadata>();
 
             foreach (var lookupTask in lookupTasks)
             {

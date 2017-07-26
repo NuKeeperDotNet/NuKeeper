@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.ProcessRunner
+namespace NuKeeper.Integration.Tests.ProcessRunner
 {
     [TestFixture, Ignore("Windows only for now")]
     public class ExternalProcessTests
