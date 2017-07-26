@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
     [TestFixture]
-    public class BulkPackageSearchTests
+    public class BulkPackageLookupTests
     {
         [Test]
         public async Task TestEmptyList()
