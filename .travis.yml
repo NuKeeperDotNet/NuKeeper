@@ -13,6 +13,7 @@ script:
   - dotnet build
   - cd NuKeeper.Tests
   - dotnet test
+  - cd ..
   - cd NuKeeper.Integration.Tests
   - dotnet test
 
