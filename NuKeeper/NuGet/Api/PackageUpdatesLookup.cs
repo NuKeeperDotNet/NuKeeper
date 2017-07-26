@@ -47,11 +47,18 @@ namespace NuKeeper.NuGet.Api
                 .Select(p => p.Id)
                 .Distinct();
 
-            foreach (var packageId in packageIds)
+            var lookupTasks = packageIds
+                .Select(id => _packageLookup.LookupLatest(id))
+                .ToList();
+
+            await Task.WhenAll(lookupTasks);
+
+            foreach (var lookupTask in lookupTasks)
             {
-                var serverVersion = await _packageLookup.LookupLatest(packageId);
+                var serverVersion = lookupTask.Result;
                 if (serverVersion?.Identity != null)
                 {
+                    var packageId = serverVersion.Identity.Id;
                     result.Add(packageId, serverVersion);
                     Console.WriteLine($"Found latest version of {packageId}: {serverVersion.Identity.Id} {serverVersion.Identity.Version}");
                 }
