@@ -39,18 +39,18 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
 ```
 ### Environment Variables
 
-| Name                             | Required            | Overridable via CLI? |
-|----------------------------------|---------------------|----------------------|
-| NuKeeper_github_token            | Yes                 | Yes (`t`)            |
+| Name                             | Required          | Overridable via CLI? |
+|----------------------------------|-------------------|----------------------|
+| NuKeeper_github_token            | If not overridden | Yes (`t`)            |
 
  * *NuKeeper_github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token. If you have just created this environment variabled, remember to restart your terminal and IDE before proceeding.
 
 ### Config Json
 
-| Name                             | Required            | Overridable via CLI? |
-|----------------------------------|---------------------|----------------------|
-| github_api_endpoint              | Yes                 | Yes (`api`)          |
-| max_pull_requests_per_repository | Yes                 | Yes (`maxpr`)        |
+| Name                             | Required          | Overridable via CLI? |
+|----------------------------------|-------------------|----------------------|
+| github_api_endpoint              | If not overridden | Yes (`api`)          |
+| max_pull_requests_per_repository | If not overridden | Yes (`maxpr`)        |
  
  *  *github_api_endpoint* This is the api endpoint for the github instance you're targetting. Defaulted to `https://api.github.com`. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. The default value is 3.
@@ -60,11 +60,11 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
 | Name                             | Required            |
 |----------------------------------|---------------------|
 | mode (m)                         | Yes                 |
-| t                                | Yes                 |
+| t                                | No                  |
 | github_repository_uri (repo)     | Depends on mode     |
 | github_organisation_name (org)   | Depends on mode     |
-| api                              | Yes (in config.json)|
-| maxpr                            | Yes (in config.json)|
+| api                              | No                  |
+| maxpr                            | No                  |
 
 
  * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
