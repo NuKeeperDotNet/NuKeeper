@@ -48,7 +48,7 @@ namespace NuKeeper.NuGet.Api
                 .Distinct();
 
             var lookupTasks = packageIds
-                .Select(packageId => _packageLookup.LookupLatest(packageId))
+                .Select(id => _packageLookup.LookupLatest(id))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);
