@@ -5,14 +5,14 @@ namespace NuKeeper.Git
 {
     public interface IGitDriver
     {
-        Task Clone(Uri pullEndpoint);
+        void Clone(Uri pullEndpoint);
 
-        Task Checkout(string branchName);
+        void Checkout(string branchName);
 
-        Task CheckoutNewBranch(string branchName);
+        void CheckoutNewBranch(string branchName);
 
-        Task Commit(string message);
+        void Commit(string message);
 
-        Task Push(string remoteName, string branchName);
+        void Push(string remoteName, string branchName);
     }
 }
