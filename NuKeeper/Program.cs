@@ -30,10 +30,8 @@ namespace NuKeeper
 
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();
-            var githubUser = github.GetCurrentUser().GetAwaiter().GetResult();
-            var git = new LibGit2SharpDriver(tempDir, githubUser, settings.GithubToken);
 
-            RunAll(repositoryDiscovery, lookups, updateSelection, github, git, tempDir)
+            RunAll(repositoryDiscovery, lookups, updateSelection, github, tempDir, settings.GithubToken)
                 .GetAwaiter().GetResult();
 
             return 0;
@@ -44,16 +42,18 @@ namespace NuKeeper
             IPackageUpdatesLookup updatesLookup,
             IPackageUpdateSelection updateSelection,
             IGithub github,
-            IGitDriver git,
-            string tempDir)
+            string tempDir,
+            string githubToken)
         {
+            var githubUser = await github.GetCurrentUser();
+            var git = new LibGit2SharpDriver(tempDir, githubUser, githubToken);
+
             var repositories = await repositoryDiscovery.GetRepositories();
 
             foreach (var repository in repositories)
             {
                 try
                 {
-
                     var repositoryUpdater = new RepositoryUpdater(updatesLookup, github, git, tempDir, updateSelection, repository);
                     await repositoryUpdater.Run();
                 }
