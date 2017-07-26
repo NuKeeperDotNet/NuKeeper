@@ -6,6 +6,6 @@ namespace NuKeeper.NuGet.Api
 {
     public interface IPackageUpdatesLookup
     {
-        Task<List<PackageUpdateSet>> FindUpdatesForPackages(List<PackageInProject> packages);
+        Task<List<PackageUpdateSet>> FindUpdatesForPackages(IEnumerable<PackageInProject> packages);
     }
 }

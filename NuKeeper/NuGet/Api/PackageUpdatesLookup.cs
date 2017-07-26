@@ -16,7 +16,7 @@ namespace NuKeeper.NuGet.Api
             _packageLookup = packageLookup;
         }
 
-        public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(List<PackageInProject> packages)
+        public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IEnumerable<PackageInProject> packages)
         {
             var latestVersions = await BuildLatestVersionsDictionary(packages);
             var results = new List<PackageUpdateSet>();
