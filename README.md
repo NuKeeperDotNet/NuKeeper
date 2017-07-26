@@ -43,7 +43,7 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
 |----------------------------------|-------------------|----------------------|
 | NuKeeper_github_token            | If not overridden | Yes (`t`)            |
 
- * *NuKeeper_github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token. If you have just created this environment variabled, remember to restart your terminal and IDE before proceeding.
+ * *NuKeeper_github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token. If you have just created this environment variables, remember to restart your terminal and IDE before proceeding.
 
 ### Config Json
 
