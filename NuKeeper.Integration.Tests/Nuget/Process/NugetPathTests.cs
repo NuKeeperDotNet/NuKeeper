@@ -11,6 +11,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Process
         {
             var nugetPath = NugetPath.Find();
 
+            Assert.That(nugetPath, Is.Not.Empty);
             FileAssert.Exists(nugetPath);
         }
     }
