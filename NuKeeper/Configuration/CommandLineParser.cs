@@ -12,6 +12,7 @@ namespace NuKeeper.Configuration
             CommandLineArguments settings;
             try
             {
+                 Config.UseJson("config.json");
                  settings = Config.Populate<CommandLineArguments>(args);
             }
             catch(EasyConfigException e)

@@ -1,4 +1,5 @@
 using System;
+using EasyConfig;
 using EasyConfig.Attributes;
 
 namespace NuKeeper.Configuration
@@ -8,7 +9,8 @@ namespace NuKeeper.Configuration
         [CommandLine("mode", "m"), Required]
         public string Mode;
 
-        [CommandLine("github_token", "t"), Required, SensitiveInformation]
+        [Environment("NuKeeper_github_token"), Required, SensitiveInformation]
+        [OverriddenBy(ConfigurationSources.CommandLine, "t")]
         public string GithubToken;
 
         [CommandLine("github_repository_uri", "repo")]
@@ -17,10 +19,12 @@ namespace NuKeeper.Configuration
         [CommandLine("github_organisation_name", "org")]
         public string GithubOrganisationName;
 
-        [CommandLine("github_api_endpoint", "api"), Default("https://api.github.com")]
+        [JsonConfig("github_api_endpoint"), Required]
+        [OverriddenBy(ConfigurationSources.CommandLine, "api")]
         public Uri GithubApiEndpoint;
 
-        [CommandLine("max_pull_requests_per_repository", "maxpr"), Default(3)]
+        [JsonConfig("max_pull_requests_per_repository"), Required]
+        [OverriddenBy(ConfigurationSources.CommandLine, "maxpr")]
         public int MaxPullRequestsPerRepository;
     }
 }
