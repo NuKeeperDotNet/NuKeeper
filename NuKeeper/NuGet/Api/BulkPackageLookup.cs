@@ -6,11 +6,11 @@ using NuGet.Protocol.Core.Types;
 
 namespace NuKeeper.NuGet.Api
 {
-    public class BulkPackageSearch
+    public class BulkPackageLookup: IBulkPackageLookup
     {
         private readonly IApiPackageLookup _packageLookup;
 
-        public BulkPackageSearch(IApiPackageLookup packageLookup)
+        public BulkPackageLookup(IApiPackageLookup packageLookup)
         {
             _packageLookup = packageLookup;
         }

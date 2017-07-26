@@ -7,11 +7,11 @@ namespace NuKeeper.NuGet.Api
 {
     public class PackageUpdatesLookup : IPackageUpdatesLookup
     {
-        private readonly BulkPackageSearch _bulkSearch;
+        private readonly IBulkPackageLookup _bulkPackageLookup;
 
-        public PackageUpdatesLookup(IApiPackageLookup packageLookup)
+        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup)
         {
-            _bulkSearch = new BulkPackageSearch(packageLookup);
+            _bulkPackageLookup = bulkPackageLookup;
         }
 
         public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IEnumerable<PackageInProject> packages)
@@ -20,7 +20,7 @@ namespace NuKeeper.NuGet.Api
                 .Select(p => p.Id)
                 .Distinct();
 
-            var latestVersions = await _bulkSearch.LatestVersions(packageIds);
+            var latestVersions = await _bulkPackageLookup.LatestVersions(packageIds);
 
             var results = new List<PackageUpdateSet>();
 

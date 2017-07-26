@@ -13,7 +13,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         [Test]
         public async Task TestEmptyList()
         {
-            var lookup = new BulkPackageSearch(new ApiPackageLookup());
+            var lookup = new BulkPackageLookup(new ApiPackageLookup());
 
             var results = await lookup.LatestVersions(Enumerable.Empty<string>());
 
@@ -26,7 +26,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var packages = new List<string> { "Moq" };
 
-            var lookup = new BulkPackageSearch(new ApiPackageLookup());
+            var lookup = new BulkPackageLookup(new ApiPackageLookup());
 
             var results = await lookup.LatestVersions(packages);
 
@@ -44,7 +44,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
                 "Newtonsoft.Json"
             };
 
-            var lookup = new BulkPackageSearch(new ApiPackageLookup());
+            var lookup = new BulkPackageLookup(new ApiPackageLookup());
 
             var results = await lookup.LatestVersions(packages);
 
@@ -65,7 +65,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
                 Guid.NewGuid().ToString()
             };
 
-            var lookup = new BulkPackageSearch(new ApiPackageLookup());
+            var lookup = new BulkPackageLookup(new ApiPackageLookup());
 
             var results = await lookup.LatestVersions(packages);
 

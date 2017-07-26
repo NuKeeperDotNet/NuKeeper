@@ -22,7 +22,7 @@ namespace NuKeeper
                 return 1;
             }
 
-            var lookups = new PackageUpdatesLookup(new ApiPackageLookup());
+            var lookups = new PackageUpdatesLookup(new BulkPackageLookup(new ApiPackageLookup()));
             var github = new GithubClient(settings);
 
             var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
