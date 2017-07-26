@@ -2,7 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Nuget.Process;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process

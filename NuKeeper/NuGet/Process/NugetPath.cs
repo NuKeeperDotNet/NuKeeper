@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace NuKeeper.Nuget.Process
+namespace NuKeeper.NuGet.Process
 {
     public static class NugetPath
     {
