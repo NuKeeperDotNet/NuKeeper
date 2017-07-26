@@ -1,8 +1,8 @@
 ﻿using NuKeeper.ProcessRunner;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using NuGet.Versioning;
+using NuKeeper.Nuget.Process;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
@@ -19,7 +19,7 @@ namespace NuKeeper.NuGet.Process
         public async Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
-            var nuget = GetNuGetPath();
+            var nuget = NugetPath.Find();
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
@@ -35,19 +35,6 @@ namespace NuKeeper.NuGet.Process
             {
                 throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
             }
-        }
-
-        private string GetNuGetPath()
-        {
-            var profile = Environment.GetEnvironmentVariable("userprofile");
-            var nugetDir = Path.Combine(profile, ".nuget\\packages\\nuget.commandline\\4.1.0\\tools");
-
-            if (!Directory.Exists(nugetDir))
-            {
-                throw new Exception("Could not find nuget commandline path: " + nugetDir);
-            }
-
-            return Path.GetFullPath(Path.Combine(nugetDir, "NuGet.exe"));
         }
     }
 }
