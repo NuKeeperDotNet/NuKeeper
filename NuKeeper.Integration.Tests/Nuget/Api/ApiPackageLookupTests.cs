@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Nuget.Api
+namespace NuKeeper.Integration.Tests.Nuget.Api
 {
     [TestFixture]
     public class ApiPackageLookupTests
