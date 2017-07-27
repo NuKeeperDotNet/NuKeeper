@@ -6,7 +6,7 @@
     <AssemblyName>NuKeeper</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EasyConfig.Net.Core" Version="2.0.58" />
+    <PackageReference Include="EasyConfig.Net.Core" Version="2.0.60" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.0-preview-0033" />
