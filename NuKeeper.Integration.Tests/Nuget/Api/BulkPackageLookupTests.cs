@@ -55,7 +55,20 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         }
 
         [Test]
-        public async Task IsNotBrokenByInvalidPackages()
+        public async Task InvalidPackageIsIgnored()
+        {
+            var packages = new List<string> { Guid.NewGuid().ToString() };
+
+            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+
+            var results = await lookup.LatestVersions(packages);
+
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
+        public async Task ValidPackagesWorkDespiteInvalidPackages()
         {
             var packages = new List<string>
             {
@@ -71,6 +84,8 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
+            Assert.That(results, Does.ContainKey("Moq"));
+            Assert.That(results, Does.ContainKey("Newtonsoft.Json"));
         }
     }
 }
