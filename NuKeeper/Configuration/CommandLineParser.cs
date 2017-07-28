@@ -51,7 +51,7 @@ namespace NuKeeper.Configuration
             {
                 GithubUri = settings.GithubRepositoryUri,
                 GithubToken = settings.GithubToken,
-                GithubApiBase = settings.GithubApiEndpoint,
+                GithubApiBase = EnsureTrailingSlash(settings.GithubApiEndpoint),
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
@@ -66,11 +66,28 @@ namespace NuKeeper.Configuration
 
             return new OrganisationModeSettings
             {
-                GithubApiBase = githubHost,
+                GithubApiBase = EnsureTrailingSlash(githubHost),
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
             };
+        }
+
+        private static Uri EnsureTrailingSlash(Uri uri)
+        {
+            if (uri == null)
+            {
+                return null;
+            }
+
+            var path = uri.ToString();
+
+            if (path.EndsWith("/"))
+            {
+                return uri;
+            }
+
+            return new Uri(path + "/");
         }
     }
 }
