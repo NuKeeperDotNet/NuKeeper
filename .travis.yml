@@ -11,10 +11,7 @@ addons:
 script:
   - dotnet restore
   - dotnet build
-  - cd NuKeeper.Tests
-  - dotnet test
-  - cd ..
-  - cd NuKeeper.Integration.Tests
-  - dotnet test
+  - dotnet test NuKeeper.Tests/NuKeeper.Tests.csproj
+  - dotnet test NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
 
  
