@@ -17,7 +17,11 @@ namespace NuKeeper.Git
         }
         public void Clone(Uri pullEndpoint)
         {
-            Repository.Clone(pullEndpoint.ToString(), _repoStoragePath);
+            Repository.Clone(pullEndpoint.ToString(), _repoStoragePath,
+                new CloneOptions
+                {
+                    CredentialsProvider = UsernamePasswordCredentials
+                });
         }
 
         public void Checkout(string branchName)
@@ -60,14 +64,21 @@ namespace NuKeeper.Git
 
                 repo.Network.Push(localBranch, new PushOptions
                 {
-                    CredentialsProvider = (_, __, ___) => new UsernamePasswordCredentials
-                    {
-
-                        Username = _githubUser,
-                        Password = _githubToken
-                    }
+                    CredentialsProvider = UsernamePasswordCredentials
                 });
             }
+        }
+
+        private UsernamePasswordCredentials UsernamePasswordCredentials(
+            string url, string usernameFromUrl, 
+            SupportedCredentialTypes types)
+        {
+            return new UsernamePasswordCredentials
+            {
+
+                Username = _githubUser,
+                Password = _githubToken
+            };
         }
     }
 }
