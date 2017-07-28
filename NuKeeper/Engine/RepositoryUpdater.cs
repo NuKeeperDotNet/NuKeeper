@@ -12,7 +12,7 @@ using NuKeeper.RepositoryInspection;
 namespace NuKeeper.Engine
 {
     public class RepositoryUpdater
-    {
+    {   
         private readonly IPackageUpdatesLookup _packageLookup;
         private readonly RepositoryModeSettings _settings;
         private readonly string _tempDir;
@@ -103,7 +103,8 @@ namespace NuKeeper.Engine
                 Console.WriteLine($"Pushing branch '{branchName}'");
                 _git.Push("origin", branchName);
 
-                await MakeGitHubPullRequest(updateSet, commitMessage, branchName);
+                var prTitle = CommitReport.MakePullRequestTitle(updateSet);
+                await MakeGitHubPullRequest(updateSet, prTitle, branchName);
                 _git.Checkout("master");
             }
             catch (Exception ex)

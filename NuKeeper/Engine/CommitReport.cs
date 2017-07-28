@@ -5,10 +5,16 @@ using NuKeeper.RepositoryInspection;
 namespace NuKeeper.Engine
 {
     public static class CommitReport
-    { 
-        public static string MakeCommitMessage(PackageUpdateSet updates)
+    {
+        private const string CommitEmoji = "package";
+        public static string MakePullRequestTitle(PackageUpdateSet updates)
         {
             return $"Automatic update of {updates.PackageId} to {updates.NewVersion}";
+        }
+
+        public static string MakeCommitMessage(PackageUpdateSet updates)
+        {
+            return $":{CommitEmoji}: {MakePullRequestTitle(updates)}";
         }
 
         public static string MakeCommitDetails(PackageUpdateSet updates)
