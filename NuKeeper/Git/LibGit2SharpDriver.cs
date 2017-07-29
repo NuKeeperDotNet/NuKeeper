@@ -11,6 +11,21 @@ namespace NuKeeper.Git
 
         public LibGit2SharpDriver(string repoStoragePath, string githubUser, string githubToken)
         {
+            if (string.IsNullOrWhiteSpace(repoStoragePath))
+            {
+                throw new ArgumentNullException(nameof(repoStoragePath));
+            }
+
+            if (string.IsNullOrWhiteSpace(githubUser))
+            {
+                throw new ArgumentNullException(nameof(githubUser));
+            }
+
+            if (string.IsNullOrWhiteSpace(githubToken))
+            {
+                throw new ArgumentNullException(nameof(githubToken));
+            }
+
             _repoStoragePath = repoStoragePath;
             _githubUser = githubUser;
             _githubToken = githubToken;
