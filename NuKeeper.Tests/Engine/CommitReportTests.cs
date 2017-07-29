@@ -11,6 +11,18 @@ namespace NuKeeper.Tests.Engine
     public class CommitReportTests
     {
         [Test]
+        public void MarkPullRequestTitle_UpdateIsCorrect()
+        {
+            var updates = UpdateSetFor(MakePackageForV110());
+
+            var report = CommitReport.MakePullRequestTitle(updates);
+
+            Assert.That(report, Is.Not.Null);
+            Assert.That(report, Is.Not.Empty);
+            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+        }
+
+        [Test]
         public void MakeCommitMessage_OneUpdateIsCorrect()
         {
             var updates = UpdateSetFor(MakePackageForV110());
@@ -19,7 +31,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -31,7 +43,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -43,7 +55,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
         }
 
 
