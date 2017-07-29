@@ -108,7 +108,7 @@ namespace NuKeeper.Engine
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Update failed: {ex.Message}");
+                Console.WriteLine($"Update failed: {ex.GetType().Name} {ex.Message}");
             }
         }
 
