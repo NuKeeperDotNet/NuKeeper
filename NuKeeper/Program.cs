@@ -61,7 +61,7 @@ namespace NuKeeper
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine($"Repo failed {e.GetType().Name}: {e.Message}");
                 }
             }
         }

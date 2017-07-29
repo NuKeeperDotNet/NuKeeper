@@ -11,13 +11,32 @@ namespace NuKeeper.Git
 
         public LibGit2SharpDriver(string repoStoragePath, string githubUser, string githubToken)
         {
+            if (string.IsNullOrWhiteSpace(repoStoragePath))
+            {
+                throw new ArgumentNullException(nameof(repoStoragePath));
+            }
+
+            if (string.IsNullOrWhiteSpace(githubUser))
+            {
+                throw new ArgumentNullException(nameof(githubUser));
+            }
+
+            if (string.IsNullOrWhiteSpace(githubToken))
+            {
+                throw new ArgumentNullException(nameof(githubToken));
+            }
+
             _repoStoragePath = repoStoragePath;
             _githubUser = githubUser;
             _githubToken = githubToken;
         }
         public void Clone(Uri pullEndpoint)
         {
-            Repository.Clone(pullEndpoint.ToString(), _repoStoragePath);
+            Repository.Clone(pullEndpoint.ToString(), _repoStoragePath,
+                new CloneOptions
+                {
+                    CredentialsProvider = UsernamePasswordCredentials
+                });
         }
 
         public void Checkout(string branchName)
@@ -60,14 +79,21 @@ namespace NuKeeper.Git
 
                 repo.Network.Push(localBranch, new PushOptions
                 {
-                    CredentialsProvider = (_, __, ___) => new UsernamePasswordCredentials
-                    {
-
-                        Username = _githubUser,
-                        Password = _githubToken
-                    }
+                    CredentialsProvider = UsernamePasswordCredentials
                 });
             }
+        }
+
+        private UsernamePasswordCredentials UsernamePasswordCredentials(
+            string url, string usernameFromUrl, 
+            SupportedCredentialTypes types)
+        {
+            return new UsernamePasswordCredentials
+            {
+
+                Username = _githubUser,
+                Password = _githubToken
+            };
         }
     }
 }
