@@ -46,6 +46,8 @@ namespace NuKeeper
             string githubToken)
         {
             var githubUser = await github.GetCurrentUser();
+            Console.WriteLine($"Read github user '{githubUser}'");
+
             var git = new LibGit2SharpDriver(tempDir, githubUser, githubToken);
 
             var repositories = await repositoryDiscovery.GetRepositories();

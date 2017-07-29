@@ -48,8 +48,13 @@ namespace NuKeeper.Github
             var request = _requestBuilder.ConstructRequestMessage(requestUri, HttpMethod.Get);
 
             var response = await _client.SendAsync(request);
-
             var content = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Get failed: {response.StatusCode} {content}");
+            }
+
             return GithubSerialization.DeserializeObject<T>(content);
         }
 
@@ -62,10 +67,10 @@ namespace NuKeeper.Github
 
         public async Task<string> GetCurrentUser()
         {
-            var path = "/user";
+            var path = "user";
             var response = await GetAsync<GithubOwner>(path);
 
-            return response.Login;
+            return response?.Login;
         }
 
         public async Task<OpenPullRequestResult> OpenPullRequest(OpenPullRequestRequest request)
