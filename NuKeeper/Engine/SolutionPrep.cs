@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.NuGet.Process;
@@ -16,7 +16,7 @@ namespace NuKeeper.Engine
 
         public async Task Restore(string baseDir)
         {
-            var solutions = Directory.GetFiles(baseDir, "*.sln", SearchOption.AllDirectories);
+            var solutions = FindSolutions(baseDir);
 
             foreach (var slnPath in solutions)
             {
@@ -24,6 +24,11 @@ namespace NuKeeper.Engine
                 var file = Path.GetFileName(slnPath);
                 await _slnRestore.Restore(path, file);
             }
+        }
+
+        private static IEnumerable<string> FindSolutions(string baseDir)
+        {
+            return Directory.GetFiles(baseDir, "*.sln", SearchOption.AllDirectories);
         }
     }
 }

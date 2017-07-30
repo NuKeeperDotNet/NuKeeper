@@ -71,11 +71,9 @@ namespace NuKeeper.Engine
             Console.WriteLine("Done");
         }
 
-        private async Task PrepareSolutions(List<PackageUpdateSet> updates)
+        private async Task PrepareSolutions(IEnumerable<PackageUpdateSet> updates)
         {
-            var usesPackagesFile =
-                updates.Any(u => u.CurrentPackages.Any(
-                    p => p.Path.PackageReferenceType == PackageReferenceType.PackagesConfig));
+            var usesPackagesFile = updates.Any(u => u.UsesPackagesConfigFile());
 
             var restore = usesPackagesFile ? (ISolutionRestore) new NugetRestore() : new DotNetRestore();
 
