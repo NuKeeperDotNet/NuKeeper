@@ -4,19 +4,18 @@ using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class NugetRestore: ISolutionRestore
+    public class DotNetRestore: ISolutionRestore
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NugetRestore(IExternalProcess externalProcess = null)
+        public DotNetRestore(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
         public async Task Restore(string dirName, string solutionName)
         {
-            var nuget = NugetPath.Find();
-            var updateCommand = $"cd {dirName} & {nuget} restore {solutionName}";
+            var updateCommand = $"cd {dirName} & dotnet restore {solutionName}";
             await RunExternalCommand(updateCommand);
         }
 
