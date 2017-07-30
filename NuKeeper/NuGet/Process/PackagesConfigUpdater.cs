@@ -22,17 +22,7 @@ namespace NuKeeper.NuGet.Process
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
             Console.WriteLine(updateCommand);
-            await RunExternalCommand(updateCommand);
-        }
-
-        private async Task RunExternalCommand(string command)
-        {
-            var result = await _externalProcess.Run(command);
-
-            if (!result.Success)
-            {
-                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
-            }
+            await _externalProcess.Run(updateCommand, true);
         }
     }
 }

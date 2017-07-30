@@ -19,19 +19,8 @@ namespace NuKeeper.NuGet.Process
 
             var nuget = NugetPath.Find();
             var updateCommand = $"cd {dirName} & {nuget} restore {solutionName}";
-            await RunExternalCommand(updateCommand);
+            await _externalProcess.Run(updateCommand, true);
             Console.WriteLine("restore complete");
         }
-
-        private async Task RunExternalCommand(string command)
-        {
-            var result = await _externalProcess.Run(command);
-
-            if (!result.Success)
-            {
-                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
-            }
-        }
-
     }
 }
