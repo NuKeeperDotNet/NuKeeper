@@ -57,7 +57,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            await PrepareSolutions(updates);
+            await RestoreSolutions(updates);
 
             var targetUpdates = _updateSelection.SelectTargets(updates);
 
@@ -71,14 +71,21 @@ namespace NuKeeper.Engine
             Console.WriteLine("Done");
         }
 
-        private async Task PrepareSolutions(IEnumerable<PackageUpdateSet> updates)
+        private async Task RestoreSolutions(IEnumerable<PackageUpdateSet> updates)
         {
-            var usesPackagesFile = updates.Any(u => u.UsesPackagesConfigFile());
+            var restoreCommand = CommandForPackageType(updates);
+            var solutionsRestore = new SolutionsRestore(restoreCommand);
+            await solutionsRestore.Restore(_tempDir);
+        }
 
-            var restore = usesPackagesFile ? (ISolutionRestore) new NugetRestore() : new DotNetRestore();
+        private static ISolutionRestoreCommand CommandForPackageType(IEnumerable<PackageUpdateSet> updates)
+        {
+            if (updates.Any(u => u.UsesPackagesConfigFile()))
+            {
+                return new NugetRestoreCommand();
+            }
 
-            var solutionPrep = new SolutionPrep(restore);
-            await solutionPrep.Restore(_tempDir);
+            return new DotNetRestoreCommand();
         }
 
         private void GitCloneToTempDir()
