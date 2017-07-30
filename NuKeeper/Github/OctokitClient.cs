@@ -15,9 +15,10 @@ namespace NuKeeper.Github
         
         public OctokitClient(Settings settings)
         {
-            var client = new GitHubClient(new ProductHeaderValue("NuKeeper"), settings.GithubApiBase);
-            client.Credentials = new Credentials(settings.GithubToken);
-            _client = client;
+            _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), settings.GithubApiBase)
+            {
+                Credentials = new Credentials(settings.GithubToken)
+            };
         }
 
         public async Task<string> GetCurrentUser()
@@ -27,22 +28,21 @@ namespace NuKeeper.Github
 
         public async Task<IReadOnlyList<GithubRepository>> GetRepositoriesForOrganisation(string organisationName)
         {
-            var organisation = await _client.Organization.Get(organisationName);
             var results = await _client.Repository.GetAllForOrg(organisationName);
             
             return results.Select(r => new GithubRepository
             {
                 Name = r.Name,
                 Owner = r.Owner.Login,
-                HtmlUrl = r.HtmlUrl    
+                HtmlUrl = r.HtmlUrl
             }).ToList().AsReadOnly();
         }
 
         public async Task OpenPullRequest(OpenPullRequestRequest request)
         {
-            var newPullRequest = new NewPullRequest(request.Data.Title, request.Data.Head, request.Data.Base);
-            newPullRequest.Body = request.Data.Body;
-            await _client.PullRequest.Create(request.RepositoryOwner, request.RepositoryOwner, newPullRequest);
+            var newPullRequest =
+                new NewPullRequest(request.Data.Title, request.Data.Head, request.Data.Base) { Body = request.Data.Body };
+            await _client.PullRequest.Create(request.RepositoryOwner, request.RepositoryName, newPullRequest);
         }
     }
 }
