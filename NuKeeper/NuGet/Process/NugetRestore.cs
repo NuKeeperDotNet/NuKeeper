@@ -15,9 +15,12 @@ namespace NuKeeper.NuGet.Process
 
         public async Task Restore(string dirName, string solutionName)
         {
+            Console.WriteLine($"nuget restore {solutionName}");
+
             var nuget = NugetPath.Find();
             var updateCommand = $"cd {dirName} & {nuget} restore {solutionName}";
             await RunExternalCommand(updateCommand);
+            Console.WriteLine("restore complete");
         }
 
         private async Task RunExternalCommand(string command)

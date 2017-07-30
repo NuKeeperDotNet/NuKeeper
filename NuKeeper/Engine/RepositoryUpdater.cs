@@ -73,11 +73,11 @@ namespace NuKeeper.Engine
 
         private async Task PrepareSolutions(List<PackageUpdateSet> updates)
         {
-            var usesPackagedConfigFile =
+            var usesPackagesFile =
                 updates.Any(u => u.CurrentPackages.Any(
                     p => p.Path.PackageReferenceType == PackageReferenceType.PackagesConfig));
 
-            var restore = usesPackagedConfigFile ? (ISolutionRestore) new NugetRestore() : new DotNetRestore();
+            var restore = usesPackagesFile ? (ISolutionRestore) new NugetRestore() : new DotNetRestore();
 
             var solutionPrep = new SolutionPrep(restore);
             await solutionPrep.Restore(_tempDir);
