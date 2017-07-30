@@ -1,5 +1,5 @@
 ﻿using System;
-using NuKeeper.Github;
+using NuKeeper.Github.Models;
 
 namespace NuKeeper.Configuration
 {
@@ -15,7 +15,7 @@ namespace NuKeeper.Configuration
             GithubApiBase = githubApi;
             GithubToken = githubToken;
             GithubUri = new Uri(repository.HtmlUrl);
-            RepositoryOwner = repository.Owner.Login;
+            RepositoryOwner = repository.Owner;
             RepositoryName = repository.Name;
             MaxPullRequestsPerRepository = maxPullRequestsPerRepository;
         }

@@ -1,4 +1,4 @@
-﻿namespace NuKeeper.Github
+﻿namespace NuKeeper.Github.Models
 {
     public class PullRequestData
     {

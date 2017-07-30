@@ -10,6 +10,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.0-preview-0033" />
+    <PackageReference Include="Octokit" Version="0.24.1-alpha0001" />
   </ItemGroup>
   <ItemGroup>
     <None Update="config.json">
