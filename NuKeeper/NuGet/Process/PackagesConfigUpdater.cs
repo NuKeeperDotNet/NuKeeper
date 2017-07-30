@@ -20,7 +20,6 @@ namespace NuKeeper.NuGet.Process
             var dirName = currentPackage.Path.FullDirectory;
             var nuget = NugetPath.Find();
             var updateCommand = $"cd {dirName}"
-                + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
             Console.WriteLine(updateCommand);
             await RunExternalCommand(updateCommand);

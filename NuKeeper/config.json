@@ -1,4 +1,4 @@
 ﻿{
-  "github_api_endpoint": "https://api.github.com",
+  "github_api_endpoint": "https://github.com",
   "max_pull_requests_per_repository":  3  
 }
