@@ -4,7 +4,7 @@ using EasyConfig.Attributes;
 
 namespace NuKeeper.Configuration
 {
-    public class CommandLineArguments
+    public class RawConfiguration
     {
         [CommandLine("mode", "m"), Required]
         public string Mode;

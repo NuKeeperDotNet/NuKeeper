@@ -5,15 +5,15 @@ using EasyConfig.Exceptions;
 
 namespace NuKeeper.Configuration
 {
-    public static class CommandLineParser
+    public static class SettingsParser
     {
         public static Settings ReadSettings(string[] args)
         {
-            CommandLineArguments settings;
+            RawConfiguration settings;
             try
             {
                  Config.UseJson("config.json");
-                 settings = Config.Populate<CommandLineArguments>(args);
+                 settings = Config.Populate<RawConfiguration>(args);
             }
             catch(EasyConfigException e)
             {
@@ -35,7 +35,7 @@ namespace NuKeeper.Configuration
             }
         }
 
-        private static RepositoryModeSettings ReadSettingsForRepositoryMode(CommandLineArguments settings)
+        private static RepositoryModeSettings ReadSettingsForRepositoryMode(RawConfiguration settings)
         {
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
@@ -58,7 +58,7 @@ namespace NuKeeper.Configuration
             };
         }
 
-        private static OrganisationModeSettings ReadSettingsForOrganisationMode(CommandLineArguments settings)
+        private static OrganisationModeSettings ReadSettingsForOrganisationMode(RawConfiguration settings)
         {
             var githubToken = settings.GithubToken;
             var githubHost = settings.GithubApiEndpoint;
