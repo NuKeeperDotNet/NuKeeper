@@ -20,7 +20,6 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
-        private string _defaultBranch;
 
         public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
             IGithub github,
@@ -40,6 +39,7 @@ namespace NuKeeper.Engine
         public async Task Run()
         {
             GitCloneToTempDir();
+            var defaultBranch = _git.GetCurrentHead();
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
@@ -62,7 +62,7 @@ namespace NuKeeper.Engine
 
             foreach (var updateSet in targetUpdates)
             {
-                await UpdatePackageInProjects(updateSet);
+                await UpdatePackageInProjects(updateSet, defaultBranch);
             }
 
             // delete the temp folder
@@ -76,18 +76,17 @@ namespace NuKeeper.Engine
             Console.WriteLine($"Git url: {_settings.GithubUri}");
 
             _git.Clone(_settings.GithubUri);
-            _defaultBranch = _git.GetCurrentHead();
 
             Console.WriteLine("Git clone complete");
         }
 
-        private async Task UpdatePackageInProjects(PackageUpdateSet updateSet)
+        private async Task UpdatePackageInProjects(PackageUpdateSet updateSet, string defaultBranch)
         {
             try
             {
                 EngineReport.OldVersionsToBeUpdated(updateSet);
 
-                _git.Checkout(_defaultBranch);
+                _git.Checkout(defaultBranch);
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
@@ -107,8 +106,8 @@ namespace NuKeeper.Engine
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, prTitle, branchName, _defaultBranch);
-                _git.Checkout(_defaultBranch);
+                await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
+                _git.Checkout(defaultBranch);
             }
             catch (Exception ex)
             {
