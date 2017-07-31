@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EasyConfig;
-using EasyConfig.Exceptions;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Git;
