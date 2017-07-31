@@ -89,7 +89,7 @@ namespace NuKeeper.Git
         {
             using (var repo = new Repository(_repoStoragePath))
             {
-                return repo.Branches.First(b => b.IsCurrentRepositoryHead).FriendlyName;
+                return repo.Branches.Single(b => b.IsCurrentRepositoryHead).FriendlyName;
             }
         }
 
