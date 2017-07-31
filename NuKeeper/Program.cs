@@ -14,7 +14,7 @@ namespace NuKeeper
         {
             TempFiles.DeleteExistingTempDirs();
                 
-            var settings = CommandLineParser.ReadSettings(args);
+            var settings = SettingsParser.ReadSettings(args);
 
             if (settings == null)
             {
