@@ -6,7 +6,7 @@ using NuKeeper.Github;
 
 namespace NuKeeper.Engine
 {
-    public class GithubRepositoryDiscovery
+    public class GithubRepositoryDiscovery : IGithubRepositoryDiscovery
     {
         private readonly IGithub _github;
         private readonly Settings _settings;

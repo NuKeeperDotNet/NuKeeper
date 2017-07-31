@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EasyConfig;
+using EasyConfig.Exceptions;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.NuGet.Api;
+using SimpleInjector;
 
 namespace NuKeeper
 {
@@ -16,29 +19,51 @@ namespace NuKeeper
                 
             var settings = SettingsParser.ReadSettings(args);
 
-            if (settings == null)
+            if(settings == null)
             {
                 Console.WriteLine("Exiting early...");
                 return 1;
             }
 
-            var lookups = new PackageUpdatesLookup(new BulkPackageLookup(new ApiPackageLookup()));
-            var github = new OctokitClient(settings);
+            var container = RegisterContainer(settings);
 
-            var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
-            var updateSelection = new PackageUpdateSelection(settings.MaxPullRequestsPerRepository);
+            TempFiles.DeleteExistingTempDirs();
+
+            if (container.GetInstance<Settings>() == null)
+            {
+            }
 
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();
 
-            RunAll(repositoryDiscovery, lookups, updateSelection, github, tempDir, settings.GithubToken)
+            RunAll(container.GetInstance<IGithubRepositoryDiscovery>(),
+                container.GetInstance<IPackageUpdatesLookup>(),
+                container.GetInstance<IPackageUpdateSelection>(),
+                container.GetInstance<IGithub>(),
+                tempDir,
+                container.GetInstance<Settings>().GithubToken)
                 .GetAwaiter().GetResult();
 
             return 0;
         }
 
+        private static Container RegisterContainer(Settings settings)
+        {
+            var container = new Container();
+
+            container.Register(() => settings, Lifestyle.Singleton);
+            container.Register<IGithub, OctokitClient>();
+            container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
+            container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
+            container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
+            container.Register<IBulkPackageLookup, BulkPackageLookup>();
+            container.Register<IApiPackageLookup, ApiPackageLookup>();
+
+            return container;
+        }
+
         private static async Task RunAll(
-            GithubRepositoryDiscovery repositoryDiscovery,
+            IGithubRepositoryDiscovery repositoryDiscovery,
             IPackageUpdatesLookup updatesLookup,
             IPackageUpdateSelection updateSelection,
             IGithub github,
