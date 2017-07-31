@@ -20,6 +20,7 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
+        private string _defaultBranch;
 
         public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
             IGithub github,
@@ -75,6 +76,7 @@ namespace NuKeeper.Engine
             Console.WriteLine($"Git url: {_settings.GithubUri}");
 
             _git.Clone(_settings.GithubUri);
+            _defaultBranch = _git.GetCurrentHead();
 
             Console.WriteLine("Git clone complete");
         }
@@ -85,9 +87,7 @@ namespace NuKeeper.Engine
             {
                 EngineReport.OldVersionsToBeUpdated(updateSet);
 
-                var defaultBranch = _git.GetCurrentHead();
-
-                _git.Checkout(defaultBranch);
+                _git.Checkout(_defaultBranch);
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
@@ -107,8 +107,8 @@ namespace NuKeeper.Engine
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
-                _git.Checkout(defaultBranch);
+                await MakeGitHubPullRequest(updateSet, prTitle, branchName, _defaultBranch);
+                _git.Checkout(_defaultBranch);
             }
             catch (Exception ex)
             {
