@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LibGit2Sharp;
 
 namespace NuKeeper.Git
@@ -81,6 +82,14 @@ namespace NuKeeper.Git
                 {
                     CredentialsProvider = UsernamePasswordCredentials
                 });
+            }
+        }
+
+        public string GetCurrentHead()
+        {
+            using (var repo = new Repository(_repoStoragePath))
+            {
+                return repo.Branches.First(b => b.IsCurrentRepositoryHead).FriendlyName;
             }
         }
 

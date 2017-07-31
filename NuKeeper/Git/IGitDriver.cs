@@ -14,5 +14,7 @@ namespace NuKeeper.Git
         void Commit(string message);
 
         void Push(string remoteName, string branchName);
+
+        string GetCurrentHead();
     }
 }

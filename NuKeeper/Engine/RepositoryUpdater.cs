@@ -85,7 +85,9 @@ namespace NuKeeper.Engine
             {
                 EngineReport.OldVersionsToBeUpdated(updateSet);
 
-                _git.Checkout("master");
+                var defaultBranch = _git.GetCurrentHead();
+
+                _git.Checkout(defaultBranch);
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
@@ -105,8 +107,8 @@ namespace NuKeeper.Engine
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, prTitle, branchName);
-                _git.Checkout("master");
+                await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
+                _git.Checkout(defaultBranch);
             }
             catch (Exception ex)
             {
@@ -126,7 +128,7 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName)
+        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName, string baseBranch)
         {
             Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 
@@ -137,7 +139,7 @@ namespace NuKeeper.Engine
                 {
                     Title = commitMessage,
                     Body = CommitReport.MakeCommitDetails(updates),
-                    Base = "master",
+                    Base = baseBranch,
                     Head = branchName
                 },
                 RepositoryOwner = _settings.RepositoryOwner,
