@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
@@ -120,7 +121,11 @@ namespace NuKeeper.Tests.Engine
         private static IPackageUpdateSelection OneTargetSelection()
         {
             const int maxPullRequests = 1;
-            return new PackageUpdateSelection(maxPullRequests);
+            var settings = new Settings(new RepositoryModeSettings()
+            {
+                MaxPullRequestsPerRepository = maxPullRequests
+            });
+            return new PackageUpdateSelection(settings);
         }
     }
 }
