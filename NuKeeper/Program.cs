@@ -23,7 +23,7 @@ namespace NuKeeper
             }
 
             var lookups = new PackageUpdatesLookup(new BulkPackageLookup(new ApiPackageLookup()));
-            var github = new GithubClient(settings);
+            var github = new OctokitClient(settings);
 
             var repositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
             var updateSelection = new PackageUpdateSelection(settings.MaxPullRequestsPerRepository);
