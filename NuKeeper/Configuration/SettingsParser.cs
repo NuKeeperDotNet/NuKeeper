@@ -26,17 +26,23 @@ namespace NuKeeper.Configuration
             switch (settings.Mode)
             {
                 case Settings.RepositoryMode:
-                    return new Settings(ReadSettingsForRepositoryMode(settings));
+                    return ReadSettingsForRepositoryMode(settings);
                 case Settings.OrganisationMode:
-                    return new Settings(ReadSettingsForOrganisationMode(settings));
+                    return ReadSettingsForOrganisationMode(settings);
                 default:
                     Console.WriteLine($"Mode {settings.Mode} not supported");
                     return null;
             }
         }
 
-        private static RepositoryModeSettings ReadSettingsForRepositoryMode(RawConfiguration settings)
+        private static Settings ReadSettingsForRepositoryMode(RawConfiguration settings)
         {
+            if (settings.GithubRepositoryUri == null)
+            {
+                Console.WriteLine("Missing required repository uri");
+                return null;
+            }
+
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
             var path = settings.GithubRepositoryUri.AbsolutePath;
@@ -47,7 +53,7 @@ namespace NuKeeper.Configuration
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            return new RepositoryModeSettings
+            return new Settings(new RepositoryModeSettings
             {
                 GithubUri = settings.GithubRepositoryUri,
                 GithubToken = settings.GithubToken,
@@ -55,22 +61,28 @@ namespace NuKeeper.Configuration
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
-            };
+            });
         }
 
-        private static OrganisationModeSettings ReadSettingsForOrganisationMode(RawConfiguration settings)
+        private static Settings ReadSettingsForOrganisationMode(RawConfiguration settings)
         {
+            if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
+            {
+                Console.WriteLine("Missing required organisation name");
+                return null;
+            }
+
             var githubToken = settings.GithubToken;
             var githubHost = settings.GithubApiEndpoint;
             var githubOrganisationName = settings.GithubOrganisationName;
 
-            return new OrganisationModeSettings
+            return new Settings(new OrganisationModeSettings
             {
                 GithubApiBase = EnsureTrailingSlash(githubHost),
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
-            };
+            });
         }
 
         private static Uri EnsureTrailingSlash(Uri uri)
