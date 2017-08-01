@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NuKeeper.NuGet.Process
 {
-    public static class NugetPath
+    public static class NuGetPath
     {
         public static string FindExecutable()
         {
