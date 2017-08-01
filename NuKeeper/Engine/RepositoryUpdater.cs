@@ -121,7 +121,7 @@ namespace NuKeeper.Engine
             {
                 var updateCommand = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
                     ? (IUpdatePackageCommand) new DotNetUpdatePackageCommand()
-                    : new NugetUpdatePackageCommand();
+                    : new NuGetUpdatePackageCommand();
 
                 await updateCommand.Invoke(updateSet.NewVersion, current);
             }

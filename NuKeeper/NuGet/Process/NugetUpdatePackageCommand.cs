@@ -6,11 +6,11 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class NugetUpdatePackageCommand : IUpdatePackageCommand
+    public class NuGetUpdatePackageCommand : IUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
 
-        public NugetUpdatePackageCommand(IExternalProcess externalProcess = null)
+        public NuGetUpdatePackageCommand(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
