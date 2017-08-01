@@ -4,6 +4,6 @@ namespace NuKeeper.ProcessRunner
 {
     public interface IExternalProcess
     {
-        Task<ProcessOutput> Run(string command);
+        Task<ProcessOutput> Run(string command, bool throwOnError);
     }
 }

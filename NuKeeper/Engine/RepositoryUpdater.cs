@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,6 +59,8 @@ namespace NuKeeper.Engine
                 return;
             }
 
+            await RestoreSolutions(updates);
+
             var targetUpdates = _updateSelection.SelectTargets(updates);
 
             foreach (var updateSet in targetUpdates)
@@ -68,6 +71,23 @@ namespace NuKeeper.Engine
             // delete the temp folder
             TempFiles.TryDelete(new DirectoryInfo(_tempDir));
             Console.WriteLine("Done");
+        }
+
+        private async Task RestoreSolutions(IEnumerable<PackageUpdateSet> updates)
+        {
+            var restoreCommand = CommandForPackageType(updates);
+            var solutionsRestore = new SolutionsRestore(restoreCommand);
+            await solutionsRestore.Restore(_tempDir);
+        }
+
+        private static ISolutionRestoreCommand CommandForPackageType(IEnumerable<PackageUpdateSet> updates)
+        {
+            if (updates.Any(u => u.UsesPackagesConfigFile()))
+            {
+                return new NugetRestoreCommand();
+            }
+
+            return new DotNetRestoreCommand();
         }
 
         private void GitCloneToTempDir()
