@@ -6,7 +6,7 @@ namespace NuKeeper.NuGet.Process
 {
     public static class NugetPath
     {
-        public static string Find()
+        public static string FindExecutable()
         {
             var profile = Environment.GetEnvironmentVariable("userprofile");
 

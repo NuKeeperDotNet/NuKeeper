@@ -119,11 +119,11 @@ namespace NuKeeper.Engine
         {
             foreach (var current in updateSet.CurrentPackages)
             {
-                var updater = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
-                    ? (INuGetUpdater) new NuGetUpdater()
-                    : new PackagesConfigUpdater();
+                var updateCommand = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
+                    ? (IUpdatePackageCommand) new DotNetUpdatePackageCommand()
+                    : new NugetUpdatePackageCommand();
 
-                await updater.UpdatePackage(updateSet.NewVersion, current);
+                await updateCommand.Invoke(updateSet.NewVersion, current);
             }
         }
 

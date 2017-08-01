@@ -6,19 +6,19 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class PackagesConfigUpdater : INuGetUpdater
+    public class NugetUpdatePackageCommand : IUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
 
-        public PackagesConfigUpdater(IExternalProcess externalProcess = null)
+        public NugetUpdatePackageCommand(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage)
+        public async Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
-            var nuget = NugetPath.Find();
+            var nuget = NugetPath.FindExecutable();
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
