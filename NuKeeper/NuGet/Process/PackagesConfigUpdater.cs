@@ -18,7 +18,7 @@ namespace NuKeeper.NuGet.Process
         public async Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
-            var nuget = NugetPath.Find();
+            var nuget = NuGetPath.Find();
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
