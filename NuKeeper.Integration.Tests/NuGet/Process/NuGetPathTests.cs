@@ -9,7 +9,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         [Test]
         public void HasNugetPath()
         {
-            var nugetPath = NuGetPath.Find();
+            var nugetPath = NuGetPath.FindExecutable();
 
             Assert.That(nugetPath, Is.Not.Empty);
             FileAssert.Exists(nugetPath);

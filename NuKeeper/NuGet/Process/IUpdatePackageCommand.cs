@@ -4,8 +4,8 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public interface INuGetUpdater
+    public interface IUpdatePackageCommand
     {
-        Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage);
+        Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage);
     }
 }

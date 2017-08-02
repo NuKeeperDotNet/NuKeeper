@@ -1,11 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NuKeeper.ProcessRunner
 {
     public class ExternalProcess : IExternalProcess
     {
-        public async Task<ProcessOutput> Run(string command)
+        public async Task<ProcessOutput> Run(string command, bool ensureSuccess)
         {
             var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
             {
@@ -22,6 +23,11 @@ namespace NuKeeper.ProcessRunner
             process.WaitForExit();
 
             var exitCode = process.ExitCode;
+
+            if (ensureSuccess && exitCode != 0)
+            {
+                throw new Exception($"Exit code: {exitCode}\n\n{textOut}\n\n{errorOut}");
+            }
 
             return new ProcessOutput(textOut, errorOut, exitCode);
         }

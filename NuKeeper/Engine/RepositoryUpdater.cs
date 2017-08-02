@@ -119,12 +119,19 @@ namespace NuKeeper.Engine
         {
             foreach (var current in updateSet.CurrentPackages)
             {
-                var updater = current.Path.PackageReferenceType == PackageReferenceType.ProjectFile
-                    ? (INuGetUpdater) new NuGetUpdater()
-                    : new PackagesConfigUpdater();
-
-                await updater.UpdatePackage(updateSet.NewVersion, current);
+                var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
+                await updateCommand.Invoke(updateSet.NewVersion, current);
             }
+        }
+
+        private static IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
+        {
+            if (packageReferenceType == PackageReferenceType.ProjectFile)
+            {
+                return new DotNetUpdatePackageCommand();
+            }
+
+            return new NuGetUpdatePackageCommand();
         }
 
         private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName, string baseBranch)

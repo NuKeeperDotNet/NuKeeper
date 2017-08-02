@@ -6,34 +6,25 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class PackagesConfigUpdater : INuGetUpdater
+    public class NuGetUpdatePackageCommand : IUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
 
-        public PackagesConfigUpdater(IExternalProcess externalProcess = null)
+        public NuGetUpdatePackageCommand(IExternalProcess externalProcess = null)
         {
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task UpdatePackage(NuGetVersion newVersion, PackageInProject currentPackage)
+        public async Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
-            var nuget = NuGetPath.Find();
+            var nuget = NuGetPath.FindExecutable();
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
             Console.WriteLine(updateCommand);
-            await RunExternalCommand(updateCommand);
-        }
 
-        private async Task RunExternalCommand(string command)
-        {
-            var result = await _externalProcess.Run(command);
-
-            if (!result.Success)
-            {
-                throw new Exception($"Exit code: {result.ExitCode}\n\n{result.Output}\n\n{result.ErrorOutput}");
-            }
+            await _externalProcess.Run(updateCommand, true);
         }
     }
 }
