@@ -23,7 +23,7 @@ namespace NuKeeper
                 return 1;
             }
 
-            var container = Registry.RegisterContainer(settings);
+            var container = ContainerRegistration.Init(settings);
 
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();

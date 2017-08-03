@@ -6,9 +6,9 @@ using SimpleInjector;
 
 namespace NuKeeper
 {
-    public static class Registry
+    public static class ContainerRegistration
     {
-        public static Container RegisterContainer(Settings settings)
+        public static Container Init(Settings settings)
         {
             var container = new Container();
 
