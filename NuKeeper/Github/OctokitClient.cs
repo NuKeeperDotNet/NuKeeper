@@ -1,10 +1,7 @@
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Github.Models;
 using Octokit;
 
 namespace NuKeeper.Github
@@ -26,23 +23,16 @@ namespace NuKeeper.Github
             return (await _client.User.Current()).Login;
         }
 
-        public async Task<IReadOnlyList<GithubRepository>> GetRepositoriesForOrganisation(string organisationName)
+        public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
         {
             var results = await _client.Repository.GetAllForOrg(organisationName);
             
-            return results.Select(r => new GithubRepository
-            {
-                Name = r.Name,
-                Owner = r.Owner.Login,
-                HtmlUrl = r.HtmlUrl
-            }).ToList().AsReadOnly();
+            return results.ToList().AsReadOnly();
         }
 
-        public async Task OpenPullRequest(OpenPullRequestRequest request)
+        public async Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request)
         {
-            var newPullRequest =
-                new NewPullRequest(request.Data.Title, request.Data.Head, request.Data.Base) { Body = request.Data.Body };
-            await _client.PullRequest.Create(request.RepositoryOwner, request.RepositoryName, newPullRequest);
+            await _client.PullRequest.Create(repositoryOwner, repositoryName, request);
         }
     }
 }

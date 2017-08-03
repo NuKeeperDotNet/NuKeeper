@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
-using NuKeeper.Github.Models;
 using NuKeeper.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
+using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -134,25 +134,16 @@ namespace NuKeeper.Engine
             return new NuGetUpdatePackageCommand();
         }
 
-        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string commitMessage, string branchName, string baseBranch)
+        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string title, string headBranch, string baseBranch)
         {
             Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 
-            // open github PR
-            var pr = new OpenPullRequestRequest
-            {
-                Data = new PullRequestData
+            var pr = new NewPullRequest(title, headBranch, baseBranch)
                 {
-                    Title = commitMessage,
-                    Body = CommitReport.MakeCommitDetails(updates),
-                    Base = baseBranch,
-                    Head = branchName
-                },
-                RepositoryOwner = _settings.RepositoryOwner,
-                RepositoryName = _settings.RepositoryName
-            };
+                    Body = CommitReport.MakeCommitDetails(updates)
+                };
 
-            await _github.OpenPullRequest(pr);
+            await _github.OpenPullRequest(_settings.RepositoryOwner, _settings.RepositoryName, pr);
         }
     }
 }
