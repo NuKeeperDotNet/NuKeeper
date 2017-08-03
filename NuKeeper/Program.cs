@@ -28,8 +28,8 @@ namespace NuKeeper
             // get some storage space
             var tempDir = TempFiles.MakeUniqueTemporaryPath();
 
-            var runner = container.GetInstance<Runner>();
-            runner.Run(tempDir)
+            var engine = container.GetInstance<GithubEngine>();
+            engine.Run(tempDir)
                 .GetAwaiter().GetResult();
 
             return 0;

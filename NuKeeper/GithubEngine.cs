@@ -8,7 +8,7 @@ using NuKeeper.NuGet.Api;
 
 namespace NuKeeper
 {
-    public class Runner
+    public class GithubEngine
     {
         private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
         private readonly IPackageUpdatesLookup _updatesLookup;
@@ -16,7 +16,7 @@ namespace NuKeeper
         private readonly IGithub _github;
         private readonly string _githubToken;
 
-        public Runner(
+        public GithubEngine(
             IGithubRepositoryDiscovery repositoryDiscovery, 
             IPackageUpdatesLookup updatesLookup, 
             IPackageUpdateSelection updateSelection, 
