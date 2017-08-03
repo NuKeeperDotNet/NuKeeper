@@ -1,5 +1,5 @@
 ﻿using System;
-using NuKeeper.Github.Models;
+using Octokit;
 
 namespace NuKeeper.Configuration
 {
@@ -9,13 +9,13 @@ namespace NuKeeper.Configuration
         {
         }
 
-        public RepositoryModeSettings(GithubRepository repository, 
+        public RepositoryModeSettings(Repository repository, 
             Uri githubApi, string githubToken, int maxPullRequestsPerRepository)
         {
             GithubApiBase = githubApi;
             GithubToken = githubToken;
             GithubUri = new Uri(repository.HtmlUrl);
-            RepositoryOwner = repository.Owner;
+            RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;
             MaxPullRequestsPerRepository = maxPullRequestsPerRepository;
         }
