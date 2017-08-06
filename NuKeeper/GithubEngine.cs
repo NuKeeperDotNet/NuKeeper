@@ -4,6 +4,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Git;
 using NuKeeper.Github;
+using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
 namespace NuKeeper
@@ -14,6 +15,7 @@ namespace NuKeeper
         private readonly IPackageUpdatesLookup _updatesLookup;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IGithub _github;
+        private readonly ILogger _logger;
         private readonly string _githubToken;
 
         public GithubEngine(
@@ -21,19 +23,21 @@ namespace NuKeeper
             IPackageUpdatesLookup updatesLookup, 
             IPackageUpdateSelection updateSelection, 
             IGithub github,
+            ILogger logger,
             Settings settings)
         {
             _repositoryDiscovery = repositoryDiscovery;
             _updatesLookup = updatesLookup;
             _updateSelection = updateSelection;
             _github = github;
+            _logger = logger;
             _githubToken = settings.GithubToken;
         }
 
         public async Task Run(string tempDir)
         {
             var githubUser = await _github.GetCurrentUser();
-            Console.WriteLine($"Read github user '{githubUser}'");
+            _logger.Verbose($"Read github user '{githubUser}'");
 
             var git = new LibGit2SharpDriver(tempDir, githubUser, _githubToken);
 
@@ -46,9 +50,9 @@ namespace NuKeeper
                     var repositoryUpdater = new RepositoryUpdater(_updatesLookup, _github, git, tempDir, _updateSelection, repository);
                     await repositoryUpdater.Run();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Repo failed {e.GetType().Name}: {e.Message}");
+                    _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
                 }
             }
         }
