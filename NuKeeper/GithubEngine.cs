@@ -47,7 +47,10 @@ namespace NuKeeper
             {
                 try
                 {
-                    var repositoryUpdater = new RepositoryUpdater(_updatesLookup, _github, git, tempDir, _updateSelection, repository);
+                    var repositoryUpdater = new RepositoryUpdater(
+                        _updatesLookup, _github, git, _logger,
+                        tempDir, _updateSelection, repository);
+
                     await repositoryUpdater.Run();
                 }
                 catch (Exception ex)
