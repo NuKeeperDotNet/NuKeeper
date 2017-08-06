@@ -13,7 +13,7 @@ namespace NuKeeper.NuGet.Api
 
         public void LogDebug(string data) => _logger.Verbose(data);
         public void LogVerbose(string data) => _logger.Verbose(data);
-        public void LogInformation(string data) => _logger.Info(data);
+        public void LogInformation(string data) => _logger.Verbose(data);
         public void LogMinimal(string data) => _logger.Info(data);
         public void LogWarning(string data) => _logger.Info(data);
         public void LogError(string data) => _logger.Info(data);
