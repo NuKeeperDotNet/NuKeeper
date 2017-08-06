@@ -21,12 +21,12 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
-        private ILogger _logger;
+        private INuKeeperLogger _logger;
 
         public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
             IGithub github,
             IGitDriver git,
-            ILogger logger,
+            INuKeeperLogger logger,
             string tempDir,
             IPackageUpdateSelection updateSelection,
             RepositoryModeSettings settings)

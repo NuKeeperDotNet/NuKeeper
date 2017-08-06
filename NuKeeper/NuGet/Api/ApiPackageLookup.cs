@@ -12,7 +12,12 @@ namespace NuKeeper.NuGet.Api
 {
     public class ApiPackageLookup : IApiPackageLookup
     {
-        private readonly ILogger _logger = new ConsoleLogger();
+        private readonly ILogger _logger;
+
+        public ApiPackageLookup(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public async Task<IPackageSearchMetadata> LookupLatest(string packageName)
         {

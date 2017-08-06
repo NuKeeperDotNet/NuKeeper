@@ -15,7 +15,7 @@ namespace NuKeeper
         private readonly IPackageUpdatesLookup _updatesLookup;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IGithub _github;
-        private readonly ILogger _logger;
+        private readonly INuKeeperLogger _logger;
         private readonly string _githubToken;
 
         public GithubEngine(
@@ -23,7 +23,7 @@ namespace NuKeeper
             IPackageUpdatesLookup updatesLookup, 
             IPackageUpdateSelection updateSelection, 
             IGithub github,
-            ILogger logger,
+            INuKeeperLogger logger,
             Settings settings)
         {
             _repositoryDiscovery = repositoryDiscovery;

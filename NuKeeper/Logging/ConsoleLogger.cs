@@ -3,7 +3,7 @@ using NuKeeper.Configuration;
 
 namespace NuKeeper.Logging
 {
-    public class ConsoleLogger : ILogger
+    public class ConsoleLogger : INuKeeperLogger
     {
         private readonly LogLevel _logLevel;
 
