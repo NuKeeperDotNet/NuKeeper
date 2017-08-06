@@ -14,7 +14,15 @@ namespace NuKeeper.Logging
 
         public void Error(string message, Exception ex)
         {
-            Console.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+            if (ex == null)
+            {
+                Console.WriteLine(message);
+
+            }
+            else
+            {
+                Console.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+            }
         }
 
         public void Info(string message)
