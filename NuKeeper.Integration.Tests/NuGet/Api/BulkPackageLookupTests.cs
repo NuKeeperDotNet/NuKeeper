@@ -13,7 +13,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         [Test]
         public async Task TestEmptyList()
         {
-            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+            var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(Enumerable.Empty<string>());
 
@@ -26,7 +26,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var packages = new List<string> { "Moq" };
 
-            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+            var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(packages);
 
@@ -44,7 +44,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
                 "Newtonsoft.Json"
             };
 
-            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+            var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(packages);
 
@@ -59,7 +59,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var packages = new List<string> { Guid.NewGuid().ToString() };
 
-            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+            var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(packages);
 
@@ -78,7 +78,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
                 Guid.NewGuid().ToString()
             };
 
-            var lookup = new BulkPackageLookup(new ApiPackageLookup());
+            var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(packages);
 
@@ -86,6 +86,11 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results, Does.ContainKey("Moq"));
             Assert.That(results, Does.ContainKey("Newtonsoft.Json"));
+        }
+
+        private static BulkPackageLookup BuildBulkPackageLookup()
+        {
+            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger()), new NullNuKeeperLogger());
         }
     }
 }
