@@ -21,7 +21,7 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
-        private INuKeeperLogger _logger;
+        private readonly INuKeeperLogger _logger;
 
         public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
             IGithub github,
@@ -122,7 +122,7 @@ namespace NuKeeper.Engine
             }
         }
 
-        private static async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
+        private async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
         {
             foreach (var current in updateSet.CurrentPackages)
             {
@@ -131,14 +131,14 @@ namespace NuKeeper.Engine
             }
         }
 
-        private static IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
+        private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
         {
             if (packageReferenceType == PackageReferenceType.ProjectFile)
             {
-                return new DotNetUpdatePackageCommand();
+                return new DotNetUpdatePackageCommand(_logger);
             }
 
-            return new NuGetUpdatePackageCommand();
+            return new NuGetUpdatePackageCommand(_logger);
         }
 
         private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string title, string headBranch, string baseBranch)

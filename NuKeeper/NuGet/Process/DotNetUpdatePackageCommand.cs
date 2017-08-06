@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NuGet.Versioning;
+using NuKeeper.Logging;
 using NuKeeper.ProcessRunner;
 using NuKeeper.RepositoryInspection;
 
@@ -8,10 +9,12 @@ namespace NuKeeper.NuGet.Process
 {
     public class DotNetUpdatePackageCommand : IUpdatePackageCommand
     {
+        private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
 
-        public DotNetUpdatePackageCommand(IExternalProcess externalProcess = null)
+        public DotNetUpdatePackageCommand(INuKeeperLogger logger, IExternalProcess externalProcess = null)
         {
+            _logger = logger;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
@@ -19,7 +22,7 @@ namespace NuKeeper.NuGet.Process
         {
             var dirName = currentPackage.Path.FullDirectory;
             var updateCommand = $"cd {dirName} & dotnet add package {currentPackage.Id} -v {newVersion}";
-            Console.WriteLine(updateCommand);
+            _logger.Verbose(updateCommand);
 
             await _externalProcess.Run(updateCommand, true);
         }
