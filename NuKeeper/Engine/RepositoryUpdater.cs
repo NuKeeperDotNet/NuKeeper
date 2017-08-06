@@ -51,11 +51,11 @@ namespace NuKeeper.Engine
             var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
-            EngineReport.PackagesFound(packages);
+            _logger.Info(EngineReport.PackagesFound(packages));
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            EngineReport.UpdatesFound(updates);
+            _logger.Info(EngineReport.UpdatesFound(updates));
 
             if (updates.Count == 0)
             {
@@ -89,7 +89,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                EngineReport.OldVersionsToBeUpdated(updateSet);
+                _logger.Info(EngineReport.OldVersionsToBeUpdated(updateSet));
 
                 _git.Checkout(defaultBranch);
 
@@ -111,7 +111,9 @@ namespace NuKeeper.Engine
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
+                _logger.Verbose($"Making pull request '{prTitle}'");
                 await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
+
                 _git.Checkout(defaultBranch);
             }
             catch (Exception ex)
