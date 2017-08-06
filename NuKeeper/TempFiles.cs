@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using NuKeeper.Logging;
 
 namespace NuKeeper
 {
@@ -34,9 +35,9 @@ namespace NuKeeper
             return uniquePath;
         }
 
-        public static void TryDelete(DirectoryInfo tempDir)
+        public static void TryDelete(DirectoryInfo tempDir, INuKeeperLogger logger = null)
         {
-            Console.WriteLine($"Attempting delete of temp dir {tempDir}");
+            logger?.Verbose($"Attempting delete of temp dir {tempDir}");
 
             try
             {
@@ -44,7 +45,7 @@ namespace NuKeeper
             }
             catch (Exception)
             {
-                Console.WriteLine("Delete failed. Continuing");
+                logger?.Verbose("Delete failed. Continuing");
             }
         }
     }

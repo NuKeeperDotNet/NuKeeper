@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
             }
 
             // delete the temp folder
-            TempFiles.TryDelete(new DirectoryInfo(_tempDir));
+            TempFiles.TryDelete(new DirectoryInfo(_tempDir), _logger);
             _logger.Info("Done");
         }
 
