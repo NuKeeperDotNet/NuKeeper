@@ -17,7 +17,6 @@ namespace NuKeeper.Logging
             if (ex == null)
             {
                 Console.WriteLine(message);
-
             }
             else
             {
@@ -27,23 +26,26 @@ namespace NuKeeper.Logging
 
         public void Summary(string message)
         {
-            Console.WriteLine(message);
+            LogWithlevel(message, LogLevel.Summary);
         }
 
         public void Info(string message)
         {
-            if (_logLevel >= LogLevel.Info)
-            {
-                Console.WriteLine(message);
-            }
+            LogWithlevel(message, LogLevel.Info);
         }
 
         public void Verbose(string message)
         {
-            if (_logLevel >= LogLevel.Verbose)
+            LogWithlevel(message, LogLevel.Verbose);
+        }
+
+        private void LogWithlevel(string message, LogLevel level)
+        {
+            if (_logLevel >= level)
             {
                 Console.WriteLine(message);
             }
+
         }
     }
 }
