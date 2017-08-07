@@ -12,7 +12,7 @@ namespace NuKeeper.Logging
             _logLevel = settings.LogLevel;
         }
 
-        public void Error(string message, Exception ex)
+        public void Error(string message, Exception ex = null)
         {
             if (ex == null)
             {
@@ -25,9 +25,14 @@ namespace NuKeeper.Logging
             }
         }
 
+        public void Summary(string message)
+        {
+            Console.WriteLine(message);
+        }
+
         public void Info(string message)
         {
-            if (_logLevel > LogLevel.Error)
+            if (_logLevel >= LogLevel.Info)
             {
                 Console.WriteLine(message);
             }
@@ -35,7 +40,7 @@ namespace NuKeeper.Logging
 
         public void Verbose(string message)
         {
-            if (_logLevel > LogLevel.Info)
+            if (_logLevel >= LogLevel.Verbose)
             {
                 Console.WriteLine(message);
             }

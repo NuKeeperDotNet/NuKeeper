@@ -9,6 +9,10 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
         }
 
+        public void Summary(string message)
+        {
+        }
+
         public void Info(string message)
         {
         }
