@@ -2,7 +2,7 @@ using NuGet.Common;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
-    public class NullNuGetLogger : ILogger
+    internal class NullNuGetLogger : ILogger
     {
         public void LogDebug(string data)
         {

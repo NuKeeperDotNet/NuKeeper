@@ -45,7 +45,6 @@ namespace NuKeeper.Logging
             {
                 Console.WriteLine(message);
             }
-
         }
     }
 }

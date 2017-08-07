@@ -3,7 +3,7 @@ using NuKeeper.Logging;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
-    public class NullNuKeeperLogger : INuKeeperLogger
+    internal class NullNuKeeperLogger : INuKeeperLogger
     {
         public void Error(string message, Exception ex)
         {

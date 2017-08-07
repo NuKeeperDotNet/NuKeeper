@@ -99,7 +99,6 @@ namespace NuKeeper.Git
         {
             return new UsernamePasswordCredentials
             {
-
                 Username = _githubUser,
                 Password = _githubToken
             };
