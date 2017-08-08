@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,7 @@ namespace NuKeeper.Engine
 {
     public static class EngineReport
     {
-        public static string PackagesFound(List<PackageInProject> packages)
+        public static string PackagesFoundSummary(List<PackageInProject> packages)
         {
             var projectPathCount = packages
                 .Select(p => p.Path)
@@ -16,19 +15,31 @@ namespace NuKeeper.Engine
                 .Count();
 
             var packageIds = packages
+                .Select(p => p.Id)
+                .Distinct();
+
+            return $"Found {packages.Count} packages in use, {packageIds.Count()} distinct, in {projectPathCount} projects.";
+        }
+
+        public static string PackagesFoundDetails(List<PackageInProject> packages)
+        {
+            var packageIds = packages
                 .OrderBy(p => p.Id)
                 .Select(p => p.Id)
                 .Distinct()
                 .ToList();
 
-            return $"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPathCount} projects.\n{packageIds.JoinWithCommas()}";
+            return packageIds.JoinWithCommas();
         }
 
-        public static string UpdatesFound(List<PackageUpdateSet> updates)
+        public static string UpdatesFoundSummary(List<PackageUpdateSet> updates)
+        {
+            return $"Found {updates.Count} possible updates";
+        }
+
+        public static string UpdatesFoundDetails(List<PackageUpdateSet> updates)
         {
             StringBuilder result = new StringBuilder();
-
-            result.AppendLine($"Found {updates.Count} possible updates:");
 
             foreach (var updateSet in updates)
             {

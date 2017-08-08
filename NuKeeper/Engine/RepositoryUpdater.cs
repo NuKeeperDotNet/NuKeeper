@@ -51,15 +51,17 @@ namespace NuKeeper.Engine
             var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
-            _logger.Info(EngineReport.PackagesFound(packages));
+            _logger.Terse(EngineReport.PackagesFoundSummary(packages));
+            _logger.Info(EngineReport.PackagesFoundDetails(packages));
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            _logger.Info(EngineReport.UpdatesFound(updates));
+            _logger.Terse(EngineReport.UpdatesFoundSummary(updates));
+            _logger.Info(EngineReport.UpdatesFoundDetails(updates));
 
             if (updates.Count == 0)
             {
-                _logger.Info("No potential updates found. Well done. Exiting.");
+                _logger.Terse("No potential updates found. Well done. Exiting.");
                 return;
             }
 
@@ -89,7 +91,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                _logger.Info(EngineReport.OldVersionsToBeUpdated(updateSet));
+                _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
 
                 _git.Checkout(defaultBranch);
 
