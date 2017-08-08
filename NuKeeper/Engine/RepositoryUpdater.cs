@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
+using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
@@ -20,10 +21,12 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
+        private readonly INuKeeperLogger _logger;
 
         public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
             IGithub github,
             IGitDriver git,
+            INuKeeperLogger logger,
             string tempDir,
             IPackageUpdateSelection updateSelection,
             RepositoryModeSettings settings)
@@ -31,6 +34,8 @@ namespace NuKeeper.Engine
             _packageLookup = packageLookup;
             _github = github;
             _git = git;
+            _logger = logger;
+
             _tempDir = tempDir;
             _updateSelection = updateSelection;
             _settings = settings;
@@ -46,15 +51,15 @@ namespace NuKeeper.Engine
             var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
-            EngineReport.PackagesFound(packages);
+            _logger.Info(EngineReport.PackagesFound(packages));
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            EngineReport.UpdatesFound(updates);
+            _logger.Info(EngineReport.UpdatesFound(updates));
 
             if (updates.Count == 0)
             {
-                Console.WriteLine("No potential updates found. Well done. Exiting.");
+                _logger.Info("No potential updates found. Well done. Exiting.");
                 return;
             }
 
@@ -66,25 +71,25 @@ namespace NuKeeper.Engine
             }
 
             // delete the temp folder
-            TempFiles.TryDelete(new DirectoryInfo(_tempDir));
-            Console.WriteLine("Done");
+            TempFiles.TryDelete(new DirectoryInfo(_tempDir), _logger);
+            _logger.Info("Done");
         }
 
         private void GitCloneToTempDir()
         {
-            Console.WriteLine($"Using temp dir: {_tempDir}");
-            Console.WriteLine($"Git url: {_settings.GithubUri}");
+            _logger.Verbose($"Using temp dir: {_tempDir}");
+            _logger.Verbose($"Git url: {_settings.GithubUri}");
 
             _git.Clone(_settings.GithubUri);
 
-            Console.WriteLine("Git clone complete");
+            _logger.Verbose("Git clone complete");
         }
 
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet, string defaultBranch)
         {
             try
             {
-                EngineReport.OldVersionsToBeUpdated(updateSet);
+                _logger.Info(EngineReport.OldVersionsToBeUpdated(updateSet));
 
                 _git.Checkout(defaultBranch);
 
@@ -93,29 +98,31 @@ namespace NuKeeper.Engine
 
                  _git.CheckoutNewBranch(branchName);
 
-                Console.WriteLine($"Using branch '{branchName}'");
+                _logger.Info($"Using branch '{branchName}'");
 
                 await UpdateAllCurrentUsages(updateSet);
 
-                Console.WriteLine("Commiting");
+                _logger.Verbose("Commiting");
 
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
                 _git.Commit(commitMessage);
 
-                Console.WriteLine($"Pushing branch '{branchName}'");
+                _logger.Verbose($"Pushing branch '{branchName}'");
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
+                _logger.Verbose($"Making pull request '{prTitle}'");
                 await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
+
                 _git.Checkout(defaultBranch);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Update failed: {ex.GetType().Name} {ex.Message}");
+                _logger.Error("Update failed", ex);
             }
         }
 
-        private static async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
+        private async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
         {
             foreach (var current in updateSet.CurrentPackages)
             {
@@ -124,19 +131,19 @@ namespace NuKeeper.Engine
             }
         }
 
-        private static IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
+        private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
         {
             if (packageReferenceType == PackageReferenceType.ProjectFile)
             {
-                return new DotNetUpdatePackageCommand();
+                return new DotNetUpdatePackageCommand(_logger);
             }
 
-            return new NuGetUpdatePackageCommand();
+            return new NuGetUpdatePackageCommand(_logger);
         }
 
         private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string title, string headBranch, string baseBranch)
         {
-            Console.WriteLine($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
+            _logger.Info($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
 
             var pr = new NewPullRequest(title, headBranch, baseBranch)
                 {

@@ -1,6 +1,8 @@
-﻿using NuKeeper.Configuration;
+﻿using NuGet.Common;
+using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Github;
+using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 using SimpleInjector;
 
@@ -13,6 +15,9 @@ namespace NuKeeper
             var container = new Container();
 
             container.Register(() => settings, Lifestyle.Singleton);
+            container.Register<INuKeeperLogger, ConsoleLogger>();
+            container.Register<ILogger, NuGetLogger>();
+
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();

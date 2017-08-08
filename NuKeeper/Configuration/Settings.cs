@@ -1,4 +1,5 @@
 ﻿using System;
+using NuKeeper.Logging;
 
 namespace NuKeeper.Configuration
 {
@@ -34,5 +35,7 @@ namespace NuKeeper.Configuration
         public int MaxPullRequestsPerRepository => Repository?.MaxPullRequestsPerRepository ?? Organisation?.MaxPullRequestsPerRepository ?? 0;
 
         public string Mode { get; }
+
+        public LogLevel LogLevel { get; set; }
     }
 }

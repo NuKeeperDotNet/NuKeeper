@@ -1,17 +1,19 @@
-﻿using NuKeeper.ProcessRunner;
-using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using NuKeeper.ProcessRunner;
 using NuGet.Versioning;
+using NuKeeper.Logging;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
     public class NuGetUpdatePackageCommand : IUpdatePackageCommand
     {
+        private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
 
-        public NuGetUpdatePackageCommand(IExternalProcess externalProcess = null)
+        public NuGetUpdatePackageCommand(INuKeeperLogger logger, IExternalProcess externalProcess = null)
         {
+            _logger = logger;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
@@ -22,7 +24,7 @@ namespace NuKeeper.NuGet.Process
             var updateCommand = $"cd {dirName}"
                 + $" & {nuget} restore packages.config"
                 + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion}";
-            Console.WriteLine(updateCommand);
+            _logger.Verbose(updateCommand);
 
             await _externalProcess.Run(updateCommand, true);
         }

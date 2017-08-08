@@ -26,5 +26,9 @@ namespace NuKeeper.Configuration
         [JsonConfig("max_pull_requests_per_repository"), Required]
         [OverriddenBy(ConfigurationSources.CommandLine, "maxpr")]
         public int MaxPullRequestsPerRepository;
+
+        [JsonConfig("log_level"), Default("Info")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "log")]
+        public string LogLevel;
     }
 }

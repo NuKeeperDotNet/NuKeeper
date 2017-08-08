@@ -2,6 +2,7 @@
 using System.Linq;
 using EasyConfig;
 using EasyConfig.Exceptions;
+using NuKeeper.Logging;
 
 namespace NuKeeper.Configuration
 {
@@ -23,16 +24,31 @@ namespace NuKeeper.Configuration
             
             Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
 
+            var logLevel = ParseLogLevel(settings.LogLevel);
+            if (!logLevel.HasValue)
+            {
+                return null;
+            }
+
+            Settings result;
+
             switch (settings.Mode)
             {
                 case Settings.RepositoryMode:
-                    return ReadSettingsForRepositoryMode(settings);
+                    result = ReadSettingsForRepositoryMode(settings);
+                    break;
+
                 case Settings.OrganisationMode:
-                    return ReadSettingsForOrganisationMode(settings);
+                    result = ReadSettingsForOrganisationMode(settings);
+                    break;
+
                 default:
                     Console.WriteLine($"Mode {settings.Mode} not supported");
                     return null;
             }
+
+            result.LogLevel = logLevel.Value;
+            return result;
         }
 
         private static Settings ReadSettingsForRepositoryMode(RawConfiguration settings)
@@ -81,8 +97,21 @@ namespace NuKeeper.Configuration
                 GithubApiBase = EnsureTrailingSlash(githubHost),
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName,
-                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
+                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
             });
+        }
+
+        private static LogLevel? ParseLogLevel(string value)
+        {
+            LogLevel result;
+            var success = Enum.TryParse(value, true, out result);
+            if (!success)
+            {
+                Console.WriteLine($"Unknown log level '{value}'");
+                return null;
+            }
+
+            return result;
         }
 
         private static Uri EnsureTrailingSlash(Uri uri)

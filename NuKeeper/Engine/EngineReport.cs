@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
     public static class EngineReport
     {
-        public static void PackagesFound(List<PackageInProject> packages)
+        public static string PackagesFound(List<PackageInProject> packages)
         {
             var projectPathCount = packages
                 .Select(p => p.Path)
@@ -20,31 +21,33 @@ namespace NuKeeper.Engine
                 .Distinct()
                 .ToList();
 
-            Console.WriteLine($"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPathCount} projects.");
-
-            Console.WriteLine(packageIds.JoinWithCommas());
+            return $"Found {packages.Count} packages in use, {packageIds.Count} distinct, in {projectPathCount} projects.\n{packageIds.JoinWithCommas()}";
         }
 
-        public static void UpdatesFound(List<PackageUpdateSet> updates)
+        public static string UpdatesFound(List<PackageUpdateSet> updates)
         {
-            Console.WriteLine($"Found {updates.Count} possible updates:");
+            StringBuilder result = new StringBuilder();
+
+            result.AppendLine($"Found {updates.Count} possible updates:");
 
             foreach (var updateSet in updates)
             {
                 foreach (var current in updateSet.CurrentPackages)
                 {
-                    Console.WriteLine($"{updateSet.PackageId} from {current.Version} to {updateSet.NewVersion} in {current.Path.RelativePath}");
+                    result.AppendLine($"{updateSet.PackageId} from {current.Version} to {updateSet.NewVersion} in {current.Path.RelativePath}");
                 }
             }
+
+            return result.ToString();
         }
 
-        public static void OldVersionsToBeUpdated(PackageUpdateSet updateSet)
+        public static string OldVersionsToBeUpdated(PackageUpdateSet updateSet)
         {
             var oldVersions = updateSet.CurrentPackages
                 .Select(u => u.Version.ToString())
                 .Distinct();
 
-            Console.WriteLine($"Updating '{updateSet.PackageId}' from {oldVersions.JoinWithCommas()} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count()} projects");
+            return $"Updating '{updateSet.PackageId}' from {oldVersions.JoinWithCommas()} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count} projects";
         }
     }
 }

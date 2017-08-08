@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.Git;
-using NuKeeper.Github;
-using NuKeeper.NuGet.Api;
-using SimpleInjector;
 
 namespace NuKeeper
 {
