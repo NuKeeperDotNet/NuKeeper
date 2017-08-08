@@ -143,8 +143,6 @@ namespace NuKeeper.Engine
 
         private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string title, string headBranch, string baseBranch)
         {
-            _logger.Info($"Making PR on '{_settings.GithubApiBase} {_settings.RepositoryOwner} {_settings.RepositoryName}'");
-
             var pr = new NewPullRequest(title, headBranch, baseBranch)
                 {
                     Body = CommitReport.MakeCommitDetails(updates)
