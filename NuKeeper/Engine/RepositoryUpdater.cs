@@ -43,7 +43,7 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
-            GitCloneToTempDir();
+            _git.Clone(_settings.GithubUri);
             var defaultBranch = _git.GetCurrentHead();
 
             // scan for nuget packages
@@ -75,16 +75,6 @@ namespace NuKeeper.Engine
             _logger.Info("Done");
         }
 
-        private void GitCloneToTempDir()
-        {
-            _logger.Verbose($"Using temp dir: {_tempDir}");
-            _logger.Verbose($"Git url: {_settings.GithubUri}");
-
-            _git.Clone(_settings.GithubUri);
-
-            _logger.Verbose("Git clone complete");
-        }
-
         private async Task UpdatePackageInProjects(PackageUpdateSet updateSet, string defaultBranch)
         {
             try
@@ -95,23 +85,16 @@ namespace NuKeeper.Engine
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
-
                  _git.CheckoutNewBranch(branchName);
 
-                _logger.Info($"Using branch '{branchName}'");
-
                 await UpdateAllCurrentUsages(updateSet);
-
-                _logger.Verbose("Commiting");
 
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
                 _git.Commit(commitMessage);
 
-                _logger.Verbose($"Pushing branch '{branchName}'");
                 _git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                _logger.Verbose($"Making pull request '{prTitle}'");
                 await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
 
                 _git.Checkout(defaultBranch);

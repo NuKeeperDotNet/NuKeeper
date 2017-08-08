@@ -1,16 +1,19 @@
 using System;
 using System.Linq;
 using LibGit2Sharp;
+using NuKeeper.Logging;
 
 namespace NuKeeper.Git
 {
     public class LibGit2SharpDriver : IGitDriver
     {
+        private readonly INuKeeperLogger _logger;
         private readonly string _repoStoragePath;
         private readonly string _githubUser;
         private readonly string _githubToken;
 
-        public LibGit2SharpDriver(string repoStoragePath, string githubUser, string githubToken)
+        public LibGit2SharpDriver(INuKeeperLogger logger,  
+            string repoStoragePath, string githubUser, string githubToken)
         {
             if (string.IsNullOrWhiteSpace(repoStoragePath))
             {
@@ -27,21 +30,27 @@ namespace NuKeeper.Git
                 throw new ArgumentNullException(nameof(githubToken));
             }
 
+            _logger = logger;
             _repoStoragePath = repoStoragePath;
             _githubUser = githubUser;
             _githubToken = githubToken;
         }
         public void Clone(Uri pullEndpoint)
         {
+            _logger.Verbose($"Git clone {pullEndpoint} to {_repoStoragePath}");
+
             Repository.Clone(pullEndpoint.ToString(), _repoStoragePath,
                 new CloneOptions
                 {
                     CredentialsProvider = UsernamePasswordCredentials
                 });
+
+            _logger.Verbose("Git clone complete");
         }
 
         public void Checkout(string branchName)
         {
+            _logger.Verbose($"Git checkout '{branchName}'");
             using (var repo = new Repository(_repoStoragePath))
             {
                 Commands.Checkout(repo, repo.Branches[branchName]);
@@ -50,6 +59,7 @@ namespace NuKeeper.Git
 
         public void CheckoutNewBranch(string branchName)
         {
+            _logger.Verbose($"Git checkout new branch '{branchName}'");
             using (var repo = new Repository(_repoStoragePath))
             {
                 var branch = repo.CreateBranch(branchName);
@@ -59,6 +69,7 @@ namespace NuKeeper.Git
 
         public void Commit(string message)
         {
+            _logger.Verbose($"Git commit with message '{message}'");
             using (var repo = new Repository(_repoStoragePath))
             {
                 var sig = repo.Config.BuildSignature(DateTimeOffset.Now);
@@ -69,6 +80,8 @@ namespace NuKeeper.Git
 
         public void Push(string remoteName, string branchName)
         {
+            _logger.Verbose($"Git push to {remoteName}/{branchName}");
+
             using (var repo = new Repository(_repoStoragePath))
             {
                 var localBranch = repo.Branches[branchName];
