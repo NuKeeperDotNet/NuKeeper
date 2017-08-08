@@ -17,7 +17,7 @@ namespace NuKeeper.NuGet.Api
         public void LogMinimal(string data) => _logger.Info(data);
         public void LogWarning(string data) => _logger.Info(data);
         public void LogError(string data) => _logger.Error(data);
-        public void LogInformationSummary(string data) => _logger.Summary(data);
+        public void LogInformationSummary(string data) => _logger.Terse(data);
         public void LogErrorSummary(string data) => _logger.Error(data);
     }
 }

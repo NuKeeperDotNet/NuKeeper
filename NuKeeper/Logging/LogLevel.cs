@@ -2,8 +2,9 @@
 {
     public enum LogLevel
     {
-        Summary = 0,
-        Info = 1,
-        Verbose = 2
+        Silent = 0,
+        Terse = 1,
+        Info = 2,
+        Verbose = 3
     }
 }

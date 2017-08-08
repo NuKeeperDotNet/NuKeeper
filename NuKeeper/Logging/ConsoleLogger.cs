@@ -16,17 +16,17 @@ namespace NuKeeper.Logging
         {
             if (ex == null)
             {
-                Console.WriteLine(message);
+                Console.Error.WriteLine(message);
             }
             else
             {
-                Console.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+                Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
             }
         }
 
-        public void Summary(string message)
+        public void Terse(string message)
         {
-            LogWithlevel(message, LogLevel.Summary);
+            LogWithlevel(message, LogLevel.Terse);
         }
 
         public void Info(string message)

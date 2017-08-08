@@ -9,7 +9,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
         }
 
-        public void Summary(string message)
+        public void Terse(string message)
         {
         }
 
