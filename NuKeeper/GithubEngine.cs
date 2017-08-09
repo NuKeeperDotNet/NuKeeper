@@ -37,7 +37,7 @@ namespace NuKeeper
         public async Task Run(string tempDir)
         {
             var githubUser = await _github.GetCurrentUser();
-            var git = new LibGit2SharpDriver(tempDir, githubUser, _githubToken);
+            var git = new LibGit2SharpDriver(_logger, tempDir, githubUser, _githubToken);
 
             var repositories = await _repositoryDiscovery.GetRepositories();
 
