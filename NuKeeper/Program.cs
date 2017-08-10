@@ -1,5 +1,6 @@
 ﻿using System;
 using NuKeeper.Configuration;
+using NuKeeper.Files;
 
 namespace NuKeeper
 {
