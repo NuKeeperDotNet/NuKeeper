@@ -15,6 +15,7 @@ namespace NuKeeper.Files
         public IFolder UniqueTemporaryFolder()
         {
             var tempDir = new DirectoryInfo(TempFiles.GetUniqueTemporaryPath());
+            tempDir.Create();
             return new Folder(_logger, tempDir);
         }
     }
