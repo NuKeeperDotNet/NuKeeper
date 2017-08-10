@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
@@ -17,18 +17,19 @@ namespace NuKeeper.Engine
     {   
         private readonly IPackageUpdatesLookup _packageLookup;
         private readonly RepositoryModeSettings _settings;
-        private readonly string _tempDir;
+        private readonly IFolder _tempFolder;
         private readonly IGithub _github;
         private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly INuKeeperLogger _logger;
 
-        public RepositoryUpdater(IPackageUpdatesLookup packageLookup, 
-            IGithub github,
-            IGitDriver git,
-            INuKeeperLogger logger,
-            string tempDir,
-            IPackageUpdateSelection updateSelection,
+        public RepositoryUpdater(
+            IGithub github, 
+            IGitDriver git, 
+            IPackageUpdatesLookup packageLookup, 
+            IPackageUpdateSelection updateSelection, 
+            IFolder tempFolder, 
+            INuKeeperLogger logger, 
             RepositoryModeSettings settings)
         {
             _packageLookup = packageLookup;
@@ -36,7 +37,7 @@ namespace NuKeeper.Engine
             _git = git;
             _logger = logger;
 
-            _tempDir = tempDir;
+            _tempFolder = tempFolder;
             _updateSelection = updateSelection;
             _settings = settings;
         }
@@ -48,7 +49,7 @@ namespace NuKeeper.Engine
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNuGetPackages(_tempDir)
+            var packages = repoScanner.FindAllNuGetPackages(_tempFolder.FullPath)
                 .ToList();
 
             _logger.Terse(EngineReport.PackagesFoundSummary(packages));
@@ -73,7 +74,7 @@ namespace NuKeeper.Engine
             }
 
             // delete the temp folder
-            TempFiles.TryDelete(new DirectoryInfo(_tempDir), _logger);
+            _tempFolder.TryDelete();
             _logger.Info("Done");
         }
 
