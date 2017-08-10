@@ -47,7 +47,7 @@ namespace NuKeeper.Git
         public void Checkout(string branchName)
         {
             _logger.Verbose($"Git checkout '{branchName}'");
-            using (var repo = new Repository(_tempFolder.FullPath))
+            using (var repo = MakeRepo())
             {
                 Commands.Checkout(repo, repo.Branches[branchName]);
             }
@@ -56,7 +56,7 @@ namespace NuKeeper.Git
         public void CheckoutNewBranch(string branchName)
         {
             _logger.Verbose($"Git checkout new branch '{branchName}'");
-            using (var repo = new Repository(_tempFolder.FullPath))
+            using (var repo = MakeRepo())
             {
                 var branch = repo.CreateBranch(branchName);
                 Commands.Checkout(repo, branch);
@@ -66,7 +66,7 @@ namespace NuKeeper.Git
         public void Commit(string message)
         {
             _logger.Verbose($"Git commit with message '{message}'");
-            using (var repo = new Repository(_tempFolder.FullPath))
+            using (var repo = MakeRepo())
             {
                 var sig = repo.Config.BuildSignature(DateTimeOffset.Now);
                 Commands.Stage(repo, "*");
@@ -78,7 +78,7 @@ namespace NuKeeper.Git
         {
             _logger.Verbose($"Git push to {remoteName}/{branchName}");
 
-            using (var repo = new Repository(_tempFolder.FullPath))
+            using (var repo = MakeRepo())
             {
                 var localBranch = repo.Branches[branchName];
                 var remote = repo.Network.Remotes[remoteName];
@@ -96,10 +96,15 @@ namespace NuKeeper.Git
 
         public string GetCurrentHead()
         {
-            using (var repo = new Repository(_tempFolder.FullPath))
+            using (var repo = MakeRepo())
             {
                 return repo.Branches.Single(b => b.IsCurrentRepositoryHead).FriendlyName;
             }
+        }
+
+        private Repository MakeRepo()
+        {
+            return new Repository(_tempFolder.FullPath);
         }
 
         private UsernamePasswordCredentials UsernamePasswordCredentials(
