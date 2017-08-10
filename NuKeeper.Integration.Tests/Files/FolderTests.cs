@@ -26,16 +26,6 @@ namespace NuKeeper.Integration.Tests.Files
             DirectoryAssert.DoesNotExist(folder.FullPath);
         }
 
-        [Test]
-        public void CanSearch()
-        {
-            var folder = MakeTempFolder();
-            var files = folder.FindFiles("*");
-
-            Assert.That(files, Is.Not.Null);
-            Assert.That(files, Is.Empty);
-        }
-
         private static IFolder MakeTempFolder()
         {
             var factory = new FolderFactory(new NullNuKeeperLogger());

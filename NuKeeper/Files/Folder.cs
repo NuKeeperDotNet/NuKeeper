@@ -19,15 +19,6 @@ namespace NuKeeper.Files
 
         public string FullPath => _root.FullName;
 
-        public IList<FileInfo> FindFiles(string pattern)
-        {
-            var result = _root.EnumerateFiles(pattern, SearchOption.AllDirectories)
-                .ToList();
-            _logger.Verbose($"Found {result.Count} files matching '{pattern}'");
-            return result;
-        }
-
-
         public void TryDelete()
         {
             _logger.Verbose($"Attempting delete of working folder {_root.FullName}");
