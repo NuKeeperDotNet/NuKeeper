@@ -51,13 +51,11 @@ namespace NuKeeper.Engine
             var packages = repoScanner.FindAllNuGetPackages(_tempDir)
                 .ToList();
 
-            _logger.Terse(EngineReport.PackagesFoundSummary(packages));
-            _logger.Info(EngineReport.PackagesFoundDetails(packages));
+            _logger.Log(EngineReport.PackagesFound(packages));
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            _logger.Terse(EngineReport.UpdatesFoundSummary(updates));
-            _logger.Info(EngineReport.UpdatesFoundDetails(updates));
+            _logger.Log(EngineReport.UpdatesFound(updates));
 
             if (updates.Count == 0)
             {
