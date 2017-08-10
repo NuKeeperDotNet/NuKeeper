@@ -50,7 +50,11 @@ namespace NuKeeper
             {
                 try
                 {
-                    var repositoryUpdater = new RepositoryUpdater(_github, git, _updatesLookup, _updateSelection, tempFolder, _logger, repository);
+                    var repositoryUpdater = new RepositoryUpdater(
+                        _github, git, 
+                        _updatesLookup, _updateSelection, 
+                        tempFolder, _logger, 
+                        repository);
 
                     await repositoryUpdater.Run();
                 }
