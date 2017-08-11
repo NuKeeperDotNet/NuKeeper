@@ -40,14 +40,14 @@ namespace NuKeeper
 
         public async Task Run()
         {
-            var tempFolder = _folderFactory.UniqueTemporaryFolder();
             var githubUser = await _github.GetCurrentUser();
-            var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
-
             var repositories = await _repositoryDiscovery.GetRepositories();
 
             foreach (var repository in repositories)
             {
+                var tempFolder = _folderFactory.UniqueTemporaryFolder();
+                var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
+
                 try
                 {
                     var repositoryUpdater = new RepositoryUpdater(
