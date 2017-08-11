@@ -45,23 +45,28 @@ namespace NuKeeper
 
             foreach (var repository in repositories)
             {
+                await RunRepo(githubUser, repository);
+            }
+        }
+
+        private async Task RunRepo(string githubUser, RepositoryModeSettings repository)
+        {
+            try
+            {
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
 
-                try
-                {
-                    var repositoryUpdater = new RepositoryUpdater(
-                        _github, git, 
-                        _updatesLookup, _updateSelection, 
-                        tempFolder, _logger, 
-                        repository);
+                var repositoryUpdater = new RepositoryUpdater(
+                    _github, git,
+                    _updatesLookup, _updateSelection,
+                    tempFolder, _logger,
+                    repository);
 
-                    await repositoryUpdater.Run();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-                }
+                await repositoryUpdater.Run();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
             }
         }
     }
