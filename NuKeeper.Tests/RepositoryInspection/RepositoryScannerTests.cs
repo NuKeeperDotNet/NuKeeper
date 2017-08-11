@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using NuKeeper.Files;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 

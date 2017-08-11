@@ -1,5 +1,6 @@
 ﻿using System;
 using NuKeeper.Configuration;
+using NuKeeper.Files;
 
 namespace NuKeeper
 {
@@ -19,11 +20,8 @@ namespace NuKeeper
 
             var container = ContainerRegistration.Init(settings);
 
-            // get some storage space
-            var tempDir = TempFiles.MakeUniqueTemporaryPath();
-
             var engine = container.GetInstance<GithubEngine>();
-            engine.Run(tempDir)
+            engine.Run()
                 .GetAwaiter().GetResult();
 
             return 0;

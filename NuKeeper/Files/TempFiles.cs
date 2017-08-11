@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using NuKeeper.Logging;
 
-namespace NuKeeper
+namespace NuKeeper.Files
 {
     public static class TempFiles
     {

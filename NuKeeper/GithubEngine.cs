@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
@@ -16,6 +17,7 @@ namespace NuKeeper
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
+        private readonly IFolderFactory _folderFactory;
         private readonly string _githubToken;
 
         public GithubEngine(
@@ -24,6 +26,7 @@ namespace NuKeeper
             IPackageUpdateSelection updateSelection, 
             IGithub github,
             INuKeeperLogger logger,
+            IFolderFactory folderFactory,
             Settings settings)
         {
             _repositoryDiscovery = repositoryDiscovery;
@@ -31,30 +34,39 @@ namespace NuKeeper
             _updateSelection = updateSelection;
             _github = github;
             _logger = logger;
+            _folderFactory = folderFactory;
             _githubToken = settings.GithubToken;
         }
 
-        public async Task Run(string tempDir)
+        public async Task Run()
         {
             var githubUser = await _github.GetCurrentUser();
-            var git = new LibGit2SharpDriver(_logger, tempDir, githubUser, _githubToken);
-
             var repositories = await _repositoryDiscovery.GetRepositories();
 
             foreach (var repository in repositories)
             {
-                try
-                {
-                    var repositoryUpdater = new RepositoryUpdater(
-                        _updatesLookup, _github, git, _logger,
-                        tempDir, _updateSelection, repository);
+                await RunRepo(githubUser, repository);
+            }
+        }
 
-                    await repositoryUpdater.Run();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-                }
+        private async Task RunRepo(string githubUser, RepositoryModeSettings repository)
+        {
+            try
+            {
+                var tempFolder = _folderFactory.UniqueTemporaryFolder();
+                var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
+
+                var repositoryUpdater = new RepositoryUpdater(
+                    _github, git,
+                    _updatesLookup, _updateSelection,
+                    tempFolder, _logger,
+                    repository);
+
+                await repositoryUpdater.Run();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
             }
         }
     }
