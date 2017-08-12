@@ -29,6 +29,8 @@ namespace NuKeeper
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
 
+            container.Register<IRepositoryUpdater, RepositoryUpdater>();
+
             return container;
         }
     }

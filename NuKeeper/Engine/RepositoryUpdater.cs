@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
@@ -13,43 +12,33 @@ using Octokit;
 
 namespace NuKeeper.Engine
 {
-    public class RepositoryUpdater
+    public class RepositoryUpdater : IRepositoryUpdater
     {   
         private readonly IPackageUpdatesLookup _packageLookup;
-        private readonly RepositoryModeSettings _settings;
-        private readonly IFolder _tempFolder;
         private readonly IGithub _github;
-        private readonly IGitDriver _git;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly INuKeeperLogger _logger;
 
         public RepositoryUpdater(
             IGithub github, 
-            IGitDriver git, 
             IPackageUpdatesLookup packageLookup, 
             IPackageUpdateSelection updateSelection, 
-            IFolder tempFolder, 
-            INuKeeperLogger logger, 
-            RepositoryModeSettings settings)
+            INuKeeperLogger logger)
         {
-            _packageLookup = packageLookup;
             _github = github;
-            _git = git;
-            _logger = logger;
-
-            _tempFolder = tempFolder;
+            _packageLookup = packageLookup;
             _updateSelection = updateSelection;
-            _settings = settings;
+            _logger = logger;
         }
 
-        public async Task Run()
+        public async Task Run(IGitDriver git, RepositoryModeSettings settings)
         {
-            _git.Clone(_settings.GithubUri);
-            var defaultBranch = _git.GetCurrentHead();
+            git.Clone(settings.GithubUri);
+            var defaultBranch = git.GetCurrentHead();
 
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNuGetPackages(_tempFolder.FullPath)
+            var packages = repoScanner.FindAllNuGetPackages(git.WorkingFolder.FullPath)
                 .ToList();
 
             _logger.Log(EngineReport.PackagesFound(packages));
@@ -68,37 +57,39 @@ namespace NuKeeper.Engine
 
             foreach (var updateSet in targetUpdates)
             {
-                await UpdatePackageInProjects(updateSet, defaultBranch);
+                await UpdatePackageInProjects(git, updateSet, settings, defaultBranch);
             }
 
-            // delete the temp folder
-            _tempFolder.TryDelete();
             _logger.Info("Done");
         }
 
-        private async Task UpdatePackageInProjects(PackageUpdateSet updateSet, string defaultBranch)
+        private async Task UpdatePackageInProjects(
+            IGitDriver git,
+            PackageUpdateSet updateSet,
+            RepositoryModeSettings settings,
+            string defaultBranch)
         {
             try
             {
                 _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
 
-                _git.Checkout(defaultBranch);
+                git.Checkout(defaultBranch);
 
                 // branch
                 var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
-                 _git.CheckoutNewBranch(branchName);
+                git.CheckoutNewBranch(branchName);
 
                 await UpdateAllCurrentUsages(updateSet);
 
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
-                _git.Commit(commitMessage);
+                git.Commit(commitMessage);
 
-                _git.Push("origin", branchName);
+                git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, prTitle, branchName, defaultBranch);
+                await MakeGitHubPullRequest(updateSet, settings, prTitle, branchName, defaultBranch);
 
-                _git.Checkout(defaultBranch);
+                git.Checkout(defaultBranch);
             }
             catch (Exception ex)
             {
@@ -125,14 +116,17 @@ namespace NuKeeper.Engine
             return new NuGetUpdatePackageCommand(_logger);
         }
 
-        private async Task MakeGitHubPullRequest(PackageUpdateSet updates, string title, string headBranch, string baseBranch)
+        private async Task MakeGitHubPullRequest(
+            PackageUpdateSet updates, 
+            RepositoryModeSettings settings, 
+            string title, string headBranch, string baseBranch)
         {
             var pr = new NewPullRequest(title, headBranch, baseBranch)
                 {
                     Body = CommitReport.MakeCommitDetails(updates)
                 };
 
-            await _github.OpenPullRequest(_settings.RepositoryOwner, _settings.RepositoryName, pr);
+            await _github.OpenPullRequest(settings.RepositoryOwner, settings.RepositoryName, pr);
         }
     }
 }

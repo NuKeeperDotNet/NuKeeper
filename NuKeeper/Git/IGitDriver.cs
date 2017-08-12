@@ -1,9 +1,12 @@
 ﻿using System;
+using NuKeeper.Files;
 
 namespace NuKeeper.Git
 {
     public interface IGitDriver
     {
+        IFolder WorkingFolder { get; }
+
         void Clone(Uri pullEndpoint);
 
         void Checkout(string branchName);
