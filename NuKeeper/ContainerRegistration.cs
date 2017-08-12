@@ -29,7 +29,9 @@ namespace NuKeeper
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
 
+            container.Register<GithubEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
+            container.Register<IPackageUpdater, PackageUpdater>();
 
             return container;
         }
