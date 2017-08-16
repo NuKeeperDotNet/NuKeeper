@@ -12,7 +12,8 @@ namespace NuKeeper.ProcessRunner
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                UseShellExecute = false
             };
 
             var process = Process.Start(processInfo);
