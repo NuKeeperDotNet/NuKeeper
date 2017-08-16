@@ -1,38 +1,33 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
 using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
 
-namespace NuKeeper
+namespace NuKeeper.Engine
 {
     public class GithubEngine
     {
         private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
-        private readonly IPackageUpdatesLookup _updatesLookup;
-        private readonly IPackageUpdateSelection _updateSelection;
         private readonly IGithub _github;
+        private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly INuKeeperLogger _logger;
         private readonly IFolderFactory _folderFactory;
         private readonly string _githubToken;
 
         public GithubEngine(
             IGithubRepositoryDiscovery repositoryDiscovery, 
-            IPackageUpdatesLookup updatesLookup, 
-            IPackageUpdateSelection updateSelection, 
             IGithub github,
+            IRepositoryUpdater repositoryUpdater,
             INuKeeperLogger logger,
             IFolderFactory folderFactory,
             Settings settings)
         {
             _repositoryDiscovery = repositoryDiscovery;
-            _updatesLookup = updatesLookup;
-            _updateSelection = updateSelection;
             _github = github;
+            _repositoryUpdater = repositoryUpdater;
             _logger = logger;
             _folderFactory = folderFactory;
             _githubToken = settings.GithubToken;
@@ -56,13 +51,9 @@ namespace NuKeeper
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
 
-                var repositoryUpdater = new RepositoryUpdater(
-                    _github, git,
-                    _updatesLookup, _updateSelection,
-                    tempFolder, _logger,
-                    repository);
+                await _repositoryUpdater.Run(git, repository);
 
-                await repositoryUpdater.Run();
+                tempFolder.TryDelete();
             }
             catch (Exception ex)
             {
