@@ -1,7 +1,7 @@
 using System;
 using NuKeeper.Logging;
 
-namespace NuKeeper.Integration.Tests.Nuget.Api
+namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     internal class NullNuKeeperLogger : INuKeeperLogger
     {

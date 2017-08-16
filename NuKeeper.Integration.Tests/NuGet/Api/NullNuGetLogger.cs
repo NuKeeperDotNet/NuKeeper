@@ -1,6 +1,6 @@
 using NuGet.Common;
 
-namespace NuKeeper.Integration.Tests.Nuget.Api
+namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     internal class NullNuGetLogger : ILogger
     {

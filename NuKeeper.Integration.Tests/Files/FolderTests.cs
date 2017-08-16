@@ -1,5 +1,5 @@
 ﻿using NuKeeper.Files;
-using NuKeeper.Integration.Tests.Nuget.Api;
+using NuKeeper.Integration.Tests.NuGet.Api;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Files
