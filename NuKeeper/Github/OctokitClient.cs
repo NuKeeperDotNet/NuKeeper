@@ -36,7 +36,7 @@ namespace NuKeeper.Github
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
         {
             var results = await _client.Repository.GetAllForOrg(organisationName);
-            var resultList = results.ToList().AsReadOnly();
+            var resultList = results.Where(r => r.Permissions.Pull && r.Permissions.Push).ToList().AsReadOnly();
             _logger.Verbose($"Read {resultList.Count} repos for org '{organisationName}'");
             return resultList;
         }
