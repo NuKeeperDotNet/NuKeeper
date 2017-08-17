@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper", "NuKeeper\NuKeeper.csproj", "{DA701A15-52BE-4BFC-B9D1-08C94AA14A29}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Tests", "NuKeeper.Tests\NuKeeper.Tests.csproj", "{82E536CF-67B8-4373-AE7B-560B7C12BB0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Integration.Tests", "NuKeeper.Integration.Tests\NuKeeper.Integration.Tests.csproj", "{68B2FDA7-A728-4D4C-8B7F-4F824FD4E03C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBD0650A-1EAB-479B-B210-A8F63FAC162C}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D5D9A20-9F2C-467E-A8F0-102C286A4AF7}
 	EndGlobalSection
 EndGlobal

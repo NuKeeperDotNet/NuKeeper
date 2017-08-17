@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
 
-namespace NuKeeper.Integration.Tests.Nuget.Api
+namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
     public class BulkPackageLookupTests
