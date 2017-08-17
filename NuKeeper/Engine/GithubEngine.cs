@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Files;
 using NuKeeper.Git;
@@ -36,20 +37,26 @@ namespace NuKeeper.Engine
         public async Task Run()
         {
             var githubUser = await _github.GetCurrentUser();
+            var gitCreds = new UsernamePasswordCredentials
+            {
+                Username = githubUser,
+                Password = _githubToken
+            };
+
             var repositories = await _repositoryDiscovery.GetRepositories();
 
             foreach (var repository in repositories)
             {
-                await RunRepo(githubUser, repository);
+                await RunRepo(repository, gitCreds);
             }
         }
 
-        private async Task RunRepo(string githubUser, RepositoryModeSettings repository)
+        private async Task RunRepo(RepositoryModeSettings repository, Credentials gitCreds)
         {
             try
             {
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
-                var git = new LibGit2SharpDriver(_logger, tempFolder, githubUser, _githubToken);
+                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
 
                 await _repositoryUpdater.Run(git, repository);
 

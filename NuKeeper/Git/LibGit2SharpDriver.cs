@@ -9,28 +9,22 @@ namespace NuKeeper.Git
     public class LibGit2SharpDriver : IGitDriver
     {
         private readonly INuKeeperLogger _logger;
-        private readonly string _githubUser;
-        private readonly string _githubToken;
+        private readonly Credentials _gitCredentials;
 
         public IFolder WorkingFolder { get; }
 
         public LibGit2SharpDriver(INuKeeperLogger logger,  
-            IFolder workingFolder, string githubUser, string githubToken)
+            IFolder workingFolder, Credentials gitCredentials)
         {
-            if (string.IsNullOrWhiteSpace(githubUser))
+            if (gitCredentials == null)
             {
-                throw new ArgumentNullException(nameof(githubUser));
+                throw new ArgumentNullException(nameof(gitCredentials));
             }
 
-            if (string.IsNullOrWhiteSpace(githubToken))
-            {
-                throw new ArgumentNullException(nameof(githubToken));
-            }
 
             _logger = logger;
             WorkingFolder = workingFolder;
-            _githubUser = githubUser;
-            _githubToken = githubToken;
+            _gitCredentials = gitCredentials;
         }
         public void Clone(Uri pullEndpoint)
         {
@@ -108,15 +102,10 @@ namespace NuKeeper.Git
             return new Repository(WorkingFolder.FullPath);
         }
 
-        private UsernamePasswordCredentials UsernamePasswordCredentials(
-            string url, string usernameFromUrl, 
-            SupportedCredentialTypes types)
+        private Credentials UsernamePasswordCredentials(
+            string url, string usernameFromUrl, SupportedCredentialTypes types)
         {
-            return new UsernamePasswordCredentials
-            {
-                Username = _githubUser,
-                Password = _githubToken
-            };
+            return _gitCredentials;
         }
     }
 }
