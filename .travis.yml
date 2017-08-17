@@ -3,8 +3,8 @@ mono: none
 dist: trusty
 dotnet: 2.0.0
 script:
-  - dotnet build -f netcoreapp2.0
-  - dotnet test -f netcoreapp2.0 NuKeeper.Tests/NuKeeper.Tests.csproj
-  - dotnet test -f netcoreapp2.0 NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet build -c Release -f netcoreapp2.0
+  - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Tests/NuKeeper.Tests.csproj
+  - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
 
  
