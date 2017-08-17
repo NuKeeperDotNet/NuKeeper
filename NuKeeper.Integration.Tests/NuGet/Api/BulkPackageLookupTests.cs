@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
 
@@ -90,7 +91,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
         private static BulkPackageLookup BuildBulkPackageLookup()
         {
-            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger()), new NullNuKeeperLogger());
+            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings()), new NullNuKeeperLogger());
+        }
+
+        private static Settings BuildDefaultSettings()
+        {
+            return new Settings((RepositoryModeSettings)null) { NuGetSources = new[] { "https://api.nuget.org/v3/index.json" } };
         }
     }
 }

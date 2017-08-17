@@ -8,5 +8,6 @@ namespace NuKeeper.Configuration
         public string OrganisationName { get; set; }
         public string GithubToken { get; set; }
         public int MaxPullRequestsPerRepository { get; set;  }
+        public string[] NuGetSources { get; set; }
     }
 }
