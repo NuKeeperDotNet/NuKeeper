@@ -14,13 +14,16 @@ namespace NuKeeper.Engine
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
+        private readonly Settings _settings;
 
         public PackageUpdater(
             IGithub github,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            Settings settings)
         {
             _github = github;
             _logger = logger;
+            _settings = settings;
         }
 
         public async Task UpdatePackageInProjects(
@@ -73,7 +76,7 @@ namespace NuKeeper.Engine
                 return new DotNetUpdatePackageCommand(_logger);
             }
 
-            return new NuGetUpdatePackageCommand(_logger);
+            return new NuGetUpdatePackageCommand(_logger, _settings);
         }
 
         private async Task MakeGitHubPullRequest(
