@@ -14,7 +14,7 @@ namespace NuKeeper.NuGet.Api
             _bulkPackageLookup = bulkPackageLookup;
         }
 
-        public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IEnumerable<PackageInProject> packages)
+        public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IReadOnlyCollection<PackageInProject> packages)
         {
             var packageIds = packages
                 .Select(p => p.Id)
@@ -26,15 +26,16 @@ namespace NuKeeper.NuGet.Api
 
             foreach (var packageId in latestVersions.Keys)
             {
-                var latestVersion = latestVersions[packageId].Identity;
+                var latestPackage = latestVersions[packageId];
+                var identity = latestPackage.Identity;
 
                 var updatesForThisPackage = packages
-                    .Where(p => p.Id == packageId && p.Version < latestVersion.Version)
+                    .Where(p => p.Id == packageId && p.Version < identity.Version)
                     .ToList();
 
                 if (updatesForThisPackage.Count > 0)
                 {
-                    var updateSet = new PackageUpdateSet(latestVersion, updatesForThisPackage);
+                    var updateSet = new PackageUpdateSet(identity, latestPackage.Source, updatesForThisPackage);
                     results.Add(updateSet);
                 }
             }

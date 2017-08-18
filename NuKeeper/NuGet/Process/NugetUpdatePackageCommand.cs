@@ -25,7 +25,7 @@ namespace NuKeeper.NuGet.Process
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage)
+        public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
             var nuget = NuGetPath.FindExecutable();

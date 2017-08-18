@@ -206,7 +206,7 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
-            return new PackageUpdateSet(NewPackageFooBar123(), packages);
+            return new PackageUpdateSet(NewPackageFooBar123(), string.Empty, packages);
         }
 
         private static PackageIdentity NewPackageFooBar123()

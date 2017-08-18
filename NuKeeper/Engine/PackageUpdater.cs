@@ -65,7 +65,7 @@ namespace NuKeeper.Engine
             foreach (var current in updateSet.CurrentPackages)
             {
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
-                await updateCommand.Invoke(updateSet.NewVersion, current);
+                await updateCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
             }
         }
 

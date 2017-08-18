@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Logging;
 using NuKeeper.ProcessRunner;
@@ -18,10 +17,10 @@ namespace NuKeeper.NuGet.Process
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage)
+        public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
-            var updateCommand = $"cd {dirName} & dotnet add package {currentPackage.Id} -v {newVersion}";
+            var updateCommand = $"cd {dirName} & dotnet add package {currentPackage.Id} -v {newVersion} -s {packageSource}";
             _logger.Verbose(updateCommand);
 
             await _externalProcess.Run(updateCommand, true);
