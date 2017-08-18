@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Files;
@@ -7,7 +8,7 @@ namespace NuKeeper
 {
     public class Program
     {
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             TempFiles.DeleteExistingTempDirs();
                 
@@ -22,8 +23,7 @@ namespace NuKeeper
             var container = ContainerRegistration.Init(settings);
 
             var engine = container.GetInstance<GithubEngine>();
-            engine.Run()
-                .GetAwaiter().GetResult();
+            await engine.Run();
 
             return 0;
         }
