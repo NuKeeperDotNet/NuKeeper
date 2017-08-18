@@ -29,7 +29,5 @@ namespace NuKeeper.Configuration
         public string RepositoryName { get; set; }
 
         public int MaxPullRequestsPerRepository { get; set; }
-
-        public string[] NuGetSources { get; set; }
     }
 }

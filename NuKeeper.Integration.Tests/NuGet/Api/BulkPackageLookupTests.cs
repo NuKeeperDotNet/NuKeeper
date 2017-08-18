@@ -12,20 +12,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
     public class BulkPackageLookupTests
     {
         [Test]
-        public async Task TestEmptyList()
-        {
-            var lookup = BuildBulkPackageLookup();
-
-            var results = await lookup.LatestVersions(Enumerable.Empty<string>());
-
-            Assert.That(results, Is.Not.Null);
-            Assert.That(results, Is.Empty);
-        }
-
-        [Test]
         public async Task CanFindUpdateForOneWellKnownPackage()
         {
-            var packages = new List<string> { "Moq" };
+            var packages = new List<string> {"Moq"};
 
             var lookup = BuildBulkPackageLookup();
 
@@ -58,11 +47,22 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task InvalidPackageIsIgnored()
         {
-            var packages = new List<string> { Guid.NewGuid().ToString() };
+            var packages = new List<string> {Guid.NewGuid().ToString()};
 
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.LatestVersions(packages);
+
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
+        public async Task TestEmptyList()
+        {
+            var lookup = BuildBulkPackageLookup();
+
+            var results = await lookup.LatestVersions(Enumerable.Empty<string>());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -91,12 +91,16 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
         private static BulkPackageLookup BuildBulkPackageLookup()
         {
-            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings()), new NullNuKeeperLogger());
+            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings()),
+                new NullNuKeeperLogger());
         }
 
         private static Settings BuildDefaultSettings()
         {
-            return new Settings((RepositoryModeSettings)null) { NuGetSources = new[] { "https://api.nuget.org/v3/index.json" } };
+            return new Settings((RepositoryModeSettings) null)
+            {
+                NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
+            };
         }
     }
 }
