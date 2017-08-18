@@ -73,7 +73,7 @@ namespace NuKeeper.Engine
         {
             if (packageReferenceType == PackageReferenceType.ProjectFile)
             {
-                return new DotNetUpdatePackageCommand(_logger);
+                return new DotNetUpdatePackageCommand(_logger, _settings);
             }
 
             return new NuGetUpdatePackageCommand(_logger, _settings);
