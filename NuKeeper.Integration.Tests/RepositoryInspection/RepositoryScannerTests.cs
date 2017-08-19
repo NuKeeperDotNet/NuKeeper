@@ -2,10 +2,11 @@
 using System.IO;
 using System.Reflection;
 using NuKeeper.Files;
+using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.RepositoryInspection
+namespace NuKeeper.Integration.Tests.RepositoryInspection
 {
     [TestFixture]
     public class RepositoryScannerTests
@@ -15,7 +16,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNuGetPackages(GetTempFolder());
+            var results = scanner.FindAllNuGetPackages(GetUniqueTempFolder());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -32,12 +33,8 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var scanner = new RepositoryScanner();
 
-            var temporaryPath = GetTempFolder();
-
-            using (var file = File.CreateText(Path.Combine(temporaryPath.FullPath, "packages.config")))
-            {
-                file.WriteLine(singlePackage);
-            }
+            var temporaryPath = GetUniqueTempFolder();
+            WriteFile(temporaryPath, "packages.config", singlePackage);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -55,12 +52,9 @@ namespace NuKeeper.Tests.RepositoryInspection
 </Project>";
 
             var scanner = new RepositoryScanner();
-            var temporaryPath = GetTempFolder();
+            var temporaryPath = GetUniqueTempFolder();
 
-            using (var file = File.CreateText(Path.Combine(temporaryPath.FullPath, "sample.csproj")))
-            {
-                file.WriteLine(Vs2017ProjectFileTemplateWithPackages);
-            }
+            WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -70,15 +64,13 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SelfTest()
         {
-            var basePath = GetOwnRootDir();
-            var baseFolder = new Folder(null, basePath);
-
+            var baseFolder = new Folder(new NullNuKeeperLogger(), GetOwnRootDir());
             var scanner = new RepositoryScanner();
 
             var results = scanner.FindAllNuGetPackages(baseFolder);
 
-            Assert.That(results, Is.Not.Null, "in folder" + basePath);
-            Assert.That(results, Is.Not.Empty, "in folder" + basePath);
+            Assert.That(results, Is.Not.Null, "in folder" + baseFolder.FullPath);
+            Assert.That(results, Is.Not.Empty, "in folder" + baseFolder.FullPath);
 
         }
 
@@ -96,12 +88,18 @@ namespace NuKeeper.Tests.RepositoryInspection
             return projectRootDir;
         }
 
-        private IFolder GetTempFolder()
+        private IFolder GetUniqueTempFolder()
         {
             var dirInfo = new DirectoryInfo(TempFiles.MakeUniqueTemporaryPath());
-            return new Folder(null, dirInfo);
-
+            return new Folder(new NullNuKeeperLogger(), dirInfo);
         }
 
+        private void WriteFile(IFolder path, string fileName, string contents)
+        {
+            using (var file = File.CreateText(Path.Combine(path.FullPath, fileName)))
+            {
+                file.WriteLine(contents);
+            }
+        }
     }
 }
