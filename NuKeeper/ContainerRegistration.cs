@@ -5,6 +5,7 @@ using NuKeeper.Files;
 using NuKeeper.Github;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
+using NuKeeper.RepositoryInspection;
 using SimpleInjector;
 
 namespace NuKeeper
@@ -28,6 +29,7 @@ namespace NuKeeper
             container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
+            container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<GithubEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();

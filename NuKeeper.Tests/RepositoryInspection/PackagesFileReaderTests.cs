@@ -135,7 +135,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private PackagesFileReader MakeReader()
         {
-            return new PackagesFileReader(null);
+            return new PackagesFileReader(new NullNuKeeperLogger());
         }
     }
 }

@@ -209,7 +209,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private ProjectFileReader MakeReader()
         {
-            return new ProjectFileReader(null);
+            return new ProjectFileReader(new NullNuKeeperLogger());
         }
     }
 }
