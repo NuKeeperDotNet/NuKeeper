@@ -52,7 +52,7 @@ namespace NuKeeper.Engine
         {
             // scan for nuget packages
             var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNuGetPackages(git.WorkingFolder.FullPath)
+            var packages = repoScanner.FindAllNuGetPackages(git.WorkingFolder)
                 .ToList();
 
             _logger.Log(EngineReport.PackagesFound(packages));

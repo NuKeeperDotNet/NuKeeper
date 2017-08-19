@@ -11,19 +11,11 @@ namespace NuKeeper.Tests.RepositoryInspection
     public class RepositoryScannerTests
     {
         [Test]
-        public void InvalidDirectoryThrows()
-        {
-            var scanner = new RepositoryScanner();
-
-            Assert.Throws<Exception>(() => scanner.FindAllNuGetPackages("fish"));
-        }
-
-        [Test]
         public void ValidEmptyDirectoryWorks()
         {
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNuGetPackages(TempFiles.MakeUniqueTemporaryPath());
+            var results = scanner.FindAllNuGetPackages(GetTempFolder());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -40,9 +32,9 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var scanner = new RepositoryScanner();
 
-            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
+            var temporaryPath = GetTempFolder();
 
-            using (var file = File.CreateText(Path.Combine(temporaryPath, "packages.config")))
+            using (var file = File.CreateText(Path.Combine(temporaryPath.FullPath, "packages.config")))
             {
                 file.WriteLine(singlePackage);
             }
@@ -63,10 +55,9 @@ namespace NuKeeper.Tests.RepositoryInspection
 </Project>";
 
             var scanner = new RepositoryScanner();
+            var temporaryPath = GetTempFolder();
 
-            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
-
-            using (var file = File.CreateText(Path.Combine(temporaryPath, "sample.csproj")))
+            using (var file = File.CreateText(Path.Combine(temporaryPath.FullPath, "sample.csproj")))
             {
                 file.WriteLine(Vs2017ProjectFileTemplateWithPackages);
             }
@@ -80,17 +71,18 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void SelfTest()
         {
             var basePath = GetOwnRootDir();
+            var baseFolder = new Folder(null, basePath);
 
             var scanner = new RepositoryScanner();
 
-            var results = scanner.FindAllNuGetPackages(basePath);
+            var results = scanner.FindAllNuGetPackages(baseFolder);
 
             Assert.That(results, Is.Not.Null, "in folder" + basePath);
             Assert.That(results, Is.Not.Empty, "in folder" + basePath);
 
         }
 
-        private static string GetOwnRootDir()
+        private static DirectoryInfo GetOwnRootDir()
         {
             // If the test is running on (real example)
             // "C:\Code\NuKeeper\NuKeeper.Tests\bin\Debug\netcoreapp1.1\NuKeeper.dll"
@@ -101,7 +93,15 @@ namespace NuKeeper.Tests.RepositoryInspection
             var runDir = Path.GetDirectoryName(fullPath);
 
             var projectRootDir = Directory.GetParent(runDir).Parent.Parent.Parent;
-            return projectRootDir.FullName;
+            return projectRootDir;
         }
+
+        private IFolder GetTempFolder()
+        {
+            var dirInfo = new DirectoryInfo(TempFiles.MakeUniqueTemporaryPath());
+            return new Folder(null, dirInfo);
+
+        }
+
     }
 }

@@ -1,19 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
+using NuKeeper.Files;
 
 namespace NuKeeper.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
-        public IEnumerable<PackageInProject> FindAllNuGetPackages(string rootDirectory)
+        public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
         {
-            if (!Directory.Exists(rootDirectory))
-            {
-              throw new Exception($"No such directory: '{rootDirectory}'");
-            }
-
-            return FindNugetPackagesInDirRecursive(rootDirectory, rootDirectory);
+            return FindNugetPackagesInDirRecursive(workingFolder.FullPath, workingFolder.FullPath);
         }
 
         private IEnumerable<PackageInProject> FindNugetPackagesInDirRecursive(string rootDir, string dir)
