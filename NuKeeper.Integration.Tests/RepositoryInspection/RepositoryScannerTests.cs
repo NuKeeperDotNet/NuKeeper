@@ -14,7 +14,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         [Test]
         public void ValidEmptyDirectoryWorks()
         {
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
 
             var results = scanner.FindAllNuGetPackages(GetUniqueTempFolder());
 
@@ -31,7 +31,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
 </packages>";
 
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
 
             var temporaryPath = GetUniqueTempFolder();
             WriteFile(temporaryPath, "packages.config", singlePackage);
@@ -51,7 +51,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
             var temporaryPath = GetUniqueTempFolder();
 
             WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
@@ -64,8 +64,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         [Test]
         public void SelfTest()
         {
+            var scanner = MakeScanner();
             var baseFolder = new Folder(new NullNuKeeperLogger(), GetOwnRootDir());
-            var scanner = new RepositoryScanner();
 
             var results = scanner.FindAllNuGetPackages(baseFolder);
 
@@ -92,6 +92,14 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         {
             var dirInfo = new DirectoryInfo(TempFiles.MakeUniqueTemporaryPath());
             return new Folder(new NullNuKeeperLogger(), dirInfo);
+        }
+
+        private IRepositoryScanner MakeScanner()
+        {
+            var logger = new NullNuKeeperLogger();
+            return new RepositoryScanner(
+                new ProjectFileReader(logger),
+                new PackagesFileReader(logger));
         }
 
         private void WriteFile(IFolder path, string fileName, string contents)

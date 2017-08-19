@@ -22,7 +22,7 @@ namespace NuKeeper.RepositoryInspection
             return Read(fileContents, path);
         }
 
-        private IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
+        public IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
         {
             var xml = XDocument.Parse(fileContents);
             var project = xml.Element("Project");

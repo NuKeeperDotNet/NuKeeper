@@ -47,7 +47,7 @@ namespace NuKeeper.RepositoryInspection
             if (File.Exists(packagesConfigPath))
             {
                 var path = MakePackagePath(rootDir, packagesConfigPath, PackageReferenceType.PackagesConfig);
-                var packages = _projectFileReader.ReadFile(path);
+                var packages = _packagesFileReader.ReadFile(path);
                 result.AddRange(packages);
             }
             else
@@ -57,7 +57,7 @@ namespace NuKeeper.RepositoryInspection
                 foreach (var fileName in files)
                 {
                     var path = MakePackagePath(rootDir, fileName, PackageReferenceType.ProjectFile);
-                    var packages = _packagesFileReader.ReadFile(path);
+                    var packages = _projectFileReader.ReadFile(path);
                     result.AddRange(packages);
                 }
             }
