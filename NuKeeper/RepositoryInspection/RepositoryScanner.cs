@@ -6,6 +6,15 @@ namespace NuKeeper.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
+        private readonly ProjectFileReader _projectFileReader;
+        private readonly PackagesFileReader _packagesFileReader;
+
+        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader)
+        {
+            _projectFileReader = projectFileReader;
+            _packagesFileReader = packagesFileReader;
+        }
+
         public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
         {
             return FindNugetPackagesInDirRecursive(workingFolder.FullPath, workingFolder.FullPath);
@@ -38,7 +47,7 @@ namespace NuKeeper.RepositoryInspection
             if (File.Exists(packagesConfigPath))
             {
                 var path = MakePackagePath(rootDir, packagesConfigPath, PackageReferenceType.PackagesConfig);
-                var packages = PackagesFileReader.ReadFile(path);
+                var packages = _projectFileReader.ReadFile(path);
                 result.AddRange(packages);
             }
             else
@@ -48,7 +57,7 @@ namespace NuKeeper.RepositoryInspection
                 foreach (var fileName in files)
                 {
                     var path = MakePackagePath(rootDir, fileName, PackageReferenceType.ProjectFile);
-                    var packages = ProjectFileReader.ReadFile(path);
+                    var packages = _packagesFileReader.ReadFile(path);
                     result.AddRange(packages);
                 }
             }

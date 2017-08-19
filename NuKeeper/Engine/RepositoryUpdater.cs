@@ -14,17 +14,20 @@ namespace NuKeeper.Engine
         private readonly IPackageUpdatesLookup _packageLookup;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
+        private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
+            IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger)
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
+            _repositoryScanner = repositoryScanner;
             _logger = logger;
         }
 
@@ -51,8 +54,7 @@ namespace NuKeeper.Engine
         private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)
         {
             // scan for nuget packages
-            var repoScanner = new RepositoryScanner();
-            var packages = repoScanner.FindAllNuGetPackages(git.WorkingFolder)
+            var packages = _repositoryScanner.FindAllNuGetPackages(git.WorkingFolder)
                 .ToList();
 
             _logger.Log(EngineReport.PackagesFound(packages));
