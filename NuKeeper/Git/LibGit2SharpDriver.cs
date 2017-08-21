@@ -58,6 +58,16 @@ namespace NuKeeper.Git
             }
         }
 
+        public bool BranchExists(string branchName)
+        {
+            using (var repo = MakeRepo())
+            {
+                var branchFound = repo.Branches.Any(
+                    br => string.Equals(br.FriendlyName, branchName, StringComparison.Ordinal));
+                return branchFound;
+            }
+        }
+
         public void Commit(string message)
         {
             _logger.Verbose($"Git commit with message '{message}'");

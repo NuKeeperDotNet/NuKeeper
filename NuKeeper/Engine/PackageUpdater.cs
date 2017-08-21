@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
                 git.Checkout(defaultBranch);
 
                 // branch
-                var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+                var branchName = MakeBranchName(git, updateSet);
                 git.CheckoutNewBranch(branchName);
 
                 await UpdateAllCurrentUsages(updateSet);
@@ -58,6 +58,21 @@ namespace NuKeeper.Engine
             {
                 _logger.Error("Update failed", ex);
             }
+        }
+
+        private string MakeBranchName(IGitDriver git, PackageUpdateSet updateSet)
+        {
+            var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+            _logger.Verbose($"Using branch name: '{branchName}'");
+
+            var qualifiedBranchName = "origin/" + branchName;
+
+            if (git.BranchExists(qualifiedBranchName))
+            {
+                throw new Exception($"A Git branch named '{qualifiedBranchName}' already exists");
+            }
+
+            return branchName;
         }
 
         private async Task UpdateAllCurrentUsages(PackageUpdateSet updateSet)
