@@ -1,19 +1,23 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
+using NuKeeper.Files;
 
 namespace NuKeeper.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
-        public IEnumerable<PackageInProject> FindAllNuGetPackages(string rootDirectory)
-        {
-            if (!Directory.Exists(rootDirectory))
-            {
-              throw new Exception($"No such directory: '{rootDirectory}'");
-            }
+        private readonly ProjectFileReader _projectFileReader;
+        private readonly PackagesFileReader _packagesFileReader;
 
-            return FindNugetPackagesInDirRecursive(rootDirectory, rootDirectory);
+        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader)
+        {
+            _projectFileReader = projectFileReader;
+            _packagesFileReader = packagesFileReader;
+        }
+
+        public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
+        {
+            return FindNugetPackagesInDirRecursive(workingFolder.FullPath, workingFolder.FullPath);
         }
 
         private IEnumerable<PackageInProject> FindNugetPackagesInDirRecursive(string rootDir, string dir)
@@ -43,7 +47,7 @@ namespace NuKeeper.RepositoryInspection
             if (File.Exists(packagesConfigPath))
             {
                 var path = MakePackagePath(rootDir, packagesConfigPath, PackageReferenceType.PackagesConfig);
-                var packages = PackagesFileReader.ReadFile(path);
+                var packages = _packagesFileReader.ReadFile(path);
                 result.AddRange(packages);
             }
             else
@@ -53,7 +57,7 @@ namespace NuKeeper.RepositoryInspection
                 foreach (var fileName in files)
                 {
                     var path = MakePackagePath(rootDir, fileName, PackageReferenceType.ProjectFile);
-                    var packages = ProjectFileReader.ReadFile(path);
+                    var packages = _projectFileReader.ReadFile(path);
                     result.AddRange(packages);
                 }
             }

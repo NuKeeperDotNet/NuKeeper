@@ -28,7 +28,8 @@ namespace NuKeeper.Tests.RepositoryInspection
 <packages>
 </packages>";
 
-            var packages = PackagesFileReader.Read(emptyContents, TempPath());
+            var reader = MakeReader();
+            var packages = reader.Read(emptyContents, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -37,7 +38,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeRead()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -46,7 +48,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBePopulated()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);
@@ -55,7 +58,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SinglePackageShouldBeCorrect()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithSinglePackage, TempPath());
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
 
             var package = packages.FirstOrDefault();
 
@@ -67,7 +71,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBePopulated()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, TempPath())
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithTwoPackages, TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -80,7 +85,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void TwoPackagesShouldBeRead()
         {
-            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, TempPath())
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithTwoPackages, TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(2));
@@ -97,7 +103,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var path = TempPath();
 
-            var packages = PackagesFileReader.Read(PackagesFileWithTwoPackages, path);
+            var reader = MakeReader();
+            var packages = reader.Read(PackagesFileWithTwoPackages, path);
 
             foreach (var package in packages)
             {
@@ -111,7 +118,9 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
         {
             var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion");
-            var packages = PackagesFileReader.Read(badVersion, TempPath())
+
+            var reader = MakeReader();
+            var packages = reader.Read(badVersion, TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(1));
@@ -122,6 +131,11 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
                 PackageReferenceType.PackagesConfig);
+        }
+
+        private PackagesFileReader MakeReader()
+        {
+            return new PackagesFileReader(new NullNuKeeperLogger());
         }
     }
 }
