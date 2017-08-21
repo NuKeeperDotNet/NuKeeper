@@ -60,16 +60,13 @@ namespace NuKeeper.Engine
         private string MakeBranchName(IGitDriver git, PackageUpdateSet updateSet)
         {
             var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+            _logger.Verbose($"Using branch name: '{branchName}'");
+
             var qualifiedBranchName = "origin/" + branchName;
 
             if (git.BranchExists(qualifiedBranchName))
             {
-                branchName = branchName + "-" + DateTime.UtcNow.ToString("yyyyMMdd.HHmm");
-                _logger.Verbose($"Default branch name already exists, using '{branchName}'");
-            }
-            else
-            {
-                _logger.Verbose($"Using default branch name: '{branchName}'");
+                throw new Exception($"A Git branch named '{qualifiedBranchName}' already exists");
             }
 
             return branchName;
