@@ -12,13 +12,13 @@ namespace NuKeeper.Files
             return Path.Combine(Path.GetTempPath(), "NuKeeper");
         }
 
-        public static void DeleteExistingTempDirs()
+        public static void DeleteExistingTempDirs(INuKeeperLogger logger)
         {
             var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
             var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
             foreach (var dir in dirs)
             {
-                TryDelete(dir);
+                TryDelete(dir, logger);
             }
         }
 
@@ -35,9 +35,9 @@ namespace NuKeeper.Files
             return uniquePath;
         }
 
-        public static void TryDelete(DirectoryInfo tempDir, INuKeeperLogger logger = null)
+        public static void TryDelete(DirectoryInfo tempDir, INuKeeperLogger logger)
         {
-            logger?.Verbose($"Attempting delete of temp dir {tempDir}");
+            logger.Verbose($"Attempting delete of temp dir {tempDir}");
 
             try
             {
@@ -45,7 +45,7 @@ namespace NuKeeper.Files
             }
             catch (Exception)
             {
-                logger?.Verbose("Delete failed. Continuing");
+                logger.Verbose("Delete failed. Continuing");
             }
         }
     }

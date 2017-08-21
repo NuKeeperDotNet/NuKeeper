@@ -36,6 +36,8 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
+            TempFiles.DeleteExistingTempDirs(_logger);
+
             var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
