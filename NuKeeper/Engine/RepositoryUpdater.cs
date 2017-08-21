@@ -12,19 +12,22 @@ namespace NuKeeper.Engine
     public class RepositoryUpdater : IRepositoryUpdater
     {   
         private readonly IPackageUpdatesLookup _packageLookup;
+        private readonly IExistingBranchFilter _existingBranchFilter;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
 
         public RepositoryUpdater(
-            IPackageUpdatesLookup packageLookup, 
+            IPackageUpdatesLookup packageLookup,
+            IExistingBranchFilter existingBranchFilter,
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger)
         {
             _packageLookup = packageLookup;
+            _existingBranchFilter = existingBranchFilter;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
             _repositoryScanner = repositoryScanner;
@@ -44,7 +47,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var targetUpdates = _updateSelection.SelectTargets(updates);
+            var targetUpdates = SelectTargetUpdates(git, updates);
 
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 
@@ -63,6 +66,13 @@ namespace NuKeeper.Engine
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
             _logger.Log(EngineReport.UpdatesFound(updates));
             return updates;
+        }
+
+        private List<PackageUpdateSet> SelectTargetUpdates(IGitDriver git, List<PackageUpdateSet> updates)
+        {
+            var noExistingBranch = updates
+                .Where(u => !_existingBranchFilter.Exists(git, u));
+            return _updateSelection.SelectTargets(noExistingBranch);
         }
 
         private async Task UpdateAllTargets(IGitDriver git, RepositoryModeSettings settings, IEnumerable<PackageUpdateSet> targetUpdates, string defaultBranch)
