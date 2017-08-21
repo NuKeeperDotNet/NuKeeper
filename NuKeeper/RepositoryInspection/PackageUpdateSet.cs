@@ -8,7 +8,7 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        public PackageUpdateSet(PackageIdentity newPackage, IEnumerable<PackageInProject> currentPackages)
+        public PackageUpdateSet(PackageIdentity newPackage, string packageSource, IEnumerable<PackageInProject> currentPackages)
         {
             if (newPackage == null)
             {
@@ -20,11 +20,16 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentNullException(nameof(currentPackages));
             }
 
+            if (packageSource == null)
+            {
+                throw new ArgumentNullException(nameof(packageSource));
+            }
+
             var currentPackagesList = currentPackages.ToList();
 
             if (!currentPackagesList.Any())
             {
-                throw new ArgumentException($"{nameof(currentPackages)} is empty");
+                throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
             if (currentPackagesList.Any(p => p.Id != newPackage.Id))
@@ -39,6 +44,7 @@ namespace NuKeeper.RepositoryInspection
 
             NewPackage = newPackage;
             CurrentPackages = currentPackagesList;
+            PackageSource = packageSource;
         }
 
         public PackageIdentity NewPackage { get; }
@@ -47,6 +53,7 @@ namespace NuKeeper.RepositoryInspection
 
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;
+        public string PackageSource { get; }
 
         public int CountCurrentVersions()
         {

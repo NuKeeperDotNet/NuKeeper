@@ -37,5 +37,7 @@ namespace NuKeeper.Configuration
         public string Mode { get; }
 
         public LogLevel LogLevel { get; set; }
+
+        public string[] NuGetSources { get; set; }
     }
 }

@@ -63,7 +63,7 @@ namespace NuKeeper.Engine
             return updates;
         }
 
-        private async Task UpdateAllTargets(IGitDriver git, RepositoryModeSettings settings, List<PackageUpdateSet> targetUpdates, string defaultBranch)
+        private async Task UpdateAllTargets(IGitDriver git, RepositoryModeSettings settings, IEnumerable<PackageUpdateSet> targetUpdates, string defaultBranch)
         {
             foreach (var updateSet in targetUpdates)
             {

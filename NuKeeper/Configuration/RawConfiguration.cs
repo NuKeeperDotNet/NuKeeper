@@ -30,5 +30,9 @@ namespace NuKeeper.Configuration
         [JsonConfig("log_level"), Default("Info")]
         [OverriddenBy(ConfigurationSources.CommandLine, "log")]
         public string LogLevel;
+
+        [JsonConfig("nuget_sources"), Default("https://api.nuget.org/v3/index.json")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "sources")]
+        public string NuGetSources;
     }
 }

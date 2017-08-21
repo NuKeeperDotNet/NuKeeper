@@ -6,12 +6,12 @@ namespace NuKeeper
     {
         public static string JoinWithCommas(this IEnumerable<string> values)
         {
-            if (values == null)
-            {
-                return string.Empty;
-            }
+            return JoinWithSeparator(values, ", ");
+        }
 
-            return string.Join(", ", values);
+        public static string JoinWithSeparator(this IEnumerable<string> values, string separator)
+        {
+            return values == null ? string.Empty : string.Join(separator, values);
         }
     }
 }

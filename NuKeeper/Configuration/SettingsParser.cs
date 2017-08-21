@@ -48,6 +48,7 @@ namespace NuKeeper.Configuration
             }
 
             result.LogLevel = logLevel.Value;
+            result.NuGetSources = ReadNuGetSources(settings);
             return result;
         }
 
@@ -80,6 +81,11 @@ namespace NuKeeper.Configuration
             });
         }
 
+        private static string[] ReadNuGetSources(RawConfiguration settings)
+        {
+            return settings.NuGetSources.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private static Settings ReadSettingsForOrganisationMode(RawConfiguration settings)
         {
             if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
@@ -97,7 +103,7 @@ namespace NuKeeper.Configuration
                 GithubApiBase = EnsureTrailingSlash(githubHost),
                 GithubToken = githubToken,
                 OrganisationName = githubOrganisationName,
-                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
+                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
             });
         }
 
