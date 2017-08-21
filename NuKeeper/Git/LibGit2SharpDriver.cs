@@ -60,12 +60,10 @@ namespace NuKeeper.Git
 
         public bool BranchExists(string branchName)
         {
-            var fullBranchName = "origin/" + branchName;
-
             using (var repo = MakeRepo())
             {
                 var branchFound = repo.Branches.Any(
-                    br => string.Equals(br.FriendlyName, fullBranchName, StringComparison.OrdinalIgnoreCase));
+                    br => string.Equals(br.FriendlyName, branchName, StringComparison.OrdinalIgnoreCase));
                 return branchFound;
             }
         }
