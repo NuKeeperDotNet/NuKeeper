@@ -63,7 +63,7 @@ namespace NuKeeper.Git
             using (var repo = MakeRepo())
             {
                 var branchFound = repo.Branches.Any(
-                    br => string.Equals(br.FriendlyName, branchName, StringComparison.OrdinalIgnoreCase));
+                    br => string.Equals(br.FriendlyName, branchName, StringComparison.Ordinal));
                 return branchFound;
             }
         }
