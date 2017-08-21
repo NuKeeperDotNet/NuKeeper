@@ -2,28 +2,21 @@
 using System.IO;
 using System.Reflection;
 using NuKeeper.Files;
+using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.RepositoryInspection
+namespace NuKeeper.Integration.Tests.RepositoryInspection
 {
     [TestFixture]
     public class RepositoryScannerTests
     {
         [Test]
-        public void InvalidDirectoryThrows()
-        {
-            var scanner = new RepositoryScanner();
-
-            Assert.Throws<Exception>(() => scanner.FindAllNuGetPackages("fish"));
-        }
-
-        [Test]
         public void ValidEmptyDirectoryWorks()
         {
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
 
-            var results = scanner.FindAllNuGetPackages(TempFiles.MakeUniqueTemporaryPath());
+            var results = scanner.FindAllNuGetPackages(GetUniqueTempFolder());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -38,14 +31,10 @@ namespace NuKeeper.Tests.RepositoryInspection
   <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
 </packages>";
 
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
 
-            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
-
-            using (var file = File.CreateText(Path.Combine(temporaryPath, "packages.config")))
-            {
-                file.WriteLine(singlePackage);
-            }
+            var temporaryPath = GetUniqueTempFolder();
+            WriteFile(temporaryPath, "packages.config", singlePackage);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -62,14 +51,10 @@ namespace NuKeeper.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
-            var scanner = new RepositoryScanner();
+            var scanner = MakeScanner();
+            var temporaryPath = GetUniqueTempFolder();
 
-            var temporaryPath = TempFiles.MakeUniqueTemporaryPath();
-
-            using (var file = File.CreateText(Path.Combine(temporaryPath, "sample.csproj")))
-            {
-                file.WriteLine(Vs2017ProjectFileTemplateWithPackages);
-            }
+            WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -79,18 +64,17 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void SelfTest()
         {
-            var basePath = GetOwnRootDir();
+            var scanner = MakeScanner();
+            var baseFolder = new Folder(new NullNuKeeperLogger(), GetOwnRootDir());
 
-            var scanner = new RepositoryScanner();
+            var results = scanner.FindAllNuGetPackages(baseFolder);
 
-            var results = scanner.FindAllNuGetPackages(basePath);
-
-            Assert.That(results, Is.Not.Null, "in folder" + basePath);
-            Assert.That(results, Is.Not.Empty, "in folder" + basePath);
+            Assert.That(results, Is.Not.Null, "in folder" + baseFolder.FullPath);
+            Assert.That(results, Is.Not.Empty, "in folder" + baseFolder.FullPath);
 
         }
 
-        private static string GetOwnRootDir()
+        private static DirectoryInfo GetOwnRootDir()
         {
             // If the test is running on (real example)
             // "C:\Code\NuKeeper\NuKeeper.Tests\bin\Debug\netcoreapp1.1\NuKeeper.dll"
@@ -101,7 +85,29 @@ namespace NuKeeper.Tests.RepositoryInspection
             var runDir = Path.GetDirectoryName(fullPath);
 
             var projectRootDir = Directory.GetParent(runDir).Parent.Parent.Parent;
-            return projectRootDir.FullName;
+            return projectRootDir;
+        }
+
+        private IFolder GetUniqueTempFolder()
+        {
+            var dirInfo = new DirectoryInfo(TempFiles.MakeUniqueTemporaryPath());
+            return new Folder(new NullNuKeeperLogger(), dirInfo);
+        }
+
+        private IRepositoryScanner MakeScanner()
+        {
+            var logger = new NullNuKeeperLogger();
+            return new RepositoryScanner(
+                new ProjectFileReader(logger),
+                new PackagesFileReader(logger));
+        }
+
+        private void WriteFile(IFolder path, string fileName, string contents)
+        {
+            using (var file = File.CreateText(Path.Combine(path.FullPath, fileName)))
+            {
+                file.WriteLine(contents);
+            }
         }
     }
 }

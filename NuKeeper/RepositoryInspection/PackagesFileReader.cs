@@ -3,18 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using NuKeeper.Logging;
 
 namespace NuKeeper.RepositoryInspection
 {
-    public static class PackagesFileReader
+    public class PackagesFileReader
     {
-        public static IEnumerable<PackageInProject> ReadFile(PackagePath path)
+        private readonly INuKeeperLogger _logger;
+
+        public PackagesFileReader(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
+        public IEnumerable<PackageInProject> ReadFile(PackagePath path)
         {
             var fileContents = File.ReadAllText(path.FullPath);
             return Read(fileContents, path);
         }
 
-        public static IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
+        public IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
         {
             var xml = XDocument.Parse(fileContents);
 
@@ -33,7 +41,7 @@ namespace NuKeeper.RepositoryInspection
                 .ToList();
         }
 
-        private static PackageInProject XmlToPackage(XElement el, PackagePath path)
+        private PackageInProject XmlToPackage(XElement el, PackagePath path)
         {
             try
             {
@@ -45,7 +53,7 @@ namespace NuKeeper.RepositoryInspection
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Could not read package from {el}: {ex.Message}");
+                _logger.Error($"Could not read package from {el} in file {path.FullPath}", ex);
                 return null;
             }
         }
