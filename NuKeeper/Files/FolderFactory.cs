@@ -12,6 +12,11 @@ namespace NuKeeper.Files
             _logger = logger;
         }
 
+        public void DeleteExistingTempDirs()
+        {
+            TempFiles.DeleteExistingTempDirs(_logger);
+        }
+
         public IFolder UniqueTemporaryFolder()
         {
             var tempDir = new DirectoryInfo(TempFiles.GetUniqueTemporaryPath());
