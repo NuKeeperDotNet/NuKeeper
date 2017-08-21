@@ -98,7 +98,7 @@ It is similar to [this rule of preferring to use a parameter of a base type or i
 
 You will need command line version of `dotnet` installed.
 
-It currently only runs on windows due to using `cmd` to invoke command-line processes for `git` and `dotnet`.
+It currently only runs on windows due to using `cmd` to invoke command-line processes for `dotnet`.
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line. 
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality. 
