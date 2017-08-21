@@ -18,7 +18,7 @@ namespace NuKeeper.NuGet.Api
             _logger = logger;
         }
 
-        public async Task<Dictionary<string, IPackageSearchMetadata>> LatestVersions(IEnumerable<string> packageIds)
+        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<string> packageIds)
         {
             var lookupTasks = packageIds
                 .Select(id => _packageLookup.LookupLatest(id))
@@ -26,7 +26,7 @@ namespace NuKeeper.NuGet.Api
 
             await Task.WhenAll(lookupTasks);
 
-            var result = new Dictionary<string, IPackageSearchMetadata>();
+            var result = new Dictionary<string, PackageSearchMedatadataWithSource>();
 
             foreach (var lookupTask in lookupTasks)
             {

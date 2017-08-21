@@ -82,7 +82,7 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            return new PackageUpdateSet(newPackage, currentPackages);
+            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
         }
 
         private PackageUpdateSet UpdateBarFromTwoVersions()
@@ -95,7 +95,7 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("bar", "1.2.1", PathToProjectTwo())
             };
 
-            return new PackageUpdateSet(newPackage, currentPackages);
+            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
         }
 
         private PackageIdentity LatestVersionOfPackageFoo()

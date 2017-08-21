@@ -6,6 +6,6 @@ namespace NuKeeper.NuGet.Process
 {
     public interface IUpdatePackageCommand
     {
-        Task Invoke(NuGetVersion newVersion, PackageInProject currentPackage);
+        Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage);
     }
 }

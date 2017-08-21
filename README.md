@@ -51,10 +51,12 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
 |----------------------------------|-------------------|----------------------|
 | github_api_endpoint              | If not overridden | Yes (`api`)          |
 | max_pull_requests_per_repository | If not overridden | Yes (`maxpr`)        |
+| nuget_sources                    | If not overridden | Yes (`sources`)        |
 | log_level                        | No                | Yes (`log`)          |
  
  *  *github_api_endpoint* This is the api endpoint for the github instance you're targetting. Defaulted to `https://api.github.com`. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. The default value is 3.
+ * *nuget_sources* Semicolon-separated list of NuGet repositories to use when searching for updates and when installing them.
  * *log_level*. Controls how much output is displayed. Values are, from least output to most output: `Silent`, `Terse`, `Info`, `Verbose`. The default value is `Info`.
 
 ### Command-line arguments
@@ -94,9 +96,9 @@ It is similar to [this rule of preferring to use a parameter of a base type or i
 
 ## Limitations
 
-You will need command line versions of `git` and `dotnet` installed.
+You will need command line version of `dotnet` installed.
 
-It currently only runs on windows due to using `cmd` to invoke command-line processes for `git` and `dotnet`.
+It currently only runs on windows due to using `cmd` to invoke command-line processes for `dotnet`.
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line. 
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality. 

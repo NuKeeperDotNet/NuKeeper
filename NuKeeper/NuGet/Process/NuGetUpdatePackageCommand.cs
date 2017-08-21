@@ -9,13 +9,13 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class DotNetUpdatePackageCommand : IUpdatePackageCommand
+    public class NuGetUpdatePackageCommand : IUpdatePackageCommand
     {
-        private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
+        private readonly INuKeeperLogger _logger;
         private readonly string[] _sources;
 
-        public DotNetUpdatePackageCommand(
+        public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
             Settings settings,
             IExternalProcess externalProcess = null)
@@ -28,10 +28,11 @@ namespace NuKeeper.NuGet.Process
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
+            var nuget = NuGetPath.FindExecutable();
             var sources = GetSourcesCommandLine(_sources);
             var updateCommand = $"cd {dirName}"
-                + $" & dotnet restore {sources}"
-                + $" & dotnet add package {currentPackage.Id} -v {newVersion} -s {packageSource}";
+                                + $" & {nuget} restore packages.config {sources}"
+                                + $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
             _logger.Verbose(updateCommand);
 
             await _externalProcess.Run(updateCommand, true);
@@ -39,7 +40,7 @@ namespace NuKeeper.NuGet.Process
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)
         {
-            return sources.Select(s => $"-s {s}").JoinWithSeparator(" ");
+            return sources.Select(s => $"-Source {s}").JoinWithSeparator(" ");
         }
     }
 }

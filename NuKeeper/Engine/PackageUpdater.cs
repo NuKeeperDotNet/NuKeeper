@@ -14,13 +14,16 @@ namespace NuKeeper.Engine
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
+        private readonly Settings _settings;
 
         public PackageUpdater(
             IGithub github,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            Settings settings)
         {
             _github = github;
             _logger = logger;
+            _settings = settings;
         }
 
         public async Task UpdatePackageInProjects(
@@ -77,7 +80,7 @@ namespace NuKeeper.Engine
             foreach (var current in updateSet.CurrentPackages)
             {
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
-                await updateCommand.Invoke(updateSet.NewVersion, current);
+                await updateCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
             }
         }
 
@@ -85,10 +88,10 @@ namespace NuKeeper.Engine
         {
             if (packageReferenceType == PackageReferenceType.ProjectFile)
             {
-                return new DotNetUpdatePackageCommand(_logger);
+                return new DotNetUpdatePackageCommand(_logger, _settings);
             }
 
-            return new NuGetUpdatePackageCommand(_logger);
+            return new NuGetUpdatePackageCommand(_logger, _settings);
         }
 
         private async Task MakeGitHubPullRequest(
