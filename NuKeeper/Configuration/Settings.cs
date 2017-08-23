@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using NuKeeper.Logging;
 
 namespace NuKeeper.Configuration
@@ -39,5 +40,9 @@ namespace NuKeeper.Configuration
         public LogLevel LogLevel { get; set; }
 
         public string[] NuGetSources { get; set; }
+
+        public Regex PackageIncludes { get; set; }
+
+        public Regex PackageExcludes { get; set; }
     }
 }

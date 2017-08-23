@@ -70,7 +70,8 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
 | api                              | No                  |
 | maxpr                            | No                  |
 | log                              | No                  |
-
+| include (i)                      | No                  |
+| exclude (e)                      | No                  |
 
  * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
@@ -79,6 +80,8 @@ C:\Code\NuKeeper\NuKeeper>dotnet run mode=organisation t=<GitToken> github_api_e
  * *api* Overrides `github_api_endpoint` in `config.json`. Must be a fully qualified URL.
  * *maxpr* Overrides `max_pull_requests_per_repository` in `config.json`.
  * *log* Overrides `log_level` in `config.json`.
+ * *include* Only consider packages matching this regex pattern.
+ * *exclude* Do not consider packages matching this regex pattern.
 
 
 

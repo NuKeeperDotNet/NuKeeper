@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -72,6 +73,87 @@ namespace NuKeeper.Tests.Engine
             Assert.That(results[0].PackageId, Is.EqualTo("bar"));
         }
 
+        [Test]
+        public void WhenThereAreIncludes_OnlyConsiderMatches()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var target =
+                new PackageUpdateSelection(
+                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
+                    {
+                        PackageIncludes = new Regex("bar")
+                    });
+
+            var results = target.SelectTargets(updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public void WhenThereAreExcludes_OnlyConsiderNonMatching()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var target =
+                new PackageUpdateSelection(
+                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
+                    {
+                        PackageExcludes = new Regex("bar")
+                    });
+
+            var results = target.SelectTargets(updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+        }
+
+        [Test]
+        public void WhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFoobarFromOneVersion(),
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var target =
+                new PackageUpdateSelection(
+                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
+                    {
+                        PackageExcludes = new Regex("bar"),
+                        PackageIncludes = new Regex("foo")
+                    });
+
+            var results = target.SelectTargets(updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+        }
+
+        private PackageUpdateSet UpdateFoobarFromOneVersion()
+        {
+            var newPackage = LatestVersionOfPackageFoobar();
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("foobar", "1.0.1", PathToProjectOne()),
+                new PackageInProject("foobar", "1.0.1", PathToProjectTwo())
+            };
+
+            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+        }
+
         private PackageUpdateSet UpdateFooFromOneVersion()
         {
             var newPackage = LatestVersionOfPackageFoo();
@@ -96,6 +178,11 @@ namespace NuKeeper.Tests.Engine
             };
 
             return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+        }
+
+        private PackageIdentity LatestVersionOfPackageFoobar()
+        {
+            return new PackageIdentity("foobar", new NuGetVersion("1.2.3"));
         }
 
         private PackageIdentity LatestVersionOfPackageFoo()

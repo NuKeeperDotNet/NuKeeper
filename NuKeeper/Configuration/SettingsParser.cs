@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
 using NuKeeper.Logging;
@@ -49,7 +50,22 @@ namespace NuKeeper.Configuration
 
             result.LogLevel = logLevel.Value;
             result.NuGetSources = ReadNuGetSources(settings);
+            result.PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include));
+            result.PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude));
             return result;
+        }
+
+        private static Regex ParseRegex(string regex, string optionName)
+        {
+            try
+            {
+                return new Regex(regex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unable to parse {regex} for option {optionName} : {ex.Message}");
+                return null;
+            }
         }
 
         private static Settings ReadSettingsForRepositoryMode(RawConfiguration settings)
