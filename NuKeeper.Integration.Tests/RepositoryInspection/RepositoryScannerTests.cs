@@ -90,8 +90,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
 
         private IFolder GetUniqueTempFolder()
         {
-            var dirInfo = new DirectoryInfo(TempFiles.MakeUniqueTemporaryPath());
-            return new Folder(new NullNuKeeperLogger(), dirInfo);
+            var folderFactory = new FolderFactory(new NullNuKeeperLogger());
+            return folderFactory.UniqueTemporaryFolder();
         }
 
         private IRepositoryScanner MakeScanner()
