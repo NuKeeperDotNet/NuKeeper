@@ -34,5 +34,11 @@ namespace NuKeeper.Configuration
         [JsonConfig("nuget_sources"), Default("https://api.nuget.org/v3/index.json")]
         [OverriddenBy(ConfigurationSources.CommandLine, "sources")]
         public string NuGetSources;
+
+        [CommandLine("include", "i"), Required]
+        public string Include;
+
+        [CommandLine("exclude", "e"), Required]
+        public string Exclude;
     }
 }
