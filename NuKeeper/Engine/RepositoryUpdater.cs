@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var targetUpdates = _updateSelection.SelectTargets(updates);
+            var targetUpdates = _updateSelection.SelectTargets(git, updates);
 
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 

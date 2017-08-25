@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Git;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -15,11 +18,11 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void WhenThereAreNoInputs_NoTargetsOut()
         {
-            var updateSets = new List<PackageUpdateSet>();
+            var updateSets = Enumerable.Empty<PackageUpdateSet>();
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -32,7 +35,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -50,7 +53,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].PackageId, Is.EqualTo("bar"));
@@ -67,7 +70,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].PackageId, Is.EqualTo("bar"));
@@ -88,7 +91,7 @@ namespace NuKeeper.Tests.Engine
                         PackageIncludes = new Regex("bar")
                     });
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].PackageId, Is.EqualTo("bar"));
@@ -109,7 +112,7 @@ namespace NuKeeper.Tests.Engine
                         PackageExcludes = new Regex("bar")
                     });
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].PackageId, Is.EqualTo("foo"));
@@ -132,10 +135,51 @@ namespace NuKeeper.Tests.Engine
                         PackageIncludes = new Regex("foo")
                     });
 
-            var results = target.SelectTargets(updateSets);
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+        }
+
+        [Test]
+        public void WhenExistingBranchesAreFilteredOut()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var git = GitWithAllBranches();
+
+            var target = OneTargetSelection();
+
+            var results = target.SelectTargets(git, updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(0));
+            git.Received(2).BranchExists(Arg.Any<string>());
+        }
+
+        [Test]
+        public void WhenFirstPackageIsFilteredOutByBranch()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var git = Substitute.For<IGitDriver>();
+            git.BranchExists(Arg.Is<string>(s => s.Contains("foo"))).Returns(true);
+            git.BranchExists(Arg.Is<string>(s => s.Contains("bar"))).Returns(false);
+
+            var target = OneTargetSelection();
+
+            var results = target.SelectTargets(git, updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+            git.Received().BranchExists(Arg.Any<string>());
         }
 
         private PackageUpdateSet UpdateFoobarFromOneVersion()
@@ -210,6 +254,20 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequestsPerRepository = maxPullRequests
             });
             return new PackageUpdateSelection(settings);
+        }
+
+        private static IGitDriver GitWithAllBranches()
+        {
+            var git = Substitute.For<IGitDriver>();
+            git.BranchExists(Arg.Any<string>()).Returns(true);
+            return git;
+        }
+
+        private static IGitDriver GitWithNoBranches()
+        {
+            var git = Substitute.For<IGitDriver>();
+            git.BranchExists(Arg.Any<string>()).Returns(false);
+            return git;
         }
     }
 }

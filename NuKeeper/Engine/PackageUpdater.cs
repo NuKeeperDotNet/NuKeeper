@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
                 git.Checkout(defaultBranch);
 
                 // branch
-                var branchName = $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+                var branchName = BranchNamer.MakeName(updateSet);
                 _logger.Verbose($"Using branch name: '{branchName}'");
                 git.CheckoutNewBranch(branchName);
 
