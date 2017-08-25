@@ -37,9 +37,9 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 ```
 ### Environment Variables
 
-| Name                             | Required          | Overridable via CLI? |
-|----------------------------------|-------------------|----------------------|
-| NuKeeper_github_token            | If not overridden | Yes (`t`)            |
+| Name                             | Required?                       | Overridable via CLI? |
+|----------------------------------|---------------------------------|----------------------|
+| NuKeeper_github_token            | Unless provided on command line | Yes (`t`)            |
 
  * *NuKeeper_github_token* You will need to [create a github personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) to authorise access to your github server in order to raise PRs. Be sure to check the "repo" scope when creating the token. 
 
@@ -49,9 +49,9 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 
 | Name                             | Required          | Overridable via CLI? | Default                             |
 |----------------------------------|-------------------|----------------------|-------------------------------------|
-| github_api_endpoint              | If not overridden | Yes (`api`)          | https://api.github.com              |
-| max_pull_requests_per_repository | If not overridden | Yes (`maxpr`)        | 3                                   |
-| nuget_sources                    | If not overridden | Yes (`sources`)      | https://api.nuget.org/v3/index.json |
+| github_api_endpoint              | No                | Yes (`api`)          | https://api.github.com              |
+| max_pull_requests_per_repository | No                | Yes (`maxpr`)        | 3                                   |
+| nuget_sources                    | No                | Yes (`sources`)      | https://api.nuget.org/v3/index.json |
 | log_level                        | No                | Yes (`log`)          | Info                                |
  
  *  *github_api_endpoint* This is the api endpoint for the github instance you're targetting. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
@@ -83,6 +83,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
  * *log* Overrides `log_level` in `config.json`.
  * *include* Only consider packages matching this regex pattern.
  * *exclude* Do not consider packages matching this regex pattern.
+ * *sources* Overrides `nuget_sources` in `config.json`.
 
 
 
