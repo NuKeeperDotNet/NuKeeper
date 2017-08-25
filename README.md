@@ -97,7 +97,7 @@ Libraries should, however, update their packages when there is a breaking change
 But now I am converting `MyFancyLib` to NetStandard for .Net Core. The lowest version of `Newtonsoft.Json` that supports this is `9.0.1`, so we use that. 
 Although there are later versions of `Newtonsoft.Json`, this gives `MyFancyLib` what it needs and allows clients the most choice within the constraint of supporting NetStandard.
 
-In an end-product deployable application, aggressive updating of packages is a better tactic.
+In an end-product deployable application, frequent updating of packages is a better tactic.
 Supported by comprehensive automated testing , regular updates will keep your application up to date with security fixes and prevent it from relying on potentially outdated libraries.
 
 This is an application of [Postel's Law](https://en.wikipedia.org/wiki/Robustness_principle): Packages should be liberal in the range of package versions that they can accept, and applications should be strict about using up to date packages when they run.
