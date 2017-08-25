@@ -19,11 +19,11 @@ namespace NuKeeper.Configuration
         [CommandLine("github_organisation_name", "org")]
         public string GithubOrganisationName;
 
-        [JsonConfig("github_api_endpoint"), Required]
+        [JsonConfig("github_api_endpoint"), Default("https://api.github.com")]
         [OverriddenBy(ConfigurationSources.CommandLine, "api")]
         public Uri GithubApiEndpoint;
 
-        [JsonConfig("max_pull_requests_per_repository"), Required]
+        [JsonConfig("max_pull_requests_per_repository"), Default(3)]
         [OverriddenBy(ConfigurationSources.CommandLine, "maxpr")]
         public int MaxPullRequestsPerRepository;
 
@@ -35,10 +35,10 @@ namespace NuKeeper.Configuration
         [OverriddenBy(ConfigurationSources.CommandLine, "sources")]
         public string NuGetSources;
 
-        [CommandLine("include", "i"), Required]
+        [CommandLine("include", "i")]
         public string Include;
 
-        [CommandLine("exclude", "e"), Required]
+        [CommandLine("exclude", "e")]
         public string Exclude;
     }
 }
