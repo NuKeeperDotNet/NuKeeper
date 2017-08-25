@@ -26,6 +26,7 @@ namespace NuKeeper
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
+            container.Register<IExistingBranchFilter, ExistingBranchFilter>();
             container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();

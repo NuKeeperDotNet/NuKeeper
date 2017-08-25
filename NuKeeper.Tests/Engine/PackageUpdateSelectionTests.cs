@@ -208,7 +208,7 @@ namespace NuKeeper.Tests.Engine
         private static IPackageUpdateSelection OneTargetSelection()
         {
             const int maxPullRequests = 1;
-            var settings = new Settings(new RepositoryModeSettings()
+            var settings = new Settings(new RepositoryModeSettings
             {
                 MaxPullRequestsPerRepository = maxPullRequests
             });
