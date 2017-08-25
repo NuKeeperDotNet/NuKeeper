@@ -50,6 +50,12 @@ namespace NuKeeper.Git
 
         public void CheckoutNewBranch(string branchName)
         {
+            var qualifiedBranchName = "origin/" + branchName;
+            if (BranchExists(qualifiedBranchName))
+            {
+                throw new Exception($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
+            }
+
             _logger.Verbose($"Git checkout new branch '{branchName}'");
             using (var repo = MakeRepo())
             {
