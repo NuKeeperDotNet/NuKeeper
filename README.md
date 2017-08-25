@@ -89,10 +89,16 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 ## When to use NuKeeper
 
 If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause.  Consider carefully whether you want to force your users to also update entire dependency chains.
+
 e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the application using `MyFancyLib`. 
 [It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003). 
 
-In an end-product deployable application, aggressive updating of packages is a better tactic.  Supported by comprehensive automated testing , regular updates will keep your application up to date with security fixes and prevent it from relying on potentially outdated libaries.
+Libraries should, however, update their packages when there is a breaking change in the features that they use or another compelling reason. e.g. `MyFancyLib` uses `Newtonsoft.Json` version `8.0.1`, but since it only calls `JsonConvert.DeserializeObject<>` many versions of `Newtonsoft.Json` can be used. 
+But now I am converting `MyFancyLib` to NetStandard for .Net Core. The lowest version of `Newtonsoft.Json` that supports this is `9.0.1`, so we use that. 
+Although there are later versions of `Newtonsoft.Json`, this gives `MyFancyLib` what it needs and allows clients the most choice within the constraint of supporting NetStandard.
+
+In an end-product deployable application, frequent updating of packages is a better tactic.
+Supported by comprehensive automated testing, regular updates will keep your application up to date with security fixes and prevent it from relying on potentially outdated libraries.
 
 This is an application of [Postel's Law](https://en.wikipedia.org/wiki/Robustness_principle): Packages should be liberal in the range of package versions that they can accept, and applications should be strict about using up to date packages when they run.
 
