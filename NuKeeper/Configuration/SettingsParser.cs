@@ -57,6 +57,11 @@ namespace NuKeeper.Configuration
 
         private static Regex ParseRegex(string regex, string optionName)
         {
+            if (string.IsNullOrWhiteSpace(regex))
+            {
+                return null;
+            }
+
             try
             {
                 return new Regex(regex);
