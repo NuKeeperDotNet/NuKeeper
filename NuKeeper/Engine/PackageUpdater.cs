@@ -65,9 +65,25 @@ namespace NuKeeper.Engine
         {
             foreach (var current in updateSet.CurrentPackages)
             {
+                var restoreCommand = GetRestoreCommand(current.Path.PackageReferenceType);
+                if (restoreCommand != null)
+                {
+                    await restoreCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
+                }
+
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
                 await updateCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
             }
+        }
+
+        private INuGetProjectRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
+        {
+            if (packageReferenceType == PackageReferenceType.PackagesConfig)
+            {
+                return new NuGetProjectRestoreCommand(_logger, _settings);
+            }
+
+            return null;
         }
 
         private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)

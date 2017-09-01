@@ -9,13 +9,13 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class NuGetUpdatePackageCommand : IUpdatePackageCommand
+    public class NuGetProjectRestoreCommand : INuGetProjectRestoreCommand
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
         private readonly string[] _sources;
 
-        public NuGetUpdatePackageCommand(
+        public NuGetProjectRestoreCommand(
             INuKeeperLogger logger,
             Settings settings,
             IExternalProcess externalProcess = null)
@@ -31,10 +31,15 @@ namespace NuKeeper.NuGet.Process
             var nuget = NuGetPath.FindExecutable();
             var sources = GetSourcesCommandLine(_sources);
             var updateCommand = $"cd {dirName}" + 
-                $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
+                $" & {nuget} restore packages.config {sources}";
             _logger.Verbose(updateCommand);
 
-            await _externalProcess.Run(updateCommand, true);
+            var processOutput = await _externalProcess.Run(updateCommand, ensureSuccess: false);
+
+            if (!processOutput.Success)
+            {
+                _logger.Verbose($"Project restore failed in {dirName}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
+            }
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)
