@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.NuGet.Process
 {
-    public interface ISolutionRestoreCommand
+    public interface IFileRestoreCommand
     {
-        Task Restore(FileInfo solutionFile);
+        Task Invoke(FileInfo file);
     }
 }

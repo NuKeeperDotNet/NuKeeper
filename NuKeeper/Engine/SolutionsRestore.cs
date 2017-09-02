@@ -6,11 +6,11 @@ namespace NuKeeper.Engine
 {
     public class SolutionsRestore
     {
-        private readonly ISolutionRestoreCommand _solutionRestoreCommand;
+        private readonly IFileRestoreCommand _fileRestoreCommand;
 
-        public SolutionsRestore(ISolutionRestoreCommand solutionRestoreCommand)
+        public SolutionsRestore(IFileRestoreCommand fileRestoreCommand)
         {
-            _solutionRestoreCommand = solutionRestoreCommand;
+            _fileRestoreCommand = fileRestoreCommand;
         }
 
         public async Task Restore(IFolder workingFolder)
@@ -19,7 +19,7 @@ namespace NuKeeper.Engine
 
             foreach (var sln in solutionFiles)
             {
-                await _solutionRestoreCommand.Restore(sln);
+                await _fileRestoreCommand.Invoke(sln);
             }
         }
     }

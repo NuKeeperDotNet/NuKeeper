@@ -18,19 +18,23 @@ namespace NuKeeper.Engine
         private readonly IPackageUpdater _packageUpdater;
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
+        private readonly Settings _settings;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            Settings settings
+            )
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
             _repositoryScanner = repositoryScanner;
             _logger = logger;
+            _settings = settings;
         }
 
         public async Task Run(IGitDriver git, RepositoryModeSettings settings)
@@ -71,11 +75,11 @@ namespace NuKeeper.Engine
             }
         }
 
-        private ISolutionRestoreCommand RestoreCommandForPackageType(IEnumerable<PackageUpdateSet> updates)
+        private IFileRestoreCommand RestoreCommandForPackageType(IEnumerable<PackageUpdateSet> updates)
         {
             if (updates.Any(u => u.UsesPackagesConfigFile()))
             {
-                return new NuGetSolutionRestoreCommand(_logger);
+                return new NuGetFileRestoreCommand(_logger, _settings);
             }
 
             return null;
