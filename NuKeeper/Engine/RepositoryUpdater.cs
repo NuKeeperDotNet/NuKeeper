@@ -58,31 +58,18 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            await RestoreSolutions(git.WorkingFolder, updates);
+            await RestoreSolutions(git.WorkingFolder);
 
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
         }
 
-        private async Task RestoreSolutions(IFolder workingFolder, IEnumerable<PackageUpdateSet> updates)
+        private async Task RestoreSolutions(IFolder workingFolder)
         {
-            var restoreCommand = RestoreCommandForPackageType(updates);
-            if (restoreCommand != null)
-            {
-                var solutionsRestore = new SolutionsRestore(restoreCommand);
-                await solutionsRestore.Restore(workingFolder);
-            }
-        }
-
-        private IFileRestoreCommand RestoreCommandForPackageType(IEnumerable<PackageUpdateSet> updates)
-        {
-            if (updates.Any(u => u.UsesPackagesConfigFile()))
-            {
-                return new NuGetFileRestoreCommand(_logger, _settings);
-            }
-
-            return null;
+            var restoreCommand = new NuGetFileRestoreCommand(_logger, _settings);
+            var solutionsRestore = new SolutionsRestore(restoreCommand);
+            await solutionsRestore.Restore(workingFolder);
         }
 
         private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)
