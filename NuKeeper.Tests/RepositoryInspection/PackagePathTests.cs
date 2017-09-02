@@ -52,6 +52,22 @@ namespace NuKeeper.Tests.RepositoryInspection
         }
 
         [Test]
+        public void ConstructorShouldProduceExpectedInfoForProjectFile()
+        {
+            var sep = Path.DirectorySeparatorChar;
+
+            var path = new PackagePath(
+                $"c:{sep}temp{sep}somefolder",
+                $"{sep}checkout1{sep}src{sep}myproj.csproj",
+                PackageReferenceType.ProjectFile);
+
+            Assert.That(path.Info, Is.Not.Null);
+            Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
+            Assert.That(path.Info.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+        }
+
+        [Test]
         public void ConstructorShouldProduceExpectedCalculatedPropsWithExtraSlash()
         {
             var sep = Path.DirectorySeparatorChar;

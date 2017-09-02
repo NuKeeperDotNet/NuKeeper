@@ -69,8 +69,7 @@ namespace NuKeeper.Engine
                 var restoreCommand = GetRestoreCommand(current.Path.PackageReferenceType);
                 if (restoreCommand != null)
                 {
-                    var file = new FileInfo(current.Path.FullPath);
-                    await restoreCommand.Invoke(file);
+                    await restoreCommand.Invoke(current.Path.Info);
                 }
 
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
