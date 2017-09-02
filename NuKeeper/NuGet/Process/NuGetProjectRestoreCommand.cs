@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Logging;
 using NuKeeper.ProcessRunner;
@@ -25,7 +24,7 @@ namespace NuKeeper.NuGet.Process
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
+        public async Task Invoke(PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.FullDirectory;
             var nuget = NuGetPath.FindExecutable();
