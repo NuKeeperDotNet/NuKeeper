@@ -36,7 +36,11 @@ namespace NuKeeper.NuGet.Process
 
             var processOutput = await _externalProcess.Run(updateCommand, ensureSuccess: false);
 
-            if (!processOutput.Success)
+            if (processOutput.Success)
+            {
+                _logger.Verbose("Project restore complete");
+            }
+            else
             {
                 _logger.Verbose($"Project restore failed in {dirName}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
             }

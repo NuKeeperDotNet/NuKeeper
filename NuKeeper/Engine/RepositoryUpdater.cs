@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
+using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
@@ -46,9 +48,37 @@ namespace NuKeeper.Engine
 
             var targetUpdates = _updateSelection.SelectTargets(git, updates);
 
+            if (updates.Count == 0)
+            {
+                _logger.Terse("No updates can be applied. Exiting.");
+                return;
+            }
+
+            await RestoreSolutions(git.WorkingFolder, updates);
+
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
+        }
+
+        private async Task RestoreSolutions(IFolder workingFolder, IEnumerable<PackageUpdateSet> updates)
+        {
+            var restoreCommand = RestoreCommandForPackageType(updates);
+            if (restoreCommand != null)
+            {
+                var solutionsRestore = new SolutionsRestore(restoreCommand);
+                await solutionsRestore.Restore(workingFolder);
+            }
+        }
+
+        private ISolutionRestoreCommand RestoreCommandForPackageType(IEnumerable<PackageUpdateSet> updates)
+        {
+            if (updates.Any(u => u.UsesPackagesConfigFile()))
+            {
+                return new NuGetSolutionRestoreCommand(_logger);
+            }
+
+            return null;
         }
 
         private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)

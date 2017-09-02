@@ -62,5 +62,11 @@ namespace NuKeeper.RepositoryInspection
                 .Distinct()
                 .Count();
         }
+
+        public bool UsesPackagesConfigFile()
+        {
+            return CurrentPackages.Any(
+                p => p.Path.PackageReferenceType == PackageReferenceType.PackagesConfig);
+        }
     }
 }
