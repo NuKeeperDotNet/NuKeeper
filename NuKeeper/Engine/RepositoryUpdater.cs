@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Files;
 using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
-using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
@@ -18,7 +16,7 @@ namespace NuKeeper.Engine
         private readonly IPackageUpdater _packageUpdater;
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
-        private readonly Settings _settings;
+        private readonly SolutionsRestore _solutionsRestore;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
@@ -26,7 +24,7 @@ namespace NuKeeper.Engine
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger,
-            Settings settings
+            SolutionsRestore solutionsRestore
             )
         {
             _packageLookup = packageLookup;
@@ -34,7 +32,7 @@ namespace NuKeeper.Engine
             _packageUpdater = packageUpdater;
             _repositoryScanner = repositoryScanner;
             _logger = logger;
-            _settings = settings;
+            _solutionsRestore = solutionsRestore;
         }
 
         public async Task Run(IGitDriver git, RepositoryModeSettings settings)
@@ -58,18 +56,11 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            await RestoreSolutions(git.WorkingFolder);
+            await _solutionsRestore.Restore(git.WorkingFolder);
 
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
-        }
-
-        private async Task RestoreSolutions(IFolder workingFolder)
-        {
-            var restoreCommand = new NuGetFileRestoreCommand(_logger, _settings);
-            var solutionsRestore = new SolutionsRestore(restoreCommand);
-            await solutionsRestore.Restore(workingFolder);
         }
 
         private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)
