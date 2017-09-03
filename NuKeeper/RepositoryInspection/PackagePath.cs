@@ -46,19 +46,9 @@ namespace NuKeeper.RepositoryInspection
         public PackageReferenceType PackageReferenceType { get; }
 
         /// <summary>
-        /// The full directory path to the file, without file name
+        /// Full path to the file, 
+        /// directory and file name
         /// </summary>
-        public string FullDirectory => Info.DirectoryName;
-
-        /// <summary>
-        /// Just the file name
-        /// </summary>
-        public string FileName => Info.Name;
-
-        /// <summary>
-        /// Full path to the file
-        /// </summary>
-        public string FullPath => Info.FullName;
-        
+        public string FullName => Info.FullName;        
     }
 }

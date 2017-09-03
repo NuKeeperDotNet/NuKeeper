@@ -18,7 +18,7 @@ namespace NuKeeper.RepositoryInspection
 
         public IEnumerable<PackageInProject> ReadFile(PackagePath path)
         {
-            var fileContents = File.ReadAllText(path.FullPath);
+            var fileContents = File.ReadAllText(path.FullName);
             return Read(fileContents, path);
         }
 
@@ -52,7 +52,7 @@ namespace NuKeeper.RepositoryInspection
             }
             catch (Exception ex)
             {
-                _logger.Error($"Could not read package from {el} in file {path.FullPath}", ex);
+                _logger.Error($"Could not read package from {el} in file {path.FullName}", ex);
                 return null;
             }
         }

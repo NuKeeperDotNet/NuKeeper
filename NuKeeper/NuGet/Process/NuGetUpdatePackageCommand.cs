@@ -27,7 +27,7 @@ namespace NuKeeper.NuGet.Process
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
-            var dirName = currentPackage.Path.FullDirectory;
+            var dirName = currentPackage.Path.Info.DirectoryName;
             var nuget = NuGetPath.FindExecutable();
             var sources = GetSourcesCommandLine(_sources);
             var updateCommand = $"cd {dirName}" + 

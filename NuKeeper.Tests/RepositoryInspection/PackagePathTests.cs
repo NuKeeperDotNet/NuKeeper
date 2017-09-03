@@ -46,7 +46,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 PackageReferenceType.ProjectFile);
 
 
-            Assert.That(path.FileName, Is.EqualTo("myproj.csproj"));
+            Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
         [Test, Category("WindowsOnly")]
@@ -59,8 +59,8 @@ namespace NuKeeper.Tests.RepositoryInspection
                 PackageReferenceType.ProjectFile);
 
 
-            Assert.That(path.FullDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.FullPath, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
+            Assert.That(path.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
 
             Assert.That(path.RelativePath, Is.EqualTo($"checkout1{sep}src{sep}myproj.csproj"));
-            Assert.That(path.FileName, Is.EqualTo("myproj.csproj"));
+            Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
         [Test, Category("WindowsOnly")]
@@ -117,8 +117,8 @@ namespace NuKeeper.Tests.RepositoryInspection
 
 
             Assert.That(path.BaseDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder"));
-            Assert.That(path.FullDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.FullPath, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
+            Assert.That(path.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
         }
     }
 }
