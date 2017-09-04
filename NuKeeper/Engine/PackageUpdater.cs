@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -65,9 +66,25 @@ namespace NuKeeper.Engine
         {
             foreach (var current in updateSet.CurrentPackages)
             {
+                var restoreCommand = GetRestoreCommand(current.Path.PackageReferenceType);
+                if (restoreCommand != null)
+                {
+                    await restoreCommand.Invoke(current.Path.Info);
+                }
+
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
                 await updateCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
             }
+        }
+
+        private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
+        {
+            if (packageReferenceType == PackageReferenceType.PackagesConfig)
+            {
+                return new NuGetFileRestoreCommand(_logger, _settings);
+            }
+
+            return null;
         }
 
         private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)

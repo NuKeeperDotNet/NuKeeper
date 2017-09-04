@@ -27,11 +27,11 @@ namespace NuKeeper.RepositoryInspection
             RelativePath = relativePath;
             PackageReferenceType = packageReferenceType;
 
-            FileName = Path.GetFileName(relativePath);
-
-            FullPath = Path.Combine(baseDirectory, relativePath);
-            FullDirectory = Path.GetDirectoryName(FullPath);
+            var fullPath = Path.Combine(baseDirectory, relativePath);
+            Info = new FileInfo(fullPath);
         }
+
+        public FileInfo Info { get;  }
 
         /// <summary>
         /// The working directory at the root of all the files
@@ -39,25 +39,16 @@ namespace NuKeeper.RepositoryInspection
         public string BaseDirectory { get; }
 
         /// <summary>
-        /// The full directory path to the file, without file name
-        /// </summary>
-        public string FullDirectory { get; }
-
-        /// <summary>
         /// Path from BaseDirectory to the file, includes file name
         /// </summary>
         public string RelativePath { get; }
 
-        /// <summary>
-        /// Just the file name
-        /// </summary>
-        public string FileName { get; }
-
-        /// <summary>
-        /// Full path to the file
-        /// </summary>
-        public string FullPath { get; }
-
         public PackageReferenceType PackageReferenceType { get; }
+
+        /// <summary>
+        /// Full path to the file, 
+        /// directory and file name
+        /// </summary>
+        public string FullName => Info.FullName;        
     }
 }

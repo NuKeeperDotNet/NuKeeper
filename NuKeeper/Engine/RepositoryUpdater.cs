@@ -16,19 +16,23 @@ namespace NuKeeper.Engine
         private readonly IPackageUpdater _packageUpdater;
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
+        private readonly SolutionsRestore _solutionsRestore;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            SolutionsRestore solutionsRestore
+            )
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
             _repositoryScanner = repositoryScanner;
             _logger = logger;
+            _solutionsRestore = solutionsRestore;
         }
 
         public async Task Run(IGitDriver git, RepositoryModeSettings settings)
@@ -45,6 +49,14 @@ namespace NuKeeper.Engine
             }
 
             var targetUpdates = _updateSelection.SelectTargets(git, updates);
+
+            if (updates.Count == 0)
+            {
+                _logger.Terse("No updates can be applied. Exiting.");
+                return;
+            }
+
+            await _solutionsRestore.Restore(git.WorkingFolder);
 
             await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
 
