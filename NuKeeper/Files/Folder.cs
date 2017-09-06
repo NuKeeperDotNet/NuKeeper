@@ -25,7 +25,7 @@ namespace NuKeeper.Files
 
         public void TryDelete()
         {
-            _logger.Verbose($"Attempting delete of working folder {_root.FullName}");
+            _logger.Verbose($"Attempting delete of folder {_root.FullName}");
 
             try
             {
@@ -33,7 +33,7 @@ namespace NuKeeper.Files
             }
             catch (Exception ex)
             {
-                _logger.Verbose($"Folder delete failed: {ex.Message}");
+                _logger.Verbose($"Folder delete failed: {ex.GetType().Name} {ex.Message}");
             }
         }
     }

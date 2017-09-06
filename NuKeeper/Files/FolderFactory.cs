@@ -38,21 +38,8 @@ namespace NuKeeper.Files
             var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
             foreach (var dir in dirs)
             {
-                TryDelete(dir);
-            }
-        }
-
-        private void TryDelete(DirectoryInfo tempDir)
-        {
-            _logger.Verbose($"Attempting delete of temp dir {tempDir}");
-
-            try
-            {
-                tempDir.Delete(true);
-            }
-            catch (Exception)
-            {
-                _logger.Verbose("Delete failed. Continuing");
+                var folder = new Folder(_logger, dir);
+                folder.TryDelete();
             }
         }
     }
