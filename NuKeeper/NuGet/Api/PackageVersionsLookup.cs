@@ -27,8 +27,7 @@ namespace NuKeeper.NuGet.Api
             var results = await Task.WhenAll(_sources.Select(source => RunFinderForSource(packageName, source)));
             return results
                 .SelectMany(r => r)
-                .Where(p => p?.Identity?.Version != null)
-                .OrderByDescending(p => p.Identity.Version);
+                .Where(p => p?.Identity?.Version != null);
         }
 
         private async Task<IEnumerable<PackageSearchMedatadataWithSource>> RunFinderForSource(string packageName, string source)

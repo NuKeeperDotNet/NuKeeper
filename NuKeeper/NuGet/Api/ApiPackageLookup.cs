@@ -15,7 +15,9 @@ namespace NuKeeper.NuGet.Api
         public async Task<PackageSearchMedatadataWithSource> LookupLatest(string packageName)
         {
             var versions = await _packageVersionsLookup.Lookup(packageName);
-            return versions.FirstOrDefault();
+            return versions
+                .OrderByDescending(p => p.Identity.Version)
+                .FirstOrDefault();
         }
     }
 }

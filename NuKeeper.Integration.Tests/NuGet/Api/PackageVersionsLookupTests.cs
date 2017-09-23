@@ -24,22 +24,6 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(packageList[0].Identity.Id, Is.EqualTo("Newtonsoft.Json"));
         }
 
-        [Test]
-        public async Task WellKnownPackageName_ShouldReturnSortedResults()
-        {
-            var lookup = BuildPackageLookup();
-
-            var packages = await lookup.Lookup("Newtonsoft.Json");
-
-            Assert.That(packages, Is.Not.Null);
-
-            var versionList = packages
-                .Select(p => p.Identity.Version)
-                .ToList();
-
-            Assert.That(versionList, Is.Ordered.Descending);
-        }
-
         private IPackageVersionsLookup BuildPackageLookup()
         {
             return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
