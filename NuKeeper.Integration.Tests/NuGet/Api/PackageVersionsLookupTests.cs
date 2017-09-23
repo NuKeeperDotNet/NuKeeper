@@ -1,0 +1,56 @@
+﻿using System.Linq;
+using System.Threading.Tasks;
+using NuKeeper.Configuration;
+using NuKeeper.Integration.Tests.NuGet.Api;
+using NuKeeper.NuGet.Api;
+using NUnit.Framework;
+
+namespace NuKeeper.Integration.Tests.Nuget.Api
+{
+    [TestFixture]
+    public class PackageVersionsLookupTests
+    {
+        [Test]
+        public async Task WellKnownPackageName_ShouldReturnResults()
+        {
+            var lookup = BuildPackageLookup();
+
+            var packages = await lookup.Lookup("Newtonsoft.Json");
+
+            Assert.That(packages, Is.Not.Null);
+
+            var packageList = packages.ToList();
+            Assert.That(packageList, Is.Not.Empty);
+            Assert.That(packageList[0].Identity.Id, Is.EqualTo("Newtonsoft.Json"));
+        }
+
+        [Test]
+        public async Task WellKnownPackageName_ShouldReturnSortedResults()
+        {
+            var lookup = BuildPackageLookup();
+
+            var packages = await lookup.Lookup("Newtonsoft.Json");
+
+            Assert.That(packages, Is.Not.Null);
+
+            var versionList = packages
+                .Select(p => p.Identity.Version)
+                .ToList();
+
+            Assert.That(versionList, Is.Ordered.Descending);
+        }
+
+        private IPackageVersionsLookup BuildPackageLookup()
+        {
+            return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
+        }
+
+        private static Settings BuildDefaultSettings()
+        {
+            return new Settings((RepositoryModeSettings)null)
+            {
+                NuGetSources = new[] { "https://api.nuget.org/v3/index.json" }
+            };
+        }
+    }
+}
