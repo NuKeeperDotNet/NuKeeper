@@ -9,13 +9,13 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EasyConfig.Net.Core" Version="2.0.65" />
+    <PackageReference Include="EasyConfig.Net.Core" Version="4.0.85" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NuGet.CommandLine" Version="4.3.0" />
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.0-preview-0033" />
     <PackageReference Include="Octokit" Version="0.26.0" />
-    <PackageReference Include="SimpleInjector" Version="4.0.8" />
+    <PackageReference Include="SimpleInjector" Version="4.0.11" />
   </ItemGroup>
   <ItemGroup>
     <None Update="config.json">
