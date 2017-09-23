@@ -91,8 +91,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
         private static BulkPackageLookup BuildBulkPackageLookup()
         {
-            return new BulkPackageLookup(new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings()),
-                new NullNuKeeperLogger());
+            var lookup = new ApiPackageLookup(new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings()));
+            return new BulkPackageLookup(lookup, new NullNuKeeperLogger());
         }
 
         private static Settings BuildDefaultSettings()
