@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using NuGet.Versioning;
 using NuKeeper.Files;
 using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.RepositoryInspection;
@@ -11,6 +13,19 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
     [TestFixture]
     public class RepositoryScannerTests
     {
+        const string SinglePackageinFile =
+            @"<?xml version=""1.0"" encoding=""utf-8""?>
+<packages>
+  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+</packages>";
+
+        const string Vs2017ProjectFileTemplateWithPackages =
+            @"<Project>
+  <ItemGroup>
+<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
+  </ItemGroup>
+</Project>";
+
         [Test]
         public void ValidEmptyDirectoryWorks()
         {
@@ -25,16 +40,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         [Test]
         public void FindsPackagesConfig()
         {
-            const string singlePackage =
-                @"<?xml version=""1.0"" encoding=""utf-8""?>
-<packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
-</packages>";
-
             var scanner = MakeScanner();
 
             var temporaryPath = GetUniqueTempFolder();
-            WriteFile(temporaryPath, "packages.config", singlePackage);
+            WriteFile(temporaryPath, "packages.config", SinglePackageinFile);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -42,15 +51,26 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         }
 
         [Test]
+        public void CorrectItemInPackagesConfig()
+        {
+            var scanner = MakeScanner();
+
+            var temporaryPath = GetUniqueTempFolder();
+            WriteFile(temporaryPath, "packages.config", SinglePackageinFile);
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            var item = results.FirstOrDefault();
+
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Identity.Id, Is.EqualTo("foo"));
+            Assert.That(item.Identity.Version, Is.EqualTo(new NuGetVersion(1,2,3)));
+            Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.PackagesConfig));
+        }
+
+        [Test]
         public void FindsCsprojFile()
         {
-            const string Vs2017ProjectFileTemplateWithPackages =
-                @"<Project>
-  <ItemGroup>
-<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
-  </ItemGroup>
-</Project>";
-
             var scanner = MakeScanner();
             var temporaryPath = GetUniqueTempFolder();
 
@@ -59,6 +79,24 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
             Assert.That(results, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void CorrectItemInCsProjFile()
+        {
+            var scanner = MakeScanner();
+            var temporaryPath = GetUniqueTempFolder();
+
+            WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            var item = results.FirstOrDefault();
+
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Identity.Id, Is.EqualTo("foo"));
+            Assert.That(item.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
+            Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
 
         [Test]

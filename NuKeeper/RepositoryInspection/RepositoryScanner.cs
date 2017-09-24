@@ -20,7 +20,8 @@ namespace NuKeeper.RepositoryInspection
 
             return 
                 PackageFiles(workingFolder)
-                .Concat(ProjectFiles(workingFolder));
+                .Concat(ProjectFiles(workingFolder))
+                .ToList();
         }
 
         private IEnumerable<PackageInProject> PackageFiles(IFolder workingFolder)
@@ -49,7 +50,7 @@ namespace NuKeeper.RepositoryInspection
 
             foreach (var projectFile in projectFiles)
             {
-                var path = MakePackagePath(workingFolder.FullPath, projectFile.FullName, PackageReferenceType.PackagesConfig);
+                var path = MakePackagePath(workingFolder.FullPath, projectFile.FullName, PackageReferenceType.ProjectFile);
                 var packages = _projectFileReader.ReadFile(path);
                 results.AddRange(packages);
             }
