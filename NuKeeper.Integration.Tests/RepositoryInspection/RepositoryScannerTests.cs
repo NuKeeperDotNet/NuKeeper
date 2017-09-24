@@ -13,10 +13,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
     [TestFixture]
     public class RepositoryScannerTests
     {
-        const string SinglePackageinFile =
+        const string SinglePackageInFile =
             @"<?xml version=""1.0"" encoding=""utf-8""?>
 <packages>
-  <package id=""foo"" version=""1.2.3.4"" targetFramework=""net45"" />
+  <package id=""foo"" version=""1.2.3"" targetFramework=""net45"" />
 </packages>";
 
         const string Vs2017ProjectFileTemplateWithPackages =
@@ -43,7 +43,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var scanner = MakeScanner();
 
             var temporaryPath = GetUniqueTempFolder();
-            WriteFile(temporaryPath, "packages.config", SinglePackageinFile);
+            WriteFile(temporaryPath, "packages.config", SinglePackageInFile);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
@@ -56,7 +56,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var scanner = MakeScanner();
 
             var temporaryPath = GetUniqueTempFolder();
-            WriteFile(temporaryPath, "packages.config", SinglePackageinFile);
+            WriteFile(temporaryPath, "packages.config", SinglePackageInFile);
 
             var results = scanner.FindAllNuGetPackages(temporaryPath);
 
