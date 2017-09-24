@@ -9,16 +9,16 @@ namespace NuKeeper.RepositoryInspection
         public static bool PathIsExcluded(string path)
         {
             // subDir is a full path, check all parts
-            return ExcludedDirNames.Any(s => StringContains(path, s));
+            return ExcludedDirNames.Any(s => PathContains(path, s));
         }
 
-        private static bool StringContains(string fullPath, string test)
+        private static bool PathContains(string fullPath, string dirName)
         {
-            var testInPath = "\\" + test + "\\";
+            var dirInPath = "\\" + dirName + "\\";
 
             return 
                 !string.IsNullOrEmpty(fullPath) &&
-                 (fullPath.IndexOf(testInPath, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                 (fullPath.IndexOf(dirInPath, StringComparison.InvariantCultureIgnoreCase) >= 0);
         }
 
         private static readonly List<string> ExcludedDirNames = new List<string>
