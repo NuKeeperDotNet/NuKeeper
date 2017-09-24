@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using NuKeeper.Files;
 
 namespace NuKeeper.RepositoryInspection
@@ -17,52 +17,44 @@ namespace NuKeeper.RepositoryInspection
 
         public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
         {
-            return FindNugetPackagesInDirRecursive(workingFolder.FullPath, workingFolder.FullPath);
+
+            return 
+                PackageFiles(workingFolder)
+                .Concat(ProjectFiles(workingFolder));
         }
 
-        private IEnumerable<PackageInProject> FindNugetPackagesInDirRecursive(string rootDir, string dir)
+        private IEnumerable<PackageInProject> PackageFiles(IFolder workingFolder)
         {
-            var current = ScanForNugetPackages(rootDir, dir);
+            var packagesFiles = workingFolder.Find("packages.config")
+                .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
 
-            var subDirs = Directory.EnumerateDirectories(dir);
-                
-            foreach (var subDir in subDirs)
+            var results = new List<PackageInProject>();
+
+            foreach (var packagesFile in packagesFiles)
             {
-                if (!DirectoryExclusions.PathIsExcluded(subDir))
-                {
-                    var subdirPackages = FindNugetPackagesInDirRecursive(rootDir, subDir);
-                    current.AddRange(subdirPackages);
-                }
-            }
-
-            return current;
-        }
-
-        private List<PackageInProject> ScanForNugetPackages(string rootDir, string dir)
-        {
-            var result = new List<PackageInProject>();
-
-            var packagesConfigPath = Path.Combine(dir, "packages.config");
-
-            if (File.Exists(packagesConfigPath))
-            {
-                var path = MakePackagePath(rootDir, packagesConfigPath, PackageReferenceType.PackagesConfig);
+                var path = MakePackagePath(workingFolder.FullPath, packagesFile.FullName, PackageReferenceType.PackagesConfig);
                 var packages = _packagesFileReader.ReadFile(path);
-                result.AddRange(packages);
+                results.AddRange(packages);
             }
-            else
+
+            return results;
+        }
+
+        private IEnumerable<PackageInProject> ProjectFiles(IFolder workingFolder)
+        {
+            var projectFiles = workingFolder.Find("*.csproj")
+                .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
+
+            var results = new List<PackageInProject>();
+
+            foreach (var projectFile in projectFiles)
             {
-                var files = Directory.GetFiles(dir, "*.csproj", SearchOption.TopDirectoryOnly);
-
-                foreach (var fileName in files)
-                {
-                    var path = MakePackagePath(rootDir, fileName, PackageReferenceType.ProjectFile);
-                    var packages = _projectFileReader.ReadFile(path);
-                    result.AddRange(packages);
-                }
+                var path = MakePackagePath(workingFolder.FullPath, projectFile.FullName, PackageReferenceType.PackagesConfig);
+                var packages = _projectFileReader.ReadFile(path);
+                results.AddRange(packages);
             }
 
-            return result;
+            return results;
         }
 
         private PackagePath MakePackagePath(string rootDir, string fileName, 
