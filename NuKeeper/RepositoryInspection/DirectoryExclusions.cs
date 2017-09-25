@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace NuKeeper.RepositoryInspection
@@ -14,7 +15,7 @@ namespace NuKeeper.RepositoryInspection
 
         private static bool PathContains(string fullPath, string dirName)
         {
-            var dirInPath = "\\" + dirName + "\\";
+            var dirInPath = Path.DirectorySeparatorChar + dirName + Path.DirectorySeparatorChar;
 
             return 
                 !string.IsNullOrEmpty(fullPath) &&
