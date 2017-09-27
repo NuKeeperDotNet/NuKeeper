@@ -8,6 +8,31 @@ namespace NuKeeper.NuGet.Process
     {
         public static string FindExecutable()
         {
+            var localNugetPath = FindLocalNuget();
+
+            if (!string.IsNullOrEmpty(localNugetPath))
+            {
+                return localNugetPath;
+            }
+
+
+            return FindNugetInPackagesUnderProfile();
+        }
+
+        private static string FindLocalNuget()
+        {
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
+            var fullPath = Path.Combine(appDir, "NuGet.exe");
+            if (File.Exists(fullPath))
+            {
+                return fullPath;
+            }
+
+            return string.Empty;
+        }
+
+        private static string FindNugetInPackagesUnderProfile()
+        {
             var profile = Environment.GetEnvironmentVariable("userprofile");
 
             if (string.IsNullOrWhiteSpace(profile))
