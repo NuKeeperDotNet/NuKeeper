@@ -12,7 +12,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task AmbigousPackageName_ShouldReturnCorrectResult()
         {
-            IApiPackageLookup lookup = new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings());
+            var lookup = BuildPackageLookup();
 
             var package = await lookup.LookupLatest("AWSSDK");
 
@@ -24,7 +24,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task UnknownPackageName_ShouldNotReturnResult()
         {
-            IApiPackageLookup lookup = new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings());
+            var lookup = BuildPackageLookup();
 
             var package = await lookup.LookupLatest(Guid.NewGuid().ToString());
 
@@ -34,7 +34,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task WellKnownPackageName_ShouldReturnResult()
         {
-            IApiPackageLookup lookup = new ApiPackageLookup(new NullNuGetLogger(), BuildDefaultSettings());
+            var lookup = BuildPackageLookup();
 
             var package = await lookup.LookupLatest("Newtonsoft.Json");
 
@@ -49,6 +49,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             {
                 NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
             };
+        }
+
+        private IApiPackageLookup BuildPackageLookup()
+        {
+            return new ApiPackageLookup(
+                new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings()));
         }
     }
 }
