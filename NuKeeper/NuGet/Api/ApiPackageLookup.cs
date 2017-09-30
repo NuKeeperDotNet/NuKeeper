@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using NuGet.Packaging.Core;
 
 namespace NuKeeper.NuGet.Api
 {
@@ -12,9 +13,9 @@ namespace NuKeeper.NuGet.Api
             _packageVersionsLookup = packageVersionsLookup;
         }
 
-        public async Task<PackageSearchMedatadataWithSource> LookupLatest(string packageName)
+        public async Task<PackageSearchMedatadataWithSource> FindVersionUpdate(PackageIdentity package)
         {
-            var versions = await _packageVersionsLookup.Lookup(packageName);
+            var versions = await _packageVersionsLookup.Lookup(package.Id);
             return versions
                 .OrderByDescending(p => p.Identity.Version)
                 .FirstOrDefault();

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuGet.Protocol.Core.Types;
+using NuGet.Packaging.Core;
 using NuKeeper.Logging;
 
 namespace NuKeeper.NuGet.Api
@@ -18,10 +17,10 @@ namespace NuKeeper.NuGet.Api
             _logger = logger;
         }
 
-        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<string> packageIds)
+        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<PackageIdentity> packages)
         {
-            var lookupTasks = packageIds
-                .Select(id => _packageLookup.LookupLatest(id))
+            var lookupTasks = packages
+                .Select(id => _packageLookup.FindVersionUpdate(id))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);
