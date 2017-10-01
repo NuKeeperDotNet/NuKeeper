@@ -132,6 +132,8 @@ namespace NuKeeper.Tests.NuGet.Api
             var results = await bulkLookup.LatestVersions(queries);
 
             await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>());
+            await apiLookup.Received(1).FindVersionUpdate(Arg.Is<PackageIdentity>(
+                pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)));
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.ContainsKey("foo"), Is.True);

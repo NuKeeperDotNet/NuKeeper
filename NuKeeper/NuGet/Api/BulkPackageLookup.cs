@@ -19,7 +19,11 @@ namespace NuKeeper.NuGet.Api
 
         public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<PackageIdentity> packages)
         {
-            var lookupTasks = packages
+            var latestOfEach = packages
+                .GroupBy(pi => pi.Id)
+                .Select(HighestVersion);
+
+            var lookupTasks = latestOfEach
                 .Select(id => _packageLookup.FindVersionUpdate(id))
                 .ToList();
 
@@ -39,6 +43,13 @@ namespace NuKeeper.NuGet.Api
             }
 
             return result;
+        }
+
+        private PackageIdentity HighestVersion(IEnumerable<PackageIdentity> packages)
+        {
+            return packages
+                .OrderByDescending(p => p.Version)
+                .FirstOrDefault();
         }
     }
 }
