@@ -17,7 +17,7 @@ namespace NuKeeper.NuGet.Api
         public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IReadOnlyCollection<PackageInProject> packages)
         {
             var packageIds = packages
-                .Select(p => p.Id)
+                .Select(p => p.Identity)
                 .Distinct();
 
             var latestVersions = await _bulkPackageLookup.LatestVersions(packageIds);

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
@@ -14,7 +16,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task CanFindUpdateForOneWellKnownPackage()
         {
-            var packages = new List<string> {"Moq"};
+            var packages = new List<PackageIdentity> { Current("Moq") };
 
             var lookup = BuildBulkPackageLookup();
 
@@ -28,10 +30,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task CanFindUpdateForTwoWellKnownPackages()
         {
-            var packages = new List<string>
+            var packages = new List<PackageIdentity>
             {
-                "Moq",
-                "Newtonsoft.Json"
+                Current("Moq"),
+                Current("Newtonsoft.Json")
             };
 
             var lookup = BuildBulkPackageLookup();
@@ -47,7 +49,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task InvalidPackageIsIgnored()
         {
-            var packages = new List<string> {Guid.NewGuid().ToString()};
+            var packages = new List<PackageIdentity>
+            {
+                Current(Guid.NewGuid().ToString())
+            };
 
             var lookup = BuildBulkPackageLookup();
 
@@ -62,7 +67,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(Enumerable.Empty<string>());
+            var results = await lookup.LatestVersions(Enumerable.Empty<PackageIdentity>());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -71,12 +76,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         [Test]
         public async Task ValidPackagesWorkDespiteInvalidPackages()
         {
-            var packages = new List<string>
+            var packages = new List<PackageIdentity>
             {
-                "Moq",
-                Guid.NewGuid().ToString(),
-                "Newtonsoft.Json",
-                Guid.NewGuid().ToString()
+                Current("Moq"),
+                Current(Guid.NewGuid().ToString()),
+                Current("Newtonsoft.Json"),
+                Current(Guid.NewGuid().ToString())
             };
 
             var lookup = BuildBulkPackageLookup();
@@ -101,6 +106,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             {
                 NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
             };
+        }
+
+        private PackageIdentity Current(string packageId)
+        {
+            return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
         }
     }
 }

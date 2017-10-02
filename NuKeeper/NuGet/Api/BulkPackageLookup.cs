@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuGet.Protocol.Core.Types;
+using NuGet.Packaging.Core;
 using NuKeeper.Logging;
 
 namespace NuKeeper.NuGet.Api
@@ -18,10 +17,14 @@ namespace NuKeeper.NuGet.Api
             _logger = logger;
         }
 
-        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<string> packageIds)
+        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<PackageIdentity> packages)
         {
-            var lookupTasks = packageIds
-                .Select(id => _packageLookup.LookupLatest(id))
+            var latestOfEach = packages
+                .GroupBy(pi => pi.Id)
+                .Select(HighestVersion);
+
+            var lookupTasks = latestOfEach
+                .Select(id => _packageLookup.FindVersionUpdate(id))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);
@@ -40,6 +43,13 @@ namespace NuKeeper.NuGet.Api
             }
 
             return result;
+        }
+
+        private PackageIdentity HighestVersion(IEnumerable<PackageIdentity> packages)
+        {
+            return packages
+                .OrderByDescending(p => p.Version)
+                .FirstOrDefault();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.NuGet.Api
             var allVersionsLookup = MockVersionLookup(new List<PackageSearchMedatadataWithSource>());
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var package = await lookup.LookupLatest("TestPackage");
+            var package = await lookup.FindVersionUpdate(Current("TestPackage"));
 
             Assert.That(package, Is.Null);
         }
@@ -35,7 +35,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var package = await lookup.LookupLatest("TestPackage");
+            var package = await lookup.FindVersionUpdate(Current("TestPackage"));
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
@@ -58,7 +58,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var package = await lookup.LookupLatest("TestPackage");
+            var package = await lookup.FindVersionUpdate(Current("TestPackage"));
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
@@ -87,6 +87,11 @@ namespace NuKeeper.Tests.NuGet.Api
             var identity = new PackageIdentity(id, version);
             metadata.Identity.Returns(identity);
             return metadata;
+        }
+
+        private PackageIdentity Current(string packageId)
+        {
+            return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
         }
     }
 }

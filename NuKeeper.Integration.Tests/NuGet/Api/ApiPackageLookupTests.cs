@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
@@ -14,7 +16,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.LookupLatest("AWSSDK");
+            var package = await lookup.FindVersionUpdate(Current("AWSSDK"));
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
@@ -26,7 +28,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.LookupLatest(Guid.NewGuid().ToString());
+            var package = await lookup.FindVersionUpdate(Current(Guid.NewGuid().ToString()));
 
             Assert.That(package, Is.Null);
         }
@@ -36,7 +38,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.LookupLatest("Newtonsoft.Json");
+            var package = await lookup.FindVersionUpdate(Current("Newtonsoft.Json"));
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
@@ -55,6 +57,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             return new ApiPackageLookup(
                 new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings()));
+        }
+
+        private PackageIdentity Current(string packageId)
+        {
+            return new PackageIdentity(packageId, new NuGetVersion(1,2,3));
         }
     }
 }
