@@ -37,22 +37,14 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var package = await lookup.FindVersionUpdate(Current("TestPackage"), VersionChange.Major);
 
-            Assert.That(package, Is.Not.Null);
-            Assert.That(package.Identity, Is.Not.Null);
-            Assert.That(package.Identity.Id, Is.EqualTo("TestPackage"));
+            AssertPackageIdentityIs(package, "TestPackage");
             Assert.That(package.Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
         }
 
         [Test]
-        public async Task ShouldPickLatestFromMultipleVersions()
+        public async Task ShouldPickLatestMajorFromMultipleVersions()
         {
-            var resultPackages = new List<PackageSearchMedatadataWithSource>
-            {
-                BuildMetadata("TestPackage", 2,3,4),
-                BuildMetadata("TestPackage", 1,23,55),
-                BuildMetadata("TestPackage", 8, 0,8),
-                BuildMetadata("TestPackage", 0,1,904)
-            };
+            var resultPackages = SeveralVersions();
 
             var allVersionsLookup = MockVersionLookup(resultPackages);
 
@@ -60,10 +52,61 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var package = await lookup.FindVersionUpdate(Current("TestPackage"), VersionChange.Major);
 
-            Assert.That(package, Is.Not.Null);
-            Assert.That(package.Identity, Is.Not.Null);
-            Assert.That(package.Identity.Id, Is.EqualTo("TestPackage"));
-            Assert.That(package.Identity.Version, Is.EqualTo(new NuGetVersion(8, 0, 8)));
+            AssertPackageIdentityIs(package, "TestPackage");
+            Assert.That(package.Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
+        }
+
+        [Test]
+        public async Task ShouldPickLatestMinorFromMultipleVersions()
+        {
+            var resultPackages = SeveralVersions();
+
+            var allVersionsLookup = MockVersionLookup(resultPackages);
+
+            IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
+
+            var package = await lookup.FindVersionUpdate(Current("TestPackage"), VersionChange.Minor);
+
+            AssertPackageIdentityIs(package, "TestPackage");
+            Assert.That(package.Identity.Version, Is.EqualTo(new NuGetVersion(1, 3, 1)));
+        }
+
+        [Test]
+        public async Task ShouldPickLatestPatchFromMultipleVersions()
+        {
+            var resultPackages = SeveralVersions();
+
+            var allVersionsLookup = MockVersionLookup(resultPackages);
+
+            IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
+
+            var package = await lookup.FindVersionUpdate(Current("TestPackage"), VersionChange.Minor);
+
+            AssertPackageIdentityIs(package, "TestPackage");
+            Assert.That(package.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 5)));
+        }
+
+
+        private static List<PackageSearchMedatadataWithSource> SeveralVersions()
+        {
+            return new List<PackageSearchMedatadataWithSource>
+            {
+                BuildMetadata("TestPackage", 2, 3, 4),
+                BuildMetadata("TestPackage", 2, 1, 1),
+                BuildMetadata("TestPackage", 2, 0, 0),
+
+                BuildMetadata("TestPackage", 1, 3, 1),
+                BuildMetadata("TestPackage", 1, 3, 0),
+
+                BuildMetadata("TestPackage", 1, 2, 5),
+                BuildMetadata("TestPackage", 1, 2, 4),
+                BuildMetadata("TestPackage", 1, 2, 3),
+                BuildMetadata("TestPackage", 1, 2, 2),
+                BuildMetadata("TestPackage", 1, 2, 1),
+
+                BuildMetadata("TestPackage", 1, 1, 0),
+                BuildMetadata("TestPackage", 1, 0, 0)
+            };
         }
 
         private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadataWithSource> actualResults)
@@ -92,6 +135,13 @@ namespace NuKeeper.Tests.NuGet.Api
         private PackageIdentity Current(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
+        }
+
+        private static void AssertPackageIdentityIs(PackageSearchMedatadataWithSource package, string id)
+        {
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Identity, Is.Not.Null);
+            Assert.That(package.Identity.Id, Is.EqualTo(id));
         }
     }
 }
