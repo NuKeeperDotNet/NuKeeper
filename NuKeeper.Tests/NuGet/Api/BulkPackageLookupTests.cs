@@ -24,7 +24,7 @@ namespace NuKeeper.Tests.NuGet.Api
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
 
-            await apiLookup.DidNotReceive().FindVersionUpdate(Arg.Any<PackageIdentity>());
+            await apiLookup.DidNotReceive().FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             await bulkLookup.LatestVersions(queries);
 
-            await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>());
+            await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             await bulkLookup.LatestVersions(queries);
 
-            await apiLookup.Received(2).FindVersionUpdate(Arg.Any<PackageIdentity>());
+            await apiLookup.Received(2).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
         }
 
 
@@ -131,9 +131,9 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var results = await bulkLookup.LatestVersions(queries);
 
-            await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>());
+            await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
             await apiLookup.Received(1).FindVersionUpdate(Arg.Is<PackageIdentity>(
-                pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)));
+                pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)), Arg.Any<VersionChange>());
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.ContainsKey("foo"), Is.True);
@@ -153,7 +153,7 @@ namespace NuKeeper.Tests.NuGet.Api
             var responseMetaData = new PackageSearchMedatadataWithSource(
                 "test", MetadataWithVersion(packageName, new NuGetVersion(2, 3, 4)));
 
-            lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName))
+            lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
                 .Returns(responseMetaData);
     }
 }

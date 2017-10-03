@@ -13,7 +13,8 @@ namespace NuKeeper.NuGet.Api
             _packageVersionsLookup = packageVersionsLookup;
         }
 
-        public async Task<PackageSearchMedatadataWithSource> FindVersionUpdate(PackageIdentity package)
+        public async Task<PackageSearchMedatadataWithSource> FindVersionUpdate(
+            PackageIdentity package, VersionChange allowedChange)
         {
             var versions = await _packageVersionsLookup.Lookup(package.Id);
             return versions
