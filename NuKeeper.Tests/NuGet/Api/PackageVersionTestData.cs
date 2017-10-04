@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
 using NuGet.Packaging.Core;
@@ -28,11 +29,13 @@ namespace NuKeeper.Tests.NuGet.Api
                 case VersionChange.Patch:
                     return PatchVersions();
 
+                case VersionChange.None:
+                    return CurrentVersionOnly();
+
                 default:
-                    return new List<PackageSearchMedatadataWithSource>();
+                    throw new Exception($"Invalid version change {change}");
             }
         }
-
 
         private static List<PackageSearchMedatadataWithSource> NewMajorVersion()
         {
@@ -69,6 +72,14 @@ namespace NuKeeper.Tests.NuGet.Api
 
                 BuildMetadata("TestPackage", 1, 1, 0),
                 BuildMetadata("TestPackage", 1, 0, 0)
+            };
+        }
+
+        private static List<PackageSearchMedatadataWithSource> CurrentVersionOnly()
+        {
+            return new List<PackageSearchMedatadataWithSource>
+            {
+                BuildMetadata("TestPackage", 1, 2, 3)
             };
         }
 

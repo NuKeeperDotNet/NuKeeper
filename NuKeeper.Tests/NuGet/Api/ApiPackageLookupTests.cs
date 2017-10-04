@@ -43,6 +43,7 @@ namespace NuKeeper.Tests.NuGet.Api
         [TestCase(VersionChange.Major, 2, 3, 4)]
         [TestCase(VersionChange.Minor, 1, 3, 1)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenMajorVersionChangesAreAllowed(VersionChange dataRange,
             int expectedMajor, int expectedMinor, int expectedPatch)
         {
@@ -62,6 +63,7 @@ namespace NuKeeper.Tests.NuGet.Api
         [TestCase(VersionChange.Major, 1, 3, 1)]
         [TestCase(VersionChange.Minor, 1, 3, 1)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenMinorVersionChangesAreAllowed(VersionChange dataRange,
             int expectedMajor, int expectedMinor, int expectedPatch)
         {
@@ -81,6 +83,7 @@ namespace NuKeeper.Tests.NuGet.Api
         [TestCase(VersionChange.Major, 1, 2, 5)]
         [TestCase(VersionChange.Minor, 1, 2, 5)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenPatchVersionChangesAreAllowed(VersionChange dataRange,
             int expectedMajor, int expectedMinor, int expectedPatch)
         {
