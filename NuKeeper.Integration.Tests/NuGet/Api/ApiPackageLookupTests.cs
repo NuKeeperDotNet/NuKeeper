@@ -16,7 +16,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.FindVersionUpdate(Current("AWSSDK"));
+            var package = await lookup.FindVersionUpdate(Current("AWSSDK"), VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
@@ -28,7 +28,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.FindVersionUpdate(Current(Guid.NewGuid().ToString()));
+            var package = await lookup.FindVersionUpdate(
+                Current(Guid.NewGuid().ToString()), 
+                VersionChange.Major);
 
             Assert.That(package, Is.Null);
         }
@@ -38,7 +40,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.FindVersionUpdate(Current("Newtonsoft.Json"));
+            var package = await lookup.FindVersionUpdate(
+                Current("Newtonsoft.Json"), 
+                VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);

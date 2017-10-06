@@ -24,7 +24,7 @@ namespace NuKeeper.NuGet.Api
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
-                .Select(id => _packageLookup.FindVersionUpdate(id))
+                .Select(id => _packageLookup.FindVersionUpdate(id, VersionChange.Major))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);

@@ -13,12 +13,15 @@ namespace NuKeeper.NuGet.Api
             _packageVersionsLookup = packageVersionsLookup;
         }
 
-        public async Task<PackageSearchMedatadataWithSource> FindVersionUpdate(PackageIdentity package)
+        public async Task<PackageSearchMedatadataWithSource> FindVersionUpdate(
+            PackageIdentity package, VersionChange allowedChange)
         {
+            var filter = VersionChangeFilter.FilterFor(allowedChange);
+
             var versions = await _packageVersionsLookup.Lookup(package.Id);
             return versions
                 .OrderByDescending(p => p.Identity.Version)
-                .FirstOrDefault();
+                .FirstOrDefault(p => filter(package.Version, p.Identity.Version));
         }
     }
 }

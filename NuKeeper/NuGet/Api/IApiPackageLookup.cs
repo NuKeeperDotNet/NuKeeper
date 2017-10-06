@@ -5,6 +5,7 @@ namespace NuKeeper.NuGet.Api
 {
     public interface IApiPackageLookup
     {
-        Task<PackageSearchMedatadataWithSource> FindVersionUpdate(PackageIdentity package);
+        Task<PackageSearchMedatadataWithSource> FindVersionUpdate(
+            PackageIdentity package, VersionChange allowedChange);
     }
 }
