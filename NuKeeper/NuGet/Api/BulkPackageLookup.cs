@@ -33,12 +33,14 @@ namespace NuKeeper.NuGet.Api
 
             foreach (var lookupTask in lookupTasks)
             {
-                var serverVersion = lookupTask.Result;
-                if (serverVersion?.Identity?.Version != null)
+                var serverVersions = lookupTask.Result;
+                var matchingVersion = serverVersions.HighestMatch;
+
+                if (matchingVersion?.Identity?.Version != null)
                 {
-                    var packageId = serverVersion.Identity.Id;
-                    _logger.Verbose($"Found latest version of {packageId}: {serverVersion.Identity.Version}");
-                    result.Add(packageId, serverVersion);
+                    var packageId = matchingVersion.Identity.Id;
+                    _logger.Verbose($"Found an updated version of {packageId}: {matchingVersion.Identity.Version}");
+                    result.Add(packageId, matchingVersion);
                 }
             }
 

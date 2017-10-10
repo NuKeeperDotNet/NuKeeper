@@ -154,7 +154,11 @@ namespace NuKeeper.Tests.NuGet.Api
                 "test", MetadataWithVersion(packageName, new NuGetVersion(2, 3, 4)));
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
-                .Returns(responseMetaData);
+                .Returns(new VersionUpdate
+                    {
+                        Highest = responseMetaData,
+                        HighestMatch = responseMetaData
+                    });
     }
 }
 }
