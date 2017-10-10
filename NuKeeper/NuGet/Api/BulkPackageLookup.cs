@@ -34,7 +34,7 @@ namespace NuKeeper.NuGet.Api
             foreach (var lookupTask in lookupTasks)
             {
                 var serverVersions = lookupTask.Result;
-                var matchingVersion = serverVersions.HighestMatch;
+                var matchingVersion = serverVersions.Match;
 
                 if (matchingVersion?.Identity?.Version != null)
                 {

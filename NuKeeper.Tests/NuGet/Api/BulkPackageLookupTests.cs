@@ -157,7 +157,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 .Returns(new VersionUpdate
                     {
                         Highest = responseMetaData,
-                        HighestMatch = responseMetaData
+                        Match = responseMetaData
                     });
     }
 }

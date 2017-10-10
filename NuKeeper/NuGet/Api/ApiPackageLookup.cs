@@ -19,17 +19,18 @@ namespace NuKeeper.NuGet.Api
             var filter = VersionChangeFilter.FilterFor(allowedChange);
 
             var versions = await _packageVersionsLookup.Lookup(package.Id);
-            var ordered = versions
+            var orderedByVersion = versions
                 .OrderByDescending(p => p.Identity.Version)
                 .ToList();
 
-            var highestVersion = ordered.FirstOrDefault();
-            var highestMatch = ordered.FirstOrDefault(p => filter(package.Version, p.Identity.Version));
+            var highest = orderedByVersion.FirstOrDefault();
+            var highestThatMatchesFilter = orderedByVersion
+                .FirstOrDefault(p => filter(package.Version, p.Identity.Version));
             
             return new VersionUpdate
             {
-                Highest = highestVersion,
-                HighestMatch = highestMatch
+                Highest = highest,
+                Match = highestThatMatchesFilter
             };
         }
     }

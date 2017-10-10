@@ -20,9 +20,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Highest, Is.Not.Null);
-            Assert.That(package.HighestMatch, Is.Not.Null);
-            Assert.That(package.HighestMatch.Identity, Is.Not.Null);
-            Assert.That(package.HighestMatch.Identity.Id, Is.EqualTo("AWSSDK"));
+            Assert.That(package.Match, Is.Not.Null);
+            Assert.That(package.Match.Identity, Is.Not.Null);
+            Assert.That(package.Match.Identity.Id, Is.EqualTo("AWSSDK"));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Highest, Is.Null);
-            Assert.That(package.HighestMatch, Is.Null);
+            Assert.That(package.Match, Is.Null);
         }
 
         [Test]
@@ -50,9 +50,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Highest, Is.Not.Null);
-            Assert.That(package.HighestMatch, Is.Not.Null);
-            Assert.That(package.HighestMatch.Identity, Is.Not.Null);
-            Assert.That(package.HighestMatch.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
+            Assert.That(package.Match, Is.Not.Null);
+            Assert.That(package.Match.Identity, Is.Not.Null);
+            Assert.That(package.Match.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
         }
 
         private static Settings BuildDefaultSettings()
