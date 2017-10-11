@@ -14,29 +14,32 @@ namespace NuKeeper.NuGet.Api
         public void Report(PackageLookupResult lookupResult)
         {
             var highestVersion = lookupResult.Highest?.Identity?.Version;
-            var highestMatchVersion = lookupResult.Match?.Identity?.Version;
+            if (highestVersion == null)
+            {
+                return;
+            }
 
             var allowing = lookupResult.AllowedChange == VersionChange.Major
                 ? string.Empty
                 : $" Allowing {lookupResult.AllowedChange} version updates.";
 
-            if (highestVersion != null)
+            var highestMatchVersion = lookupResult.Match?.Identity?.Version;
+
+            var packageId = lookupResult.Highest.Identity.Id;
+
+            if (highestMatchVersion == null)
             {
-                if (highestMatchVersion != null)
-                {
-                    if (highestVersion > highestMatchVersion)
-                    {
-                        _logger.Info($"Selected update to version {highestMatchVersion}, but version {highestVersion} is also available.{allowing}");
-                    }
-                    else
-                    {
-                       _logger.Info($"Selected update to highest version, {highestMatchVersion}.{allowing}");
-                    }
-                }
-                else
-                {
-                    _logger.Info($"Version {highestVersion} is available but is not allowed.{allowing}");
-                }
+                _logger.Info($"Package {packageId} version {highestVersion} is available but is not allowed.{allowing}");
+                return;
+            }
+
+            if (highestVersion > highestMatchVersion)
+            {
+                _logger.Info($"Selected update of package {packageId} to version {highestMatchVersion}, but version {highestVersion} is also available.{allowing}");
+            }
+            else
+            {
+                _logger.Info($"Selected update of package {packageId} to highest version, {highestMatchVersion}.{allowing}");
             }
         }
     }
