@@ -122,7 +122,7 @@ namespace NuKeeper.Tests.NuGet.Api
             return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
         }
 
-        private static void AssertPackagesIdentityIs(VersionUpdate packages, string id)
+        private static void AssertPackagesIdentityIs(PackageLookupResult packages, string id)
         {
             Assert.That(packages, Is.Not.Null);
             AssertPackageIdentityIs(packages.Highest, id);

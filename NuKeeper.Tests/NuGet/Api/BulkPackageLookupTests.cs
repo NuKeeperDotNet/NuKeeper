@@ -17,7 +17,7 @@ namespace NuKeeper.Tests.NuGet.Api
         public async Task CanLookupEmptyList()
         {
             var apiLookup = Substitute.For<IApiPackageLookup>();
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var results = await bulkLookup.LatestVersions(Enumerable.Empty<PackageIdentity>());
 
@@ -34,7 +34,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             ApiHasNewVersionForPackage(apiLookup, "foo");
 
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var queries = new List<PackageIdentity>
             {
@@ -56,7 +56,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             ApiHasNewVersionForPackage(apiLookup, "foo");
 
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var queries = new List<PackageIdentity>
             {
@@ -76,7 +76,7 @@ namespace NuKeeper.Tests.NuGet.Api
             ApiHasNewVersionForPackage(apiLookup, "foo");
             ApiHasNewVersionForPackage(apiLookup, "bar");
 
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var queries = new List<PackageIdentity>
             {
@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.NuGet.Api
             ApiHasNewVersionForPackage(apiLookup, "foo");
             ApiHasNewVersionForPackage(apiLookup, "bar");
 
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var queries = new List<PackageIdentity>
             {
@@ -121,7 +121,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             ApiHasNewVersionForPackage(apiLookup, "foo");
 
-            var bulkLookup = new BulkPackageLookup(apiLookup, new NullNuKeeperLogger());
+            var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
             var queries = new List<PackageIdentity>
             {
@@ -154,11 +154,19 @@ namespace NuKeeper.Tests.NuGet.Api
                 "test", MetadataWithVersion(packageName, new NuGetVersion(2, 3, 4)));
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
-                .Returns(new VersionUpdate
+                .Returns(new PackageLookupResult
                     {
+                        AllowedChange = VersionChange.Major,
                         Highest = responseMetaData,
                         Match = responseMetaData
                     });
+        }
+
+        private static BulkPackageLookup BuildBulkPackageLookup(IApiPackageLookup apiLookup)
+        {
+            var logger = new NullNuKeeperLogger();
+            return new BulkPackageLookup(apiLookup, new PackageLookupResultReporter(logger), logger);
+        }
+
     }
-}
 }

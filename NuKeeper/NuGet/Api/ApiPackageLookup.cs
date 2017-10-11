@@ -13,7 +13,7 @@ namespace NuKeeper.NuGet.Api
             _packageVersionsLookup = packageVersionsLookup;
         }
 
-        public async Task<VersionUpdate> FindVersionUpdate(
+        public async Task<PackageLookupResult> FindVersionUpdate(
             PackageIdentity package, VersionChange allowedChange)
         {
             var filter = VersionChangeFilter.FilterFor(allowedChange);
@@ -27,8 +27,9 @@ namespace NuKeeper.NuGet.Api
             var highestThatMatchesFilter = orderedByVersion
                 .FirstOrDefault(p => filter(package.Version, p.Identity.Version));
             
-            return new VersionUpdate
+            return new PackageLookupResult
             {
+                AllowedChange = allowedChange,
                 Highest = highest,
                 Match = highestThatMatchesFilter
             };
