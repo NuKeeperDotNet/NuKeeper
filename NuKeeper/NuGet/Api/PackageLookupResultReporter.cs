@@ -14,7 +14,11 @@ namespace NuKeeper.NuGet.Api
         public void Report(PackageLookupResult lookupResult)
         {
             var highestVersion = lookupResult.Highest?.Identity?.Version;
-            var highestMatchVersion = lookupResult.Highest?.Identity?.Version;
+            var highestMatchVersion = lookupResult.Match?.Identity?.Version;
+
+            var allowing = lookupResult.AllowedChange == VersionChange.Major
+                ? string.Empty
+                : $" Allowing {lookupResult.AllowedChange} version updates.";
 
             if (highestVersion != null)
             {
@@ -22,18 +26,16 @@ namespace NuKeeper.NuGet.Api
                 {
                     if (highestVersion > highestMatchVersion)
                     {
-                        _logger.Info($"Allowing {lookupResult.AllowedChange} updates, selected update to version {highestMatchVersion}, but version {highestVersion} is also available.");
+                        _logger.Info($"Selected update to version {highestMatchVersion}, but version {highestVersion} is also available.{allowing}");
                     }
                     else
                     {
-                        _logger.Info($"Allowing {lookupResult.AllowedChange} updates, selected update to higest version {highestMatchVersion}.");
-
+                       _logger.Info($"Selected update to highest version, {highestMatchVersion}.{allowing}");
                     }
                 }
                 else
                 {
-                    // There is a highest version but no match
-                    _logger.Info($"Allowing {lookupResult.AllowedChange} updates, there is no matching update, but  {highestVersion} is also available.");
+                    _logger.Info($"Version {highestVersion} is available but is not allowed.{allowing}");
                 }
             }
         }
