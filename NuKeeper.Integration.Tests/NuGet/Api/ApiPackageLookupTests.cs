@@ -19,8 +19,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(Current("AWSSDK"), VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
-            Assert.That(package.Identity, Is.Not.Null);
-            Assert.That(package.Identity.Id, Is.EqualTo("AWSSDK"));
+            Assert.That(package.Highest, Is.Not.Null);
+            Assert.That(package.Match, Is.Not.Null);
+            Assert.That(package.Match.Identity, Is.Not.Null);
+            Assert.That(package.Match.Identity.Id, Is.EqualTo("AWSSDK"));
         }
 
         [Test]
@@ -32,7 +34,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 Current(Guid.NewGuid().ToString()), 
                 VersionChange.Major);
 
-            Assert.That(package, Is.Null);
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Highest, Is.Null);
+            Assert.That(package.Match, Is.Null);
         }
 
         [Test]
@@ -45,8 +49,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
-            Assert.That(package.Identity, Is.Not.Null);
-            Assert.That(package.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
+            Assert.That(package.Highest, Is.Not.Null);
+            Assert.That(package.Match, Is.Not.Null);
+            Assert.That(package.Match.Identity, Is.Not.Null);
+            Assert.That(package.Match.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
         }
 
         private static Settings BuildDefaultSettings()

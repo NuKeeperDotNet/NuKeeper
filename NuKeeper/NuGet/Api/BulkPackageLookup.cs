@@ -9,11 +9,16 @@ namespace NuKeeper.NuGet.Api
     public class BulkPackageLookup: IBulkPackageLookup
     {
         private readonly IApiPackageLookup _packageLookup;
+        private readonly PackageLookupResultReporter _lookupReporter;
         private readonly INuKeeperLogger _logger;
 
-        public BulkPackageLookup(IApiPackageLookup packageLookup, INuKeeperLogger logger)
+        public BulkPackageLookup(
+            IApiPackageLookup packageLookup, 
+            PackageLookupResultReporter lookupReporter, 
+            INuKeeperLogger logger)
         {
             _packageLookup = packageLookup;
+            _lookupReporter = lookupReporter;
             _logger = logger;
         }
 
@@ -33,16 +38,23 @@ namespace NuKeeper.NuGet.Api
 
             foreach (var lookupTask in lookupTasks)
             {
-                var serverVersion = lookupTask.Result;
-                if (serverVersion?.Identity?.Version != null)
-                {
-                    var packageId = serverVersion.Identity.Id;
-                    _logger.Verbose($"Found latest version of {packageId}: {serverVersion.Identity.Version}");
-                    result.Add(packageId, serverVersion);
-                }
+                var serverVersions = lookupTask.Result;
+                ProcessLookupResult(serverVersions, result);
             }
 
             return result;
+        }
+
+        private void ProcessLookupResult(PackageLookupResult lookupResult, Dictionary<string, PackageSearchMedatadataWithSource> result)
+        {
+            var matchingVersion = lookupResult.Match;
+
+            if (matchingVersion?.Identity?.Version != null)
+            {
+                _lookupReporter.Report(lookupResult);
+                var packageId = matchingVersion.Identity.Id;
+                result.Add(packageId, matchingVersion);
+            }
         }
 
         private PackageIdentity HighestVersion(IEnumerable<PackageIdentity> packages)
