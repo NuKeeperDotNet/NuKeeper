@@ -39,7 +39,7 @@ namespace NuKeeper.NuGet.Api
             }
             else
             {
-                _logger.Info($"Selected update of package {packageId} to highest version, {highestMatchVersion}.{allowing}");
+                _logger.Verbose($"Selected update of package {packageId} to highest version, {highestMatchVersion}.{allowing}");
             }
         }
     }

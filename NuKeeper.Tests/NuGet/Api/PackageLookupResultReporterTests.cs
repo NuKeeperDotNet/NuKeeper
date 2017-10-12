@@ -46,10 +46,10 @@ namespace NuKeeper.Tests.NuGet.Api
             reporter.Report(data);
 
             logger.Received()
-                .Info("Selected update of package foo to highest version, 2.3.4.");
+                .Verbose("Selected update of package foo to highest version, 2.3.4.");
             logger.DidNotReceive().Error(Arg.Any<string>());
             logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Verbose(Arg.Any<string>());
+            logger.DidNotReceive().Info(Arg.Any<string>());
         }
 
         [Test]
@@ -69,11 +69,12 @@ namespace NuKeeper.Tests.NuGet.Api
 
             reporter.Report(data);
 
+            logger.Received()
+                .Verbose("Selected update of package foo to highest version, 2.3.4. Allowing Minor version updates.");
+
             logger.DidNotReceive().Error(Arg.Any<string>());
             logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Verbose(Arg.Any<string>());
-            logger.Received()
-                .Info("Selected update of package foo to highest version, 2.3.4. Allowing Minor version updates.");
+            logger.DidNotReceive().Info(Arg.Any<string>());
         }
 
         [Test]
