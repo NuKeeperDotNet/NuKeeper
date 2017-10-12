@@ -18,14 +18,15 @@ namespace NuKeeper.NuGet.Api
             _lookupReporter = lookupReporter;
         }
 
-        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<PackageIdentity> packages)
+        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(
+            IEnumerable<PackageIdentity> packages, VersionChange allowedChange)
         {
             var latestOfEach = packages
                 .GroupBy(pi => pi.Id)
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
-                .Select(id => _packageLookup.FindVersionUpdate(id, VersionChange.Major))
+                .Select(id => _packageLookup.FindVersionUpdate(id, allowedChange))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);

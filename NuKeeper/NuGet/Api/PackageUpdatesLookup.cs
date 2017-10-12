@@ -20,7 +20,7 @@ namespace NuKeeper.NuGet.Api
                 .Select(p => p.Identity)
                 .Distinct();
 
-            var latestVersions = await _bulkPackageLookup.LatestVersions(packageIds);
+            var latestVersions = await _bulkPackageLookup.LatestVersions(packageIds, VersionChange.Major);
 
             var results = new List<PackageUpdateSet>();
 
