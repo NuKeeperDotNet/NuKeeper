@@ -143,12 +143,10 @@ namespace NuKeeper.Configuration
 
         private static LogLevel? ParseLogLevel(string value)
         {
-            LogLevel result;
-            var success = Enum.TryParse(value, true, out result);
-            if (!success)
+            var result = EnumParser.Parse<LogLevel>(value);
+            if (!result.HasValue)
             {
                 Console.WriteLine($"Unknown log level '{value}'");
-                return null;
             }
 
             return result;
@@ -156,12 +154,10 @@ namespace NuKeeper.Configuration
 
         private static VersionChange? ParseVersionChange(string value)
         {
-            VersionChange result;
-            var success = Enum.TryParse(value, true, out result);
-            if (!success)
+            var result = EnumParser.Parse<VersionChange>(value);
+            if (!result.HasValue)
             {
                 Console.WriteLine($"Unknown version change '{value}'");
-                return null;
             }
 
             return result;
