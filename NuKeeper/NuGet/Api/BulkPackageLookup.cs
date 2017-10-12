@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
-using NuKeeper.Logging;
 
 namespace NuKeeper.NuGet.Api
 {
@@ -10,16 +9,13 @@ namespace NuKeeper.NuGet.Api
     {
         private readonly IApiPackageLookup _packageLookup;
         private readonly PackageLookupResultReporter _lookupReporter;
-        private readonly INuKeeperLogger _logger;
 
         public BulkPackageLookup(
             IApiPackageLookup packageLookup, 
-            PackageLookupResultReporter lookupReporter, 
-            INuKeeperLogger logger)
+            PackageLookupResultReporter lookupReporter)
         {
             _packageLookup = packageLookup;
             _lookupReporter = lookupReporter;
-            _logger = logger;
         }
 
         public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(IEnumerable<PackageIdentity> packages)
