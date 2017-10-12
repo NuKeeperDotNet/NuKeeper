@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
 using NuKeeper.Logging;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Configuration
 {
@@ -31,6 +32,12 @@ namespace NuKeeper.Configuration
                 return null;
             }
 
+            var allowedChange = ParseVersionChange(settings.AllowedChange);
+            if (!allowedChange.HasValue)
+            {
+                return null;
+            }
+
             Settings result;
 
             switch (settings.Mode)
@@ -49,6 +56,8 @@ namespace NuKeeper.Configuration
             }
 
             result.LogLevel = logLevel.Value;
+            result.AllowedChange = allowedChange.Value;
+
             result.NuGetSources = ReadNuGetSources(settings);
             result.PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include));
             result.PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude));
@@ -91,15 +100,17 @@ namespace NuKeeper.Configuration
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            return new Settings(new RepositoryModeSettings
-            {
-                GithubUri = settings.GithubRepositoryUri,
-                GithubToken = settings.GithubToken,
-                GithubApiBase = EnsureTrailingSlash(settings.GithubApiEndpoint),
-                RepositoryName = repoName,
-                RepositoryOwner = repoOwner,
-                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
-            });
+            var repoSettings = new RepositoryModeSettings
+                {
+                    GithubUri = settings.GithubRepositoryUri,
+                    GithubToken = settings.GithubToken,
+                    GithubApiBase = EnsureTrailingSlash(settings.GithubApiEndpoint),
+                    RepositoryName = repoName,
+                    RepositoryOwner = repoOwner,
+                    MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
+            };
+
+            return new Settings(repoSettings);
         }
 
         private static string[] ReadNuGetSources(RawConfiguration settings)
@@ -119,13 +130,15 @@ namespace NuKeeper.Configuration
             var githubHost = settings.GithubApiEndpoint;
             var githubOrganisationName = settings.GithubOrganisationName;
 
-            return new Settings(new OrganisationModeSettings
-            {
-                GithubApiBase = EnsureTrailingSlash(githubHost),
-                GithubToken = githubToken,
-                OrganisationName = githubOrganisationName,
-                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
-            });
+            var orgSettings = new OrganisationModeSettings
+                {
+                    GithubApiBase = EnsureTrailingSlash(githubHost),
+                    GithubToken = githubToken,
+                    OrganisationName = githubOrganisationName,
+                    MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
+            };
+
+            return new Settings(orgSettings);
         }
 
         private static LogLevel? ParseLogLevel(string value)
@@ -135,6 +148,19 @@ namespace NuKeeper.Configuration
             if (!success)
             {
                 Console.WriteLine($"Unknown log level '{value}'");
+                return null;
+            }
+
+            return result;
+        }
+
+        private static VersionChange? ParseVersionChange(string value)
+        {
+            VersionChange result;
+            var success = Enum.TryParse(value, true, out result);
+            if (!success)
+            {
+                Console.WriteLine($"Unknown version change '{value}'");
                 return null;
             }
 
