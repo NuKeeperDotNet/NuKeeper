@@ -18,7 +18,7 @@ namespace NuKeeper.NuGet.Api
             _lookupReporter = lookupReporter;
         }
 
-        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> LatestVersions(
+        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages, VersionChange allowedChange)
         {
             var latestOfEach = packages

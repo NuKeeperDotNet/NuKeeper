@@ -19,7 +19,7 @@ namespace NuKeeper.Tests.NuGet.Api
             var apiLookup = Substitute.For<IApiPackageLookup>();
             var bulkLookup = BuildBulkPackageLookup(apiLookup);
 
-            var results = await bulkLookup.LatestVersions(Enumerable.Empty<PackageIdentity>(), VersionChange.Major);
+            var results = await bulkLookup.FindVersionUpdates(Enumerable.Empty<PackageIdentity>(), VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -41,7 +41,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(1, 2, 3))
             };
 
-            var results = await bulkLookup.LatestVersions(queries, VersionChange.Major);
+            var results = await bulkLookup.FindVersionUpdates(queries, VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Not.Empty);
@@ -63,7 +63,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(1, 2, 3))
             };
 
-            await bulkLookup.LatestVersions(queries, VersionChange.Major);
+            await bulkLookup.FindVersionUpdates(queries, VersionChange.Major);
 
             await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
         }
@@ -84,7 +84,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("bar", new NuGetVersion(1, 2, 3))
             };
 
-            var results = await bulkLookup.LatestVersions(queries, VersionChange.Major);
+            var results = await bulkLookup.FindVersionUpdates(queries, VersionChange.Major);
 
             Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.ContainsKey("foo"), Is.True);
@@ -108,7 +108,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("bar", new NuGetVersion(1, 2, 3))
             };
 
-            await bulkLookup.LatestVersions(queries, VersionChange.Major);
+            await bulkLookup.FindVersionUpdates(queries, VersionChange.Major);
 
             await apiLookup.Received(2).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
         }
@@ -129,7 +129,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(1, 3, 4))
             };
 
-            var results = await bulkLookup.LatestVersions(queries, VersionChange.Major);
+            var results = await bulkLookup.FindVersionUpdates(queries, VersionChange.Major);
 
             await apiLookup.Received(1).FindVersionUpdate(Arg.Any<PackageIdentity>(), Arg.Any<VersionChange>());
             await apiLookup.Received(1).FindVersionUpdate(Arg.Is<PackageIdentity>(
