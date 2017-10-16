@@ -44,6 +44,7 @@ namespace NuKeeper.RepositoryInspection
         private IEnumerable<PackageInProject> ProjectFiles(IFolder workingFolder)
         {
             var projectFiles = workingFolder.Find("*.csproj")
+                .Concat(workingFolder.Find("*.vbproj"))
                 .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
 
             var results = new List<PackageInProject>();
