@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Api
@@ -8,10 +9,12 @@ namespace NuKeeper.NuGet.Api
     public class PackageUpdatesLookup : IPackageUpdatesLookup
     {
         private readonly IBulkPackageLookup _bulkPackageLookup;
+        private readonly VersionChange _allowedChange;
 
-        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup)
+        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, Settings settings)
         {
             _bulkPackageLookup = bulkPackageLookup;
+            _allowedChange = settings.AllowedChange;
         }
 
         public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IReadOnlyCollection<PackageInProject> packages)
@@ -20,7 +23,7 @@ namespace NuKeeper.NuGet.Api
                 .Select(p => p.Identity)
                 .Distinct();
 
-            var latestVersions = await _bulkPackageLookup.LatestVersions(packageIds);
+            var latestVersions = await _bulkPackageLookup.FindVersionUpdates(packageIds, _allowedChange);
 
             var results = new List<PackageUpdateSet>();
 

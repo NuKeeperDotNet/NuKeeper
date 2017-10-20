@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using NuKeeper.Logging;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Configuration
 {
@@ -34,6 +35,8 @@ namespace NuKeeper.Configuration
         public Uri GithubApiBase => Repository?.GithubApiBase ?? Organisation?.GithubApiBase;
 
         public int MaxPullRequestsPerRepository => Repository?.MaxPullRequestsPerRepository ?? Organisation?.MaxPullRequestsPerRepository ?? 0;
+
+        public VersionChange AllowedChange { get; set; }
 
         public string Mode { get; }
 

@@ -24,8 +24,7 @@ namespace NuKeeper.Engine
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger,
-            SolutionsRestore solutionsRestore
-            )
+            SolutionsRestore solutionsRestore)
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;

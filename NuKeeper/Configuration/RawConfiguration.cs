@@ -40,5 +40,10 @@ namespace NuKeeper.Configuration
 
         [CommandLine("exclude", "e")]
         public string Exclude;
+
+        [JsonConfig("allowed_version_change"), Default("Major")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "change")]
+        public string AllowedChange;
+
     }
 }

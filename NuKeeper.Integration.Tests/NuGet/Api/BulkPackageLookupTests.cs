@@ -20,7 +20,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(packages);
+            var results = await lookup.FindVersionUpdates(packages, VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -38,7 +38,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(packages);
+            var results = await lookup.FindVersionUpdates(packages, VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
@@ -56,7 +56,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(packages);
+            var results = await lookup.FindVersionUpdates(packages, VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -67,7 +67,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(Enumerable.Empty<PackageIdentity>());
+            var results = await lookup.FindVersionUpdates(Enumerable.Empty<PackageIdentity>(), VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -86,7 +86,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.LatestVersions(packages);
+            var results = await lookup.FindVersionUpdates(packages, VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
@@ -98,7 +98,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var nuKeeperLogger = new NullNuKeeperLogger();
             var lookup = new ApiPackageLookup(new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings()));
-            return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger), nuKeeperLogger);
+            return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 
         private static Settings BuildDefaultSettings()
