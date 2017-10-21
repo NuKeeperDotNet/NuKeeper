@@ -15,7 +15,7 @@
     <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.0-preview-0033" />
     <PackageReference Include="Octokit" Version="0.26.0" />
-    <PackageReference Include="SimpleInjector" Version="4.0.11" />
+    <PackageReference Include="SimpleInjector" Version="4.0.12" />
   </ItemGroup>
   <ItemGroup>
     <None Update="config.json">
