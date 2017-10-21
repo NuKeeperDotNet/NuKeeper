@@ -81,6 +81,21 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void InvalidModeIsNotParsed()
+        {
+            var commandLine = new List<string>
+            {
+                "mode=whatever",
+                "repo=https://github.com/NuKeeperDotNet/NuKeeper",
+                "t=abc123"
+            };
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
         public void InvalidLogLevelIsNotParsed()
         {
             var commandLine = ValidRepoCommandLine()
@@ -96,6 +111,17 @@ namespace NuKeeper.Tests.Configuration
         {
             var commandLine = ValidRepoCommandLine()
                 .Append("change=fish");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
+        public void InvalidMaxPrIsNotParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("maxpr=surewhynot");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
