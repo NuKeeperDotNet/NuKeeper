@@ -81,6 +81,28 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void InvalidLogLevelIsNotParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("log=abigstick");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
+        public void InvalidChangeIsNotParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("change=fish");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
         public void ValidOrgCommandLineIsParsed()
         {
             var commandLine = ValidOrgCommandLine();
