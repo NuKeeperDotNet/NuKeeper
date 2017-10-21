@@ -44,6 +44,5 @@ namespace NuKeeper.Configuration
         [JsonConfig("allowed_version_change"), Default("Major")]
         [OverriddenBy(ConfigurationSources.CommandLine, "change")]
         public string AllowedChange;
-
     }
 }

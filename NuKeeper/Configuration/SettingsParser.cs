@@ -12,20 +12,33 @@ namespace NuKeeper.Configuration
     {
         public static Settings ReadSettings(string[] args)
         {
-            RawConfiguration settings;
+            var rawSettings = ParseToRaw(args);
+            if (rawSettings == null)
+            {
+                return null;
+            }
+            
+            Console.WriteLine($"Running NuKeeper in {rawSettings.Mode} mode");
+
+            return ParseToSettings(rawSettings);
+        }
+
+        private static RawConfiguration ParseToRaw(string[] args)
+        {
             try
             {
-                 Config.UseJson("config.json");
-                 settings = Config.Populate<RawConfiguration>(args);
+                Config.UseJson("config.json");
+                return Config.Populate<RawConfiguration>(args);
             }
-            catch(EasyConfigException e)
+            catch (EasyConfigException e)
             {
                 Console.WriteLine(e.Message);
                 return null;
             }
-            
-            Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
+        }
 
+        public static Settings ParseToSettings(RawConfiguration settings)
+        {
             var logLevel = ParseLogLevel(settings.LogLevel);
             if (!logLevel.HasValue)
             {
