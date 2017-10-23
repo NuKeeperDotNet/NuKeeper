@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EasyConfig;
@@ -10,22 +11,35 @@ namespace NuKeeper.Configuration
 {
     public static class SettingsParser
     {
-        public static Settings ReadSettings(string[] args)
+        public static Settings ReadSettings(IEnumerable<string> args)
         {
-            RawConfiguration settings;
+            var rawSettings = ParseToRaw(args);
+            if (rawSettings == null)
+            {
+                return null;
+            }
+            
+            Console.WriteLine($"Running NuKeeper in {rawSettings.Mode} mode");
+
+            return ParseToSettings(rawSettings);
+        }
+
+        private static RawConfiguration ParseToRaw(IEnumerable<string> args)
+        {
             try
             {
-                 Config.UseJson("config.json");
-                 settings = Config.Populate<RawConfiguration>(args);
+                Config.UseJson("config.json");
+                return Config.Populate<RawConfiguration>(args.ToArray());
             }
-            catch(EasyConfigException e)
+            catch (EasyConfigException e)
             {
                 Console.WriteLine(e.Message);
                 return null;
             }
-            
-            Console.WriteLine($"Running NuKeeper in {settings.Mode} mode");
+        }
 
+        public static Settings ParseToSettings(RawConfiguration settings)
+        {
             var logLevel = ParseLogLevel(settings.LogLevel);
             if (!logLevel.HasValue)
             {
