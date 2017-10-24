@@ -1,6 +1,8 @@
 using System;
 using EasyConfig;
 using EasyConfig.Attributes;
+using NuKeeper.Logging;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Configuration
 {
@@ -29,7 +31,7 @@ namespace NuKeeper.Configuration
 
         [JsonConfig("log_level"), Default("Info")]
         [OverriddenBy(ConfigurationSources.CommandLine, "log")]
-        public string LogLevel;
+        public LogLevel LogLevel;
 
         [JsonConfig("nuget_sources"), Default("https://api.nuget.org/v3/index.json")]
         [OverriddenBy(ConfigurationSources.CommandLine, "sources")]
@@ -43,6 +45,6 @@ namespace NuKeeper.Configuration
 
         [JsonConfig("allowed_version_change"), Default("Major")]
         [OverriddenBy(ConfigurationSources.CommandLine, "change")]
-        public string AllowedChange;
+        public VersionChange AllowedChange;
     }
 }
