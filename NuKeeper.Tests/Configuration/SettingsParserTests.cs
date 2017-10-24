@@ -52,8 +52,8 @@ namespace NuKeeper.Tests.Configuration
                 NuGetSources = "https://api.nuget.org/v3/index.json",
                 Mode = "repository",
                 GithubRepositoryUri = new Uri("https://github.com/NuKeeperDotNet/NuKeeper"),
-                AllowedChange = "Major",
-                LogLevel = "Info"
+                AllowedChange = VersionChange.Major,
+                LogLevel = LogLevel.Info
             };
         }
 
@@ -65,8 +65,8 @@ namespace NuKeeper.Tests.Configuration
                 NuGetSources = "https://api.nuget.org/v3/index.json",
                 Mode = "organisation",
                 GithubOrganisationName = "NuKeeperDotNet",
-                AllowedChange = "Major",
-                LogLevel = "Info"
+                AllowedChange = VersionChange.Major,
+                LogLevel = LogLevel.Info
             };
         }
     }

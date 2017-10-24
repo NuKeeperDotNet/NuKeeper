@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Configuration
 {
@@ -40,18 +38,6 @@ namespace NuKeeper.Configuration
 
         public static Settings ParseToSettings(RawConfiguration settings)
         {
-            var logLevel = ParseLogLevel(settings.LogLevel);
-            if (!logLevel.HasValue)
-            {
-                return null;
-            }
-
-            var allowedChange = ParseVersionChange(settings.AllowedChange);
-            if (!allowedChange.HasValue)
-            {
-                return null;
-            }
-
             Settings result;
 
             switch (settings.Mode)
@@ -69,8 +55,8 @@ namespace NuKeeper.Configuration
                     return null;
             }
 
-            result.LogLevel = logLevel.Value;
-            result.AllowedChange = allowedChange.Value;
+            result.LogLevel = settings.LogLevel;
+            result.AllowedChange = settings.AllowedChange;
 
             result.NuGetSources = ReadNuGetSources(settings);
             result.PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include));
@@ -153,28 +139,6 @@ namespace NuKeeper.Configuration
             };
 
             return new Settings(orgSettings);
-        }
-
-        private static LogLevel? ParseLogLevel(string value)
-        {
-            var result = EnumParser.Parse<LogLevel>(value);
-            if (!result.HasValue)
-            {
-                Console.WriteLine($"Unknown log level '{value}'");
-            }
-
-            return result;
-        }
-
-        private static VersionChange? ParseVersionChange(string value)
-        {
-            var result = EnumParser.Parse<VersionChange>(value);
-            if (!result.HasValue)
-            {
-                Console.WriteLine($"Unknown version change '{value}'");
-            }
-
-            return result;
         }
 
         private static Uri EnsureTrailingSlash(Uri uri)
