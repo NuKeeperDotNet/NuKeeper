@@ -7,8 +7,11 @@ namespace NuKeeper.Configuration
 {
     public class Settings
     {
+        public const string RepoMode = "repo";
         public const string RepositoryMode = "repository";
+
         public const string OrganisationMode = "organisation";
+        public const string OrgMode = "org";
 
         public Settings(RepositoryModeSettings repositoryModeSettings)
         {

@@ -40,12 +40,14 @@ namespace NuKeeper.Configuration
         {
             Settings result;
 
-            switch (settings.Mode)
+            switch (settings.Mode.ToLowerInvariant())
             {
+                case Settings.RepoMode:
                 case Settings.RepositoryMode:
                     result = ReadSettingsForRepositoryMode(settings);
                     break;
 
+                case Settings.OrgMode:
                 case Settings.OrganisationMode:
                     result = ReadSettingsForOrganisationMode(settings);
                     break;

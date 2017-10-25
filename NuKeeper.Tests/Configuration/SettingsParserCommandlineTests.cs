@@ -96,6 +96,68 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void MissingModeIsNotParsed()
+        {
+            var commandLine = new List<string>
+            {
+                "repo=https://github.com/NuKeeperDotNet/NuKeeper",
+                "t=abc123"
+            };
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
+        public void ShortOrgModeIsParsed()
+        {
+            var commandLine = new List<string>
+            {
+                "mode=org",
+                "org=NuKeeperDotNet",
+                "t=abc123"
+            };
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.Mode, Is.EqualTo("organisation"));
+        }
+
+        [Test]
+        public void ShortOrgModeinCapsIsParsed()
+        {
+            var commandLine = new List<string>
+            {
+                "mode=Org",
+                "org=NuKeeperDotNet",
+                "t=abc123"
+            };
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.Mode, Is.EqualTo("organisation"));
+        }
+
+        [Test]
+        public void ShortRepoModeIsParsed()
+        {
+            var commandLine = new List<string>
+            {
+                "mode=repo",
+                "repo=https://github.com/NuKeeperDotNet/NuKeeper",
+                "t=abc123"
+            };
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.Mode, Is.EqualTo("repository"));
+        }
+
+        [Test]
         public void InvalidLogLevelIsNotParsed()
         {
             var commandLine = ValidRepoCommandLine()
