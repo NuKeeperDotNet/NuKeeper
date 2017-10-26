@@ -10,13 +10,13 @@ namespace NuKeeper.Configuration
         public Settings(RepositoryModeSettings repositoryModeSettings)
         {
             Repository = repositoryModeSettings;
-            Mode = Mode.Repository;
+            Mode = GithubMode.Repository;
         }
 
         public Settings(OrganisationModeSettings organisationModeSettings)
         {
             Organisation = organisationModeSettings;
-            Mode = Mode.Organisation;
+            Mode = GithubMode.Organisation;
         }
 
         public Settings(RepositoryModeSettings repository, OrganisationModeSettings organisation)
@@ -35,7 +35,7 @@ namespace NuKeeper.Configuration
 
         public VersionChange AllowedChange { get; set; }
 
-        public Mode Mode { get; }
+        public GithubMode Mode { get; }
 
         public LogLevel LogLevel { get; set; }
 

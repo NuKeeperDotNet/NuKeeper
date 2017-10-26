@@ -26,7 +26,7 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.Mode, Is.EqualTo(Mode.Repository));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
             Assert.That(settings.Repository, Is.Not.Null);
             Assert.That(settings.Repository.RepositoryName, Is.EqualTo("NuKeeper"));
             Assert.That(settings.GithubToken, Is.EqualTo("abc123"));
@@ -122,7 +122,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(Mode.Organisation));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(Mode.Organisation));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(Mode.Repository));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
         }
 
         [Test]
@@ -207,7 +207,7 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.Mode, Is.EqualTo(Mode.Organisation));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
             Assert.That(settings.Organisation, Is.Not.Null);
             Assert.That(settings.Organisation.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
             Assert.That(settings.GithubToken, Is.EqualTo("abc123"));
