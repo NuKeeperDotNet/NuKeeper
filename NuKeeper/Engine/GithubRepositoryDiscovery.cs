@@ -28,11 +28,11 @@ namespace NuKeeper.Engine
 
         public async Task<IEnumerable<RepositoryModeSettings>> GetRepositories()
         {
-            if (_settings.Mode == Settings.OrganisationMode)
+            if (_settings.Mode == ModeNames.Organisation)
             {
                 return await FromOrganisation(_settings.Organisation);
             }
-            if (_settings.Mode == Settings.RepositoryMode)
+            if (_settings.Mode == ModeNames.Repository)
             {
                 return new[] { _settings.Repository };
             }
