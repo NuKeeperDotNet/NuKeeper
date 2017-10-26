@@ -7,19 +7,16 @@ namespace NuKeeper.Configuration
 {
     public class Settings
     {
-        public const string RepositoryMode = "repository";
-        public const string OrganisationMode = "organisation";
-
         public Settings(RepositoryModeSettings repositoryModeSettings)
         {
             Repository = repositoryModeSettings;
-            Mode = RepositoryMode;
+            Mode = GithubMode.Repository;
         }
 
         public Settings(OrganisationModeSettings organisationModeSettings)
         {
             Organisation = organisationModeSettings;
-            Mode = OrganisationMode;
+            Mode = GithubMode.Organisation;
         }
 
         public Settings(RepositoryModeSettings repository, OrganisationModeSettings organisation)
@@ -38,7 +35,7 @@ namespace NuKeeper.Configuration
 
         public VersionChange AllowedChange { get; set; }
 
-        public string Mode { get; }
+        public GithubMode Mode { get; }
 
         public LogLevel LogLevel { get; set; }
 

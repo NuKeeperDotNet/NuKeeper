@@ -26,7 +26,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo("repository"));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
             Assert.That(settings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
         }
@@ -39,7 +39,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo("organisation"));
+            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
             Assert.That(settings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
         }

@@ -85,7 +85,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 | sources                          | No                         |
 | change                           | No                         |
 
- * *mode* One of `repository` or `organisation`. In `organisation` mode, all the repositories in that organisation will be processed.
+ * *mode* One of `repository` or `organisation`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
  * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode. Aliased to `repo`.
  * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used in `repository` mode. Aliased to `org`.

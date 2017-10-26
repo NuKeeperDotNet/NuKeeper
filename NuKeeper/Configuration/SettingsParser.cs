@@ -40,18 +40,21 @@ namespace NuKeeper.Configuration
         {
             Settings result;
 
-            switch (settings.Mode)
+            var modeString = settings.Mode?.ToLowerInvariant() ?? String.Empty;
+            switch (modeString)
             {
-                case Settings.RepositoryMode:
+                case ModeNames.Repo:
+                case ModeNames.Repository:
                     result = ReadSettingsForRepositoryMode(settings);
                     break;
 
-                case Settings.OrganisationMode:
+                case ModeNames.Org:
+                case ModeNames.Organisation:
                     result = ReadSettingsForOrganisationMode(settings);
                     break;
 
                 default:
-                    Console.WriteLine($"Mode {settings.Mode} not supported");
+                    Console.WriteLine($"Mode '{modeString}' not supported");
                     return null;
             }
 
