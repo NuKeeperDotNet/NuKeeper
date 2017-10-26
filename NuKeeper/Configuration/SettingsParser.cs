@@ -40,7 +40,8 @@ namespace NuKeeper.Configuration
         {
             Settings result;
 
-            switch (settings.Mode.ToLowerInvariant())
+            var modeString = settings.Mode?.ToLowerInvariant() ?? String.Empty;
+            switch (modeString)
             {
                 case ModeNames.Repo:
                 case ModeNames.Repository:
@@ -53,7 +54,7 @@ namespace NuKeeper.Configuration
                     break;
 
                 default:
-                    Console.WriteLine($"Mode {settings.Mode} not supported");
+                    Console.WriteLine($"Mode '{modeString}' not supported");
                     return null;
             }
 
