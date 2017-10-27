@@ -14,14 +14,14 @@ namespace NuKeeper.Github
         private readonly IGitHubClient _client;
         private readonly Uri _apiBase;
 
-        public OctokitClient(Settings settings, INuKeeperLogger logger)
+        public OctokitClient(GithubAuthSettings settings, INuKeeperLogger logger)
         {
             _logger = logger;
-            _apiBase = settings.GithubApiBase;
+            _apiBase = settings.ApiBase;
 
             _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), _apiBase)
             {
-                Credentials = new Credentials(settings.GithubToken)
+                Credentials = new Credentials(settings.Token)
             };
         }
 

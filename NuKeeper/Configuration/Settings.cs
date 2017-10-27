@@ -1,48 +1,11 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
-
-namespace NuKeeper.Configuration
+﻿namespace NuKeeper.Configuration
 {
     public class Settings
     {
-        public Settings(RepositoryModeSettings repositoryModeSettings)
-        {
-            Repository = repositoryModeSettings;
-            Mode = GithubMode.Repository;
-        }
+        public ModalSettings ModalSettings { get; set; }
 
-        public Settings(OrganisationModeSettings organisationModeSettings)
-        {
-            Organisation = organisationModeSettings;
-            Mode = GithubMode.Organisation;
-        }
+        public GithubAuthSettings GithubAuthSettings { get; set; }
 
-        public Settings(RepositoryModeSettings repository, OrganisationModeSettings organisation)
-        {
-            Repository = repository;
-            Organisation = organisation;
-        }
-
-        public RepositoryModeSettings Repository { get; }
-        public OrganisationModeSettings Organisation { get; }
-
-        public string GithubToken => Repository?.GithubToken ?? Organisation?.GithubToken;
-        public Uri GithubApiBase => Repository?.GithubApiBase ?? Organisation?.GithubApiBase;
-
-        public int MaxPullRequestsPerRepository => Repository?.MaxPullRequestsPerRepository ?? Organisation?.MaxPullRequestsPerRepository ?? 0;
-
-        public VersionChange AllowedChange { get; set; }
-
-        public GithubMode Mode { get; }
-
-        public LogLevel LogLevel { get; set; }
-
-        public string[] NuGetSources { get; set; }
-
-        public Regex PackageIncludes { get; set; }
-
-        public Regex PackageExcludes { get; set; }
+        public UserPreferences UserPreferences { get; set; }
     }
 }

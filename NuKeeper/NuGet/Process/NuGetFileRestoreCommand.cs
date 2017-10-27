@@ -16,7 +16,7 @@ namespace NuKeeper.NuGet.Process
 
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
-            Settings settings,
+            UserPreferences settings,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;

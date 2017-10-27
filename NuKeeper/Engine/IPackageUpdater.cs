@@ -10,7 +10,7 @@ namespace NuKeeper.Engine
         Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositoryModeSettings settings,
+            RepositorySettings settings,
             string defaultBranch);
     }
 }

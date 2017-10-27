@@ -34,7 +34,7 @@ namespace NuKeeper.Engine
             _solutionsRestore = solutionsRestore;
         }
 
-        public async Task Run(IGitDriver git, RepositoryModeSettings settings)
+        public async Task Run(IGitDriver git, RepositorySettings settings)
         {
             git.Clone(settings.GithubUri);
             var defaultBranch = git.GetCurrentHead();
@@ -76,7 +76,7 @@ namespace NuKeeper.Engine
             return updates;
         }
 
-        private async Task UpdateAllTargets(IGitDriver git, RepositoryModeSettings settings, IEnumerable<PackageUpdateSet> targetUpdates, string defaultBranch)
+        private async Task UpdateAllTargets(IGitDriver git, RepositorySettings settings, IEnumerable<PackageUpdateSet> targetUpdates, string defaultBranch)
         {
             foreach (var updateSet in targetUpdates)
             {

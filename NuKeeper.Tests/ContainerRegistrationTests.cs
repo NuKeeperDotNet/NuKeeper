@@ -20,12 +20,15 @@ namespace NuKeeper.Tests
 
         private static Settings MakeValidSettings()
         {
-            var org = new OrganisationModeSettings
-            {
-                GithubApiBase = new Uri("https://github.com/NuKeeperDotNet"),
-                GithubToken = "abc123"
-            };
-            return new Settings(org);
+            var settings = new Settings();
+            settings.ModalSettings = new ModalSettings
+                {
+                    Mode = GithubMode.Organisation,
+                    OrganisationName = "test1"
+                };
+            settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
+            settings.UserPreferences = new UserPreferences();
+            return settings;
         }
     }
 }

@@ -7,7 +7,7 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
-using Settings = NuKeeper.Configuration.Settings;
+using NuKeeper.Configuration;
 
 namespace NuKeeper.NuGet.Api
 {
@@ -16,7 +16,7 @@ namespace NuKeeper.NuGet.Api
         private readonly ILogger _logger;
         private readonly string[] _sources;
 
-        public PackageVersionsLookup(ILogger logger, Settings settings)
+        public PackageVersionsLookup(ILogger logger, UserPreferences settings)
         {
             _logger = logger;
             _sources = settings.NuGetSources;

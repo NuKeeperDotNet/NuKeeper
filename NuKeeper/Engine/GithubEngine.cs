@@ -24,14 +24,14 @@ namespace NuKeeper.Engine
             IRepositoryUpdater repositoryUpdater,
             INuKeeperLogger logger,
             IFolderFactory folderFactory,
-            Settings settings)
+            GithubAuthSettings settings)
         {
             _repositoryDiscovery = repositoryDiscovery;
             _github = github;
             _repositoryUpdater = repositoryUpdater;
             _logger = logger;
             _folderFactory = folderFactory;
-            _githubToken = settings.GithubToken;
+            _githubToken = settings.Token;
         }
 
         public async Task Run()
@@ -53,7 +53,7 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task RunRepo(RepositoryModeSettings repository, Credentials gitCreds)
+        private async Task RunRepo(RepositorySettings repository, Credentials gitCreds)
         {
             try
             {

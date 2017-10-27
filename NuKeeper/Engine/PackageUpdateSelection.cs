@@ -13,7 +13,7 @@ namespace NuKeeper.Engine
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
 
-        public PackageUpdateSelection(Settings settings)
+        public PackageUpdateSelection(UserPreferences settings)
         {
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;

@@ -15,12 +15,12 @@ namespace NuKeeper.Engine
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
-        private readonly Settings _settings;
+        private readonly UserPreferences _settings;
 
         public PackageUpdater(
             IGithub github,
             INuKeeperLogger logger,
-            Settings settings)
+            UserPreferences settings)
         {
             _github = github;
             _logger = logger;
@@ -30,7 +30,7 @@ namespace NuKeeper.Engine
         public async Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositoryModeSettings settings,
+            RepositorySettings settings,
             string defaultBranch)
         {
             try
@@ -99,7 +99,7 @@ namespace NuKeeper.Engine
 
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
-            RepositoryModeSettings settings,
+            RepositorySettings settings,
             string title, string headBranch, string baseBranch)
         {
             var pr = new NewPullRequest(title, headBranch, baseBranch)

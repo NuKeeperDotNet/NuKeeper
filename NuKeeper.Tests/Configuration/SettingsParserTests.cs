@@ -26,9 +26,9 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
-            Assert.That(settings.AllowedChange, Is.EqualTo(VersionChange.Major));
-            Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.UserPreferences.AllowedChange, Is.EqualTo(VersionChange.Major));
+            Assert.That(settings.UserPreferences.LogLevel, Is.EqualTo(LogLevel.Info));
         }
 
         [Test]
@@ -39,9 +39,9 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
-            Assert.That(settings.AllowedChange, Is.EqualTo(VersionChange.Major));
-            Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.UserPreferences.AllowedChange, Is.EqualTo(VersionChange.Major));
+            Assert.That(settings.UserPreferences.LogLevel, Is.EqualTo(LogLevel.Info));
         }
 
         private static RawConfiguration ValidRepoSettings()

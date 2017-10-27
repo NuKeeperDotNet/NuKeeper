@@ -17,7 +17,7 @@ namespace NuKeeper.NuGet.Process
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
-            Settings settings,
+            UserPreferences settings,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;

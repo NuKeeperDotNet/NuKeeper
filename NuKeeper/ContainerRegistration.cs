@@ -18,7 +18,10 @@ namespace NuKeeper
         {
             var container = new Container();
 
-            container.Register(() => settings, Lifestyle.Singleton);
+            container.Register(() => settings.ModalSettings, Lifestyle.Singleton);
+            container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
+            container.Register(() => settings.UserPreferences, Lifestyle.Singleton);
+
             container.Register<INuKeeperLogger, ConsoleLogger>();
             container.Register<ILogger, NuGetLogger>();
 

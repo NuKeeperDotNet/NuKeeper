@@ -38,33 +38,86 @@ namespace NuKeeper.Configuration
 
         public static Settings ParseToSettings(RawConfiguration settings)
         {
-            Settings result;
+            var mode = ParseMode(settings.Mode);
 
-            var modeString = settings.Mode?.ToLowerInvariant() ?? String.Empty;
+            if (!mode.HasValue)
+            {
+                Console.WriteLine($"Mode '{settings.Mode}' not supported");
+                return null;
+            }
+
+            ModalSettings modalSettings;
+            switch (mode.Value)
+            {
+                case GithubMode.Repository:
+                    if (settings.GithubRepositoryUri == null)
+                    {
+                        Console.WriteLine("Missing required repository uri");
+                        return null;
+                    }
+                    modalSettings = new ModalSettings
+                    {
+                        Mode = GithubMode.Repository,
+                        Repository = ReadRepositorySettings(settings)
+                    }; 
+                    break;
+
+                case GithubMode.Organisation:
+                    if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
+                    {
+                        Console.WriteLine("Missing required organisation name");
+                        return null;
+                    }
+                    modalSettings = new ModalSettings
+                    {
+                        Mode = GithubMode.Organisation,
+                        OrganisationName = settings.GithubOrganisationName
+                    };
+                    break;
+
+                default:
+                    throw new Exception($"Mode parse went wrong: {settings.Mode}");
+            }
+
+            var authSettings = new GithubAuthSettings(
+                EnsureTrailingSlash(settings.GithubApiEndpoint),
+                settings.GithubToken);
+
+            var userPrefs = new UserPreferences
+            {
+                AllowedChange = settings.AllowedChange,
+                LogLevel = settings.LogLevel,
+                MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
+                NuGetSources = ReadNuGetSources(settings),
+                PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include)),
+                PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude))
+            };
+
+            return new Settings
+            {
+                ModalSettings = modalSettings,
+                GithubAuthSettings = authSettings,
+                UserPreferences = userPrefs
+            };
+        }
+
+        private static GithubMode? ParseMode(string mode)
+        {
+            var modeString = mode?.ToLowerInvariant() ?? string.Empty;
+
             switch (modeString)
             {
                 case ModeNames.Repo:
                 case ModeNames.Repository:
-                    result = ReadSettingsForRepositoryMode(settings);
-                    break;
+                    return  GithubMode.Repository;
 
                 case ModeNames.Org:
                 case ModeNames.Organisation:
-                    result = ReadSettingsForOrganisationMode(settings);
-                    break;
+                    return GithubMode.Organisation;
 
                 default:
-                    Console.WriteLine($"Mode '{modeString}' not supported");
                     return null;
             }
-
-            result.LogLevel = settings.LogLevel;
-            result.AllowedChange = settings.AllowedChange;
-
-            result.NuGetSources = ReadNuGetSources(settings);
-            result.PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include));
-            result.PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude));
-            return result;
         }
 
         private static Regex ParseRegex(string regex, string optionName)
@@ -85,14 +138,8 @@ namespace NuKeeper.Configuration
             }
         }
 
-        private static Settings ReadSettingsForRepositoryMode(RawConfiguration settings)
+        private static RepositorySettings ReadRepositorySettings(RawConfiguration settings)
         {
-            if (settings.GithubRepositoryUri == null)
-            {
-                Console.WriteLine("Missing required repository uri");
-                return null;
-            }
-
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
             var path = settings.GithubRepositoryUri.AbsolutePath;
@@ -103,45 +150,17 @@ namespace NuKeeper.Configuration
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            var repoSettings = new RepositoryModeSettings
+            return new RepositorySettings
                 {
                     GithubUri = settings.GithubRepositoryUri,
-                    GithubToken = settings.GithubToken,
-                    GithubApiBase = EnsureTrailingSlash(settings.GithubApiEndpoint),
                     RepositoryName = repoName,
-                    RepositoryOwner = repoOwner,
-                    MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
+                    RepositoryOwner = repoOwner
             };
-
-            return new Settings(repoSettings);
         }
 
         private static string[] ReadNuGetSources(RawConfiguration settings)
         {
             return settings.NuGetSources.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private static Settings ReadSettingsForOrganisationMode(RawConfiguration settings)
-        {
-            if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
-            {
-                Console.WriteLine("Missing required organisation name");
-                return null;
-            }
-
-            var githubToken = settings.GithubToken;
-            var githubHost = settings.GithubApiEndpoint;
-            var githubOrganisationName = settings.GithubOrganisationName;
-
-            var orgSettings = new OrganisationModeSettings
-                {
-                    GithubApiBase = EnsureTrailingSlash(githubHost),
-                    GithubToken = githubToken,
-                    OrganisationName = githubOrganisationName,
-                    MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository
-            };
-
-            return new Settings(orgSettings);
         }
 
         private static Uri EnsureTrailingSlash(Uri uri)
