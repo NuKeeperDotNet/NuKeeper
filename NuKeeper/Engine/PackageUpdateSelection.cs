@@ -40,11 +40,11 @@ namespace NuKeeper.Engine
                 .Take(_maxPullRequests)
                 .ToList();
 
-            _logger.Info($"Selection of package updates: {unfiltered.Count} potential, filtered to {filtered.Count} and capped at {capped.Count}");
+            _logger.Terse($"Selection of package updates: {unfiltered.Count} potential, filtered to {filtered.Count} and capped at {capped.Count}");
 
             foreach (var updateSet in capped)
             {
-                _logger.Verbose($"Selected package update of {updateSet.PackageId} to {updateSet.NewVersion}");
+                _logger.Info($"Selected package update of {updateSet.PackageId} to {updateSet.NewVersion}");
             }
 
             return capped;
