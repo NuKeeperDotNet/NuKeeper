@@ -3,18 +3,21 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
+using NuKeeper.Logging;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
     public class PackageUpdateSelection : IPackageUpdateSelection
     {
+        private readonly INuKeeperLogger _logger;
         private readonly Regex _excludeFilter;
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
 
-        public PackageUpdateSelection(Settings settings)
+        public PackageUpdateSelection(Settings settings, INuKeeperLogger logger)
         {
+            _logger = logger;
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;
             _excludeFilter = settings.PackageExcludes;
@@ -24,12 +27,27 @@ namespace NuKeeper.Engine
             IGitDriver git,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
-            return potentialUpdates
+            var unfiltered = potentialUpdates
                 .OrderByDescending(Priority)
+                .ToList();
+
+            var filtered = unfiltered
                 .Where(MatchesIncludeExclude)
-                .Where(up => ! HasExistingBranch(git, up))
+                .Where(up => !HasExistingBranch(git, up))
+                .ToList();
+
+            var capped = filtered
                 .Take(_maxPullRequests)
                 .ToList();
+
+            _logger.Terse($"Selection of package updates: {unfiltered.Count} potential, filtered to {filtered.Count} and capped at {capped.Count}");
+
+            foreach (var updateSet in capped)
+            {
+                _logger.Info($"Selected package update of {updateSet.PackageId} to {updateSet.NewVersion}");
+            }
+
+            return capped;
         }
 
         private int Priority(PackageUpdateSet update)

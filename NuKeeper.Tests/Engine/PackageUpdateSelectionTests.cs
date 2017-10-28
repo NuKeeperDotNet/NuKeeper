@@ -85,11 +85,12 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var target = new PackageUpdateSelection(
-                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
-                    {
-                        PackageIncludes = new Regex("bar")
-                    });
+            var settings = new Settings(new RepositoryModeSettings {MaxPullRequestsPerRepository = 10})
+            {
+                PackageIncludes = new Regex("bar")
+            };
+
+            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
@@ -106,11 +107,11 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var target = new PackageUpdateSelection(
-                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
+            var settings = new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
                     {
                         PackageExcludes = new Regex("bar")
-                    });
+                    };
+            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
@@ -128,12 +129,13 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var target = new PackageUpdateSelection(
-                    new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
+            var settings = new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
                     {
                         PackageExcludes = new Regex("bar"),
                         PackageIncludes = new Regex("foo")
-                    });
+                    };
+
+            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
@@ -253,7 +255,7 @@ namespace NuKeeper.Tests.Engine
             {
                 MaxPullRequestsPerRepository = maxPullRequests
             });
-            return new PackageUpdateSelection(settings);
+            return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
         }
 
         private static IGitDriver GitWithAllBranches()
