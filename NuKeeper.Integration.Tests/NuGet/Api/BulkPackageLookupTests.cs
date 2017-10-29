@@ -101,9 +101,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 
-        private static Settings BuildDefaultSettings()
+        private static UserSettings BuildDefaultSettings()
         {
-            return new Settings((RepositoryModeSettings) null)
+            return new UserSettings
             {
                 NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
             };

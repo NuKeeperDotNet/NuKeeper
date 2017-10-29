@@ -9,35 +9,35 @@ namespace NuKeeper.Engine
     public class GithubRepositoryDiscovery : IGithubRepositoryDiscovery
     {
         private readonly IGithub _github;
-        private readonly Settings _settings;
+        private readonly ModalSettings _settings;
 
-        public GithubRepositoryDiscovery(IGithub github, Settings settings)
+        public GithubRepositoryDiscovery(
+            IGithub github, 
+            ModalSettings settings)
         {
             _github = github;
             _settings = settings;
         }
 
-        public async Task<IEnumerable<RepositoryModeSettings>> FromOrganisation(OrganisationModeSettings organisation)
+        public async Task<IEnumerable<RepositorySettings>> FromOrganisation(string organisationName)
         {
-            var repositories = await _github.GetRepositoriesForOrganisation(organisation.OrganisationName);
+            var repositories = await _github.GetRepositoriesForOrganisation(organisationName);
 
-            return repositories.Select(r => new RepositoryModeSettings(r, 
-                    _settings.GithubApiBase, _settings.GithubToken, 
-                    organisation.MaxPullRequestsPerRepository));
+            return repositories.Select(r => new RepositorySettings(r));
         }
 
-        public async Task<IEnumerable<RepositoryModeSettings>> GetRepositories()
+        public async Task<IEnumerable<RepositorySettings>> GetRepositories()
         {
             switch (_settings.Mode)
             {
                 case GithubMode.Organisation:
-                    return await FromOrganisation(_settings.Organisation);
+                    return await FromOrganisation(_settings.OrganisationName);
 
                 case GithubMode.Repository:
                     return new[] { _settings.Repository };
 
                 default:
-                    return Enumerable.Empty<RepositoryModeSettings>();
+                    return Enumerable.Empty<RepositorySettings>();
             }            
         }
     }

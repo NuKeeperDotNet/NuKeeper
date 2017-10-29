@@ -7,7 +7,7 @@ namespace NuKeeper.Logging
     {
         private readonly LogLevel _logLevel;
 
-        public ConsoleLogger(Settings settings)
+        public ConsoleLogger(UserSettings settings)
         {
             _logLevel = settings.LogLevel;
         }

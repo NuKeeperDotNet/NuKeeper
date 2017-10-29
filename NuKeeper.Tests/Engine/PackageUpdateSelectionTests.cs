@@ -85,8 +85,9 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new Settings(new RepositoryModeSettings {MaxPullRequestsPerRepository = 10})
+            var settings = new UserSettings
             {
+                MaxPullRequestsPerRepository = 10,
                 PackageIncludes = new Regex("bar")
             };
 
@@ -107,10 +108,12 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
-                    {
-                        PackageExcludes = new Regex("bar")
-                    };
+            var settings = new UserSettings
+            {
+                MaxPullRequestsPerRepository = 10,
+                PackageExcludes = new Regex("bar")
+            };
+
             var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
@@ -129,11 +132,12 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new Settings(new RepositoryModeSettings { MaxPullRequestsPerRepository = 10 })
-                    {
-                        PackageExcludes = new Regex("bar"),
-                        PackageIncludes = new Regex("foo")
-                    };
+            var settings = new UserSettings 
+            {
+                MaxPullRequestsPerRepository = 10,
+                PackageExcludes = new Regex("bar"),
+                PackageIncludes = new Regex("foo")
+            };
 
             var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
 
@@ -251,10 +255,10 @@ namespace NuKeeper.Tests.Engine
         private static IPackageUpdateSelection OneTargetSelection()
         {
             const int maxPullRequests = 1;
-            var settings = new Settings(new RepositoryModeSettings
+            var settings = new UserSettings
             {
                 MaxPullRequestsPerRepository = maxPullRequests
-            });
+            };
             return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
         }
 

@@ -17,7 +17,7 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
+            AssertSettingsNotNull(settings);
         }
 
         [Test]
@@ -26,10 +26,11 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
-            Assert.That(settings.Repository, Is.Not.Null);
-            Assert.That(settings.Repository.RepositoryName, Is.EqualTo("NuKeeper"));
-            Assert.That(settings.GithubToken, Is.EqualTo("abc123"));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Repository, Is.Not.Null);
+            Assert.That(settings.ModalSettings.Repository.RepositoryName, Is.EqualTo("NuKeeper"));
+            Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
         }
 
         [Test]
@@ -38,10 +39,11 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.MaxPullRequestsPerRepository, Is.EqualTo(3));
-            Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
-            Assert.That(settings.GithubApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
-            Assert.That(settings.NuGetSources, Is.EqualTo(new [] {"https://api.nuget.org/v3/index.json"}));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new [] {"https://api.nuget.org/v3/index.json"}));
         }
 
         [Test]
@@ -52,8 +54,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Verbose));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Verbose));
         }
 
         [Test]
@@ -64,8 +66,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.MaxPullRequestsPerRepository, Is.EqualTo(42));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(42));
         }
 
         [Test]
@@ -76,8 +78,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.AllowedChange, Is.EqualTo(VersionChange.Patch));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
         [Test]
@@ -121,8 +123,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
         }
 
         [Test]
@@ -137,8 +139,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
         }
 
         [Test]
@@ -153,8 +155,8 @@ namespace NuKeeper.Tests.Configuration
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Repository));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
         }
 
         [Test]
@@ -196,9 +198,9 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Organisation, Is.Not.Null);
-            Assert.That(settings.Organisation.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.ModalSettings.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
         }
 
         [Test]
@@ -207,10 +209,10 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.Mode, Is.EqualTo(GithubMode.Organisation));
-            Assert.That(settings.Organisation, Is.Not.Null);
-            Assert.That(settings.Organisation.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
-            Assert.That(settings.GithubToken, Is.EqualTo("abc123"));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
+            Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
         }
 
         [Test]
@@ -219,10 +221,11 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.MaxPullRequestsPerRepository, Is.EqualTo(3));
-            Assert.That(settings.LogLevel, Is.EqualTo(LogLevel.Info));
-            Assert.That(settings.GithubApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
-            Assert.That(settings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 
 
@@ -244,6 +247,14 @@ namespace NuKeeper.Tests.Configuration
                 "org=NuKeeperDotNet",
                 "t=abc123"
             };
+        }
+
+        private static void AssertSettingsNotNull(SettingsContainer settings)
+        {
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.GithubAuthSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
         }
     }
 
