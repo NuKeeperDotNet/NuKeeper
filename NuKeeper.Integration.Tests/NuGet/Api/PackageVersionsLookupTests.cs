@@ -29,9 +29,9 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
         }
 
-        private static UserPreferences BuildDefaultSettings()
+        private static UserSettings BuildDefaultSettings()
         {
-            return new UserPreferences
+            return new UserSettings
             {
                 NuGetSources = new[] { "https://api.nuget.org/v3/index.json" }
             };

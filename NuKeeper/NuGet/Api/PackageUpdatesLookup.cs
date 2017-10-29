@@ -11,7 +11,7 @@ namespace NuKeeper.NuGet.Api
         private readonly IBulkPackageLookup _bulkPackageLookup;
         private readonly VersionChange _allowedChange;
 
-        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, UserPreferences settings)
+        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, UserSettings settings)
         {
             _bulkPackageLookup = bulkPackageLookup;
             _allowedChange = settings.AllowedChange;

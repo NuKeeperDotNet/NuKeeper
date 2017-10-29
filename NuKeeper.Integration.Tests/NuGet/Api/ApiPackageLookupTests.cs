@@ -55,9 +55,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(package.Match.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
         }
 
-        private static UserPreferences BuildDefaultSettings()
+        private static UserSettings BuildDefaultSettings()
         {
-            return new UserPreferences
+            return new UserSettings
             {
                 NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
             };

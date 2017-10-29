@@ -1,11 +1,11 @@
 ﻿namespace NuKeeper.Configuration
 {
-    public class Settings
+    public class SettingsContainer
     {
         public ModalSettings ModalSettings { get; set; }
 
         public GithubAuthSettings GithubAuthSettings { get; set; }
 
-        public UserPreferences UserPreferences { get; set; }
+        public UserSettings UserSettings { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Configuration
 {
-    public class UserPreferences
+    public class UserSettings
     {
         public string[] NuGetSources { get; set; }
 

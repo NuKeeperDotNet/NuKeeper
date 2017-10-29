@@ -15,7 +15,7 @@ namespace NuKeeper.Engine
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
 
-        public PackageUpdateSelection(UserPreferences settings, INuKeeperLogger logger)
+        public PackageUpdateSelection(UserSettings settings, INuKeeperLogger logger)
         {
             _logger = logger;
             _maxPullRequests = settings.MaxPullRequestsPerRepository;

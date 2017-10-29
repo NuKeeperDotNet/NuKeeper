@@ -18,16 +18,16 @@ namespace NuKeeper.Tests
             Assert.That(engine, Is.Not.Null);
         }
 
-        private static Settings MakeValidSettings()
+        private static SettingsContainer MakeValidSettings()
         {
-            var settings = new Settings();
+            var settings = new SettingsContainer();
             settings.ModalSettings = new ModalSettings
                 {
                     Mode = GithubMode.Organisation,
                     OrganisationName = "test1"
                 };
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
-            settings.UserPreferences = new UserPreferences();
+            settings.UserSettings = new UserSettings();
             return settings;
         }
     }

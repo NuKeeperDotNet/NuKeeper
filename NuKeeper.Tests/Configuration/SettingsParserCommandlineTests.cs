@@ -38,10 +38,10 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.UserPreferences.MaxPullRequestsPerRepository, Is.EqualTo(3));
-            Assert.That(settings.UserPreferences.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
-            Assert.That(settings.UserPreferences.NuGetSources, Is.EqualTo(new [] {"https://api.nuget.org/v3/index.json"}));
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new [] {"https://api.nuget.org/v3/index.json"}));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.UserPreferences.LogLevel, Is.EqualTo(LogLevel.Verbose));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Verbose));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.UserPreferences.MaxPullRequestsPerRepository, Is.EqualTo(42));
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(42));
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.UserPreferences.AllowedChange, Is.EqualTo(VersionChange.Patch));
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
         [Test]
@@ -219,10 +219,10 @@ namespace NuKeeper.Tests.Configuration
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings.UserPreferences.MaxPullRequestsPerRepository, Is.EqualTo(3));
-            Assert.That(settings.UserPreferences.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
-            Assert.That(settings.UserPreferences.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 
 

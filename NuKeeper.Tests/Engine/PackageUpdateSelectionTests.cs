@@ -85,7 +85,7 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new UserPreferences
+            var settings = new UserSettings
             {
                 MaxPullRequestsPerRepository = 10,
                 PackageIncludes = new Regex("bar")
@@ -108,7 +108,7 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new UserPreferences
+            var settings = new UserSettings
             {
                 MaxPullRequestsPerRepository = 10,
                 PackageExcludes = new Regex("bar")
@@ -132,7 +132,7 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var settings = new UserPreferences 
+            var settings = new UserSettings 
             {
                 MaxPullRequestsPerRepository = 10,
                 PackageExcludes = new Regex("bar"),
@@ -255,7 +255,7 @@ namespace NuKeeper.Tests.Engine
         private static IPackageUpdateSelection OneTargetSelection()
         {
             const int maxPullRequests = 1;
-            var settings = new UserPreferences
+            var settings = new UserSettings
             {
                 MaxPullRequestsPerRepository = maxPullRequests
             };

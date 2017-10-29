@@ -14,13 +14,13 @@ namespace NuKeeper
 {
     public static class ContainerRegistration
     {
-        public static Container Init(Settings settings)
+        public static Container Init(SettingsContainer settings)
         {
             var container = new Container();
 
             container.Register(() => settings.ModalSettings, Lifestyle.Singleton);
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
-            container.Register(() => settings.UserPreferences, Lifestyle.Singleton);
+            container.Register(() => settings.UserSettings, Lifestyle.Singleton);
 
             container.Register<INuKeeperLogger, ConsoleLogger>();
             container.Register<ILogger, NuGetLogger>();

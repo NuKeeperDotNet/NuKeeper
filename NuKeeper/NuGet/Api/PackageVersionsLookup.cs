@@ -16,7 +16,7 @@ namespace NuKeeper.NuGet.Api
         private readonly ILogger _logger;
         private readonly string[] _sources;
 
-        public PackageVersionsLookup(ILogger logger, UserPreferences settings)
+        public PackageVersionsLookup(ILogger logger, UserSettings settings)
         {
             _logger = logger;
             _sources = settings.NuGetSources;

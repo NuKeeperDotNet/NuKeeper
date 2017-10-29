@@ -15,12 +15,12 @@ namespace NuKeeper.Engine
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
-        private readonly UserPreferences _settings;
+        private readonly UserSettings _settings;
 
         public PackageUpdater(
             IGithub github,
             INuKeeperLogger logger,
-            UserPreferences settings)
+            UserSettings settings)
         {
             _github = github;
             _logger = logger;

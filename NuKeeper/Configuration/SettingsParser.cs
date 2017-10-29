@@ -9,7 +9,7 @@ namespace NuKeeper.Configuration
 {
     public static class SettingsParser
     {
-        public static Settings ReadSettings(IEnumerable<string> args)
+        public static SettingsContainer ReadSettings(IEnumerable<string> args)
         {
             var rawSettings = ParseToRaw(args);
             if (rawSettings == null)
@@ -36,7 +36,7 @@ namespace NuKeeper.Configuration
             }
         }
 
-        public static Settings ParseToSettings(RawConfiguration settings)
+        public static SettingsContainer ParseToSettings(RawConfiguration settings)
         {
             var mode = ParseMode(settings.Mode);
 
@@ -83,7 +83,7 @@ namespace NuKeeper.Configuration
                 EnsureTrailingSlash(settings.GithubApiEndpoint),
                 settings.GithubToken);
 
-            var userPrefs = new UserPreferences
+            var userPrefs = new UserSettings
             {
                 AllowedChange = settings.AllowedChange,
                 LogLevel = settings.LogLevel,
@@ -93,11 +93,11 @@ namespace NuKeeper.Configuration
                 PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude))
             };
 
-            return new Settings
+            return new SettingsContainer
             {
                 ModalSettings = modalSettings,
                 GithubAuthSettings = authSettings,
-                UserPreferences = userPrefs
+                UserSettings = userPrefs
             };
         }
 
