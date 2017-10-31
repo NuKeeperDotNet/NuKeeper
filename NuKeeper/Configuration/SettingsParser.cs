@@ -38,45 +38,10 @@ namespace NuKeeper.Configuration
 
         public static SettingsContainer ParseToSettings(RawConfiguration settings)
         {
-            var mode = ParseMode(settings.Mode);
-
-            if (!mode.HasValue)
+            var modalSettings = ReadModalSettings(settings);
+            if (modalSettings == null)
             {
-                Console.WriteLine($"Mode '{settings.Mode}' not supported");
                 return null;
-            }
-
-            ModalSettings modalSettings;
-            switch (mode.Value)
-            {
-                case GithubMode.Repository:
-                    if (settings.GithubRepositoryUri == null)
-                    {
-                        Console.WriteLine("Missing required repository uri");
-                        return null;
-                    }
-                    modalSettings = new ModalSettings
-                    {
-                        Mode = GithubMode.Repository,
-                        Repository = ReadRepositorySettings(settings)
-                    }; 
-                    break;
-
-                case GithubMode.Organisation:
-                    if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
-                    {
-                        Console.WriteLine("Missing required organisation name");
-                        return null;
-                    }
-                    modalSettings = new ModalSettings
-                    {
-                        Mode = GithubMode.Organisation,
-                        OrganisationName = settings.GithubOrganisationName
-                    };
-                    break;
-
-                default:
-                    throw new Exception($"Mode parse went wrong: {settings.Mode}");
             }
 
             var authSettings = new GithubAuthSettings(
@@ -99,6 +64,48 @@ namespace NuKeeper.Configuration
                 GithubAuthSettings = authSettings,
                 UserSettings = userPrefs
             };
+        }
+
+        private static ModalSettings ReadModalSettings(RawConfiguration settings)
+        {
+            var mode = ParseMode(settings.Mode);
+
+            if (!mode.HasValue)
+            {
+                Console.WriteLine($"Mode '{settings.Mode}' not supported");
+                return null;
+            }
+
+            switch (mode.Value)
+            {
+                case GithubMode.Repository:
+                    if (settings.GithubRepositoryUri == null)
+                    {
+                        Console.WriteLine("Missing required repository uri");
+                        return null;
+                    }
+                    return new ModalSettings
+                    {
+                        Mode = GithubMode.Repository,
+                        Repository = ReadRepositorySettings(settings)
+                    };
+
+                case GithubMode.Organisation:
+                    if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
+                    {
+                        Console.WriteLine("Missing required organisation name");
+                        return null;
+                    }
+                    return new ModalSettings
+                    {
+                        Mode = GithubMode.Organisation,
+                        OrganisationName = settings.GithubOrganisationName
+                    };
+
+                default:
+                    Console.WriteLine($"Mode parse went wrong: {settings.Mode}");
+                    return null;
+            }
         }
 
         private static GithubMode? ParseMode(string mode)
