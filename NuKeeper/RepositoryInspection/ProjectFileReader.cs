@@ -19,13 +19,15 @@ namespace NuKeeper.RepositoryInspection
         public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
             var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFile);
-            var fileContents = File.ReadAllText(packagePath.FullName);
-            return Read(fileContents, packagePath);
+            using (var fileContents = File.OpenRead(packagePath.FullName))
+            {
+                return Read(fileContents, packagePath);
+            }
         }
 
-        public IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
+        public IEnumerable<PackageInProject> Read(Stream fileContents, PackagePath path)
         {
-            var xml = XDocument.Parse(fileContents);
+            var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
             var project = xml.Element(ns + "Project");
 
