@@ -9,6 +9,7 @@ namespace NuKeeper.RepositoryInspection
 {
     public class ProjectFileReader
     {
+        private const string VisualStudioLegacyProjectNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private readonly INuKeeperLogger _logger;
 
         public ProjectFileReader(INuKeeperLogger logger)
@@ -18,17 +19,19 @@ namespace NuKeeper.RepositoryInspection
 
         public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
-            var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFile);
-            using (var fileContents = File.OpenRead(packagePath.FullName))
+            using (var fileContents = File.OpenRead(Path.Combine(baseDirectory, relativePath)))
             {
-                return Read(fileContents, packagePath);
+                return Read(fileContents, baseDirectory, relativePath);
             }
         }
 
-        public IEnumerable<PackageInProject> Read(Stream fileContents, PackagePath path)
+        public IEnumerable<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
+
+            var path = CreatePackagePath(ns, baseDirectory, relativePath);
+
             var project = xml.Element(ns + "Project");
 
             if (project == null)
@@ -43,6 +46,13 @@ namespace NuKeeper.RepositoryInspection
                 .Select(el => XmlToPackage(el, path))
                 .Where(el => el != null)
                 .ToList();
+        }
+
+        private static PackagePath CreatePackagePath(XNamespace xmlNamespace, string baseDirectory, string relativePath)
+        {
+            return xmlNamespace.NamespaceName == VisualStudioLegacyProjectNamespace
+                ? new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFileOldStyle)
+                : new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFile);
         }
 
         private PackageInProject XmlToPackage(XElement el, PackagePath path)

@@ -79,7 +79,7 @@ namespace NuKeeper.Engine
 
         private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
         {
-            if (packageReferenceType == PackageReferenceType.PackagesConfig)
+            if (packageReferenceType != PackageReferenceType.ProjectFile)
             {
                 return new NuGetFileRestoreCommand(_logger, _settings);
             }

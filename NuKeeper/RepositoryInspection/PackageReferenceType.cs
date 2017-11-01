@@ -3,6 +3,7 @@
     public enum PackageReferenceType
     {
         PackagesConfig,
-        ProjectFile
+        ProjectFile,
+        ProjectFileOldStyle
     }
 }

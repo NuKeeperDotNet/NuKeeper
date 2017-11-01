@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NuKeeper.Files;
 
@@ -60,7 +61,10 @@ namespace NuKeeper.RepositoryInspection
 
         private string GetRelativeFileName(string rootDir, string fileName)
         {
-            return fileName.Replace(rootDir, string.Empty);
+            var rootDirWithSeparator = rootDir.EndsWith(Path.DirectorySeparatorChar.ToString())
+                ? rootDir
+                : rootDir + Path.DirectorySeparatorChar;
+            return fileName.Replace(rootDirWithSeparator, string.Empty);
         }
     }
 }
