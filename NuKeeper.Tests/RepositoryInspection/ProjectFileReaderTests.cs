@@ -31,6 +31,17 @@ namespace NuKeeper.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
+        private const string Vs2017ProjectFileFullFrameworkWithPackages =
+            @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"" ToolsVersion=""14.0"" DefaultTargets=""Build"">
+  <ItemGroup>
+    <PackageReference Include=""StyleCop.Analyzers"">
+      <Version>1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+</Project>
+";
+
         [Test]
         public void NoProjectCanBeRead()
         {
@@ -126,6 +137,19 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3")));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
+        }
+
+        [Test]
+        public void SinglePackageFullFrameworkProjectIsCorectlyRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(Vs2017ProjectFileFullFrameworkWithPackages, TempPath());
+
+            var package = packages.Single();
+
+            Assert.That(package.Id, Is.EqualTo("StyleCop.Analyzers"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.0.2")));
             Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
 

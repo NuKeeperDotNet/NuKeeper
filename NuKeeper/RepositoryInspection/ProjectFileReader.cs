@@ -25,15 +25,16 @@ namespace NuKeeper.RepositoryInspection
         public IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
         {
             var xml = XDocument.Parse(fileContents);
-            var project = xml.Element("Project");
+            var ns = xml.Root.GetDefaultNamespace();
+            var project = xml.Element(ns + "Project");
 
             if (project == null)
             {
                 return Enumerable.Empty<PackageInProject>();
             }
 
-            var itemGroups = project.Elements("ItemGroup");
-            var packageRefs = itemGroups.SelectMany(ig => ig.Elements("PackageReference"));
+            var itemGroups = project.Elements(ns + "ItemGroup");
+            var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
 
             return packageRefs
                 .Select(el => XmlToPackage(el, path))
@@ -46,7 +47,7 @@ namespace NuKeeper.RepositoryInspection
             try
             {
                 var id = el.Attribute("Include")?.Value;
-                var version = el.Attribute("Version")?.Value;
+                var version = el.Attribute("Version")?.Value ?? el.Value;
 
                 return new PackageInProject(id, version, path);
             }
