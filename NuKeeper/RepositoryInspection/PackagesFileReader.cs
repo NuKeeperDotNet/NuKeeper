@@ -16,10 +16,11 @@ namespace NuKeeper.RepositoryInspection
             _logger = logger;
         }
 
-        public IEnumerable<PackageInProject> ReadFile(PackagePath path)
+        public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
-            var fileContents = File.ReadAllText(path.FullName);
-            return Read(fileContents, path);
+            var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.PackagesConfig);
+            var fileContents = File.ReadAllText(packagePath.FullName);
+            return Read(fileContents, packagePath);
         }
 
         public IEnumerable<PackageInProject> Read(string fileContents, PackagePath path)
