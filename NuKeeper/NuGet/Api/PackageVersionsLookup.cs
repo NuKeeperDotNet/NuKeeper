@@ -22,7 +22,7 @@ namespace NuKeeper.NuGet.Api
             _sources = settings.NuGetSources;
         }
 
-        public async Task<IEnumerable<PackageSearchMedatadataWithSource>> Lookup(string packageName)
+        public async Task<IEnumerable<PackageSearchMedatadata>> Lookup(string packageName)
         {
             var results = await Task.WhenAll(_sources.Select(source => RunFinderForSource(packageName, source)));
             return results
@@ -30,12 +30,12 @@ namespace NuKeeper.NuGet.Api
                 .Where(p => p?.Identity?.Version != null);
         }
 
-        private async Task<IEnumerable<PackageSearchMedatadataWithSource>> RunFinderForSource(string packageName, string source)
+        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, string source)
         {
             var sourceRepository = BuildSourceRepository(source);
             var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
             var metadatas = await FindPackage(metadataResource, packageName);
-            return metadatas.Select(m => new PackageSearchMedatadataWithSource(source, m));
+            return metadatas.Select(m => new PackageSearchMedatadata(m.Identity, source));
         }
 
         private static SourceRepository BuildSourceRepository(string source)

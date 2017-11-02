@@ -1,6 +1,5 @@
 ﻿using NSubstitute;
 using NuGet.Packaging.Core;
-using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
@@ -34,7 +33,9 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var fooMetadata = new PackageSearchMedatadataWithSource("foo", MetadataWithVersion("foo", new NuGetVersion(2, 3, 4)));
+            var fooMetadata = new PackageSearchMedatadata(
+                new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
+                "someSource");
 
             var data = new PackageLookupResult
             {
@@ -58,7 +59,9 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var fooMetadata = new PackageSearchMedatadataWithSource("foo", MetadataWithVersion("foo", new NuGetVersion(2, 3, 4)));
+            var fooMetadata = new PackageSearchMedatadata(
+                new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
+                "someSource");
 
             var data = new PackageLookupResult
             {
@@ -83,8 +86,12 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var fooMajor = new PackageSearchMedatadataWithSource("foo", MetadataWithVersion("foo", new NuGetVersion(3, 0, 0)));
-            var fooMinor = new PackageSearchMedatadataWithSource("foo", MetadataWithVersion("foo", new NuGetVersion(2, 3, 4)));
+            var fooMajor = new PackageSearchMedatadata(
+                new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
+                "someSource");
+            var fooMinor = new PackageSearchMedatadata(
+                new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
+                "someSource");
 
             var data = new PackageLookupResult
             {
@@ -108,7 +115,9 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var fooMajor = new PackageSearchMedatadataWithSource("foo", MetadataWithVersion("foo", new NuGetVersion(3, 0, 0)));
+            var fooMajor = new PackageSearchMedatadata(
+                new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
+                "someSource");
 
             var data = new PackageLookupResult
             {
@@ -124,15 +133,6 @@ namespace NuKeeper.Tests.NuGet.Api
             logger.DidNotReceive().Error(Arg.Any<string>());
             logger.DidNotReceive().Terse(Arg.Any<string>());
             logger.DidNotReceive().Verbose(Arg.Any<string>());
-        }
-
-
-        private static IPackageSearchMetadata MetadataWithVersion(string id, NuGetVersion version)
-        {
-            var metadata = Substitute.For<IPackageSearchMetadata>();
-            var identity = new PackageIdentity(id, version);
-            metadata.Identity.Returns(identity);
-            return metadata;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace NuKeeper.NuGet.Api
             _lookupReporter = lookupReporter;
         }
 
-        public async Task<Dictionary<string, PackageSearchMedatadataWithSource>> FindVersionUpdates(
+        public async Task<Dictionary<string, PackageSearchMedatadata>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages, VersionChange allowedChange)
         {
             var latestOfEach = packages
@@ -31,7 +31,7 @@ namespace NuKeeper.NuGet.Api
 
             await Task.WhenAll(lookupTasks);
 
-            var result = new Dictionary<string, PackageSearchMedatadataWithSource>();
+            var result = new Dictionary<string, PackageSearchMedatadata>();
 
             foreach (var lookupTask in lookupTasks)
             {
@@ -42,7 +42,7 @@ namespace NuKeeper.NuGet.Api
             return result;
         }
 
-        private void ProcessLookupResult(PackageLookupResult lookupResult, Dictionary<string, PackageSearchMedatadataWithSource> result)
+        private void ProcessLookupResult(PackageLookupResult lookupResult, Dictionary<string, PackageSearchMedatadata> result)
         {
             var matchingVersion = lookupResult.Match;
 

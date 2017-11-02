@@ -15,7 +15,7 @@ namespace NuKeeper.Tests.NuGet.Api
         [Test]
         public async Task WhenNoPackagesAreFound()
         {
-            var allVersionsLookup = MockVersionLookup(new List<PackageSearchMedatadataWithSource>());
+            var allVersionsLookup = MockVersionLookup(new List<PackageSearchMedatadata>());
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
             var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"), VersionChange.Major);
@@ -28,9 +28,9 @@ namespace NuKeeper.Tests.NuGet.Api
         [Test]
         public async Task WhenThereIsOnlyOneVersion()
         {
-            var resultPackages = new List<PackageSearchMedatadataWithSource>
+            var resultPackages = new List<PackageSearchMedatadata>
             {
-                PackageVersionTestData.BuildMetadata("TestPackage", 2, 3, 4)
+                PackageVersionTestData.PackageVersion(2, 3, 4)
             };
 
             var allVersionsLookup = MockVersionLookup(resultPackages);
@@ -109,7 +109,7 @@ namespace NuKeeper.Tests.NuGet.Api
             Assert.That(updates.Highest.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
         }
 
-        private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadataWithSource> actualResults)
+        private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadata> actualResults)
         {
             var allVersions = Substitute.For<IPackageVersionsLookup>();
             allVersions.Lookup(Arg.Any<string>())
@@ -131,14 +131,14 @@ namespace NuKeeper.Tests.NuGet.Api
             Assert.That(packages.Highest.Identity.Version, Is.GreaterThanOrEqualTo(packages.Match.Identity));
         }
 
-        private static void AssertPackageIdentityIs(PackageSearchMedatadataWithSource package, string id)
+        private static void AssertPackageIdentityIs(PackageSearchMedatadata package, string id)
         {
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
             Assert.That(package.Identity.Id, Is.EqualTo(id));
         }
 
-        private static NuGetVersion HighestVersion(IEnumerable<PackageSearchMedatadataWithSource> packages)
+        private static NuGetVersion HighestVersion(IEnumerable<PackageSearchMedatadata> packages)
         {
             return packages
                 .Select(p => p.Identity.Version)
