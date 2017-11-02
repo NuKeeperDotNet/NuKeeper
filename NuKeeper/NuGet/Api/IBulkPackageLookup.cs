@@ -6,7 +6,7 @@ namespace NuKeeper.NuGet.Api
 {
     public interface IBulkPackageLookup
     {
-        Task<Dictionary<string, PackageSearchMedatadata>> FindVersionUpdates(
+        Task<Dictionary<string, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
             VersionChange allowedChange);
     }

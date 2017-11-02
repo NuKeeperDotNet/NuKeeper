@@ -30,7 +30,7 @@ namespace NuKeeper.NuGet.Api
             foreach (var packageId in latestVersions.Keys)
             {
                 var latestPackage = latestVersions[packageId];
-                var identity = latestPackage.Identity;
+                var identity = latestPackage.Match.Identity;
 
                 var updatesForThisPackage = packages
                     .Where(p => p.Id == packageId && p.Version < identity.Version)
@@ -38,7 +38,10 @@ namespace NuKeeper.NuGet.Api
 
                 if (updatesForThisPackage.Count > 0)
                 {
-                    var updateSet = new PackageUpdateSet(identity, latestPackage.Source, updatesForThisPackage);
+                    var updateSet = new PackageUpdateSet(
+                        identity, 
+                        latestPackage.Match.Source, 
+                        updatesForThisPackage);
                     results.Add(updateSet);
                 }
             }
