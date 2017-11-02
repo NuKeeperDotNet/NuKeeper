@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Text;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
@@ -29,7 +31,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 </packages>";
 
             var reader = MakeReader();
-            var packages = reader.Read(emptyContents, TempPath());
+            var packages = reader.Read(StreamFromString(emptyContents), TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -39,7 +41,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void SinglePackageShouldBeRead()
         {
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
+            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -49,7 +51,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void SinglePackageShouldBePopulated()
         {
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
+            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);
@@ -59,7 +61,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void SinglePackageShouldBeCorrect()
         {
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithSinglePackage, TempPath());
+            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
 
             var package = packages.FirstOrDefault();
 
@@ -72,7 +74,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void TwoPackagesShouldBePopulated()
         {
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithTwoPackages, TempPath())
+            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -86,7 +88,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void TwoPackagesShouldBeRead()
         {
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithTwoPackages, TempPath())
+            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(2));
@@ -104,7 +106,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var path = TempPath();
 
             var reader = MakeReader();
-            var packages = reader.Read(PackagesFileWithTwoPackages, path);
+            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), path);
 
             foreach (var package in packages)
             {
@@ -120,7 +122,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion");
 
             var reader = MakeReader();
-            var packages = reader.Read(badVersion, TempPath())
+            var packages = reader.Read(StreamFromString(badVersion), TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(1));
@@ -136,6 +138,11 @@ namespace NuKeeper.Tests.RepositoryInspection
         private PackagesFileReader MakeReader()
         {
             return new PackagesFileReader(new NullNuKeeperLogger());
+        }
+
+        private Stream StreamFromString(string contents)
+        {
+            return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }
     }
 }

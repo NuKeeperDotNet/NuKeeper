@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Text;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
@@ -31,6 +33,20 @@ namespace NuKeeper.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
+        private const string Vs2017ProjectFileFullFrameworkWithPackages =
+            @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"" ToolsVersion=""14.0"" DefaultTargets=""Build"">
+  <ItemGroup>
+    <PackageReference Include=""StyleCop.Analyzers"">
+      <Version>1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+</Project>
+";
+
+        private const string SampleDirectory = "c:\\temp\\somewhere";
+        private const string SampleFile = "src\\packages.config";
+
         [Test]
         public void NoProjectCanBeRead()
         {
@@ -40,7 +56,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 </foo>";
 
             var reader = MakeReader();
-            var packages = reader.Read(NoProject, TempPath());
+            var packages = reader.Read(StreamFromString(NoProject), SampleDirectory, SampleFile);
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -55,7 +71,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 </Project>";
 
             var reader = MakeReader();
-            var packages = reader.Read(NoProject, TempPath());
+            var packages = reader.Read(StreamFromString(NoProject), SampleDirectory, SampleFile);
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -65,7 +81,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         public void ProjectWithoutPackageListCanBeRead()
         {
             var reader = MakeReader();
-            var packages = reader.Read(Vs2017ProjectFileTemplateWithoutPackages, TempPath());
+            var packages = reader.Read(StreamFromString(Vs2017ProjectFileTemplateWithoutPackages), SampleDirectory, SampleFile);
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -77,7 +93,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", "");
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath());
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile);
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Empty);
@@ -91,7 +107,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath());
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile);
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
@@ -105,7 +121,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath());
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile);
 
             var package = packages.FirstOrDefault();
 
@@ -120,13 +136,26 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath());
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile);
 
             var package = packages.FirstOrDefault();
 
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3")));
             Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
+        }
+
+        [Test]
+        public void SinglePackageFullFrameworkProjectIsCorectlyRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(Vs2017ProjectFileFullFrameworkWithPackages), SampleDirectory, SampleFile);
+
+            var package = packages.Single();
+
+            Assert.That(package.Id, Is.EqualTo("StyleCop.Analyzers"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.0.2")));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFileOldStyle));
         }
 
         [Test]
@@ -139,7 +168,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath())
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile)
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -158,7 +187,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath())
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile)
                 .ToList();
 
             Assert.That(packages[0].Id, Is.EqualTo("foo"));
@@ -171,17 +200,16 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void ResultIsReiterable()
         {
-            var path = TempPath();
-
             var reader = MakeReader();
-            var packages = reader.Read(Vs2017ProjectFileTemplateWithPackages, path);
+            var packages = reader.Read(StreamFromString(Vs2017ProjectFileTemplateWithPackages), SampleDirectory, SampleFile);
 
             foreach (var package in packages)
             {
                 Assert.That(package, Is.Not.Null);
             }
 
-            Assert.That(packages.Select(p=>p.Path), Is.All.EqualTo(path));
+            Assert.That(packages.Select(p => p.Path),
+                Is.All.EqualTo(new PackagePath(SampleDirectory, SampleFile, PackageReferenceType.ProjectFile)));
         }
 
         [Test]
@@ -194,22 +222,21 @@ namespace NuKeeper.Tests.RepositoryInspection
             var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
 
             var reader = MakeReader();
-            var packages = reader.Read(projectFile, TempPath())
+            var packages = reader.Read(StreamFromString(projectFile), SampleDirectory, SampleFile)
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(1));
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private PackagePath TempPath()
-        {
-            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
-                PackageReferenceType.ProjectFile);
-        }
-
         private ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(new NullNuKeeperLogger());
+        }
+
+        private Stream StreamFromString(string contents)
+        {
+            return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }
     }
 }

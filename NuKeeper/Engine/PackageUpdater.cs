@@ -79,7 +79,7 @@ namespace NuKeeper.Engine
 
         private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
         {
-            if (packageReferenceType == PackageReferenceType.PackagesConfig)
+            if (packageReferenceType != PackageReferenceType.ProjectFile)
             {
                 return new NuGetFileRestoreCommand(_logger, _settings);
             }
@@ -89,7 +89,7 @@ namespace NuKeeper.Engine
 
         private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
         {
-            if (packageReferenceType == PackageReferenceType.ProjectFile)
+            if (packageReferenceType != PackageReferenceType.PackagesConfig)
             {
                 return new DotNetUpdatePackageCommand(_logger, _settings);
             }

@@ -31,6 +31,7 @@ namespace NuKeeper.NuGet.Process
             var sources = GetSourcesCommandLine(_sources);
             var updateCommand = $"cd {dirName}"
                 + $" & dotnet restore {sources}"
+                + $" & dotnet remove package {currentPackage.Id}"
                 + $" & dotnet add package {currentPackage.Id} -v {newVersion} -s {packageSource}";
             _logger.Verbose(updateCommand);
 

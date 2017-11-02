@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NuKeeper.Files;
 
@@ -18,8 +19,7 @@ namespace NuKeeper.RepositoryInspection
         public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
         {
 
-            return 
-                PackageFiles(workingFolder)
+            return PackageFiles(workingFolder)
                 .Concat(ProjectFiles(workingFolder))
                 .ToList();
         }
@@ -33,8 +33,8 @@ namespace NuKeeper.RepositoryInspection
 
             foreach (var packagesFile in packagesFiles)
             {
-                var path = MakePackagePath(workingFolder.FullPath, packagesFile.FullName, PackageReferenceType.PackagesConfig);
-                var packages = _packagesFileReader.ReadFile(path);
+                var packages = _packagesFileReader.ReadFile(workingFolder.FullPath,
+                    GetRelativeFileName(workingFolder.FullPath, packagesFile.FullName));
                 results.AddRange(packages);
             }
 
@@ -51,19 +51,20 @@ namespace NuKeeper.RepositoryInspection
 
             foreach (var projectFile in projectFiles)
             {
-                var path = MakePackagePath(workingFolder.FullPath, projectFile.FullName, PackageReferenceType.ProjectFile);
-                var packages = _projectFileReader.ReadFile(path);
+                var packages = _projectFileReader.ReadFile(workingFolder.FullPath,
+                    GetRelativeFileName(workingFolder.FullPath, projectFile.FullName));
                 results.AddRange(packages);
             }
 
             return results;
         }
 
-        private PackagePath MakePackagePath(string rootDir, string fileName, 
-            PackageReferenceType packageReferenceType)
+        private string GetRelativeFileName(string rootDir, string fileName)
         {
-            var relativeFileName = fileName.Replace(rootDir, string.Empty);
-            return new PackagePath(rootDir, relativeFileName, packageReferenceType);
+            var rootDirWithSeparator = rootDir.EndsWith(Path.DirectorySeparatorChar.ToString())
+                ? rootDir
+                : rootDir + Path.DirectorySeparatorChar;
+            return fileName.Replace(rootDirWithSeparator, string.Empty);
         }
     }
 }
