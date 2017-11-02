@@ -4,7 +4,7 @@
     {
         public VersionChange AllowedChange { get; set; }
 
-        public PackageSearchMedatadataWithSource Highest { get; set; }
-        public PackageSearchMedatadataWithSource Match { get; set; }
+        public PackageSearchMedatadata Highest { get; set; }
+        public PackageSearchMedatadata Match { get; set; }
     }
 }

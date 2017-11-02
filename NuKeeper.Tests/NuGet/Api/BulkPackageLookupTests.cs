@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
-using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
@@ -140,18 +139,10 @@ namespace NuKeeper.Tests.NuGet.Api
             Assert.That(results.ContainsKey("bar"), Is.False);
         }
 
-        private static IPackageSearchMetadata MetadataWithVersion(string id, NuGetVersion version)
-        {
-            var metadata = Substitute.For<IPackageSearchMetadata>();
-            var identity = new PackageIdentity(id, version);
-            metadata.Identity.Returns(identity);
-            return metadata;
-        }
-
         private static void ApiHasNewVersionForPackage(IApiPackageLookup lookup, string packageName)
         {
-            var responseMetaData = new PackageSearchMedatadataWithSource(
-                "test", MetadataWithVersion(packageName, new NuGetVersion(2, 3, 4)));
+            var responseMetaData = new PackageSearchMedatadata(
+                new PackageIdentity(packageName, new NuGetVersion(2, 3, 4)), "test");
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
                 .Returns(new PackageLookupResult
@@ -167,6 +158,5 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = new NullNuKeeperLogger();
             return new BulkPackageLookup(apiLookup, new PackageLookupResultReporter(logger));
         }
-
     }
 }
