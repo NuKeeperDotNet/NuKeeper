@@ -2,6 +2,7 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
+using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -206,7 +207,11 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
-            return new PackageUpdateSet(NewPackageFooBar123(), string.Empty, packages);
+            return new PackageUpdateSet(NewPackageFooBar123(), 
+                "someSource", 
+                new NuGetVersion("2.3.4"),
+                VersionChange.Minor,
+                packages);
         }
 
         private static PackageIdentity NewPackageFooBar123()

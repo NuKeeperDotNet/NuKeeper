@@ -39,8 +39,10 @@ namespace NuKeeper.NuGet.Api
                 if (updatesForThisPackage.Count > 0)
                 {
                     var updateSet = new PackageUpdateSet(
-                        identity, 
-                        latestPackage.Match.Source, 
+                        identity,
+                        latestPackage.Match.Source,
+                        latestPackage.Highest.Identity.Version,
+                        latestPackage.AllowedChange,
                         updatesForThisPackage);
                     results.Add(updateSet);
                 }

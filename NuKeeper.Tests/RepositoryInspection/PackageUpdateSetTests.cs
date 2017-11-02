@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -11,6 +12,8 @@ namespace NuKeeper.Tests.RepositoryInspection
     [TestFixture]
     public class PackageUpdateSetTests
     {
+        private const string ASource = "somePackageSource";
+
         [Test]
         public void NullNewPackageId_IsNotAllowed()
         {
@@ -19,14 +22,32 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(null, string.Empty, packages));
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
+                null, ASource, VersionFour(), VersionChange.Major, packages));
+
             Assert.That(exception.ParamName, Is.EqualTo("newPackage"));
+        }
+
+        [Test]
+        public void NullMaxVersion_IsNotAllowed()
+        {
+            var packages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.0", PathToProjectOne())
+            };
+
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
+                LatestVersionOfPackageFoo(), ASource, null, VersionChange.Major, packages));
+
+            Assert.That(exception.ParamName, Is.EqualTo("highest"));
         }
 
         [Test]
         public void NullPackages_IsNotAllowed()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(LatestVersionOfPackageFoo(), string.Empty, null));
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
+                LatestVersionOfPackageFoo(), ASource, VersionFour(), VersionChange.Major, null));
+
             Assert.That(exception.ParamName, Is.EqualTo("currentPackages"));
         }
 
@@ -38,15 +59,30 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(LatestVersionOfPackageFoo(), null, packages));
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
+                LatestVersionOfPackageFoo(), null, VersionFour(), VersionChange.Major, packages));
+            Assert.That(exception.ParamName, Is.EqualTo("packageSource"));
+        }
+
+        [Test]
+        public void EmptySource_IsNotAllowed()
+        {
+            var packages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.0", PathToProjectOne())
+            };
+
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
+                LatestVersionOfPackageFoo(), string.Empty, VersionFour(), VersionChange.Major, packages));
             Assert.That(exception.ParamName, Is.EqualTo("packageSource"));
         }
 
         [Test]
         public void EmptyPackages_IsNotAllowed()
         {
-            var exception = Assert.Throws<ArgumentException>(
-                () => new PackageUpdateSet(LatestVersionOfPackageFoo(), string.Empty, Enumerable.Empty<PackageInProject>()));
+            var exception = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
+                LatestVersionOfPackageFoo(), ASource, VersionFour(), VersionChange.Major,
+                Enumerable.Empty<PackageInProject>()));
             Assert.That(exception.ParamName, Is.EqualTo("currentPackages"));
         }
 
@@ -60,12 +96,15 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
             Assert.That(updates.PackageId, Is.EqualTo("foo"));
             Assert.That(updates.NewVersion, Is.EqualTo(newPackage.Version));
+            Assert.That(updates.PackageSource, Is.EqualTo(ASource));
+            Assert.That(updates.Highest, Is.EqualTo(VersionFour()));
+            Assert.That(updates.AllowedChange, Is.EqualTo(VersionChange.Major));
         }
 
         [Test]
@@ -78,7 +117,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates.CurrentPackages, Is.Not.Null);
             Assert.That(updates.CurrentPackages.Count, Is.EqualTo(1));
@@ -96,7 +135,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
@@ -116,7 +155,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates.CurrentPackages, Is.Not.Null);
             var currents = updates.CurrentPackages.ToList();
@@ -139,7 +178,8 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
-            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackageFoo, string.Empty, currentPackageBar));
+            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
+                newPackageFoo, ASource, VersionFour(), VersionChange.Major, currentPackageBar));
         }
 
         [Test]
@@ -154,7 +194,8 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("fish", "1.0.0", PathToProjectOne())
             };
 
-            var ex = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackageFoo, string.Empty, currentPackages));
+            var ex = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
+                newPackageFoo, ASource, VersionFour(), VersionChange.Major, currentPackages));
 
             Assert.That(ex.Message, Is.EqualTo("Updates must all be for package 'foo', got 'bar, fish'"));
         }
@@ -170,7 +211,8 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
-            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(newPackageFoo, string.Empty, currentPackagesFooAndBar));
+            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
+                newPackageFoo, ASource, VersionFour(), VersionChange.Major, currentPackagesFooAndBar));
         }
 
         [Test]
@@ -183,7 +225,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
         }
@@ -199,7 +241,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
         }
@@ -215,7 +257,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            var updates = new PackageUpdateSet(newPackage, ASource, VersionFour(), VersionChange.Major, currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(2));
         }
@@ -223,6 +265,11 @@ namespace NuKeeper.Tests.RepositoryInspection
         private PackageIdentity LatestVersionOfPackageFoo()
         {
             return new PackageIdentity("foo", new NuGetVersion("1.2.3"));
+        }
+
+        private NuGetVersion VersionFour()
+        {
+            return new NuGetVersion("4.0.0");
         }
 
         private PackagePath PathToProjectOne()

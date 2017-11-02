@@ -3,26 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        public PackageUpdateSet(PackageIdentity newPackage, string packageSource, IEnumerable<PackageInProject> currentPackages)
+        public PackageUpdateSet(
+            PackageIdentity newPackage,
+            string packageSource,
+            NuGetVersion highest,
+            VersionChange allowedChange,
+            IEnumerable<PackageInProject> currentPackages)
         {
             if (newPackage == null)
             {
                 throw new ArgumentNullException(nameof(newPackage));
             }
 
+            if (string.IsNullOrWhiteSpace(packageSource))
+            {
+                throw new ArgumentNullException(nameof(packageSource));
+            }
+
+            if (highest == null)
+            {
+                throw new ArgumentNullException(nameof(highest));
+            }
+
             if (currentPackages == null)
             {
                 throw new ArgumentNullException(nameof(currentPackages));
-            }
-
-            if (packageSource == null)
-            {
-                throw new ArgumentNullException(nameof(packageSource));
             }
 
             var currentPackagesList = currentPackages.ToList();
@@ -45,6 +56,8 @@ namespace NuKeeper.RepositoryInspection
             NewPackage = newPackage;
             CurrentPackages = currentPackagesList;
             PackageSource = packageSource;
+            Highest = highest;
+            AllowedChange = allowedChange;
         }
 
         public PackageIdentity NewPackage { get; }
@@ -54,6 +67,8 @@ namespace NuKeeper.RepositoryInspection
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;
         public string PackageSource { get; }
+        public NuGetVersion Highest { get; }
+        public VersionChange AllowedChange { get; }
 
         public int CountCurrentVersions()
         {
