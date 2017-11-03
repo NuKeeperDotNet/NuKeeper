@@ -10,6 +10,7 @@ namespace NuKeeper.Git
     {
         private readonly INuKeeperLogger _logger;
         private readonly Credentials _gitCredentials;
+        private bool _fetchFinished;
 
         public IFolder WorkingFolder { get; }
 
@@ -28,15 +29,27 @@ namespace NuKeeper.Git
         }
         public void Clone(Uri pullEndpoint)
         {
-            _logger.Verbose($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
+            _logger.Info($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
 
             Repository.Clone(pullEndpoint.ToString(), WorkingFolder.FullPath,
                 new CloneOptions
                 {
-                    CredentialsProvider = UsernamePasswordCredentials
+                    CredentialsProvider = UsernamePasswordCredentials,
+                    OnTransferProgress = this.OnTransferProgress
                 });
 
             _logger.Verbose("Git clone complete");
+        }
+
+        private bool OnTransferProgress(TransferProgress progress)
+        {
+            if (progress.ReceivedObjects % (progress.TotalObjects / 10) == 0 && !_fetchFinished)
+            {
+                _logger.Verbose($"{progress.ReceivedObjects} / {progress.TotalObjects}");
+                _fetchFinished = progress.ReceivedObjects == progress.TotalObjects;
+            }
+
+            return true;
         }
 
         public void Checkout(string branchName)
