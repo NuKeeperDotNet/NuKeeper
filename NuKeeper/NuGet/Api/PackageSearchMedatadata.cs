@@ -1,3 +1,4 @@
+using System;
 using NuGet.Packaging.Core;
 
 namespace NuKeeper.NuGet.Api
@@ -8,6 +9,16 @@ namespace NuKeeper.NuGet.Api
             PackageIdentity identity,
             string source)
         {
+            if (identity == null)
+            {
+                throw new ArgumentNullException(nameof(identity));
+            }
+
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             Identity = identity;
             Source = source;
         }
