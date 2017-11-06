@@ -190,6 +190,15 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("Updated `folder\\src\\project3\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
         }
 
+        [Test]
+        public void OneUpdate_MakeCommitDetails_HasVersionLimitData()
+        {
+            var updates = UpdateSetForLimited(MakePackageForV110());
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("There is also a higher version `2.3.4` of package `foo.bar`, but this was not applied as only `Minor` version changes are allowed."));
+        }
 
         private static void AssertContainsStandardText(string report)
         {
@@ -207,8 +216,18 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
-            return new PackageUpdateSet(NewPackageFooBar123(), 
-                "someSource", 
+            var newPackage = NewPackageFooBar123();
+            return new PackageUpdateSet(newPackage, 
+                "someSource",
+                newPackage.Version,
+                VersionChange.Major,
+                packages);
+        }
+
+        private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
+        {
+            return new PackageUpdateSet(NewPackageFooBar123(),
+                "someSource",
                 new NuGetVersion("2.3.4"),
                 VersionChange.Minor,
                 packages);
