@@ -26,13 +26,8 @@ namespace NuKeeper.NuGet.Api
             var highest = orderedByVersion.FirstOrDefault();
             var highestThatMatchesFilter = orderedByVersion
                 .FirstOrDefault(p => filter(package.Version, p.Identity.Version));
-            
-            return new PackageLookupResult
-            {
-                AllowedChange = allowedChange,
-                Highest = highest,
-                Match = highestThatMatchesFilter
-            };
+
+            return new PackageLookupResult(allowedChange, highest, highestThatMatchesFilter);
         }
     }
 }
