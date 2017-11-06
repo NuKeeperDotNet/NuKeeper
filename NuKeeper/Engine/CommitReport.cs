@@ -44,8 +44,9 @@ namespace NuKeeper.Engine
             if (highestVersion != null && (highestVersion > updates.NewVersion))
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());
+                var highest = CodeQuote(updates.PackageId + " " + highestVersion);
                 builder.AppendLine(
-                    $"There is also a higher version, {packageId} {CodeQuote(highestVersion.ToString())}, but this was not applied as only {allowedChange} version changes are allowed.");
+                    $"There is also a higher version, {highest}, but this was not applied as only {allowedChange} version changes are allowed.");
             }
 
             if (updates.CurrentPackages.Count == 1)
