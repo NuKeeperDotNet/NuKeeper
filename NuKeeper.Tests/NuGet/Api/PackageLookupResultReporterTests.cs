@@ -16,7 +16,7 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var data = new PackageLookupResult();
+            var data = new PackageLookupResult(VersionChange.Major, null, null);
 
             reporter.Report(data);
 
@@ -37,12 +37,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
                 "someSource");
 
-            var data = new PackageLookupResult
-            {
-                AllowedChange = VersionChange.Major,
-                Match = fooMetadata,
-                Highest = fooMetadata
-            };
+            var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -63,12 +58,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 "someSource");
 
-            var data = new PackageLookupResult
-            {
-                AllowedChange = VersionChange.Minor,
-                Match = fooMetadata,
-                Highest = fooMetadata
-            };
+            var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -93,12 +83,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 "someSource");
 
-            var data = new PackageLookupResult
-            {
-                AllowedChange = VersionChange.Minor,
-                Match = fooMinor,
-                Highest = fooMajor
-            };
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor);
 
             reporter.Report(data);
 
@@ -119,12 +104,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
                 "someSource");
 
-            var data = new PackageLookupResult
-            {
-                AllowedChange = VersionChange.Minor,
-                Match = null,
-                Highest = fooMajor
-            };
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null);
 
             reporter.Report(data);
 

@@ -7,6 +7,7 @@ using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Git;
+using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -198,7 +199,9 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("foobar", "1.0.1", PathToProjectTwo())
             };
 
-            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            return new PackageUpdateSet(newPackage, "ASource", 
+                new NuGetVersion("4.0.0"), VersionChange.Major, 
+                currentPackages);
         }
 
         private PackageUpdateSet UpdateFooFromOneVersion()
@@ -211,7 +214,9 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            return new PackageUpdateSet(newPackage, "ASource",
+                new NuGetVersion("4.0.0"), VersionChange.Major,
+                currentPackages);
         }
 
         private PackageUpdateSet UpdateBarFromTwoVersions()
@@ -224,7 +229,9 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("bar", "1.2.1", PathToProjectTwo())
             };
 
-            return new PackageUpdateSet(newPackage, string.Empty, currentPackages);
+            return new PackageUpdateSet(newPackage, "ASource", 
+                new NuGetVersion("4.0.0"), VersionChange.Major, 
+                currentPackages);
         }
 
         private PackageIdentity LatestVersionOfPackageFoobar()

@@ -40,6 +40,15 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
+            var highestVersion = updates.Highest;
+            if (highestVersion != null && (highestVersion > updates.NewVersion))
+            {
+                var allowedChange = CodeQuote(updates.AllowedChange.ToString());
+                var highest = CodeQuote(updates.PackageId + " " + highestVersion);
+                builder.AppendLine(
+                    $"There is also a higher version, {highest}, but this was not applied as only {allowedChange} version changes are allowed.");
+            }
+
             if (updates.CurrentPackages.Count == 1)
             {
                 builder.AppendLine("1 project update:");

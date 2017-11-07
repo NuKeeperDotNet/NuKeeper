@@ -145,12 +145,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity(packageName, new NuGetVersion(2, 3, 4)), "test");
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
-                .Returns(new PackageLookupResult
-                    {
-                        AllowedChange = VersionChange.Major,
-                        Highest = responseMetaData,
-                        Match = responseMetaData
-                    });
+                .Returns(new PackageLookupResult(VersionChange.Major, responseMetaData, responseMetaData));
         }
 
         private static BulkPackageLookup BuildBulkPackageLookup(IApiPackageLookup apiLookup)

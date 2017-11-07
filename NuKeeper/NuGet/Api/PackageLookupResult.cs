@@ -2,9 +2,17 @@
 {
     public class PackageLookupResult
     {
-        public VersionChange AllowedChange { get; set; }
+        public PackageLookupResult(
+            VersionChange allowedChange, 
+            PackageSearchMedatadata highest, PackageSearchMedatadata match)
+        {
+            AllowedChange = allowedChange;
+            Highest = highest;
+            Match = match;
+        }
 
-        public PackageSearchMedatadata Highest { get; set; }
-        public PackageSearchMedatadata Match { get; set; }
+        public VersionChange AllowedChange { get; }
+        public PackageSearchMedatadata Highest { get; }
+        public PackageSearchMedatadata Match { get; }
     }
 }

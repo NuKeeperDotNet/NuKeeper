@@ -2,6 +2,7 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
+using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
@@ -189,6 +190,15 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("Updated `folder\\src\\project3\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
         }
 
+        [Test]
+        public void OneUpdate_MakeCommitDetails_HasVersionLimitData()
+        {
+            var updates = UpdateSetForLimited(MakePackageForV110());
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4`, but this was not applied as only `Minor` version changes are allowed."));
+        }
 
         private static void AssertContainsStandardText(string report)
         {
@@ -202,11 +212,26 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Not.Contain("Generic"));
             Assert.That(report, Does.Not.Contain("["));
             Assert.That(report, Does.Not.Contain("]"));
+            Assert.That(report, Does.Not.Contain("There is also a higher version"));
         }
 
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
-            return new PackageUpdateSet(NewPackageFooBar123(), string.Empty, packages);
+            var newPackage = NewPackageFooBar123();
+            return new PackageUpdateSet(newPackage, 
+                "someSource",
+                newPackage.Version,
+                VersionChange.Major,
+                packages);
+        }
+
+        private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
+        {
+            return new PackageUpdateSet(NewPackageFooBar123(),
+                "someSource",
+                new NuGetVersion("2.3.4"),
+                VersionChange.Minor,
+                packages);
         }
 
         private static PackageIdentity NewPackageFooBar123()
