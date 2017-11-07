@@ -26,20 +26,20 @@ namespace NuKeeper.Logging
 
         public void Terse(string message)
         {
-            LogWithlevel(message, LogLevel.Terse);
+            LogWithLevel(message, LogLevel.Terse);
         }
 
         public void Info(string message)
         {
-            LogWithlevel(message, LogLevel.Info);
+            LogWithLevel(message, LogLevel.Info);
         }
 
         public void Verbose(string message)
         {
-            LogWithlevel(message, LogLevel.Verbose);
+            LogWithLevel(message, LogLevel.Verbose);
         }
 
-        private void LogWithlevel(string message, LogLevel level)
+        private void LogWithLevel(string message, LogLevel level)
         {
             if (_logLevel >= level)
             {
