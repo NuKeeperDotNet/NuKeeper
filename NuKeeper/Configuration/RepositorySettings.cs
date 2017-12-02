@@ -6,7 +6,7 @@ namespace NuKeeper.Configuration
     public class RepositorySettings
     {
         public RepositorySettings()
-        {            
+        {
         }
 
         public RepositorySettings(Repository repository)

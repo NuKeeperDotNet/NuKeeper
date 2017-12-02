@@ -60,7 +60,11 @@ namespace NuKeeper.Engine
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
 
-                await _repositoryUpdater.Run(git, repository);
+                // for now we pull and push from the same place
+                var oneBranchOnly = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
+                var repo = new RepositorySpec(oneBranchOnly, oneBranchOnly);
+
+                await _repositoryUpdater.Run(git, repo);
 
                 tempFolder.TryDelete();
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -30,14 +29,13 @@ namespace NuKeeper.Engine
         public async Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositorySettings settings,
-            string defaultBranch)
+            RepositorySpec repository)
         {
             try
             {
                 _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
 
-                git.Checkout(defaultBranch);
+                git.Checkout(repository.DefaultBranch);
 
                 // branch
                 var branchName = BranchNamer.MakeName(updateSet);
@@ -52,9 +50,9 @@ namespace NuKeeper.Engine
                 git.Push("origin", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, settings, prTitle, branchName, defaultBranch);
+                await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName, repository.DefaultBranch);
 
-                git.Checkout(defaultBranch);
+                git.Checkout(repository.DefaultBranch);
             }
             catch (Exception ex)
             {
@@ -99,7 +97,7 @@ namespace NuKeeper.Engine
 
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
-            RepositorySettings settings,
+            RepositorySpec repository,
             string title, string headBranch, string baseBranch)
         {
             var pr = new NewPullRequest(title, headBranch, baseBranch)
@@ -107,7 +105,7 @@ namespace NuKeeper.Engine
                 Body = CommitReport.MakeCommitDetails(updates)
             };
 
-            await _github.OpenPullRequest(settings.RepositoryOwner, settings.RepositoryName, pr);
+            await _github.OpenPullRequest(repository.Pull.Owner, repository.Pull.Name, pr);
         }
 
     }

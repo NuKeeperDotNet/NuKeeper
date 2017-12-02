@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.RepositoryInspection;
 
@@ -10,7 +9,6 @@ namespace NuKeeper.Engine
         Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositorySettings settings,
-            string defaultBranch);
+            RepositorySpec repository);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
@@ -34,10 +33,10 @@ namespace NuKeeper.Engine
             _solutionsRestore = solutionsRestore;
         }
 
-        public async Task Run(IGitDriver git, RepositorySettings settings)
+        public async Task Run(IGitDriver git, RepositorySpec repository)
         {
-            git.Clone(settings.GithubUri);
-            var defaultBranch = git.GetCurrentHead();
+            git.Clone(repository.Pull.Uri);
+            repository.DefaultBranch = git.GetCurrentHead();
 
             var updates = await FindPackageUpdateSets(git);
 
@@ -57,7 +56,7 @@ namespace NuKeeper.Engine
 
             await _solutionsRestore.Restore(git.WorkingFolder);
 
-            await UpdateAllTargets(git, settings, targetUpdates, defaultBranch);
+            await UpdateAllTargets(git, repository, targetUpdates);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
         }
@@ -76,11 +75,13 @@ namespace NuKeeper.Engine
             return updates;
         }
 
-        private async Task UpdateAllTargets(IGitDriver git, RepositorySettings settings, IEnumerable<PackageUpdateSet> targetUpdates, string defaultBranch)
+        private async Task UpdateAllTargets(IGitDriver git,
+            RepositorySpec repository,
+            IEnumerable<PackageUpdateSet> targetUpdates)
         {
             foreach (var updateSet in targetUpdates)
             {
-                await _packageUpdater.UpdatePackageInProjects(git, updateSet, settings, defaultBranch);
+                await _packageUpdater.UpdatePackageInProjects(git, updateSet, repository);
             }
         }
     }
