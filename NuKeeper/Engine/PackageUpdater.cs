@@ -47,10 +47,10 @@ namespace NuKeeper.Engine
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
 
-                git.Push("origin", branchName);
+                git.Push("nukeeper_push", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName, repository.DefaultBranch);
+                await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName);
 
                 git.Checkout(repository.DefaultBranch);
             }
@@ -98,9 +98,9 @@ namespace NuKeeper.Engine
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
             RepositorySpec repository,
-            string title, string headBranch, string baseBranch)
+            string title, string headBranch)
         {
-            var pr = new NewPullRequest(title, headBranch, baseBranch)
+            var pr = new NewPullRequest(title, headBranch, repository.DefaultBranch)
             {
                 Body = CommitReport.MakeCommitDetails(updates)
             };

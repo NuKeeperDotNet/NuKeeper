@@ -22,7 +22,6 @@ namespace NuKeeper.Git
                 throw new ArgumentNullException(nameof(gitCredentials));
             }
 
-
             _logger = logger;
             WorkingFolder = workingFolder;
             _gitCredentials = gitCredentials;
@@ -35,7 +34,7 @@ namespace NuKeeper.Git
                 new CloneOptions
                 {
                     CredentialsProvider = UsernamePasswordCredentials,
-                    OnTransferProgress = this.OnTransferProgress
+                    OnTransferProgress = OnTransferProgress
                 });
 
             _logger.Verbose("Git clone complete");
@@ -50,6 +49,14 @@ namespace NuKeeper.Git
             }
 
             return true;
+        }
+
+        public void AddRemote(string name, Uri endpoint)
+        {
+            using (var repo = MakeRepo())
+            {
+                repo.Network.Remotes.Add(name, endpoint.ToString());
+            }
         }
 
         public void Checkout(string branchName)

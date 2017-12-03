@@ -37,6 +37,7 @@ namespace NuKeeper.Engine
         {
             git.Clone(repository.Pull.Uri);
             repository.DefaultBranch = git.GetCurrentHead();
+            git.AddRemote("nukeeper_push", repository.Push.Uri);
 
             var updates = await FindPackageUpdateSets(git);
 

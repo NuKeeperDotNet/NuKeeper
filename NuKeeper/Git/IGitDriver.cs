@@ -9,6 +9,8 @@ namespace NuKeeper.Git
 
         void Clone(Uri pullEndpoint);
 
+        void AddRemote(string name, Uri endpoint);
+
         void Checkout(string branchName);
 
         void CheckoutNewBranch(string branchName);
