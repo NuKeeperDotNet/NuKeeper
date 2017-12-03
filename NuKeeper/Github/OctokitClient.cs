@@ -41,6 +41,22 @@ namespace NuKeeper.Github
             return resultList;
         }
 
+        public async Task<Repository> GetUserRepository(string userName, string repositoryName)
+        {
+            _logger.Verbose($"Looking for user fork for {userName}/{repositoryName}");
+            try
+            {
+                var result = await _client.Repository.Get(userName, repositoryName);
+                _logger.Verbose($"User fork found at {result.GitUrl}");
+                return result;
+            }
+            catch (NotFoundException)
+            {
+                _logger.Verbose("User fork not found");
+                return null;
+            }
+        }
+
         public async Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request)
         {
             _logger.Info($"Making PR on '{_apiBase} {repositoryOwner}/{repositoryName}'");

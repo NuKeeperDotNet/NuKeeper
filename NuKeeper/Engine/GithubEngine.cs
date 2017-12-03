@@ -53,16 +53,13 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task RunRepo(RepositorySettings repository, Credentials gitCreds)
+        private async Task RunRepo(RepositorySettings repository, UsernamePasswordCredentials gitCreds)
         {
             try
             {
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
-
-                // for now we pull and push from the same place
-                var oneBranchOnly = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-                var repo = new RepositorySpec(oneBranchOnly, oneBranchOnly);
+                var repo = await BuildGitRepositorySpec(repository, gitCreds);
 
                 await _repositoryUpdater.Run(git, repo);
 
@@ -72,6 +69,27 @@ namespace NuKeeper.Engine
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
             }
+        }
+
+        private async Task<RepositorySpec> BuildGitRepositorySpec(
+            RepositorySettings repository, 
+            UsernamePasswordCredentials creds)
+        {
+            var pullBranch = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
+            ForkSpec pushBranch;
+
+            var userFork = await _github.GetUserRepository(creds.Username, repository.RepositoryName);
+            if (userFork != null)
+            {
+                pushBranch = new ForkSpec(new Uri(userFork.GitUrl), userFork.Owner.Name, userFork.Name);
+            }
+            else
+            {
+                // for now we pull and push from the same place by defualt
+                pushBranch = pullBranch;
+            }
+
+            return new RepositorySpec(pullBranch, pushBranch);
         }
     }
 }

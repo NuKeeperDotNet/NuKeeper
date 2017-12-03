@@ -11,5 +11,7 @@ namespace NuKeeper.Github
         Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request);
 
         Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName);
+
+        Task<Repository> GetUserRepository(string userName, string repositoryName);
     }
 }

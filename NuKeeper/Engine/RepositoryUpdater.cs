@@ -35,9 +35,7 @@ namespace NuKeeper.Engine
 
         public async Task Run(IGitDriver git, RepositorySpec repository)
         {
-            git.Clone(repository.Pull.Uri);
-            repository.DefaultBranch = git.GetCurrentHead();
-            git.AddRemote("nukeeper_push", repository.Push.Uri);
+            GitInit(git, repository);
 
             var updates = await FindPackageUpdateSets(git);
 
@@ -60,6 +58,13 @@ namespace NuKeeper.Engine
             await UpdateAllTargets(git, repository, targetUpdates);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
+        }
+
+        private static void GitInit(IGitDriver git, RepositorySpec repository)
+        {
+            git.Clone(repository.Pull.Uri);
+            repository.DefaultBranch = git.GetCurrentHead();
+            git.AddRemote("nukeeper_push", repository.Push.Uri);
         }
 
         private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)
