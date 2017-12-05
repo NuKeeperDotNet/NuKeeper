@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Engine;
 using NuKeeper.Logging;
 using Octokit;
 
@@ -57,11 +58,11 @@ namespace NuKeeper.Github
             }
         }
 
-        public async Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request)
+        public async Task OpenPullRequest(ForkSpec target, NewPullRequest request)
         {
-            _logger.Info($"Making PR on '{_apiBase} {repositoryOwner}/{repositoryName}'");
+            _logger.Info($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Verbose($"PR title: {request.Title}");
-            await _client.PullRequest.Create(repositoryOwner, repositoryName, request);
+            await _client.PullRequest.Create(target.Owner, target.Name, request);
         }
     }
 }

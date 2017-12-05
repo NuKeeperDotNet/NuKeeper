@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Engine;
 using Octokit;
 
 namespace NuKeeper.Github
@@ -8,7 +9,7 @@ namespace NuKeeper.Github
     {
         Task<string> GetCurrentUser();
 
-        Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request);
+        Task OpenPullRequest(ForkSpec target, NewPullRequest request);
 
         Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName);
 

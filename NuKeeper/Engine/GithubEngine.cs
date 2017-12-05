@@ -81,7 +81,7 @@ namespace NuKeeper.Engine
             var userFork = await _github.GetUserRepository(creds.Username, repository.RepositoryName);
             if (userFork != null)
             {
-                pushBranch = new ForkSpec(new Uri(userFork.GitUrl), userFork.Owner.Name, userFork.Name);
+                pushBranch = new ForkSpec(new Uri(userFork.HtmlUrl), userFork.Owner.Login, userFork.Name);
             }
             else
             {

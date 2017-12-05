@@ -98,14 +98,24 @@ namespace NuKeeper.Engine
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
             RepositorySpec repository,
-            string title, string headBranch)
+            string title, string branchWithChanges)
         {
-            var pr = new NewPullRequest(title, headBranch, repository.DefaultBranch)
+            string qualifiedBranch;
+            if (repository.Pull.Owner == repository.Push.Owner)
+            {
+                qualifiedBranch = branchWithChanges;
+            }
+            else
+            {
+                qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
+            }
+
+            var pr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch)
             {
                 Body = CommitReport.MakeCommitDetails(updates)
             };
 
-            await _github.OpenPullRequest(repository.Pull.Owner, repository.Pull.Name, pr);
+            await _github.OpenPullRequest(repository.Pull, pr);
         }
 
     }
