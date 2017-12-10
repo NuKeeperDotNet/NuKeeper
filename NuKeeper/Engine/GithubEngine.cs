@@ -16,6 +16,7 @@ namespace NuKeeper.Engine
         private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly INuKeeperLogger _logger;
         private readonly IFolderFactory _folderFactory;
+        private readonly IForkFinder _forkFinder;
         private readonly string _githubToken;
 
         public GithubEngine(
@@ -24,7 +25,8 @@ namespace NuKeeper.Engine
             IRepositoryUpdater repositoryUpdater,
             INuKeeperLogger logger,
             IFolderFactory folderFactory,
-            GithubAuthSettings settings)
+            GithubAuthSettings settings,
+            IForkFinder forkFinder)
         {
             _repositoryDiscovery = repositoryDiscovery;
             _github = github;
@@ -32,6 +34,7 @@ namespace NuKeeper.Engine
             _logger = logger;
             _folderFactory = folderFactory;
             _githubToken = settings.Token;
+            _forkFinder = forkFinder;
         }
 
         public async Task Run()
@@ -76,21 +79,9 @@ namespace NuKeeper.Engine
             UsernamePasswordCredentials creds)
         {
             var pullFork = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await BuildPushBranch(creds.Username, repository.RepositoryName, pullFork);
+            var pushFork = await _forkFinder.PushFork(creds.Username, repository.RepositoryName, pullFork);
 
             return new RepositorySpec(pullFork, pushFork);
-        }
-
-        private async Task<ForkSpec> BuildPushBranch(string userName, string repositoryName, ForkSpec fallbackFork)
-        {
-            var userFork = await _github.GetUserRepository(userName, repositoryName);
-            if (userFork != null)
-            {
-                return new ForkSpec(new Uri(userFork.HtmlUrl), userFork.Owner.Login, userFork.Name);
-            }
-
-            // for now we pull and push from the same place as a fallback
-            return fallbackFork;
         }
     }
 }
