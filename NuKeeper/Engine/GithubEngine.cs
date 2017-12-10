@@ -1,40 +1,31 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
-using NuKeeper.Files;
-using NuKeeper.Git;
 using NuKeeper.Github;
-using NuKeeper.Logging;
+using NuKeeper.Files;
 
 namespace NuKeeper.Engine
 {
     public class GithubEngine
     {
-        private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
         private readonly IGithub _github;
-        private readonly IRepositoryUpdater _repositoryUpdater;
-        private readonly INuKeeperLogger _logger;
-        private readonly IFolderFactory _folderFactory;
-        private readonly IForkFinder _forkFinder;
+        private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
+        private readonly IGithubRepositoryEngine _repositoryEngine;
         private readonly string _githubToken;
+        private readonly IFolderFactory _folderFactory;
 
         public GithubEngine(
-            IGithubRepositoryDiscovery repositoryDiscovery, 
             IGithub github,
-            IRepositoryUpdater repositoryUpdater,
-            INuKeeperLogger logger,
-            IFolderFactory folderFactory,
+            IGithubRepositoryDiscovery repositoryDiscovery,
+            IGithubRepositoryEngine repositoryEngine,
             GithubAuthSettings settings,
-            IForkFinder forkFinder)
+            IFolderFactory folderFactory)
         {
-            _repositoryDiscovery = repositoryDiscovery;
             _github = github;
-            _repositoryUpdater = repositoryUpdater;
-            _logger = logger;
-            _folderFactory = folderFactory;
+            _repositoryDiscovery = repositoryDiscovery;
+            _repositoryEngine = repositoryEngine;
             _githubToken = settings.Token;
-            _forkFinder = forkFinder;
+            _folderFactory = folderFactory;
         }
 
         public async Task Run()
@@ -52,36 +43,8 @@ namespace NuKeeper.Engine
 
             foreach (var repository in repositories)
             {
-                await RunRepo(repository, gitCreds);
+                await _repositoryEngine.Run(repository, gitCreds);
             }
-        }
-
-        private async Task RunRepo(RepositorySettings repository, UsernamePasswordCredentials gitCreds)
-        {
-            try
-            {
-                var tempFolder = _folderFactory.UniqueTemporaryFolder();
-                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
-                var repo = await BuildGitRepositorySpec(repository, gitCreds);
-
-                await _repositoryUpdater.Run(git, repo);
-
-                tempFolder.TryDelete();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-            }
-        }
-
-        private async Task<RepositorySpec> BuildGitRepositorySpec(
-            RepositorySettings repository, 
-            UsernamePasswordCredentials creds)
-        {
-            var pullFork = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _forkFinder.PushFork(creds.Username, repository.RepositoryName, pullFork);
-
-            return new RepositorySpec(pullFork, pushFork);
         }
     }
 }
