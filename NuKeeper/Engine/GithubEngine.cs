@@ -75,21 +75,22 @@ namespace NuKeeper.Engine
             RepositorySettings repository, 
             UsernamePasswordCredentials creds)
         {
-            var pullBranch = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-            ForkSpec pushBranch;
+            var pullFork = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
+            var pushFork = await BuildPushBranch(creds.Username, repository.RepositoryName, pullFork);
 
-            var userFork = await _github.GetUserRepository(creds.Username, repository.RepositoryName);
+            return new RepositorySpec(pullFork, pushFork);
+        }
+
+        private async Task<ForkSpec> BuildPushBranch(string userName, string repositoryName, ForkSpec fallbackFork)
+        {
+            var userFork = await _github.GetUserRepository(userName, repositoryName);
             if (userFork != null)
             {
-                pushBranch = new ForkSpec(new Uri(userFork.HtmlUrl), userFork.Owner.Login, userFork.Name);
-            }
-            else
-            {
-                // for now we pull and push from the same place by defualt
-                pushBranch = pullBranch;
+                return new ForkSpec(new Uri(userFork.HtmlUrl), userFork.Owner.Login, userFork.Name);
             }
 
-            return new RepositorySpec(pullBranch, pushBranch);
+            // for now we pull and push from the same place as a fallback
+            return fallbackFork;
         }
     }
 }
