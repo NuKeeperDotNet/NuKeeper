@@ -58,7 +58,7 @@ namespace NuKeeper.Github
             }
         }
 
-        public async Task OpenPullRequest(ForkSpec target, NewPullRequest request)
+        public async Task OpenPullRequest(ForkData target, NewPullRequest request)
         {
             _logger.Info($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Verbose($"PR title: {request.Title}");

@@ -9,6 +9,6 @@ namespace NuKeeper.Engine
         Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositorySpec repository);
+            RepositoryData repository);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace NuKeeper.Engine
 {
-    public class ForkSpec
+    public class ForkData
     {
-        public ForkSpec(Uri uri, string owner, string name)
+        public ForkData(Uri uri, string owner, string name)
         {
             if (uri == null)
             {

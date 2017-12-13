@@ -33,7 +33,7 @@ namespace NuKeeper.Engine
             _solutionsRestore = solutionsRestore;
         }
 
-        public async Task Run(IGitDriver git, RepositorySpec repository)
+        public async Task Run(IGitDriver git, RepositoryData repository)
         {
             GitInit(git, repository);
 
@@ -60,7 +60,7 @@ namespace NuKeeper.Engine
             _logger.Info($"Done {targetUpdates.Count} Updates");
         }
 
-        private static void GitInit(IGitDriver git, RepositorySpec repository)
+        private static void GitInit(IGitDriver git, RepositoryData repository)
         {
             git.Clone(repository.Pull.Uri);
             repository.DefaultBranch = git.GetCurrentHead();
@@ -82,7 +82,7 @@ namespace NuKeeper.Engine
         }
 
         private async Task UpdateAllTargets(IGitDriver git,
-            RepositorySpec repository,
+            RepositoryData repository,
             IEnumerable<PackageUpdateSet> targetUpdates)
         {
             foreach (var updateSet in targetUpdates)

@@ -29,7 +29,7 @@ namespace NuKeeper.Engine
         public async Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositorySpec repository)
+            RepositoryData repository)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace NuKeeper.Engine
 
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
-            RepositorySpec repository,
+            RepositoryData repository,
             string title, string branchWithChanges)
         {
             string qualifiedBranch;
@@ -117,6 +117,5 @@ namespace NuKeeper.Engine
 
             await _github.OpenPullRequest(repository.Pull, pr);
         }
-
     }
 }

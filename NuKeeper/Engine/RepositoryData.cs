@@ -2,9 +2,9 @@
 
 namespace NuKeeper.Engine
 {
-    public class RepositorySpec
+    public class RepositoryData
     {
-        public RepositorySpec(ForkSpec pull, ForkSpec push)
+        public RepositoryData(ForkData pull, ForkData push)
         {
             if (pull == null)
             {
@@ -20,8 +20,8 @@ namespace NuKeeper.Engine
             Push = push;
         }
 
-        public ForkSpec Pull { get; }
-        public ForkSpec Push { get; }
+        public ForkData Pull { get; }
+        public ForkData Push { get; }
         public string DefaultBranch { get; set; }
     }
 }

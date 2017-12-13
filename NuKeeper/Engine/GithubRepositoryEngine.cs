@@ -47,14 +47,14 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task<RepositorySpec> BuildGitRepositorySpec(
+        private async Task<RepositoryData> BuildGitRepositorySpec(
             RepositorySettings repository, 
             string userName)
         {
-            var pullFork = new ForkSpec(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
+            var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
             var pushFork = await _forkFinder.PushFork(userName, repository.RepositoryName, pullFork);
 
-            return new RepositorySpec(pullFork, pushFork);
+            return new RepositoryData(pullFork, pushFork);
         }
     }
 }
