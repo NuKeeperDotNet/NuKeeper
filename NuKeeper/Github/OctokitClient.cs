@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Engine;
 using NuKeeper.Logging;
 using Octokit;
 
@@ -41,11 +42,27 @@ namespace NuKeeper.Github
             return resultList;
         }
 
-        public async Task OpenPullRequest(string repositoryOwner, string repositoryName, NewPullRequest request)
+        public async Task<Repository> GetUserRepository(string userName, string repositoryName)
         {
-            _logger.Info($"Making PR on '{_apiBase} {repositoryOwner}/{repositoryName}'");
+            _logger.Verbose($"Looking for user fork for {userName}/{repositoryName}");
+            try
+            {
+                var result = await _client.Repository.Get(userName, repositoryName);
+                _logger.Verbose($"User fork found at {result.GitUrl}");
+                return result;
+            }
+            catch (NotFoundException)
+            {
+                _logger.Verbose("User fork not found");
+                return null;
+            }
+        }
+
+        public async Task OpenPullRequest(ForkData target, NewPullRequest request)
+        {
+            _logger.Info($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Verbose($"PR title: {request.Title}");
-            await _client.PullRequest.Create(repositoryOwner, repositoryName, request);
+            await _client.PullRequest.Create(target.Owner, target.Name, request);
         }
     }
 }

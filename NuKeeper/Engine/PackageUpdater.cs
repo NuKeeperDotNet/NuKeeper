@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -30,14 +29,13 @@ namespace NuKeeper.Engine
         public async Task UpdatePackageInProjects(
             IGitDriver git,
             PackageUpdateSet updateSet,
-            RepositorySettings settings,
-            string defaultBranch)
+            RepositoryData repository)
         {
             try
             {
                 _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
 
-                git.Checkout(defaultBranch);
+                git.Checkout(repository.DefaultBranch);
 
                 // branch
                 var branchName = BranchNamer.MakeName(updateSet);
@@ -49,12 +47,12 @@ namespace NuKeeper.Engine
                 var commitMessage = CommitReport.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
 
-                git.Push("origin", branchName);
+                git.Push("nukeeper_push", branchName);
 
                 var prTitle = CommitReport.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, settings, prTitle, branchName, defaultBranch);
+                await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName);
 
-                git.Checkout(defaultBranch);
+                git.Checkout(repository.DefaultBranch);
             }
             catch (Exception ex)
             {
@@ -99,16 +97,25 @@ namespace NuKeeper.Engine
 
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
-            RepositorySettings settings,
-            string title, string headBranch, string baseBranch)
+            RepositoryData repository,
+            string title, string branchWithChanges)
         {
-            var pr = new NewPullRequest(title, headBranch, baseBranch)
+            string qualifiedBranch;
+            if (repository.Pull.Owner == repository.Push.Owner)
+            {
+                qualifiedBranch = branchWithChanges;
+            }
+            else
+            {
+                qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
+            }
+
+            var pr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch)
             {
                 Body = CommitReport.MakeCommitDetails(updates)
             };
 
-            await _github.OpenPullRequest(settings.RepositoryOwner, settings.RepositoryName, pr);
+            await _github.OpenPullRequest(repository.Pull, pr);
         }
-
     }
 }
