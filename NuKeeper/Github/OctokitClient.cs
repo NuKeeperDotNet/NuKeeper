@@ -48,7 +48,7 @@ namespace NuKeeper.Github
             try
             {
                 var result = await _client.Repository.Get(userName, repositoryName);
-                _logger.Verbose($"User fork found at {result.GitUrl}");
+                _logger.Info($"User fork found at {result.GitUrl}  for {result.Owner.Login}");
                 return result;
             }
             catch (NotFoundException)
@@ -56,6 +56,23 @@ namespace NuKeeper.Github
                 _logger.Verbose("User fork not found");
                 return null;
             }
+        }
+
+        public async Task<Repository> MakeUserFork(string owner, string repositoryName)
+        {
+            _logger.Verbose($"Making user fork for {repositoryName}");
+            try
+            {
+                var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
+                _logger.Info($"User fork created at {result.GitUrl} for {result.Owner.Login}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("User fork not created", ex);
+                return null;
+            }
+
         }
 
         public async Task OpenPullRequest(ForkData target, NewPullRequest request)
