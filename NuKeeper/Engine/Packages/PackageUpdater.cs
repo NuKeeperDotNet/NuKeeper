@@ -8,7 +8,7 @@ using NuKeeper.NuGet.Process;
 using NuKeeper.RepositoryInspection;
 using Octokit;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Engine.Packages
 {
     public class PackageUpdater : IPackageUpdater
     {

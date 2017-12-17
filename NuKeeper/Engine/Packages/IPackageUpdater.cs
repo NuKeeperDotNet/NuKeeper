@@ -2,7 +2,7 @@
 using NuKeeper.Git;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Engine.Packages
 {
     public interface IPackageUpdater
     {

@@ -1,6 +1,7 @@
 ﻿using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Engine.Packages;
 using NuKeeper.Files;
 using NuKeeper.Github;
 using NuKeeper.Logging;

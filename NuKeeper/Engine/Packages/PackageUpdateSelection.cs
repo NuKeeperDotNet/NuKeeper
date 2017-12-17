@@ -6,7 +6,7 @@ using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.RepositoryInspection;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Engine.Packages
 {
     public class PackageUpdateSelection : IPackageUpdateSelection
     {
