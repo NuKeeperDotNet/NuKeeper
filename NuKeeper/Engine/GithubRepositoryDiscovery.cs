@@ -38,7 +38,7 @@ namespace NuKeeper.Engine
 
                 default:
                     return Enumerable.Empty<RepositorySettings>();
-            }            
+            }
         }
     }
 }

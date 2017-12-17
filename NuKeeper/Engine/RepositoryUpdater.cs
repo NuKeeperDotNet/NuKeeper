@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;

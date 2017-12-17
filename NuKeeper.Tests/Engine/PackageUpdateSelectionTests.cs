@@ -6,6 +6,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
 using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
