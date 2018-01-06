@@ -39,8 +39,8 @@ namespace NuKeeper.Tests.Engine
 
             var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
 
-            Assert.That(fork, Is.Not.Null);
             Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
         }
 
         [Test]
@@ -61,6 +61,7 @@ namespace NuKeeper.Tests.Engine
             var actualFork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
 
             await github.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
+
             Assert.That(actualFork, Is.Not.Null);
             Assert.That(actualFork, Is.Not.EqualTo(fallbackFork));
         }
@@ -87,5 +88,14 @@ namespace NuKeeper.Tests.Engine
         {
             return new ForkData(new Uri("http://someurl.com"), "testOrg", "someRepo");
         }
+
+        private static void AssertForkMatchesRepo(ForkData fork, Repository repo)
+        {
+            Assert.That(fork, Is.Not.Null);
+            Assert.That(fork.Name, Is.EqualTo(repo.Name));
+            Assert.That(fork.Owner, Is.EqualTo(repo.Owner.Login));
+            Assert.That(fork.Uri, Is.EqualTo(new Uri(repo.HtmlUrl)));
+        }
+
     }
 }
