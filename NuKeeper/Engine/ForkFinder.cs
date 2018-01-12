@@ -22,13 +22,24 @@ namespace NuKeeper.Engine
             var userFork = await _github.GetUserRepository(userName, repositoryName);
             if (userFork != null)
             {
-                _logger.Info($"Found push fork for user {userName} at {userFork.HtmlUrl}");
-                return new ForkData(new Uri(userFork.HtmlUrl), userFork.Owner.Login, userFork.Name);
+                return RepositoryToForkData(userFork);
+            }
+
+            // try and make a fork
+            var newFork = await _github.MakeUserFork(fallbackFork.Owner, repositoryName);
+            if (newFork != null)
+            {
+                return RepositoryToForkData(newFork);
             }
 
             // for now we pull and push from the same place as a fallback
             _logger.Info($"Using fallback push fork for user {fallbackFork.Owner} at {fallbackFork.Uri}");
             return fallbackFork;
+        }
+
+        private static ForkData RepositoryToForkData(Octokit.Repository repo)
+        {
+            return new ForkData(new Uri(repo.HtmlUrl), repo.Owner.Login, repo.Name);
         }
     }
 }
