@@ -41,7 +41,13 @@ namespace NuKeeper.Github
                 .Where(r => r.Permissions.Pull)
                 .ToList().AsReadOnly();
 
-            _logger.Verbose($"Read {usableRepos.Count} repos for org '{organisationName}'");
+            _logger.Info($"Read {usableRepos.Count} repos for org '{organisationName}'");
+            if (allOrgRepos.Count > usableRepos.Count)
+            {
+                _logger.Verbose($"Filtered to {usableRepos.Count} repos out of {allOrgRepos.Count}");
+
+            }
+
             return usableRepos;
         }
 
