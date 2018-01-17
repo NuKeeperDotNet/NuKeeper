@@ -38,13 +38,8 @@ namespace NuKeeper.Tests.Engine
         public async Task SuccessInOrgMode()
         {
             var github = Substitute.For<IGithub>();
-            var settings = new ModalSettings
-                {
-                    Mode = GithubMode.Organisation,
-                    OrganisationName = "testOrg"
-                };
 
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
             var repos = await githubRepositoryDiscovery.GetRepositories();
 
@@ -59,20 +54,13 @@ namespace NuKeeper.Tests.Engine
             {
                 RespositoryBuilder.MakeRepository()
             };
-
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
             
             var github = Substitute.For<IGithub>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
-            var settings = new ModalSettings
-            {
-                Mode = GithubMode.Organisation,
-                OrganisationName = "testOrg"
-            };
-
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
             var repos = await githubRepositoryDiscovery.GetRepositories();
 
@@ -85,9 +73,45 @@ namespace NuKeeper.Tests.Engine
             Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
         }
 
+        [Test]
+        public async Task OrgModeInvalidReposAreExcluded()
+        {
+            var inputRepos = new List<Repository>
+            {
+                RespositoryBuilder.MakeRepository("http://a.com/repo1", false),
+                RespositoryBuilder.MakeRepository("http://b.com/repob", true)
+            };
+            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+
+            var github = Substitute.For<IGithub>();
+            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+                .Returns(Task.FromResult(readOnlyRepos));
+
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
+
+            var repos = await githubRepositoryDiscovery.GetRepositories();
+
+            Assert.That(repos, Is.Not.Null);
+            Assert.That(repos, Is.Not.Empty);
+            Assert.That(repos.Count(), Is.EqualTo(1));
+
+            var firstRepo = repos.First();
+            Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
+            Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+        }
+
         private static IGithubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGithub github, ModalSettings settings)
         {
             return new GithubRepositoryDiscovery(github, settings, new NullNuKeeperLogger());
+        }
+
+        private static ModalSettings OrgModeSettings()
+        {
+            return new ModalSettings
+            {
+                Mode = GithubMode.Organisation,
+                OrganisationName = "testOrg"
+            };
         }
     }
 }
