@@ -49,7 +49,6 @@ namespace NuKeeper.Engine
             if (allOrgRepos.Count > usableRepos.Count)
             {
                 _logger.Verbose($"Can pull from {usableRepos.Count} repos out of {allOrgRepos.Count}");
-
             }
 
             return usableRepos.Select(r => new RepositorySettings(r));
