@@ -23,11 +23,13 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
 
-            var repos = await githubRepositoryDiscovery.GetRepositories();
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories();
+
+            var repos = reposResponse.ToList();
 
             Assert.That(repos, Is.Not.Null);
-            Assert.That(repos.Count(), Is.EqualTo(1));
-            Assert.That(repos.First(), Is.EqualTo(settings.Repository));
+            Assert.That(repos.Count, Is.EqualTo(1));
+            Assert.That(repos[0], Is.EqualTo(settings.Repository));
         }
 
         [Test]

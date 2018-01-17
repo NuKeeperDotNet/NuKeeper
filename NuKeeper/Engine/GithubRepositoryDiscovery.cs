@@ -19,13 +19,6 @@ namespace NuKeeper.Engine
             _settings = settings;
         }
 
-        public async Task<IEnumerable<RepositorySettings>> FromOrganisation(string organisationName)
-        {
-            var repositories = await _github.GetRepositoriesForOrganisation(organisationName);
-
-            return repositories.Select(r => new RepositorySettings(r));
-        }
-
         public async Task<IEnumerable<RepositorySettings>> GetRepositories()
         {
             switch (_settings.Mode)
@@ -39,6 +32,13 @@ namespace NuKeeper.Engine
                 default:
                     return Enumerable.Empty<RepositorySettings>();
             }
+        }
+
+        private async Task<IEnumerable<RepositorySettings>> FromOrganisation(string organisationName)
+        {
+            var repositories = await _github.GetRepositoriesForOrganisation(organisationName);
+
+            return repositories.Select(r => new RepositorySettings(r));
         }
     }
 }
