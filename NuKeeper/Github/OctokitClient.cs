@@ -36,19 +36,9 @@ namespace NuKeeper.Github
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
         {
-            var allOrgRepos = await _client.Repository.GetAllForOrg(organisationName);
-            var usableRepos = allOrgRepos
-                .Where(r => r.Permissions.Pull)
-                .ToList().AsReadOnly();
-
-            _logger.Info($"Read {usableRepos.Count} repos for org '{organisationName}'");
-            if (allOrgRepos.Count > usableRepos.Count)
-            {
-                _logger.Verbose($"Filtered to {usableRepos.Count} repos out of {allOrgRepos.Count}");
-
-            }
-
-            return usableRepos;
+            var repos = await _client.Repository.GetAllForOrg(organisationName);
+            _logger.Info($"Read {repos.Count} repos for org '{organisationName}'");
+            return repos;
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)

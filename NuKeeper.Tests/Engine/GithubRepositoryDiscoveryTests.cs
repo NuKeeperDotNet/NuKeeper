@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Engine
                 Repository = new RepositorySettings()
             };
 
-            var githubRepositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
 
             var reposResponse = await githubRepositoryDiscovery.GetRepositories();
 
@@ -42,12 +42,17 @@ namespace NuKeeper.Tests.Engine
                     OrganisationName = "testOrg"
                 };
 
-            var githubRepositoryDiscovery = new GithubRepositoryDiscovery(github, settings);
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
 
             var repos = await githubRepositoryDiscovery.GetRepositories();
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Empty);
+        }
+
+        private static IGithubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGithub github, ModalSettings settings)
+        {
+            return new GithubRepositoryDiscovery(github, settings, new NullNuKeeperLogger());
         }
     }
 }
