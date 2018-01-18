@@ -126,13 +126,13 @@ but [bear in mind that `origin` is forked off `upstream`. `origin` is the workin
 
 ### There are two possible workflows:
 
-*One-repository workflow*. The pull fork and push fork are the same repository. NuKeeper will pull from the repository, branch locally, make a change,  and push a change back to a branch on the same repository, then PR back to the `master` branch.
+**One-repository workflow**. The pull fork and push fork are the same repository. NuKeeper will pull from the repository, branch locally, make a change,  and push a change back to a branch on the same repository, then PR back to the `master` branch.
 
-*Two-repository workflow*. The pull fork and push fork are not the same repository. NuKeeper will pull from the pull fork, branch locally, make a change, and push a change back to a branch on the push fork, then PR back to the `master` branch on the pull fork.
+**Two-repository workflow**. The pull fork and push fork are not the same repository. NuKeeper will pull from the upstream, branch locally, make a change, and push it back to a branch on the origin fork, then PR back to the `master` branch on the upstream.
 
 NuKeeper will use the two repository workflow if:
-- The user (identified by the github token) already has a repository that is a fork of the target repository and we have permission to push there.
-- The user does not have a repository that is a fork of the target repository, but it can be created.
+- The user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there. 
+- Or the user does not have a repository with the right name, but it can be created as a fork of the target.
 
 NuKeeper will fall back to the one repository workflow if it cannot use the two repository workflow, and we have permission to push to the target repository.
 
@@ -140,7 +140,7 @@ Failing both of these, NuKeeper has nowhere to push to, and will therefore fail 
 
 Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the two repository workflow.
 
-Some organisations use the one-repository workflow, with all team members allowed to push to the shared repository. This is in some ways simpler.
+Some organisations use the one-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
 
 ## Limitations and warnings
 
