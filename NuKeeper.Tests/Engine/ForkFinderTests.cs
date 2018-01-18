@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(Substitute.For<IGithub>(), new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork, Is.EqualTo(fallbackFork));
@@ -37,7 +37,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.Not.EqualTo(fallbackFork));
             AssertForkMatchesRepo(fork, userRepo);
@@ -56,7 +56,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.EqualTo(fallbackFork));
         }
@@ -76,7 +76,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var actualFork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var actualFork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             await github.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
 
