@@ -134,11 +134,13 @@ NuKeeper will use the two repository workflow if:
 - The user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there. 
 - Or the user does not have a repository with the right name, but it can be created as a fork of the target.
 
+This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist. 
+
 NuKeeper will fall back to the one repository workflow if it cannot use the two repository workflow, and we have permission to push to the target repository.
 
 Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
 
-Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the two repository workflow.
+Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the two repository workflow. Contributing to an open-source project starts with forking the repo to your own github account.
 
 Some organisations use the one-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
 
