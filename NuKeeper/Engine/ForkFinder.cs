@@ -26,9 +26,16 @@ namespace NuKeeper.Engine
                 return userFork;
             }
 
-            // as a fallback, we pull and push from the same origin repo
-            _logger.Info($"No fork for user {userName}. Using fallback push fork for user {fallbackFork.Owner} at {fallbackFork.Uri}");
-            return fallbackFork;
+            // as a fallback, we want to pull and push from the same origin repo.
+            var fallbackRepo = await _github.GetUserRepository(fallbackFork.Owner, repositoryName);
+            if (fallbackRepo != null && fallbackRepo.Permissions.Push)
+            {
+                _logger.Info($"No fork for user {userName}. Using fallback push fork for user {fallbackFork.Owner} at {fallbackFork.Uri}");
+                return fallbackFork;
+            }
+
+            _logger.Error($"No pushable fork found for {repositoryName}");
+            throw new Exception($"No pushable fork found for {repositoryName}");
         }
 
         private async Task<ForkData> TryFindUserFork(string userName, string repositoryName, ForkData fallbackFork)
