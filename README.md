@@ -117,7 +117,36 @@ This is an application of [Postel's Law](https://en.wikipedia.org/wiki/Robustnes
 
 It is similar to [this rule of preferring to use a parameter of a base type or interface](https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1011-consider-passing-base-types-as-parameters) as it allows wider use.
 
+## Branches, forks and pull requests
+
+Nukeeper needs a repository that it can pull a copy of the code from, and a repository that it can push a new branch to. These might or might not be the same repository.
+
+In the most general case, there are two repositories. The standard term for these is `upstream` and `origin`, 
+but [bear in mind that `origin` is forked off `upstream`. `origin` is the working copy, and the canonical original is `upstream`](https://stackoverflow.com/questions/9257533/what-is-the-difference-between-origin-and-upstream-on-github). In the NuKeeper code these are sometimes referred to as the "pull fork" and "push fork" respectively, since we pull from the first and push to the second.
+
+### There are two possible workflows:
+
+**One-repository workflow**. The pull fork and push fork are the same repository. NuKeeper will pull from the repository, branch locally, make a change,  and push a change back to a branch on the same repository, then PR back to the `master` branch.
+
+**Two-repository workflow**. The pull fork and push fork are not the same repository. NuKeeper will pull from the upstream, branch locally, make a change, and push it back to a branch on the origin fork, then PR back to the `master` branch on the upstream.
+
+NuKeeper will use the two repository workflow if:
+- The user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there. 
+- Or the user does not have a repository with the right name, but it can be created as a fork of the target.
+
+This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist. 
+
+NuKeeper will fall back to the one repository workflow if it cannot use the two repository workflow, and we have permission to push to the target repository.
+
+Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
+
+Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the two repository workflow. Contributing to an open-source project starts with forking the repo to your own github account.
+
+Some organisations use the one-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
+
 ## Limitations and warnings
+
+NuKeeper works with github and git, no other source control systems are supported. You can however use the public `github.com`, or an internal hosted github instance by specifying its location with the `-api` option. 
 
 You will need the command line version of `dotnet` installed.
 
