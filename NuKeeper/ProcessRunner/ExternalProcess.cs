@@ -6,14 +6,15 @@ namespace NuKeeper.ProcessRunner
 {
     public class ExternalProcess : IExternalProcess
     {
-        public async Task<ProcessOutput> Run(string command, bool ensureSuccess)
+        public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            var processInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
+            var processInfo = new ProcessStartInfo("cmd.exe", $"/C {command} {arguments}")
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                UseShellExecute = false
+                UseShellExecute = false,
+                WorkingDirectory = workingDirectory
             };
 
             var process = Process.Start(processInfo);

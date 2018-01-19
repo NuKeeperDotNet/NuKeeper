@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,11 +18,11 @@ namespace NuKeeper.NuGet.Process
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
             UserSettings settings,
-            IExternalProcess externalProcess = null)
+            IExternalProcess externalProcess)
         {
             _logger = logger;
             _sources = settings.NuGetSources;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(FileInfo file)
@@ -30,10 +31,10 @@ namespace NuKeeper.NuGet.Process
             var nuget = NuGetPath.FindExecutable();
             var sources = GetSourcesCommandLine(_sources);
 
-            var updateCommand = $"cd {file.DirectoryName} & {nuget} restore {file.Name} {sources}";
-            _logger.Verbose(updateCommand);
+            var arguments = $"restore {file.Name} {sources}";
+            _logger.Verbose(arguments);
 
-            var processOutput = await _externalProcess.Run(updateCommand, ensureSuccess: false);
+            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, arguments, ensureSuccess: false);
 
             if (processOutput.Success)
             {
