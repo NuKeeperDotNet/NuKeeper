@@ -1,4 +1,5 @@
-﻿using NuGet.Common;
+﻿using System.Runtime.InteropServices;
+using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
@@ -29,7 +30,14 @@ namespace NuKeeper
             container.Register<IFolder, Folder>();
             container.Register<IFolderFactory, FolderFactory>();
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
-            container.Register<IExternalProcess, ExternalProcess>();
+            if ( RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) 
+            {
+                container.Register<IExternalProcess, ExternalProcess>();
+            }
+            else 
+            {
+                container.Register<IExternalProcess, UnixProcess>();
+            }
 
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
