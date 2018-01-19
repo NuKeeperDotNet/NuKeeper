@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Github;
 using NuKeeper.Logging;
 using Octokit;
 
 namespace NuKeeper.Engine
 {
-
     public class ForkFinder: IForkFinder
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
+        private ForkMode _forkMode;
 
-        public ForkFinder(IGithub github,INuKeeperLogger logger)
+        public ForkFinder(IGithub github, UserSettings settings, INuKeeperLogger logger)
         {
             _github = github;
+            _forkMode = settings.ForkMode;
             _logger = logger;
         }
 
         public async Task<ForkData> FindPushFork(string userName, string repositoryName, ForkData fallbackFork)
         {
-            var userFork = await TryFindUserFork(userName, repositoryName, fallbackFork);
-            if (userFork != null)
+            if (_forkMode == ForkMode.PreferFork)
             {
-                return userFork;
+                var userFork = await TryFindUserFork(userName, repositoryName, fallbackFork);
+                if (userFork != null)
+                {
+                    return userFork;
+                }
+
             }
 
             // as a fallback, we want to pull and push from the same origin repo.
