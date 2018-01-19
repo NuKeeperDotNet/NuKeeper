@@ -9,7 +9,8 @@ namespace NuKeeper.Tests.Engine
         public const string ForkUrl = "http://repos.com/org/repo";
         public const string NoMatchUrl = "http://repos.com/org/nomatch";
 
-        public static Repository MakeRepository(string htmlUrl = ForkUrl, bool canPull = true)
+        public static Repository MakeRepository(string htmlUrl = ForkUrl, 
+            bool canPull = true, bool canPush = true)
         {
             const string omniUrl = "http://somewhere.com/fork";
             var owner = new User(omniUrl, "test user", null, 0, "test inc",
@@ -19,7 +20,7 @@ namespace NuKeeper.Tests.Engine
                 1, omniUrl, null, false, "test", null);
 
 
-            var perms = new RepositoryPermissions(false, true, canPull);
+            var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
             return new Repository(omniUrl, htmlUrl, omniUrl, omniUrl, omniUrl, omniUrl, omniUrl,

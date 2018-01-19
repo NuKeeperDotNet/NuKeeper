@@ -52,7 +52,7 @@ namespace NuKeeper.Engine
             string userName)
         {
             var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _forkFinder.PushFork(userName, repository.RepositoryName, pullFork);
+            var pushFork = await _forkFinder.FindPushFork(userName, repository.RepositoryName, pullFork);
 
             return new RepositoryData(pullFork, pushFork);
         }

@@ -12,16 +12,48 @@ namespace NuKeeper.Tests.Engine
     public class ForkFinderTests
     {
         [Test]
-        public async Task FallbackForkIsUsedByDefault()
+        public void ThrowsWhenNoPushableForkCanBeFound()
         {
             var fallbackFork = DefaultFork();
 
             var forkFinder = new ForkFinder(Substitute.For<IGithub>(), new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            Assert.ThrowsAsync<Exception>(async () =>
+                await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork));
+        }
+
+        [Test]
+        public async Task FallbackForkIsUsedWhenItIsFound()
+        {
+            var fallbackFork = DefaultFork();
+
+            var github = Substitute.For<IGithub>();
+            var defaultRepo = RespositoryBuilder.MakeRepository();
+            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+                .Returns(defaultRepo);
+
+            var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork, Is.EqualTo(fallbackFork));
+        }
+
+        [Test]
+        public void FallbackForkIsNotUsedWhenItIsNotPushable()
+        {
+            var fallbackFork = DefaultFork();
+
+            var github = Substitute.For<IGithub>();
+            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+                .Returns(defaultRepo);
+
+            var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
+
+            Assert.ThrowsAsync<Exception>(async () =>
+                await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork));
         }
 
         [Test]
@@ -37,7 +69,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.Not.EqualTo(fallbackFork));
             AssertForkMatchesRepo(fork, userRepo);
@@ -56,7 +88,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var fork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             Assert.That(fork, Is.EqualTo(fallbackFork));
         }
@@ -76,7 +108,7 @@ namespace NuKeeper.Tests.Engine
 
             var forkFinder = new ForkFinder(github, new NullNuKeeperLogger());
 
-            var actualFork = await forkFinder.PushFork("testUser", "someRepo", fallbackFork);
+            var actualFork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
 
             await github.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
 
