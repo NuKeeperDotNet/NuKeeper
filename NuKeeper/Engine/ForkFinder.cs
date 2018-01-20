@@ -11,7 +11,7 @@ namespace NuKeeper.Engine
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
-        private ForkMode _forkMode;
+        private readonly ForkMode _forkMode;
 
         public ForkFinder(IGithub github, UserSettings settings, INuKeeperLogger logger)
         {
@@ -22,26 +22,59 @@ namespace NuKeeper.Engine
 
         public async Task<ForkData> FindPushFork(string userName, string repositoryName, ForkData fallbackFork)
         {
-            if (_forkMode == ForkMode.PreferFork)
+            switch (_forkMode)
             {
-                var userFork = await TryFindUserFork(userName, repositoryName, fallbackFork);
-                if (userFork != null)
-                {
-                    return userFork;
-                }
+                case ForkMode.PreferFork:
+                    return await FindForkOrFallback(userName, repositoryName, fallbackFork);
 
+                case ForkMode.PreferUpstream:
+                    return await FindUpstreamRepo(repositoryName, fallbackFork);
+
+                default:
+                    throw new Exception($"Unknown fork mode: {_forkMode}");
+            }
+        }
+
+        private async Task<ForkData> FindForkOrFallback(string userName, string repositoryName, ForkData originFork)
+        {
+            var userFork = await TryFindUserFork(userName, repositoryName, originFork);
+            if (userFork != null)
+            {
+                return userFork;
             }
 
             // as a fallback, we want to pull and push from the same origin repo.
-            var fallbackRepo = await _github.GetUserRepository(fallbackFork.Owner, repositoryName);
-            if (fallbackRepo != null && fallbackRepo.Permissions.Push)
+            var canUseOriginRepo = await IsPushableRepo(originFork);
+            if (canUseOriginRepo)
             {
-                _logger.Info($"No fork for user {userName}. Using fallback push fork for user {fallbackFork.Owner} at {fallbackFork.Uri}");
-                return fallbackFork;
+                _logger.Info($"No fork for user {userName}. Using origin fork for user {originFork.Owner} at {originFork.Uri}");
+                return originFork;
             }
 
             _logger.Error($"No pushable fork found for {repositoryName}");
             throw new Exception($"No pushable fork found for {repositoryName}");
+        }
+
+        private async Task<ForkData> FindUpstreamRepo(string repositoryName, ForkData originFork)
+        {
+            // Only want to pull and push from the same origin repo.
+            var canUseOriginRepo = await IsPushableRepo(originFork);
+            if (canUseOriginRepo)
+            {
+                _logger.Info($"Using origin push fork for user {originFork.Owner} at {originFork.Uri}");
+                return originFork;
+            }
+
+            // fall back to trying a fork?
+
+            _logger.Error($"No pushable fork found for {repositoryName}");
+            throw new Exception($"No pushable fork found for {repositoryName}");
+        }
+
+        private async Task<bool> IsPushableRepo(ForkData originFork)
+        {
+            var originRepo = await _github.GetUserRepository(originFork.Owner, originFork.Name);
+            return originRepo != null && originRepo.Permissions.Push;
         }
 
         private async Task<ForkData> TryFindUserFork(string userName, string repositoryName, ForkData fallbackFork)
