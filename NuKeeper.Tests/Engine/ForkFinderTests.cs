@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Engine
                 MakeSettings(), new NullNuKeeperLogger());
 
             Assert.ThrowsAsync<Exception>(async () =>
-                await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork));
+                await forkFinder.FindPushFork("testUser", fallbackFork));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github, 
                 MakeSettings(), new NullNuKeeperLogger());
 
-            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork, Is.EqualTo(fallbackFork));
@@ -57,7 +57,7 @@ namespace NuKeeper.Tests.Engine
                 MakeSettings(), new NullNuKeeperLogger());
 
             Assert.ThrowsAsync<Exception>(async () =>
-                await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork));
+                await forkFinder.FindPushFork("testUser", fallbackFork));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakeSettings(), new NullNuKeeperLogger());
 
-            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
             Assert.That(fork, Is.Not.EqualTo(fallbackFork));
             AssertForkMatchesRepo(fork, userRepo);
@@ -94,7 +94,7 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakeSettings(), new NullNuKeeperLogger());
 
-            var fork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
             Assert.That(fork, Is.EqualTo(fallbackFork));
         }
@@ -115,7 +115,7 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakeSettings(), new NullNuKeeperLogger());
 
-            var actualFork = await forkFinder.FindPushFork("testUser", "someRepo", fallbackFork);
+            var actualFork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
             await github.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
 

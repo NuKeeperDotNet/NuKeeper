@@ -20,24 +20,24 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<ForkData> FindPushFork(string userName, string repositoryName, ForkData fallbackFork)
+        public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
             switch (_forkMode)
             {
                 case ForkMode.PreferFork:
-                    return await FindForkOrFallback(userName, repositoryName, fallbackFork);
+                    return await FindForkOrFallback(userName, fallbackFork);
 
                 case ForkMode.PreferUpstream:
-                    return await FindUpstreamRepo(repositoryName, fallbackFork);
+                    return await FindUpstreamRepo(fallbackFork);
 
                 default:
                     throw new Exception($"Unknown fork mode: {_forkMode}");
             }
         }
 
-        private async Task<ForkData> FindForkOrFallback(string userName, string repositoryName, ForkData originFork)
+        private async Task<ForkData> FindForkOrFallback(string userName, ForkData originFork)
         {
-            var userFork = await TryFindUserFork(userName, repositoryName, originFork);
+            var userFork = await TryFindUserFork(userName, originFork);
             if (userFork != null)
             {
                 return userFork;
@@ -51,11 +51,11 @@ namespace NuKeeper.Engine
                 return originFork;
             }
 
-            _logger.Error($"No pushable fork found for {repositoryName}");
-            throw new Exception($"No pushable fork found for {repositoryName}");
+            _logger.Error($"No pushable fork found for {originFork.Name}");
+            throw new Exception($"No pushable fork found for {originFork.Name}");
         }
 
-        private async Task<ForkData> FindUpstreamRepo(string repositoryName, ForkData originFork)
+        private async Task<ForkData> FindUpstreamRepo(ForkData originFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(originFork);
@@ -67,8 +67,8 @@ namespace NuKeeper.Engine
 
             // fall back to trying a fork?
 
-            _logger.Error($"No pushable fork found for {repositoryName}");
-            throw new Exception($"No pushable fork found for {repositoryName}");
+            _logger.Error($"No pushable fork found for {originFork.Name}");
+            throw new Exception($"No pushable fork found for {originFork.Name}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
@@ -77,25 +77,25 @@ namespace NuKeeper.Engine
             return originRepo != null && originRepo.Permissions.Push;
         }
 
-        private async Task<ForkData> TryFindUserFork(string userName, string repositoryName, ForkData fallbackFork)
+        private async Task<ForkData> TryFindUserFork(string userName, ForkData originFork)
         {
-            var userFork = await _github.GetUserRepository(userName, repositoryName);
+            var userFork = await _github.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
-                if (RepoIsForkOf(userFork, fallbackFork.Uri.ToString()) && userFork.Permissions.Push)
+                if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.Permissions.Push)
                 {
-                    // the user has a suitable fork
+                    // the user has a pushable fork
                     return RepositoryToForkData(userFork);
                 }
 
                 // the user has a repo of that name, but it can't be used. 
                 // Don't try to create it
-                _logger.Info($"User '{userName}' fork of '{repositoryName}' exists but is unsuitable.");
+                _logger.Info($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable.");
                 return null;
             }
 
             // no user fork exists, try and create it as a fork of the main repo
-            var newFork = await _github.MakeUserFork(fallbackFork.Owner, repositoryName);
+            var newFork = await _github.MakeUserFork(originFork.Owner, originFork.Name);
             if (newFork != null)
             {
                 return RepositoryToForkData(newFork);
@@ -107,8 +107,8 @@ namespace NuKeeper.Engine
         private static bool RepoIsForkOf(Repository userRepo, string parentUri)
         {
             return userRepo.Fork &&
-                   !string.IsNullOrWhiteSpace(userRepo.Parent?.HtmlUrl) &&
-                   string.Equals(userRepo.Parent.HtmlUrl, parentUri, StringComparison.OrdinalIgnoreCase);
+                !string.IsNullOrWhiteSpace(userRepo.Parent?.HtmlUrl) &&
+                string.Equals(userRepo.Parent.HtmlUrl, parentUri, StringComparison.OrdinalIgnoreCase);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
