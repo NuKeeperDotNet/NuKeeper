@@ -28,7 +28,7 @@ namespace NuKeeper.Engine
                     return await FindForkOrFallback(userName, fallbackFork);
 
                 case ForkMode.PreferUpstream:
-                    return await FindUpstreamRepo(fallbackFork);
+                    return await FindUpstreamRepoOrFallback(userName, fallbackFork);
 
                 default:
                     throw new Exception($"Unknown fork mode: {_forkMode}");
@@ -55,7 +55,7 @@ namespace NuKeeper.Engine
             throw new Exception($"No pushable fork found for {originFork.Name}");
         }
 
-        private async Task<ForkData> FindUpstreamRepo(ForkData originFork)
+        private async Task<ForkData> FindUpstreamRepoOrFallback(string userName, ForkData originFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(originFork);
@@ -65,7 +65,12 @@ namespace NuKeeper.Engine
                 return originFork;
             }
 
-            // fall back to trying a fork?
+            // fall back to trying a fork
+            var userFork = await TryFindUserFork(userName, originFork);
+            if (userFork != null)
+            {
+                return userFork;
+            }
 
             _logger.Error($"No pushable fork found for {originFork.Name}");
             throw new Exception($"No pushable fork found for {originFork.Name}");

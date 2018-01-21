@@ -142,6 +142,30 @@ namespace NuKeeper.Tests.Engine
             Assert.That(fork, Is.EqualTo(fallbackFork));
         }
 
+        [Test]
+        public async Task PreferUpstreamModeWillUseForkWhenUpstreamIsUnsuitable()
+        {
+            var fallbackFork = DefaultFork();
+
+            var github = Substitute.For<IGithub>();
+
+            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+                .Returns(defaultRepo);
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            github.GetUserRepository("testUser", fallbackFork.Name)
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakePreferUpstreamSettings(), new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
+        }
 
         private ForkData DefaultFork()
         {
