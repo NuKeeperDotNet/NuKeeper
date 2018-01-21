@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
 
             var forkFinder = new ForkFinder(Substitute.For<IGithub>(),
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             Assert.ThrowsAsync<Exception>(async () =>
                 await forkFinder.FindPushFork("testUser", fallbackFork));
@@ -35,7 +35,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(defaultRepo);
 
             var forkFinder = new ForkFinder(github, 
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -54,14 +54,14 @@ namespace NuKeeper.Tests.Engine
                 .Returns(defaultRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             Assert.ThrowsAsync<Exception>(async () =>
                 await forkFinder.FindPushFork("testUser", fallbackFork));
         }
 
         [Test]
-        public async Task WhenSuitableUserForkIsFoundItIsUsed()
+        public async Task WhenSuitableUserForkIsFoundItIsUsedOverUpstream()
         {
             var fallbackFork = DefaultFork();
 
@@ -72,7 +72,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(userRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -92,7 +92,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(userRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -113,7 +113,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(userRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakeSettings(), new NullNuKeeperLogger());
+                MakePreferForkSettings(), new NullNuKeeperLogger());
 
             var actualFork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -122,6 +122,26 @@ namespace NuKeeper.Tests.Engine
             Assert.That(actualFork, Is.Not.Null);
             Assert.That(actualFork, Is.Not.EqualTo(fallbackFork));
         }
+
+        [Test]
+        public async Task PreferUpstreamModeWillNotPreferFork()
+        {
+            var fallbackFork = DefaultFork();
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            var github = Substitute.For<IGithub>();
+            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakePreferUpstreamSettings(), new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.EqualTo(fallbackFork));
+        }
+
 
         private ForkData DefaultFork()
         {
@@ -133,11 +153,19 @@ namespace NuKeeper.Tests.Engine
             return new ForkData(new Uri(RespositoryBuilder.NoMatchUrl), "testOrg", "someRepo");
         }
 
-        private UserSettings MakeSettings()
+        private UserSettings MakePreferForkSettings()
         {
             return new UserSettings
             {
                 ForkMode = ForkMode.PreferFork
+            };
+        }
+
+        private UserSettings MakePreferUpstreamSettings()
+        {
+            return new UserSettings
+            {
+                ForkMode = ForkMode.PreferUpstream
             };
         }
 
