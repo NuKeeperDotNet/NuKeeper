@@ -1,4 +1,4 @@
-﻿namespace NuKeeper.Engine
+﻿namespace NuKeeper.Configuration
 {
     public enum ForkMode
     {
