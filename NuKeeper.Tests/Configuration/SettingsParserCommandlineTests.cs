@@ -34,7 +34,17 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
-        public void ValidRepoCommandLineHasDefaultValues()
+        public void ValidRepoCommandLineHasDefaultGithubSettings()
+        {
+            var commandLine = ValidRepoCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
+        }
+
+        [Test]
+        public void ValidRepoCommandLineHasDefaultUserSettings()
         {
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
@@ -42,8 +52,8 @@ namespace NuKeeper.Tests.Configuration
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
-            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new [] {"https://api.nuget.org/v3/index.json"}));
+            Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 
         [Test]
@@ -80,6 +90,18 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
+        }
+
+        [Test]
+        public void ForkModeOverrideIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("fork=PreferUpstream");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferUpstream));
         }
 
         [Test]
@@ -216,7 +238,17 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
-        public void ValidOrgCommandLineHasDefaultValues()
+        public void ValidOrgCommandLineHasDefaultGithubValues()
+        {
+            var commandLine = ValidOrgCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
+        }
+
+        [Test]
+        public void ValidOrgCommandLineHasDefaultUserSettings()
         {
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
@@ -224,10 +256,9 @@ namespace NuKeeper.Tests.Configuration
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("https://api.github.com/")));
+            Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
-
 
         private static IEnumerable<string> ValidRepoCommandLine()
         {
