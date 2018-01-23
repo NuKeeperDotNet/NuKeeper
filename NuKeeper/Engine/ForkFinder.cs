@@ -22,12 +22,14 @@ namespace NuKeeper.Engine
 
         public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
+            _logger.Verbose($"FindPushFork. Fork Mode is {_forkMode}");
+
             switch (_forkMode)
             {
                 case ForkMode.PreferFork:
                     return await FindForkOrFallback(userName, fallbackFork);
 
-                case ForkMode.PreferUpstream:
+                case ForkMode.PreferSingleRepository:
                     return await FindUpstreamRepoOrFallback(userName, fallbackFork);
 
                 default:

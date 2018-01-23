@@ -54,6 +54,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 | nuget_sources                    | No                | Yes (`sources`)      | https://api.nuget.org/v3/index.json |
 | log_level                        | No                | Yes (`log`)          | Info                                |
 | allowed_version_change           | No                | Yes (`change`)       | Major                               |
+| fork_mode                        | No                | Yes (`fork`)         | PreferFork                          |
  
  * *github_api_endpoint* This is the api endpoint for the github instance you're targetting. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository. 
@@ -67,7 +68,9 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
     * If the allowed version change is `Major` (the default) you will get an update to the overall latest version, i.e. `2.0.0`. 
     * If you set the allowed version change to `Minor`, you will get an update to `1.3.0` as now changes to the major version number are not allowed. Version `1.2.4` is also allowed, but the largest allowed update is applied.
     * If the allowed version change is `Patch` you will only get an update to version `1.2.4`.
- 
+
+ * *fork_mode* Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below. 
+	
 
 ### Command-line arguments
 
@@ -84,6 +87,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 | exclude (e)                      | No                         |
 | sources                          | No                         |
 | change                           | No                         |
+| fork                             | No                         |
 
  * *mode* One of `repository` or `organisation`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
@@ -96,6 +100,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
  * *exclude* Do not consider packages matching this regex pattern.
  * *sources* Overrides `nuget_sources` in `config.json`.
  * *change* Overrides  `allowed_version_change` in `config.json`
+ * *fork* Overrides  `fork_mode` in `config.json`
 
 
 
@@ -126,17 +131,19 @@ but [bear in mind that `origin` is forked off `upstream`. `origin` is the workin
 
 ### There are two possible workflows:
 
-**One-repository workflow**. The pull fork and push fork are the same repository. NuKeeper will pull from the repository, branch locally, make a change,  and push a change back to a branch on the same repository, then PR back to the `master` branch.
+**Single-repository workflow**. The pull fork and push fork are the same repository. NuKeeper will pull from the repository, branch locally, make a change,  and push a change back to a branch on the same repository, then PR back to the `master` branch.
 
-**Two-repository workflow**. The pull fork and push fork are not the same repository. NuKeeper will pull from the upstream, branch locally, make a change, and push it back to a branch on the origin fork, then PR back to the `master` branch on the upstream.
+In this workflow, NuKeeper needs permission to push to the target repository.
 
-NuKeeper will use the two repository workflow if:
-- The user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there. 
+**Fork workflow**. The pull fork and push fork are not the same repository. NuKeeper will pull from the upstream, branch locally, make a change, and push it back to a branch on the origin fork, then PR back to the `master` branch on the upstream.
+
+This workflow can be used if:
+-  the user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there. 
 - Or the user does not have a repository with the right name, but it can be created as a fork of the target.
 
 This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist. 
 
-NuKeeper will fall back to the one repository workflow if it cannot use the two repository workflow, and we have permission to push to the target repository.
+The `ForkMode` option controls which workflow is preferred. options are `PreferFork` and `PreferSingleRepository`. If the preferred workflow cannot be used, it will fall back to trying the other.
 
 Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
 

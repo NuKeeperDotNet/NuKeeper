@@ -189,7 +189,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new UserSettings
             {
-                ForkMode = ForkMode.PreferUpstream
+                ForkMode = ForkMode.PreferSingleRepository
             };
         }
 

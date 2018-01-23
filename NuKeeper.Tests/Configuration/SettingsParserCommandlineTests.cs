@@ -96,12 +96,12 @@ namespace NuKeeper.Tests.Configuration
         public void ForkModeOverrideIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("fork=PreferUpstream");
+                .Append("fork=PreferSingleRepository");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferUpstream));
+            Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferSingleRepository));
         }
 
         [Test]

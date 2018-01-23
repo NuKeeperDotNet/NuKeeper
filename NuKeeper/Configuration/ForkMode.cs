@@ -3,6 +3,6 @@
     public enum ForkMode
     {
         PreferFork,
-        PreferUpstream
+        PreferSingleRepository
     }
 }
