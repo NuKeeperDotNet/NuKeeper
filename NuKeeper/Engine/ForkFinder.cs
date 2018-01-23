@@ -27,55 +27,55 @@ namespace NuKeeper.Engine
             switch (_forkMode)
             {
                 case ForkMode.PreferFork:
-                    return await FindForkOrFallback(userName, fallbackFork);
+                    return await FindUserForkOrUpstream(userName, fallbackFork);
 
                 case ForkMode.PreferSingleRepository:
-                    return await FindUpstreamRepoOrFallback(userName, fallbackFork);
+                    return await FindUpstreamRepoOrUserFork(userName, fallbackFork);
 
                 default:
                     throw new Exception($"Unknown fork mode: {_forkMode}");
             }
         }
 
-        private async Task<ForkData> FindForkOrFallback(string userName, ForkData originFork)
+        private async Task<ForkData> FindUserForkOrUpstream(string userName, ForkData pullFork)
         {
-            var userFork = await TryFindUserFork(userName, originFork);
+            var userFork = await TryFindUserFork(userName, pullFork);
             if (userFork != null)
             {
                 return userFork;
             }
 
             // as a fallback, we want to pull and push from the same origin repo.
-            var canUseOriginRepo = await IsPushableRepo(originFork);
+            var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Info($"No fork for user {userName}. Using origin fork for user {originFork.Owner} at {originFork.Uri}");
-                return originFork;
+                _logger.Info($"No fork for user {userName}. Using upstream fork for user {pullFork.Owner} at {pullFork.Uri}");
+                return pullFork;
             }
 
-            _logger.Error($"No pushable fork found for {originFork.Name}");
-            throw new Exception($"No pushable fork found for {originFork.Name}");
+            _logger.Error($"No pushable fork found for {pullFork.Name}");
+            throw new Exception($"No pushable fork found for {pullFork.Name}");
         }
 
-        private async Task<ForkData> FindUpstreamRepoOrFallback(string userName, ForkData originFork)
+        private async Task<ForkData> FindUpstreamRepoOrUserFork(string userName, ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.
-            var canUseOriginRepo = await IsPushableRepo(originFork);
+            var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Info($"Using origin push fork for user {originFork.Owner} at {originFork.Uri}");
-                return originFork;
+                _logger.Info($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
+                return pullFork;
             }
 
             // fall back to trying a fork
-            var userFork = await TryFindUserFork(userName, originFork);
+            var userFork = await TryFindUserFork(userName, pullFork);
             if (userFork != null)
             {
                 return userFork;
             }
 
-            _logger.Error($"No pushable fork found for {originFork.Name}");
-            throw new Exception($"No pushable fork found for {originFork.Name}");
+            _logger.Error($"No pushable fork found for {pullFork.Name}");
+            throw new Exception($"No pushable fork found for {pullFork.Name}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)

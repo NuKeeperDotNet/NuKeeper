@@ -124,7 +124,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public async Task PreferUpstreamModeWillNotPreferFork()
+        public async Task PreferSingleRepoModeWillNotPreferFork()
         {
             var fallbackFork = DefaultFork();
 
@@ -135,7 +135,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(userRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakePreferUpstreamSettings(), new NullNuKeeperLogger());
+                MakePreferSingleRepoSettings(), new NullNuKeeperLogger());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -143,7 +143,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public async Task PreferUpstreamModeWillUseForkWhenUpstreamIsUnsuitable()
+        public async Task PreferSingleRepoModeWillUseForkWhenUpstreamIsUnsuitable()
         {
             var fallbackFork = DefaultFork();
 
@@ -159,7 +159,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(userRepo);
 
             var forkFinder = new ForkFinder(github,
-                MakePreferUpstreamSettings(), new NullNuKeeperLogger());
+                MakePreferSingleRepoSettings(), new NullNuKeeperLogger());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
@@ -185,7 +185,7 @@ namespace NuKeeper.Tests.Engine
             };
         }
 
-        private UserSettings MakePreferUpstreamSettings()
+        private UserSettings MakePreferSingleRepoSettings()
         {
             return new UserSettings
             {
