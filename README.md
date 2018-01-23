@@ -147,9 +147,9 @@ The `ForkMode` option controls which workflow is preferred. options are `PreferF
 
 Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
 
-Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the two repository workflow. Contributing to an open-source project starts with forking the repo to your own github account.
+Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the fork workflow. Contributing to an open-source project starts with forking the repo to your own github account.
 
-Some organisations use the one-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
+Some organisations use the single-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
 
 ## Limitations and warnings
 
