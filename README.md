@@ -143,7 +143,7 @@ This workflow can be used if:
 
 This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist. 
 
-The `ForkMode` option controls which workflow is preferred. options are `PreferFork` and `PreferSingleRepository`. If the preferred workflow cannot be used, it will fall back to trying the other.
+The `ForkMode` option controls which workflow is preferred. Values are `PreferFork` and `PreferSingleRepository`. The default is `PreferFork`. If the preferred workflow cannot be used, it will fall back to trying the other.
 
 Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
 
