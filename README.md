@@ -69,8 +69,8 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
     * If you set the allowed version change to `Minor`, you will get an update to `1.3.0` as now changes to the major version number are not allowed. Version `1.2.4` is also allowed, but the largest allowed update is applied.
     * If the allowed version change is `Patch` you will only get an update to version `1.2.4`.
 
- * *fork_mode* Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below. 
-	
+ * *fork_mode* Values are `PreferFork` and `PreferSingleRepository`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below. 
+
 
 ### Command-line arguments
 
