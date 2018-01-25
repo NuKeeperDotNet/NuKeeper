@@ -51,6 +51,7 @@ namespace NuKeeper.Configuration
             var userPrefs = new UserSettings
             {
                 AllowedChange = settings.AllowedChange,
+                ForkMode = settings.ForkMode,
                 LogLevel = settings.LogLevel,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
                 NuGetSources = ReadNuGetSources(settings),

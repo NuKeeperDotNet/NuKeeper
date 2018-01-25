@@ -1,6 +1,7 @@
 using System;
 using EasyConfig;
 using EasyConfig.Attributes;
+using NuKeeper.Engine;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
@@ -46,5 +47,9 @@ namespace NuKeeper.Configuration
         [JsonConfig("allowed_version_change"), Default("Major")]
         [OverriddenBy(ConfigurationSources.CommandLine, "change")]
         public VersionChange AllowedChange;
+
+        [JsonConfig("fork_mode"), Default("PreferFork")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "fork")]
+        public ForkMode ForkMode;
     }
 }

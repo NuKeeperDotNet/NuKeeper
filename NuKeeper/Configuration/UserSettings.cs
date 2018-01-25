@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using NuKeeper.Engine;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
@@ -15,6 +16,8 @@ namespace NuKeeper.Configuration
         public int MaxPullRequestsPerRepository { get; set; }
 
         public VersionChange AllowedChange { get; set; }
+
+        public ForkMode ForkMode { get; set; }
 
         public LogLevel LogLevel { get; set; }
     }
