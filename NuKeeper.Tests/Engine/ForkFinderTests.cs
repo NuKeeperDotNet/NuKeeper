@@ -167,6 +167,49 @@ namespace NuKeeper.Tests.Engine
             AssertForkMatchesRepo(fork, userRepo);
         }
 
+        [Test]
+        public async Task SingleRepoOnlyModeWillNotPreferFork()
+        {
+            var fallbackFork = DefaultFork();
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            var github = Substitute.For<IGithub>();
+            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakeSingleRepoOnlySettings(), new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.EqualTo(fallbackFork));
+        }
+
+
+        [Test]
+        public void SingleRepoOnlyModeWillNotUseForkWhenUpstreamIsUnsuitable()
+        {
+            var fallbackFork = DefaultFork();
+
+            var github = Substitute.For<IGithub>();
+
+            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+                .Returns(defaultRepo);
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            github.GetUserRepository("testUser", fallbackFork.Name)
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakeSingleRepoOnlySettings(), new NullNuKeeperLogger());
+
+            Assert.ThrowsAsync<Exception>(async () =>
+                await forkFinder.FindPushFork("testUser", fallbackFork));
+        }
+
         private ForkData DefaultFork()
         {
             return new ForkData(new Uri(RespositoryBuilder.ParentUrl), "testOrg", "someRepo");
@@ -190,6 +233,14 @@ namespace NuKeeper.Tests.Engine
             return new UserSettings
             {
                 ForkMode = ForkMode.PreferSingleRepository
+            };
+        }
+
+        private UserSettings MakeSingleRepoOnlySettings()
+        {
+            return new UserSettings
+            {
+                ForkMode = ForkMode.SingleRepositoryOnly
             };
         }
 

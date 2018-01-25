@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using NuKeeper.Engine;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
