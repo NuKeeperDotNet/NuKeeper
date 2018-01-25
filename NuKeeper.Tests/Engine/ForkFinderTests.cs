@@ -20,8 +20,10 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(Substitute.For<IGithub>(),
                 MakePreferForkSettings(), new NullNuKeeperLogger());
 
-            Assert.ThrowsAsync<Exception>(async () =>
+            var ex = Assert.ThrowsAsync<Exception>(async () =>
                 await forkFinder.FindPushFork("testUser", fallbackFork));
+
+            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
         }
 
         [Test]
@@ -56,8 +58,9 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakePreferForkSettings(), new NullNuKeeperLogger());
 
-            Assert.ThrowsAsync<Exception>(async () =>
+            var ex = Assert.ThrowsAsync<Exception>(async () =>
                 await forkFinder.FindPushFork("testUser", fallbackFork));
+            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
         }
 
         [Test]
@@ -206,8 +209,10 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakeSingleRepoOnlySettings(), new NullNuKeeperLogger());
 
-            Assert.ThrowsAsync<Exception>(async () =>
+            var ex = Assert.ThrowsAsync<Exception>(async () =>
                 await forkFinder.FindPushFork("testUser", fallbackFork));
+
+            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
         }
 
         private ForkData DefaultFork()
