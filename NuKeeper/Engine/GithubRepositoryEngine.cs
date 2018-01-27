@@ -54,6 +54,11 @@ namespace NuKeeper.Engine
             var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
             var pushFork = await _forkFinder.FindPushFork(userName, pullFork);
 
+            if (pushFork == null)
+            {
+                throw new Exception($"No pushable fork found for {repository.GithubUri}");
+            }
+
             return new RepositoryData(pullFork, pushFork);
         }
     }

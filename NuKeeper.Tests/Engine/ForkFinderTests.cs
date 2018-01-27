@@ -13,17 +13,16 @@ namespace NuKeeper.Tests.Engine
     public class ForkFinderTests
     {
         [Test]
-        public void ThrowsWhenNoPushableForkCanBeFound()
+        public async Task ThrowsWhenNoPushableForkCanBeFound()
         {
             var fallbackFork = DefaultFork();
 
             var forkFinder = new ForkFinder(Substitute.For<IGithub>(),
                 MakePreferForkSettings(), new NullNuKeeperLogger());
 
-            var ex = Assert.ThrowsAsync<Exception>(async () =>
-                await forkFinder.FindPushFork("testUser", fallbackFork));
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
-            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
+            Assert.That(fork, Is.Null);
         }
 
         [Test]
@@ -46,7 +45,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void FallbackForkIsNotUsedWhenItIsNotPushable()
+        public async Task FallbackForkIsNotUsedWhenItIsNotPushable()
         {
             var fallbackFork = DefaultFork();
 
@@ -58,9 +57,9 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakePreferForkSettings(), new NullNuKeeperLogger());
 
-            var ex = Assert.ThrowsAsync<Exception>(async () =>
-                await forkFinder.FindPushFork("testUser", fallbackFork));
-            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Null);
         }
 
         [Test]
@@ -191,7 +190,7 @@ namespace NuKeeper.Tests.Engine
 
 
         [Test]
-        public void SingleRepoOnlyModeWillNotUseForkWhenUpstreamIsUnsuitable()
+        public async Task SingleRepoOnlyModeWillNotUseForkWhenUpstreamIsUnsuitable()
         {
             var fallbackFork = DefaultFork();
 
@@ -209,10 +208,9 @@ namespace NuKeeper.Tests.Engine
             var forkFinder = new ForkFinder(github,
                 MakeSingleRepoOnlySettings(), new NullNuKeeperLogger());
 
-            var ex = Assert.ThrowsAsync<Exception>(async () =>
-                await forkFinder.FindPushFork("testUser", fallbackFork));
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
 
-            Assert.That(ex.Message, Does.Contain("No pushable fork found"));
+            Assert.That(fork, Is.Null);
         }
 
         private ForkData DefaultFork()

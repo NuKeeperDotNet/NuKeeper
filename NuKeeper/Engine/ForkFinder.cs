@@ -97,8 +97,7 @@ namespace NuKeeper.Engine
 
         private void NoPushableForkFound(string name)
         {
-            _logger.Error($"No pushable fork found for {name}");
-            throw new Exception($"No pushable fork found for {name}");
+            _logger.Error($"No pushable fork found for {name} in mode {_forkMode}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
