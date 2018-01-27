@@ -33,9 +33,14 @@ namespace NuKeeper.Engine
         {
             try
             {
+                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
+                if (repo == null)
+                {
+                    return;
+                }
+
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
-                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
 
                 await _repositoryUpdater.Run(git, repo);
 
@@ -53,6 +58,12 @@ namespace NuKeeper.Engine
         {
             var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
             var pushFork = await _forkFinder.FindPushFork(userName, pullFork);
+
+            if (pushFork == null)
+            {
+                _logger.Info($"No pushable fork found for {repository.GithubUri}");
+                return null;
+            }
 
             return new RepositoryData(pullFork, pushFork);
         }
