@@ -69,7 +69,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
     * If you set the allowed version change to `Minor`, you will get an update to `1.3.0` as now changes to the major version number are not allowed. Version `1.2.4` is also allowed, but the largest allowed update is applied.
     * If the allowed version change is `Patch` you will only get an update to version `1.2.4`.
 
- * *fork_mode* Values are `PreferFork` and `PreferSingleRepository`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below. 
+ * *fork_mode* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below. 
 
 
 ### Command-line arguments
@@ -143,9 +143,13 @@ This workflow can be used if:
 
 This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist. 
 
-The `ForkMode` option controls which workflow is preferred. Values are `PreferFork` and `PreferSingleRepository`. The default is `PreferFork`. If the preferred workflow cannot be used, it will fall back to trying the other.
+The `ForkMode` option controls which workflows will be tried, and in what order. Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. The default is `PreferFork`. 
 
-Failing both of these, NuKeeper has nowhere to push to, and will therefore fail to process the repository.
+In `PreferFork` mode, both workflows will be tried, with the Fork workflow tried first. 
+In `PreferSingleRepository` mode, both workflows will be tried, with the single-repository workflow tried first. 
+In the `SingleRepositoryOnly`, only the single-repository workflow will be tried. 
+
+If NuKeeper does not find a repository to push to, it will fail to process the upstream repository.
 
 Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the fork workflow. Contributing to an open-source project starts with forking the repo to your own github account.
 

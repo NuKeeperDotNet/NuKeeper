@@ -32,6 +32,9 @@ namespace NuKeeper.Engine
                 case ForkMode.PreferSingleRepository:
                     return await FindUpstreamRepoOrUserFork(userName, fallbackFork);
 
+                case ForkMode.SingleRepositoryOnly:
+                    return await FindUpstreamRepoOnly(userName, fallbackFork);
+
                 default:
                     throw new Exception($"Unknown fork mode: {_forkMode}");
             }
@@ -53,13 +56,13 @@ namespace NuKeeper.Engine
                 return pullFork;
             }
 
-            _logger.Error($"No pushable fork found for {pullFork.Name}");
-            throw new Exception($"No pushable fork found for {pullFork.Name}");
+            NoPushableForkFound(pullFork.Name);
+            return null;
         }
 
         private async Task<ForkData> FindUpstreamRepoOrUserFork(string userName, ForkData pullFork)
         {
-            // Only want to pull and push from the same origin repo.
+            // prefer to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
@@ -74,8 +77,28 @@ namespace NuKeeper.Engine
                 return userFork;
             }
 
-            _logger.Error($"No pushable fork found for {pullFork.Name}");
-            throw new Exception($"No pushable fork found for {pullFork.Name}");
+            NoPushableForkFound(pullFork.Name);
+            return null;
+        }
+
+        private async Task<ForkData> FindUpstreamRepoOnly(string userName, ForkData pullFork)
+        {
+            // Only want to pull and push from the same origin repo.
+            var canUseOriginRepo = await IsPushableRepo(pullFork);
+            if (canUseOriginRepo)
+            {
+                _logger.Info($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
+                return pullFork;
+            }
+
+            NoPushableForkFound(pullFork.Name);
+            return null;
+        }
+
+        private void NoPushableForkFound(string name)
+        {
+            _logger.Error($"No pushable fork found for {name}");
+            throw new Exception($"No pushable fork found for {name}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
