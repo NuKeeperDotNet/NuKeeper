@@ -1,6 +1,7 @@
 ﻿using NuKeeper.RepositoryInspection;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NuKeeper.Engine.Report
 {
@@ -22,12 +23,19 @@ namespace NuKeeper.Engine.Report
 
         private void WriteHeading(StreamWriter writer)
         {
-            writer.WriteLine("Package Id");
+            writer.WriteLine("Package id,Usage count,Versions in use,Lowest version in use, Highest Version in use,Highest available,Package source");
         }
 
         private void WriteLine(StreamWriter writer, PackageUpdateSet update)
         {
-            writer.WriteLine(update.PackageId);
+            var occurences = update.CurrentPackages.Count;
+            var versionsInUse = update.CurrentPackages
+                .Select(p => p.Version);
+
+            var lowest = versionsInUse.Min();
+            var highest = versionsInUse.Max();
+
+            writer.WriteLine($"{update.PackageId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.Highest},{update.PackageSource}");
         }
 
         private StreamWriter MakeOutputStream()
