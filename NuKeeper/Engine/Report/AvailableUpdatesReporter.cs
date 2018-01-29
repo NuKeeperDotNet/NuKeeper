@@ -7,9 +7,9 @@ namespace NuKeeper.Engine.Report
 {
     public class AvailableUpdatesReporter: IAvailableUpdatesReporter
     {
-        public void Report(List<PackageUpdateSet> updates)
+        public void Report(string name, List<PackageUpdateSet> updates)
         {
-            using (var writer = MakeOutputStream())
+            using (var writer = MakeOutputStream(name))
             {
                 WriteHeading(writer);
                 foreach (var update in updates)
@@ -30,7 +30,8 @@ namespace NuKeeper.Engine.Report
         {
             var occurences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
-                .Select(p => p.Version);
+                .Select(p => p.Version)
+                .ToList();
 
             var lowest = versionsInUse.Min();
             var highest = versionsInUse.Max();
@@ -38,9 +39,10 @@ namespace NuKeeper.Engine.Report
             writer.WriteLine($"{update.PackageId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.Highest},{update.NewPackage.Version},{update.PackageSource}");
         }
 
-        private StreamWriter MakeOutputStream()
+        private StreamWriter MakeOutputStream(string name)
         {
-            var output = new FileStream("nukeeeper_report.csv", FileMode.OpenOrCreate);
+            var fileName = name + "_nukeeeper_report.csv";
+            var output = new FileStream(fileName, FileMode.OpenOrCreate);
             return new StreamWriter(output);
         }
     }

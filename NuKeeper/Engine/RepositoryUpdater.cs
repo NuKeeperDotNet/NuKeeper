@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
 
             var updates = await FindPackageUpdateSets(git);
 
-            availableUpdatesReporter.Report(updates);
+            availableUpdatesReporter.Report(repository.Pull.Name, updates);
 
             if (updates.Count == 0)
             {
