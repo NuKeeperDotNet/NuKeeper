@@ -218,7 +218,7 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
             var newPackage = NewPackageFooBar123();
-            return new PackageUpdateSet(newPackage, 
+            return new PackageUpdateSet(newPackage,
                 "someSource",
                 newPackage.Version,
                 VersionChange.Major,

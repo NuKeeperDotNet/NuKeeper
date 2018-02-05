@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Engine.Packages;
+using NuKeeper.Engine.Report;
 using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
@@ -17,6 +18,7 @@ namespace NuKeeper.Engine
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
+        private readonly IAvailableUpdatesReporter availableUpdatesReporter;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
@@ -24,7 +26,8 @@ namespace NuKeeper.Engine
             IPackageUpdater packageUpdater,
             IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger,
-            SolutionsRestore solutionsRestore)
+            SolutionsRestore solutionsRestore,
+            IAvailableUpdatesReporter availableUpdatesReporter)
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;
@@ -32,6 +35,7 @@ namespace NuKeeper.Engine
             _repositoryScanner = repositoryScanner;
             _logger = logger;
             _solutionsRestore = solutionsRestore;
+            this.availableUpdatesReporter = availableUpdatesReporter;
         }
 
         public async Task Run(IGitDriver git, RepositoryData repository)
@@ -39,6 +43,8 @@ namespace NuKeeper.Engine
             GitInit(git, repository);
 
             var updates = await FindPackageUpdateSets(git);
+
+            availableUpdatesReporter.Report(repository.Pull.Name, updates);
 
             if (updates.Count == 0)
             {

@@ -2,6 +2,7 @@
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
+using NuKeeper.Engine.Report;
 using NuKeeper.Files;
 using NuKeeper.Github;
 using NuKeeper.Logging;
@@ -44,6 +45,7 @@ namespace NuKeeper
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
             container.Register<IPackageUpdater, PackageUpdater>();
+            container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
             container.Register<IForkFinder, ForkFinder>();
 
             return container;
