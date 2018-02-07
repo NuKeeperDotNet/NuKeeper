@@ -1,0 +1,21 @@
+# editorconfig.org
+root = true
+
+[*]
+indent_style = space
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{config,csproj,dotsettings,json,md,ncrunch*,xml,xsd}]
+indent_size = 2
+
+[*.cs]
+indent_size = 4
+
+[*.lock]
+end_of_line = lf
+
+[*.sln]
+indent_style = tab
