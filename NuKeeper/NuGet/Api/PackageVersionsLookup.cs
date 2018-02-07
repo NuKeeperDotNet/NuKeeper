@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -35,7 +35,7 @@ namespace NuKeeper.NuGet.Api
             var sourceRepository = BuildSourceRepository(source);
             var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
             var metadatas = await FindPackage(metadataResource, packageName);
-            return metadatas.Select(m => new PackageSearchMedatadata(m.Identity, source));
+            return metadatas.Select(m => new PackageSearchMedatadata(m.Identity, source, m.Published));
         }
 
         private static SourceRepository BuildSourceRepository(string source)

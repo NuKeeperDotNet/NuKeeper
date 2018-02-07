@@ -7,7 +7,8 @@ namespace NuKeeper.NuGet.Api
     {
         public PackageSearchMedatadata(
             PackageIdentity identity,
-            string source)
+            string source,
+            DateTimeOffset? published)
         {
             if (identity == null)
             {
@@ -21,9 +22,11 @@ namespace NuKeeper.NuGet.Api
 
             Identity = identity;
             Source = source;
+            Published = published;
         }
 
         public PackageIdentity Identity { get; }
         public string Source { get; }
+        public DateTimeOffset? Published { get; }
     }
 }
