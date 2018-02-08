@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
@@ -85,8 +85,7 @@ namespace NuKeeper.Tests.NuGet.Api
         {
             var version = new NuGetVersion(major, minor, patch);
             var metadata = new PackageIdentity("TestPackage", version);
-            return new PackageSearchMedatadata(metadata, "someSource");
+            return new PackageSearchMedatadata(metadata, "someSource", DateTimeOffset.Now);
         }
     }
 }
-        

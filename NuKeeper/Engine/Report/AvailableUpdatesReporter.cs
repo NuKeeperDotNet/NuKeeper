@@ -1,5 +1,7 @@
+using System;
 using NuKeeper.RepositoryInspection;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -23,7 +25,7 @@ namespace NuKeeper.Engine.Report
 
         private void WriteHeading(StreamWriter writer)
         {
-            writer.WriteLine("Package id,Usage count,Versions in use,Lowest version in use, Highest Version in use,Highest available,Package source");
+            writer.WriteLine("Package id,Usage count,Versions in use,Lowest version in use,Highest Version in use,Highest available,Package source");
         }
 
         private void WriteLine(StreamWriter writer, PackageUpdateSet update)
@@ -44,6 +46,18 @@ namespace NuKeeper.Engine.Report
             var fileName = name + "_nukeeeper_report.csv";
             var output = new FileStream(fileName, FileMode.OpenOrCreate);
             return new StreamWriter(output);
+        }
+
+        private static string ToUtcIso8601(DateTimeOffset? source)
+        {
+            if (!source.HasValue)
+            {
+                return string.Empty;
+            }
+
+            const string iso8601Format = "yyyy-MM-ddTHH\\:mm\\:ss";
+            var utcValue = source.Value.ToUniversalTime();
+            return string.Concat(utcValue.ToString(iso8601Format, CultureInfo.InvariantCulture), "Z");
         }
     }
 }
