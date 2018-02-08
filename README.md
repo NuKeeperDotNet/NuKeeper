@@ -8,7 +8,11 @@ Automagically generate pull requests to update NuGet packages in .NET projects.
 
 ## Why
  
-Because .Net devs are bad at applying NuGet package updates.
+Because .Net developers are bad at applying NuGet package updates. 
+
+Why do we deploy code changes frequently but seldom update NuGet packages? In [Continuous delivery](https://en.wikipedia.org/wiki/Continuous_delivery), we know that there is a vicious cycle of "deploys are infrequent and contain lots of changes, therefore deploys are hard and dangerous, therefore deploys are infrequent and contain lots of changes" and a virtuous cycle of "deploys are frequent and contain incremental changes, therefore deploys are easy and low risk, therefore deploys are frequent and contain incremental changes" and so we work hard to move into the second cycle, and afterwards, life is easier.
+
+But NuGet package updates are a form of change that should be deployed, and we want to change the model from "package updates are infrequent and contain lots of package changes, therefore are hard and dangerous..." to "NuGet package updates are frequent and contain small changes, therefore NuGet package updates are easy and routine...".
 
 ## What
 
@@ -106,14 +110,14 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 
 ## When to use NuKeeper
 
-If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause.  Consider carefully whether you want to force your users to also update entire dependency chains.
+If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause. Consider carefully whether you want to force your users to also update entire dependency chains.
 
 e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the application using `MyFancyLib`. 
 [It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003). 
 
-Libraries should, however, update their packages when there is a breaking change in the features that they use or another compelling reason. e.g. `MyFancyLib` uses `Newtonsoft.Json` version `8.0.1`, but since it only calls `JsonConvert.DeserializeObject<>` many versions of `Newtonsoft.Json` can be used. 
-But now I am converting `MyFancyLib` to NetStandard for .Net Core. The lowest version of `Newtonsoft.Json` that supports this is `9.0.1`, so we use that. 
-Although there are later versions of `Newtonsoft.Json`, this gives `MyFancyLib` what it needs and allows clients the most choice within the constraint of supporting NetStandard.
+Libraries should, however, update their packages when there is a breaking change in the features that they use or another compelling reason. e.g. If `MyFancyLib` uses `Newtonsoft.Json` version `8.0.1`, but since it only calls `JsonConvert.DeserializeObject<>` many versions of `Newtonsoft.Json` can be used. 
+But now I am converting `MyFancyLib` to NetStandard for use in .NET Core. The lowest version of `Newtonsoft.Json` that supports this is `9.0.1`, so we use that. 
+Although there are later versions of `Newtonsoft.Json`, this gives `MyFancyLib` what it needs and allows clients the most choice within the constraint of supporting NetStandard. Another compelling reason to update a dependency would be if there is a bug fix that impacts the working of `MyFancyLib`, so users of `MyFancyLib` really should apply it.
 
 In an end-product deployable application, frequent updating of packages is a better tactic.
 Supported by comprehensive automated testing, regular updates will keep your application up to date with security fixes and prevent it from relying on potentially outdated libraries.
