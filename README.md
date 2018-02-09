@@ -8,13 +8,15 @@ Automagically generate pull requests to update NuGet packages in .NET projects.
 
 ## Why
  
-Because .Net developers are bad at applying NuGet package updates. 
+Because .Net developers are bad at applying NuGet package updates. To increase visibility of package updates, and decrease cycle time.
 
 Why do we deploy code changes frequently but seldom update NuGet packages? In [Continuous delivery](https://en.wikipedia.org/wiki/Continuous_delivery), we know that there is a vicious cycle of "deploys are infrequent and contain lots of changes, therefore deploys are hard and dangerous, therefore deploys are infrequent and contain lots of changes" and a virtuous cycle of "deploys are frequent and contain incremental changes, therefore deploys are easy and low risk, therefore deploys are frequent and contain incremental changes" and so we work hard to move into the second cycle, and afterwards, life is easier.
 
-But NuGet package updates are a form of change that should be deployed, and we want to change the model from "package updates are infrequent and contain lots of package changes, therefore are hard and dangerous..." to "NuGet package updates are frequent and contain small changes, therefore NuGet package updates are easy and routine...".
+But NuGet package updates are a form of change that should be deployed, and we likewise want to change the cycle from "NuGet package updates are infrequent and contain lots of package changes, therefore NuGet package updates are hard and dangerous..." to "NuGet package updates are frequent and contain small changes, therefore NuGet package updates are easy and routine...".
 
 ## What
+
+Automate the routine task of discovering and applying NuGet package updates.
 
 **NuKeeper** will compare the NuGet packages used in your solution to the latest versions available on [Nuget.org](https://www.nuget.org), and make PRs containing updates.
 
@@ -112,7 +114,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 
 If the project is a library that itself produces a NuGet package, it is usually best not to update it aggressively without cause. Consider carefully whether you want to force your users to also update entire dependency chains.
 
-e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_.   Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the application using `MyFancyLib`. 
+e.g. if `MyFancyLib` depends upon `Newtonsoft.Json` version `9.0.1` then an application that depends upon `MyFancyLib` can use `Newtonsoft.Json` version `9.0.1` _or a later version_. Updating the reference in `MyFancyLib` to `Newtonsoft.Json` version `10.0.3` takes away some flexibility in the application using `MyFancyLib`. 
 [It might even cause problems](https://github.com/Azure/azure-sdk-for-net/issues/3003). 
 
 Libraries should, however, update their packages when there is a breaking change in the features that they use or another compelling reason. e.g. If `MyFancyLib` uses `Newtonsoft.Json` version `8.0.1`, but since it only calls `JsonConvert.DeserializeObject<>` many versions of `Newtonsoft.Json` can be used. 
