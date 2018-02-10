@@ -25,7 +25,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new PackageUpdateSet(null, LatestFooMetadata(), VersionChange.Major, packages));
 
-            Assert.That(exception.ParamName, Is.EqualTo("newPackage"));
+            Assert.That(exception.ParamName, Is.EqualTo("match"));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var exception = Assert.Throws<ArgumentNullException>(() =>
                 new PackageUpdateSet(LatestFooMetadata(), null, VersionChange.Major, packages));
 
-            Assert.That(exception.ParamName, Is.EqualTo("newPackage"));
+            Assert.That(exception.ParamName, Is.EqualTo("highest"));
         }
 
         [Test]
@@ -63,19 +63,22 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void OneUpdate_IsValid()
         {
-            var newPackage = LatestVersionOfPackageFoo();
+            var fooVersionFour = new PackageIdentity("foo", VersionFour());
+            var highest = new PackageSearchMedatadata(fooVersionFour, ASource, DateTimeOffset.Now);
+
+            var match = LatestFooMetadata();
 
             var currentPackages = new List<PackageInProject>
             {
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(match, highest, VersionChange.Major, currentPackages);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
             Assert.That(updates.PackageId, Is.EqualTo("foo"));
-            Assert.That(updates.NewVersion, Is.EqualTo(newPackage.Version));
+            Assert.That(updates.NewVersion, Is.EqualTo(match.Identity.Version));
             Assert.That(updates.PackageSource, Is.EqualTo(ASource));
             Assert.That(updates.Highest, Is.EqualTo(VersionFour()));
             Assert.That(updates.AllowedChange, Is.EqualTo(VersionChange.Major));
