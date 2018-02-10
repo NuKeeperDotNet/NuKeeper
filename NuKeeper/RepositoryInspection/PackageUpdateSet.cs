@@ -9,23 +9,22 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        private readonly PackageSearchMedatadata _match;
         private readonly PackageSearchMedatadata _highest;
+        private readonly PackageSearchMedatadata _match;
 
-        public PackageUpdateSet(
-            PackageSearchMedatadata match,
+        public PackageUpdateSet(VersionChange allowedChange,
             PackageSearchMedatadata highest,
-            VersionChange allowedChange,
+            PackageSearchMedatadata match,
             IEnumerable<PackageInProject> currentPackages)
         {
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
-
             if (highest == null)
             {
                 throw new ArgumentNullException(nameof(highest));
+            }
+
+            if (match == null)
+            {
+                throw new ArgumentNullException(nameof(match));
             }
 
             if (currentPackages == null)

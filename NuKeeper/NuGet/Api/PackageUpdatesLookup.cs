@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -38,10 +38,8 @@ namespace NuKeeper.NuGet.Api
 
                 if (updatesForThisPackage.Count > 0)
                 {
-                    var updateSet = new PackageUpdateSet(
-                        match, latestPackage.Highest,
-                        latestPackage.AllowedChange,
-                        updatesForThisPackage);
+                    var updateSet = new PackageUpdateSet(latestPackage.AllowedChange,
+                        latestPackage.Highest, match, updatesForThisPackage);
                     results.Add(updateSet);
                 }
             }

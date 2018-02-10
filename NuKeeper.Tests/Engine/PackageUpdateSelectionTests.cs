@@ -202,9 +202,8 @@ namespace NuKeeper.Tests.Engine
 
             var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(latest, latest,
-                VersionChange.Major, 
-                currentPackages);
+            return new PackageUpdateSet(VersionChange.Major, 
+                latest, latest, currentPackages);
         }
 
         private PackageUpdateSet UpdateFooFromOneVersion()
@@ -222,9 +221,8 @@ namespace NuKeeper.Tests.Engine
             var matchVersion = new NuGetVersion("4.0.0");
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion), "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(match, latest,
-                VersionChange.Major,
-                currentPackages);
+            return new PackageUpdateSet(VersionChange.Major,
+                latest, match, currentPackages);
         }
 
         private PackageUpdateSet UpdateBarFromTwoVersions()
@@ -241,9 +239,8 @@ namespace NuKeeper.Tests.Engine
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
             var match = new PackageSearchMedatadata(matchId, "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(match, latest,
-                VersionChange.Major, 
-                currentPackages);
+            return new PackageUpdateSet(VersionChange.Major, 
+                latest, match, currentPackages);
         }
 
         private PackageIdentity LatestVersionOfPackageFoobar()

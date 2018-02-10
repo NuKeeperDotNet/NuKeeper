@@ -221,9 +221,8 @@ namespace NuKeeper.Tests.Engine
 
             var latest = new PackageSearchMedatadata(newPackage, "someSource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(latest, latest,
-                VersionChange.Major,
-                packages);
+            return new PackageUpdateSet(VersionChange.Major,
+                latest, latest, packages);
         }
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
@@ -234,9 +233,8 @@ namespace NuKeeper.Tests.Engine
             var match = new PackageSearchMedatadata(
                 NewPackageFooBar123(), "someSource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(match, latest,
-                VersionChange.Minor,
-                packages);
+            return new PackageUpdateSet(VersionChange.Minor,
+                latest, match, packages);
         }
 
         private static PackageIdentity NewPackageFooBar123()

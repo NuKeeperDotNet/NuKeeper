@@ -23,7 +23,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             };
 
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PackageUpdateSet(null, LatestFooMetadata(), VersionChange.Major, packages));
+                new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), null, packages));
 
             Assert.That(exception.ParamName, Is.EqualTo("match"));
         }
@@ -37,7 +37,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             };
 
             var exception = Assert.Throws<ArgumentNullException>(() =>
-                new PackageUpdateSet(LatestFooMetadata(), null, VersionChange.Major, packages));
+                new PackageUpdateSet(VersionChange.Major, null, LatestFooMetadata(), packages));
 
             Assert.That(exception.ParamName, Is.EqualTo("highest"));
         }
@@ -45,8 +45,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void NullPackages_IsNotAllowed()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(
-                LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, null));
+            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), null));
 
             Assert.That(exception.ParamName, Is.EqualTo("currentPackages"));
         }
@@ -54,9 +53,8 @@ namespace NuKeeper.Tests.RepositoryInspection
         [Test]
         public void EmptyPackages_IsNotAllowed()
         {
-            var exception = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
-                LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major,
-                Enumerable.Empty<PackageInProject>()));
+            var exception = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(VersionChange.Major,
+                LatestFooMetadata(), LatestFooMetadata(), Enumerable.Empty<PackageInProject>()));
             Assert.That(exception.ParamName, Is.EqualTo("currentPackages"));
         }
 
@@ -73,7 +71,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(match, highest, VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, highest, match, currentPackages);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
@@ -92,7 +90,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.0", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates.CurrentPackages, Is.Not.Null);
             Assert.That(updates.CurrentPackages.Count, Is.EqualTo(1));
@@ -110,7 +108,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
@@ -128,7 +126,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates.CurrentPackages, Is.Not.Null);
             var currents = updates.CurrentPackages.ToList();
@@ -149,8 +147,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
-            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
-                LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackageBar));
+            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackageBar));
         }
 
         [Test]
@@ -163,8 +160,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("fish", "1.0.0", PathToProjectOne())
             };
 
-            var ex = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
-                LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages));
+            var ex = Assert.Throws<ArgumentException>(() => new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages));
 
             Assert.That(ex.Message, Is.EqualTo("Updates must all be for package 'foo', got 'bar, fish'"));
         }
@@ -178,8 +174,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("bar", "1.0.0", PathToProjectOne())
             };
 
-            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(
-                LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackagesFooAndBar));
+            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackagesFooAndBar));
         }
 
         [Test]
@@ -190,7 +185,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectOne())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
         }
@@ -206,7 +201,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(1));
         }
@@ -222,7 +217,7 @@ namespace NuKeeper.Tests.RepositoryInspection
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var updates = new PackageUpdateSet(LatestFooMetadata(), LatestFooMetadata(), VersionChange.Major, currentPackages);
+            var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(2));
         }
