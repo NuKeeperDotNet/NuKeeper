@@ -57,6 +57,7 @@ namespace NuKeeper.RepositoryInspection
         public NuGetVersion NewVersion => NewPackage.Version;
         public string PackageSource => _match.Source;
         public NuGetVersion Highest=> _highest.Identity.Version;
+        public DateTimeOffset? HighestPublished => _highest.Published;
 
         public int CountCurrentVersions()
         {
