@@ -4,11 +4,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using NuKeeper.Logging;
 
 namespace NuKeeper.Engine.Report
 {
     public class AvailableUpdatesReporter: IAvailableUpdatesReporter
     {
+        private readonly INuKeeperLogger _logger;
+
+        public AvailableUpdatesReporter(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
         public void Report(string name, List<PackageUpdateSet> updates)
         {
             using (var writer = MakeOutputStream(name))
@@ -44,6 +52,9 @@ namespace NuKeeper.Engine.Report
         private StreamWriter MakeOutputStream(string name)
         {
             var fileName = name + "_nukeeeper_report.csv";
+
+            _logger.Verbose($"writing report to file at '{fileName}'");
+
             var output = new FileStream(fileName, FileMode.OpenOrCreate);
             return new StreamWriter(output);
         }
