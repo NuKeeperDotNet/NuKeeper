@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -142,7 +143,7 @@ namespace NuKeeper.Tests.NuGet.Api
         private static void ApiHasNewVersionForPackage(IApiPackageLookup lookup, string packageName)
         {
             var responseMetaData = new PackageSearchMedatadata(
-                new PackageIdentity(packageName, new NuGetVersion(2, 3, 4)), "test");
+                new PackageIdentity(packageName, new NuGetVersion(2, 3, 4)), "test", DateTimeOffset.Now);
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName), Arg.Any<VersionChange>())
                 .Returns(new PackageLookupResult(VersionChange.Major, responseMetaData, responseMetaData));

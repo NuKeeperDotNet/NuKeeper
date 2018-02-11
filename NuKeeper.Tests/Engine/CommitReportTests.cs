@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
@@ -218,20 +218,23 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
             var newPackage = NewPackageFooBar123();
-            return new PackageUpdateSet(newPackage,
-                "someSource",
-                newPackage.Version,
-                VersionChange.Major,
-                packages);
+
+            var latest = new PackageSearchMedatadata(newPackage, "someSource", DateTimeOffset.Now);
+
+            return new PackageUpdateSet(VersionChange.Major,
+                latest, latest, packages);
         }
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
-            return new PackageUpdateSet(NewPackageFooBar123(),
-                "someSource",
-                new NuGetVersion("2.3.4"),
-                VersionChange.Minor,
-                packages);
+            var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
+            var latest = new PackageSearchMedatadata(latestId, "someSource", DateTimeOffset.Now);
+
+            var match = new PackageSearchMedatadata(
+                NewPackageFooBar123(), "someSource", DateTimeOffset.Now);
+
+            return new PackageUpdateSet(VersionChange.Minor,
+                latest, match, packages);
         }
 
         private static PackageIdentity NewPackageFooBar123()

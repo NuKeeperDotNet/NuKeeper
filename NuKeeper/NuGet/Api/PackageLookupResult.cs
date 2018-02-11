@@ -1,10 +1,11 @@
-﻿namespace NuKeeper.NuGet.Api
+namespace NuKeeper.NuGet.Api
 {
     public class PackageLookupResult
     {
         public PackageLookupResult(
-            VersionChange allowedChange, 
-            PackageSearchMedatadata highest, PackageSearchMedatadata match)
+            VersionChange allowedChange,
+            PackageSearchMedatadata highest,
+            PackageSearchMedatadata match)
         {
             AllowedChange = allowedChange;
             Highest = highest;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
@@ -30,20 +30,16 @@ namespace NuKeeper.NuGet.Api
             foreach (var packageId in latestVersions.Keys)
             {
                 var latestPackage = latestVersions[packageId];
-                var identity = latestPackage.Match.Identity;
+                var match = latestPackage.Match;
 
                 var updatesForThisPackage = packages
-                    .Where(p => p.Id == packageId && p.Version < identity.Version)
+                    .Where(p => p.Id == packageId && p.Version < match.Identity.Version)
                     .ToList();
 
                 if (updatesForThisPackage.Count > 0)
                 {
-                    var updateSet = new PackageUpdateSet(
-                        identity,
-                        latestPackage.Match.Source,
-                        latestPackage.Highest.Identity.Version,
-                        latestPackage.AllowedChange,
-                        updatesForThisPackage);
+                    var updateSet = new PackageUpdateSet(latestPackage.AllowedChange,
+                        latestPackage.Highest, match, updatesForThisPackage);
                     results.Add(updateSet);
                 }
             }

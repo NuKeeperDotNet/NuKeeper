@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+using System;
+using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Logging;
@@ -35,7 +36,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var fooMetadata = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
-                "someSource");
+                "someSource", DateTimeOffset.Now);
 
             var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata);
 
@@ -56,7 +57,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var fooMetadata = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
-                "someSource");
+                "someSource", DateTimeOffset.Now);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata);
 
@@ -78,10 +79,10 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var fooMajor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
-                "someSource");
+                "someSource", DateTimeOffset.Now);
             var fooMinor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
-                "someSource");
+                "someSource", DateTimeOffset.Now);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor);
 
@@ -102,7 +103,7 @@ namespace NuKeeper.Tests.NuGet.Api
 
             var fooMajor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
-                "someSource");
+                "someSource", DateTimeOffset.Now);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null);
 
