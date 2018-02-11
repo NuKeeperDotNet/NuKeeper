@@ -1,15 +1,25 @@
-﻿using System;
+using System;
 using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
     public class RespositoryBuilder
     {
-        public const string ParentUrl = "http://repos.com/org/parent";
-        public const string ForkUrl = "http://repos.com/org/repo";
+        public const string ParentHtmlUrl = "http://repos.com/org/parent";
+        public const string ParentCloneUrl = "http://repos.com/org/parent.git";
+
+        public const string ForkHtmlUrl = "http://repos.com/org/repo";
+        public const string ForkCloneUrl = "http://repos.com/org/repo.git";
         public const string NoMatchUrl = "http://repos.com/org/nomatch";
 
-        public static Repository MakeRepository(string htmlUrl = ForkUrl, 
+        public static Repository MakeRepository(bool canPull, bool canPush)
+        {
+            return MakeRepository(ForkHtmlUrl, ForkCloneUrl, canPull, canPush);
+        }
+
+        public static Repository MakeRepository(
+            string forkHtmlkUrl = ForkHtmlUrl, 
+            string forGitkUrl = ForkHtmlUrl, 
             bool canPull = true, bool canPush = true)
         {
             const string omniUrl = "http://somewhere.com/fork";
@@ -23,7 +33,7 @@ namespace NuKeeper.Tests.Engine
             var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
-            return new Repository(omniUrl, htmlUrl, omniUrl, omniUrl, omniUrl, omniUrl, omniUrl,
+            return new Repository(omniUrl, forkHtmlkUrl, forGitkUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, parent,
@@ -42,7 +52,7 @@ namespace NuKeeper.Tests.Engine
 
             var perms = new RepositoryPermissions(false, true, true);
 
-            return new Repository(omniUrl, ParentUrl, omniUrl, omniUrl, omniUrl, omniUrl, omniUrl,
+            return new Repository(omniUrl, ParentHtmlUrl, ParentCloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now, perms, null,
                 null, false, false, false, false, 2, 122, true, true, true);

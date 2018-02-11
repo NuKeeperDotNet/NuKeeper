@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
@@ -50,7 +50,7 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
 
             var github = Substitute.For<IGithub>();
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
@@ -151,7 +151,7 @@ namespace NuKeeper.Tests.Engine
 
             var github = Substitute.For<IGithub>();
 
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
@@ -196,7 +196,7 @@ namespace NuKeeper.Tests.Engine
 
             var github = Substitute.For<IGithub>();
 
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
@@ -215,7 +215,7 @@ namespace NuKeeper.Tests.Engine
 
         private ForkData DefaultFork()
         {
-            return new ForkData(new Uri(RespositoryBuilder.ParentUrl), "testOrg", "someRepo");
+            return new ForkData(new Uri(RespositoryBuilder.ParentCloneUrl), "testOrg", "someRepo");
         }
 
         private ForkData NoMatchFork()
