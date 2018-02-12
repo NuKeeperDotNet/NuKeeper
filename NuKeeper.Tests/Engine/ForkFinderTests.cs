@@ -29,11 +29,11 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsUsedWhenItIsFound()
         {
             var fallbackFork = DefaultFork();
+            var fallbackRepoData = RespositoryBuilder.MakeRepository();
 
             var github = Substitute.For<IGithub>();
-            var defaultRepo = RespositoryBuilder.MakeRepository();
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
-                .Returns(defaultRepo);
+                .Returns(fallbackRepoData);
 
             var forkFinder = new ForkFinder(github, 
                 MakePreferForkSettings(), new NullNuKeeperLogger());
@@ -48,11 +48,11 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsNotUsedWhenItIsNotPushable()
         {
             var fallbackFork = DefaultFork();
+            var fallbackRepoData = RespositoryBuilder.MakeRepository(true, false);
 
             var github = Substitute.For<IGithub>();
-            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
-                .Returns(defaultRepo);
+                .Returns(fallbackRepoData);
 
             var forkFinder = new ForkFinder(github,
                 MakePreferForkSettings(), new NullNuKeeperLogger());
@@ -63,7 +63,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public async Task WhenSuitableUserForkIsFoundItIsUsedOverUpstream()
+        public async Task WhenSuitableUserForkIsFoundItIsUsedOverFallback()
         {
             var fallbackFork = DefaultFork();
 
@@ -252,7 +252,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork.Name, Is.EqualTo(repo.Name));
             Assert.That(fork.Owner, Is.EqualTo(repo.Owner.Login));
-            Assert.That(fork.Uri, Is.EqualTo(new Uri(repo.HtmlUrl)));
+            Assert.That(fork.Uri, Is.EqualTo(new Uri(repo.CloneUrl)));
         }
     }
 }
