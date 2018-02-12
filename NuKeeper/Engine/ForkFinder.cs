@@ -140,22 +140,14 @@ namespace NuKeeper.Engine
                 return false;
             }
 
-            var testParentCloneUrl = userRepo.Parent?.CloneUrl;
+            return UrlIsMatch(userRepo.Parent?.CloneUrl, parentUrl)
+                || UrlIsMatch(userRepo.Parent?.HtmlUrl, parentUrl);
+        }
 
-            if (!string.IsNullOrWhiteSpace(testParentCloneUrl) &&
-                string.Equals(testParentCloneUrl, parentUrl, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            var testParentHtmlUrl = userRepo.Parent?.HtmlUrl;
-            if (!string.IsNullOrWhiteSpace(testParentHtmlUrl) &&
-                string.Equals(testParentHtmlUrl, parentUrl, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+        private static bool UrlIsMatch(string test, string expected)
+        {
+            return !string.IsNullOrWhiteSpace(test) &&
+                string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
