@@ -18,8 +18,8 @@ namespace NuKeeper.Tests.Engine
         }
 
         public static Repository MakeRepository(
-            string forkHtmlkUrl = ForkHtmlUrl, 
-            string forGitkUrl = ForkHtmlUrl, 
+            string forkHtmlUrl = ForkHtmlUrl, 
+            string forkCloneUrl = ForkCloneUrl, 
             bool canPull = true, bool canPush = true)
         {
             const string omniUrl = "http://somewhere.com/fork";
@@ -33,14 +33,16 @@ namespace NuKeeper.Tests.Engine
             var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
-            return new Repository(omniUrl, forkHtmlkUrl, forGitkUrl, omniUrl, omniUrl, omniUrl, omniUrl,
+            return new Repository(omniUrl, forkHtmlUrl, forkCloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, parent,
                 null, false, false, false, false, 2, 122, true, true, true);
         }
 
-        public static Repository MakeParentRepo()
+        private static Repository MakeParentRepo(
+            string htmlUrl = ParentHtmlUrl,
+            string cloneUrl = ParentCloneUrl)
         {
             const string omniUrl = "http://somewhere.com/parent";
             var owner = new User(omniUrl, "test user", null, 0, "test inc",
@@ -52,7 +54,7 @@ namespace NuKeeper.Tests.Engine
 
             var perms = new RepositoryPermissions(false, true, true);
 
-            return new Repository(omniUrl, ParentHtmlUrl, ParentCloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
+            return new Repository(omniUrl, htmlUrl, cloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now, perms, null,
                 null, false, false, false, false, 2, 122, true, true, true);
