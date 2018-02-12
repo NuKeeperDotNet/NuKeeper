@@ -83,6 +83,26 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
+        public async Task WhenSuitableUserForkIsFound_ThatMatchesParentHtmlUrl_ItIsUsedOverFallback()
+        {
+            var fallbackFork = new ForkData(new Uri(RespositoryBuilder.ParentHtmlUrl), "testOrg", "someRepo");
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            var github = Substitute.For<IGithub>();
+            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakePreferForkSettings(), new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
+        }
+
+        [Test]
         public async Task WhenUnsuitableUserForkIsFoundItIsNotUsed()
         {
             var fallbackFork = NoMatchFork();

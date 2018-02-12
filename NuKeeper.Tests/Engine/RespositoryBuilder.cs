@@ -51,7 +51,6 @@ namespace NuKeeper.Tests.Engine
                 1, null, 0, 0,
                 1, omniUrl, null, false, "test", null);
 
-
             var perms = new RepositoryPermissions(false, true, true);
 
             return new Repository(omniUrl, htmlUrl, cloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
