@@ -135,10 +135,27 @@ namespace NuKeeper.Engine
 
         private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
         {
-            var testParentUrl = userRepo.Parent?.CloneUrl;
-            return userRepo.Fork &&
-                !string.IsNullOrWhiteSpace(testParentUrl) &&
-                string.Equals(testParentUrl, parentUrl, StringComparison.OrdinalIgnoreCase);
+            if (! userRepo.Fork)
+            {
+                return false;
+            }
+
+            var testParentCloneUrl = userRepo.Parent?.CloneUrl;
+
+            if (!string.IsNullOrWhiteSpace(testParentCloneUrl) &&
+                string.Equals(testParentCloneUrl, parentUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            var testParentHtmlUrl = userRepo.Parent?.HtmlUrl;
+            if (!string.IsNullOrWhiteSpace(testParentHtmlUrl) &&
+                string.Equals(testParentHtmlUrl, parentUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
