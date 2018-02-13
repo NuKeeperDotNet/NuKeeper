@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
@@ -29,11 +29,11 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsUsedWhenItIsFound()
         {
             var fallbackFork = DefaultFork();
+            var fallbackRepoData = RespositoryBuilder.MakeRepository();
 
             var github = Substitute.For<IGithub>();
-            var defaultRepo = RespositoryBuilder.MakeRepository();
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
-                .Returns(defaultRepo);
+                .Returns(fallbackRepoData);
 
             var forkFinder = new ForkFinder(github, 
                 MakePreferForkSettings(), new NullNuKeeperLogger());
@@ -48,11 +48,11 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsNotUsedWhenItIsNotPushable()
         {
             var fallbackFork = DefaultFork();
+            var fallbackRepoData = RespositoryBuilder.MakeRepository(true, false);
 
             var github = Substitute.For<IGithub>();
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
-                .Returns(defaultRepo);
+                .Returns(fallbackRepoData);
 
             var forkFinder = new ForkFinder(github,
                 MakePreferForkSettings(), new NullNuKeeperLogger());
@@ -63,9 +63,29 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public async Task WhenSuitableUserForkIsFoundItIsUsedOverUpstream()
+        public async Task WhenSuitableUserForkIsFoundItIsUsedOverFallback()
         {
             var fallbackFork = DefaultFork();
+
+            var userRepo = RespositoryBuilder.MakeRepository();
+
+            var github = Substitute.For<IGithub>();
+            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new ForkFinder(github,
+                MakePreferForkSettings(), new NullNuKeeperLogger());
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
+        }
+
+        [Test]
+        public async Task WhenSuitableUserForkIsFound_ThatMatchesParentHtmlUrl_ItIsUsedOverFallback()
+        {
+            var fallbackFork = new ForkData(new Uri(RespositoryBuilder.ParentHtmlUrl), "testOrg", "someRepo");
 
             var userRepo = RespositoryBuilder.MakeRepository();
 
@@ -151,7 +171,7 @@ namespace NuKeeper.Tests.Engine
 
             var github = Substitute.For<IGithub>();
 
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
@@ -196,7 +216,7 @@ namespace NuKeeper.Tests.Engine
 
             var github = Substitute.For<IGithub>();
 
-            var defaultRepo = RespositoryBuilder.MakeRepository("http://a.com", true, false);
+            var defaultRepo = RespositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
@@ -215,7 +235,7 @@ namespace NuKeeper.Tests.Engine
 
         private ForkData DefaultFork()
         {
-            return new ForkData(new Uri(RespositoryBuilder.ParentUrl), "testOrg", "someRepo");
+            return new ForkData(new Uri(RespositoryBuilder.ParentCloneUrl), "testOrg", "someRepo");
         }
 
         private ForkData NoMatchFork()
@@ -252,7 +272,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork.Name, Is.EqualTo(repo.Name));
             Assert.That(fork.Owner, Is.EqualTo(repo.Owner.Login));
-            Assert.That(fork.Uri, Is.EqualTo(new Uri(repo.HtmlUrl)));
+            Assert.That(fork.Uri, Is.EqualTo(new Uri(repo.CloneUrl)));
         }
     }
 }

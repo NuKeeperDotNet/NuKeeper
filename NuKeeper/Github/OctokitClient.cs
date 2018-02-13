@@ -46,7 +46,7 @@ namespace NuKeeper.Github
             try
             {
                 var result = await _client.Repository.Get(userName, repositoryName);
-                _logger.Info($"User fork found at {result.GitUrl}  for {result.Owner.Login}");
+                _logger.Info($"User fork found at {result.GitUrl} for {result.Owner.Login}");
                 return result;
             }
             catch (NotFoundException)

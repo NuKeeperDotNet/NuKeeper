@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
@@ -33,7 +33,7 @@ namespace NuKeeper.Engine
                     return await FindUpstreamRepoOrUserFork(userName, fallbackFork);
 
                 case ForkMode.SingleRepositoryOnly:
-                    return await FindUpstreamRepoOnly(userName, fallbackFork);
+                    return await FindUpstreamRepoOnly(fallbackFork);
 
                 default:
                     throw new Exception($"Unknown fork mode: {_forkMode}");
@@ -81,7 +81,7 @@ namespace NuKeeper.Engine
             return null;
         }
 
-        private async Task<ForkData> FindUpstreamRepoOnly(string userName, ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOnly(ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -133,16 +133,26 @@ namespace NuKeeper.Engine
             return null;
         }
 
-        private static bool RepoIsForkOf(Repository userRepo, string parentUri)
+        private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
         {
-            return userRepo.Fork &&
-                !string.IsNullOrWhiteSpace(userRepo.Parent?.HtmlUrl) &&
-                string.Equals(userRepo.Parent.HtmlUrl, parentUri, StringComparison.OrdinalIgnoreCase);
+            if (! userRepo.Fork)
+            {
+                return false;
+            }
+
+            return UrlIsMatch(userRepo.Parent?.CloneUrl, parentUrl)
+                || UrlIsMatch(userRepo.Parent?.HtmlUrl, parentUrl);
+        }
+
+        private static bool UrlIsMatch(string test, string expected)
+        {
+            return !string.IsNullOrWhiteSpace(test) &&
+                string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
         {
-            return new ForkData(new Uri(repo.HtmlUrl), repo.Owner.Login, repo.Name);
+            return new ForkData(new Uri(repo.CloneUrl), repo.Owner.Login, repo.Name);
         }
     }
 }
