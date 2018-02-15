@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
             {
                 foreach (var current in updateSet.CurrentPackages)
                 {
-                    details.AppendLine($"{updateSet.PackageId} from {current.Version} to {updateSet.NewVersion} in {current.Path.RelativePath}");
+                    details.AppendLine($"{updateSet.MatchId} from {current.Version} to {updateSet.MatchVersion} in {current.Path.RelativePath}");
                 }
             }
             return new LogData
@@ -55,7 +55,7 @@ namespace NuKeeper.Engine
                 .Select(u => u.Version.ToString())
                 .Distinct();
 
-            return $"Updating '{updateSet.PackageId}' from {oldVersions.JoinWithCommas()} to {updateSet.NewVersion} in {updateSet.CurrentPackages.Count} projects";
+            return $"Updating '{updateSet.MatchId}' from {oldVersions.JoinWithCommas()} to {updateSet.MatchVersion} in {updateSet.CurrentPackages.Count} projects";
         }
     }
 }

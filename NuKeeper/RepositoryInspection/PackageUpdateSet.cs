@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.NuGet.Api;
 
@@ -9,9 +8,6 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        private readonly PackageSearchMedatadata _highest;
-        private readonly PackageSearchMedatadata _match;
-
         public PackageUpdateSet(VersionChange allowedChange,
             PackageSearchMedatadata highest,
             PackageSearchMedatadata match,
@@ -39,24 +35,24 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
-            _match = match;
-            _highest = highest;
             AllowedChange = allowedChange;
+            Highest = highest;
+            Match = match;
             CurrentPackages = currentPackagesList;
 
             CheckIdConsistency();
         }
 
         public VersionChange AllowedChange { get; }
+        public PackageSearchMedatadata Highest { get; }
+        public PackageSearchMedatadata Match { get; }
+
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
-        public PackageIdentity NewPackage => _match.Identity;
+        public string MatchId => Match.Identity.Id;
+        public NuGetVersion MatchVersion => Match.Identity.Version;
 
-        public string PackageId => NewPackage.Id;
-        public NuGetVersion NewVersion => NewPackage.Version;
-        public string PackageSource => _match.Source;
-        public NuGetVersion Highest=> _highest.Identity.Version;
-        public DateTimeOffset? HighestPublished => _highest.Published;
+        public NuGetVersion HighestVersion=> Highest.Identity.Version;
 
         public int CountCurrentVersions()
         {
@@ -68,14 +64,14 @@ namespace NuKeeper.RepositoryInspection
 
         private void CheckIdConsistency()
         {
-            if (CurrentPackages.Any(p => p.Id != NewPackage.Id))
+            if (CurrentPackages.Any(p => p.Id != MatchId))
             {
                 var errorIds = CurrentPackages
                     .Select(p => p.Id)
                     .Distinct()
-                    .Where(id => id != NewPackage.Id);
+                    .Where(id => id != MatchId);
 
-                throw new ArgumentException($"Updates must all be for package '{NewPackage.Id}', got '{errorIds.JoinWithCommas()}'");
+                throw new ArgumentException($"Updates must all be for package '{MatchId}', got '{errorIds.JoinWithCommas()}'");
             }
         }
     }

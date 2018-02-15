@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text;
 using NuKeeper.RepositoryInspection;
 
@@ -9,7 +9,7 @@ namespace NuKeeper.Engine
         private const string CommitEmoji = "package";
         public static string MakePullRequestTitle(PackageUpdateSet updates)
         {
-            return $"Automatic update of {updates.PackageId} to {updates.NewVersion}";
+            return $"Automatic update of {updates.MatchId} to {updates.MatchVersion}";
         }
 
         public static string MakeCommitMessage(PackageUpdateSet updates)
@@ -25,8 +25,8 @@ namespace NuKeeper.Engine
                 .Select(v => CodeQuote(v.ToString()))
                 .ToList();
  
-            var newVersion = CodeQuote(updates.NewVersion.ToString());
-            var packageId = CodeQuote(updates.PackageId);
+            var newVersion = CodeQuote(updates.MatchVersion.ToString());
+            var packageId = CodeQuote(updates.MatchId);
 
             var builder = new StringBuilder();
 
@@ -40,11 +40,11 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
-            var highestVersion = updates.Highest;
-            if (highestVersion != null && (highestVersion > updates.NewVersion))
+            var highestVersion = updates.HighestVersion;
+            if (highestVersion != null && (highestVersion > updates.MatchVersion))
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());
-                var highest = CodeQuote(updates.PackageId + " " + highestVersion);
+                var highest = CodeQuote(updates.MatchId + " " + highestVersion);
                 builder.AppendLine(
                     $"There is also a higher version, {highest}, but this was not applied as only {allowedChange} version changes are allowed.");
             }
@@ -60,7 +60,7 @@ namespace NuKeeper.Engine
 
             foreach (var current in updates.CurrentPackages)
             {
-                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.NewVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
+                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.MatchVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
                 builder.AppendLine(line);
             }
 

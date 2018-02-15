@@ -74,11 +74,12 @@ namespace NuKeeper.Tests.RepositoryInspection
             var updates = new PackageUpdateSet(VersionChange.Major, highest, match, currentPackages);
 
             Assert.That(updates, Is.Not.Null);
-            Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
-            Assert.That(updates.PackageId, Is.EqualTo("foo"));
-            Assert.That(updates.NewVersion, Is.EqualTo(match.Identity.Version));
-            Assert.That(updates.PackageSource, Is.EqualTo(ASource));
-            Assert.That(updates.Highest, Is.EqualTo(VersionFour()));
+            Assert.That(updates.Match, Is.Not.Null);
+            Assert.That(updates.Match.Identity, Is.EqualTo(LatestVersionOfPackageFoo()));
+            Assert.That(updates.MatchId, Is.EqualTo("foo"));
+            Assert.That(updates.MatchVersion, Is.EqualTo(match.Identity.Version));
+            Assert.That(updates.Match.Source, Is.EqualTo(ASource));
+            Assert.That(updates.HighestVersion, Is.EqualTo(VersionFour()));
             Assert.That(updates.AllowedChange, Is.EqualTo(VersionChange.Major));
         }
 
@@ -111,10 +112,11 @@ namespace NuKeeper.Tests.RepositoryInspection
             var updates = new PackageUpdateSet(VersionChange.Major, LatestFooMetadata(), LatestFooMetadata(), currentPackages);
 
             Assert.That(updates, Is.Not.Null);
-            Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
+            Assert.That(updates.Match, Is.Not.Null);
+            Assert.That(updates.Match.Identity, Is.EqualTo(LatestVersionOfPackageFoo()));
 
-            Assert.That(updates.PackageId, Is.EqualTo("foo"));
-            Assert.That(updates.NewVersion, Is.EqualTo(newPackage.Version));
+            Assert.That(updates.MatchId, Is.EqualTo("foo"));
+            Assert.That(updates.MatchVersion, Is.EqualTo(newPackage.Version));
         }
 
         [Test]
