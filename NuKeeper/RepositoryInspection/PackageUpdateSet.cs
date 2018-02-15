@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.NuGet.Api;
 
@@ -50,10 +49,8 @@ namespace NuKeeper.RepositoryInspection
 
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
-        public PackageIdentity NewPackage => Match.Identity;
-
-        public string PackageId => Match.Identity.Id;
-        public NuGetVersion NewVersion => Match.Identity.Version;
+        public string MatchId => Match.Identity.Id;
+        public NuGetVersion MatchVersion => Match.Identity.Version;
 
         public NuGetVersion HighestVersion=> Highest.Identity.Version;
 
@@ -67,14 +64,14 @@ namespace NuKeeper.RepositoryInspection
 
         private void CheckIdConsistency()
         {
-            if (CurrentPackages.Any(p => p.Id != NewPackage.Id))
+            if (CurrentPackages.Any(p => p.Id != MatchId))
             {
                 var errorIds = CurrentPackages
                     .Select(p => p.Id)
                     .Distinct()
-                    .Where(id => id != NewPackage.Id);
+                    .Where(id => id != MatchId);
 
-                throw new ArgumentException($"Updates must all be for package '{NewPackage.Id}', got '{errorIds.JoinWithCommas()}'");
+                throw new ArgumentException($"Updates must all be for package '{MatchId}', got '{errorIds.JoinWithCommas()}'");
             }
         }
     }

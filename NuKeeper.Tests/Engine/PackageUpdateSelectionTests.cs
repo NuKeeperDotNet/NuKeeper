@@ -41,7 +41,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+            Assert.That(results[0].MatchId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+            Assert.That(results[0].MatchId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+            Assert.That(results[0].MatchId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+            Assert.That(results[0].MatchId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+            Assert.That(results[0].MatchId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("foo"));
+            Assert.That(results[0].MatchId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace NuKeeper.Tests.Engine
             var results = target.SelectTargets(git, updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].PackageId, Is.EqualTo("bar"));
+            Assert.That(results[0].MatchId, Is.EqualTo("bar"));
             git.Received().BranchExists(Arg.Any<string>());
         }
 

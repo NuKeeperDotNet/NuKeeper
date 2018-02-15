@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NuKeeper.Configuration;
@@ -44,7 +44,7 @@ namespace NuKeeper.Engine.Packages
 
             foreach (var updateSet in capped)
             {
-                _logger.Info($"Selected package update of {updateSet.PackageId} to {updateSet.NewVersion}");
+                _logger.Info($"Selected package update of {updateSet.MatchId} to {updateSet.MatchVersion}");
             }
 
             return capped;
@@ -64,12 +64,12 @@ namespace NuKeeper.Engine.Packages
 
         private static bool MatchesInclude(Regex regex, PackageUpdateSet packageUpdateSet)
         {
-            return regex == null || regex.IsMatch(packageUpdateSet.PackageId);
+            return regex == null || regex.IsMatch(packageUpdateSet.MatchId);
         }
 
         private static bool MatchesExclude(Regex regex, PackageUpdateSet packageUpdateSet)
         {
-            return regex != null && regex.IsMatch(packageUpdateSet.PackageId);
+            return regex != null && regex.IsMatch(packageUpdateSet.MatchId);
         }
 
         private static bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)

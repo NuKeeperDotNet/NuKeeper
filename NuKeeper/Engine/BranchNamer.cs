@@ -1,4 +1,4 @@
-﻿using NuKeeper.RepositoryInspection;
+using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
@@ -6,7 +6,7 @@ namespace NuKeeper.Engine
     {
         public static string MakeName(PackageUpdateSet updateSet)
         {
-            return $"nukeeper-update-{updateSet.PackageId}-to-{updateSet.NewVersion}";
+            return $"nukeeper-update-{updateSet.MatchId}-to-{updateSet.MatchVersion}";
         }
     }
 }

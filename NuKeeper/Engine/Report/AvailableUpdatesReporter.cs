@@ -51,7 +51,7 @@ namespace NuKeeper.Engine.Report
             var highestDate = ToUtcIso8601(update.Highest.Published);
             var packageSource = update.Match.Source;
 
-            writer.WriteLine($"{update.PackageId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
+            writer.WriteLine($"{update.MatchId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
         }
 
         private StreamWriter MakeOutputStream(string name)

@@ -71,7 +71,7 @@ namespace NuKeeper.Engine.Packages
                 }
 
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
-                await updateCommand.Invoke(updateSet.NewVersion, updateSet.Match.Source, current);
+                await updateCommand.Invoke(updateSet.MatchVersion, updateSet.Match.Source, current);
             }
         }
 
