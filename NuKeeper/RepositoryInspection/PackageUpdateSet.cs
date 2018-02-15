@@ -9,7 +9,6 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        private readonly PackageSearchMedatadata _highest;
         private readonly PackageSearchMedatadata _match;
 
         public PackageUpdateSet(VersionChange allowedChange,
@@ -40,7 +39,7 @@ namespace NuKeeper.RepositoryInspection
             }
 
             _match = match;
-            _highest = highest;
+            Highest = highest;
             AllowedChange = allowedChange;
             CurrentPackages = currentPackagesList;
 
@@ -55,8 +54,9 @@ namespace NuKeeper.RepositoryInspection
         public string PackageId => NewPackage.Id;
         public NuGetVersion NewVersion => NewPackage.Version;
         public string PackageSource => _match.Source;
-        public NuGetVersion Highest=> _highest.Identity.Version;
-        public DateTimeOffset? HighestPublished => _highest.Published;
+
+        public PackageSearchMedatadata Highest { get; }
+        public NuGetVersion HighestVersion=> Highest.Identity.Version;
 
         public int CountCurrentVersions()
         {

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text;
 using NuKeeper.RepositoryInspection;
 
@@ -40,7 +40,7 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
-            var highestVersion = updates.Highest;
+            var highestVersion = updates.HighestVersion;
             if (highestVersion != null && (highestVersion > updates.NewVersion))
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());
