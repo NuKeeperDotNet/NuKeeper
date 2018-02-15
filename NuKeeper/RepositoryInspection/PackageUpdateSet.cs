@@ -9,8 +9,6 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        private readonly PackageSearchMedatadata _match;
-
         public PackageUpdateSet(VersionChange allowedChange,
             PackageSearchMedatadata highest,
             PackageSearchMedatadata match,
@@ -38,24 +36,25 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
-            _match = match;
-            Highest = highest;
             AllowedChange = allowedChange;
+            Highest = highest;
+            Match = match;
             CurrentPackages = currentPackagesList;
 
             CheckIdConsistency();
         }
 
         public VersionChange AllowedChange { get; }
+        public PackageSearchMedatadata Highest { get; }
+        public PackageSearchMedatadata Match { get; }
+
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
-        public PackageIdentity NewPackage => _match.Identity;
+        public PackageIdentity NewPackage => Match.Identity;
 
-        public string PackageId => NewPackage.Id;
-        public NuGetVersion NewVersion => NewPackage.Version;
-        public string PackageSource => _match.Source;
+        public string PackageId => Match.Identity.Id;
+        public NuGetVersion NewVersion => Match.Identity.Version;
 
-        public PackageSearchMedatadata Highest { get; }
         public NuGetVersion HighestVersion=> Highest.Identity.Version;
 
         public int CountCurrentVersions()

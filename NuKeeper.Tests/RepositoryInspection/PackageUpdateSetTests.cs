@@ -77,7 +77,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(updates.NewPackage, Is.EqualTo(LatestVersionOfPackageFoo()));
             Assert.That(updates.PackageId, Is.EqualTo("foo"));
             Assert.That(updates.NewVersion, Is.EqualTo(match.Identity.Version));
-            Assert.That(updates.PackageSource, Is.EqualTo(ASource));
+            Assert.That(updates.Match.Source, Is.EqualTo(ASource));
             Assert.That(updates.HighestVersion, Is.EqualTo(VersionFour()));
             Assert.That(updates.AllowedChange, Is.EqualTo(VersionChange.Major));
         }

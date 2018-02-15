@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -71,7 +71,7 @@ namespace NuKeeper.Engine.Packages
                 }
 
                 var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
-                await updateCommand.Invoke(updateSet.NewVersion, updateSet.PackageSource, current);
+                await updateCommand.Invoke(updateSet.NewVersion, updateSet.Match.Source, current);
             }
         }
 
