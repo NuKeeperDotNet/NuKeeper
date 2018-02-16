@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -21,8 +21,8 @@ namespace NuKeeper.Tests.NuGet.Api
             var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"), VersionChange.Major);
 
             Assert.That(updates, Is.Not.Null);
-            Assert.That(updates.Highest, Is.Null);
-            Assert.That(updates.Match, Is.Null);
+            Assert.That(updates.Major, Is.Null);
+            Assert.That(updates.Selected(), Is.Null);
         }
 
         [Test]
@@ -42,8 +42,8 @@ namespace NuKeeper.Tests.NuGet.Api
             Assert.That(updates, Is.Not.Null);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
-            Assert.That(updates.Highest.Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
-            Assert.That(updates.Match.Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
+            Assert.That(updates.Major.Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
+            Assert.That(updates.Selected().Identity.Version, Is.EqualTo(new NuGetVersion(2, 3, 4)));
         }
 
         [TestCase(VersionChange.Major, 2, 3, 4)]
@@ -63,8 +63,8 @@ namespace NuKeeper.Tests.NuGet.Api
                 VersionChange.Major);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
-            Assert.That(updates.Match.Identity.Version, Is.EqualTo(expectedUpdate));
-            Assert.That(updates.Highest.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
+            Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
+            Assert.That(updates.Major.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
         }
 
         [TestCase(VersionChange.Major, 1, 3, 1)]
@@ -84,8 +84,8 @@ namespace NuKeeper.Tests.NuGet.Api
                 VersionChange.Minor);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
-            Assert.That(updates.Match.Identity.Version, Is.EqualTo(expectedUpdate));
-            Assert.That(updates.Highest.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
+            Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
+            Assert.That(updates.Major.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
         }
 
         [TestCase(VersionChange.Major, 1, 2, 5)]
@@ -105,8 +105,8 @@ namespace NuKeeper.Tests.NuGet.Api
                 VersionChange.Patch);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
-            Assert.That(updates.Match.Identity.Version, Is.EqualTo(expectedUpdate));
-            Assert.That(updates.Highest.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
+            Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
+            Assert.That(updates.Major.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
         }
 
         private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadata> actualResults)
@@ -125,10 +125,10 @@ namespace NuKeeper.Tests.NuGet.Api
         private static void AssertPackagesIdentityIs(PackageLookupResult packages, string id)
         {
             Assert.That(packages, Is.Not.Null);
-            AssertPackageIdentityIs(packages.Highest, id);
-            AssertPackageIdentityIs(packages.Match, id);
+            AssertPackageIdentityIs(packages.Major, id);
+            AssertPackageIdentityIs(packages.Selected(), id);
 
-            Assert.That(packages.Highest.Identity.Version, Is.GreaterThanOrEqualTo(packages.Match.Identity));
+            Assert.That(packages.Major.Identity.Version, Is.GreaterThanOrEqualTo(packages.Selected().Identity));
         }
 
         private static void AssertPackageIdentityIs(PackageSearchMedatadata package, string id)

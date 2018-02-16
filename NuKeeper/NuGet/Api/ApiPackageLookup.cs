@@ -20,23 +20,21 @@ namespace NuKeeper.NuGet.Api
         {
             var versions = await _packageVersionsLookup.Lookup(package.Id);
 
-            var versionsList = versions.ToList();
-
-            var highest = HighestThatMatchesFilter(package.Version, versionsList, VersionChange.Major);
-            var highestThatMatchesFilter = HighestThatMatchesFilter(package.Version, versionsList, allowedChange);
-
-            return new PackageLookupResult(allowedChange, highest, highestThatMatchesFilter);
-        }
-
-        private static PackageSearchMedatadata HighestThatMatchesFilter(
-            NuGetVersion current,
-            IList<PackageSearchMedatadata> candidates,
-            VersionChange allowedChange)
-        {
-            var orderedCandidates = candidates
+            var orderedCandidates = versions
                 .OrderByDescending(p => p.Identity.Version)
                 .ToList();
 
+            var major = HighestMatch(package.Version, orderedCandidates, VersionChange.Major);
+            var minor = HighestMatch(package.Version, orderedCandidates, VersionChange.Minor);
+            var patch = HighestMatch(package.Version, orderedCandidates, VersionChange.Patch);
+            return new PackageLookupResult(allowedChange, major, minor, patch);
+        }
+
+        private static PackageSearchMedatadata HighestMatch(
+            NuGetVersion current,
+            IList<PackageSearchMedatadata> orderedCandidates,
+            VersionChange allowedChange)
+        {
             return orderedCandidates
                 .FirstOrDefault(p => VersionChangeFilter.Filter(current, p.Identity.Version, allowedChange));
         }

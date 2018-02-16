@@ -13,7 +13,7 @@ namespace NuKeeper.NuGet.Api
 
         public void Report(PackageLookupResult lookupResult)
         {
-            var highestVersion = lookupResult.Highest?.Identity?.Version;
+            var highestVersion = lookupResult.Major?.Identity?.Version;
             if (highestVersion == null)
             {
                 return;
@@ -23,9 +23,9 @@ namespace NuKeeper.NuGet.Api
                 ? string.Empty
                 : $" Allowing {lookupResult.AllowedChange} version updates.";
 
-            var highestMatchVersion = lookupResult.Match?.Identity?.Version;
+            var highestMatchVersion = lookupResult.Selected()?.Identity?.Version;
 
-            var packageId = lookupResult.Highest.Identity.Id;
+            var packageId = lookupResult.Major.Identity.Id;
 
             if (highestMatchVersion == null)
             {
