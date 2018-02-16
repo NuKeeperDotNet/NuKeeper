@@ -18,11 +18,11 @@ namespace NuKeeper.NuGet.Process
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
             UserSettings settings,
-            IExternalProcess externalProcess = null)
+            IExternalProcess externalProcess)
         {
             _logger = logger;
             _sources = settings.NuGetSources;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
@@ -30,11 +30,10 @@ namespace NuKeeper.NuGet.Process
             var dirName = currentPackage.Path.Info.DirectoryName;
             var nuget = NuGetPath.FindExecutable();
             var sources = GetSourcesCommandLine(_sources);
-            var updateCommand = $"cd {dirName}" + 
-                $" & {nuget} update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
-            _logger.Verbose(updateCommand);
+            var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
+            _logger.Verbose(arguments);
 
-            await _externalProcess.Run(updateCommand, true);
+            await _externalProcess.Run(dirName, nuget, arguments, true);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)

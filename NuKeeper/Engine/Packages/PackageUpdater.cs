@@ -5,6 +5,7 @@ using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Process;
+using NuKeeper.ProcessRunner;
 using NuKeeper.RepositoryInspection;
 using Octokit;
 
@@ -15,15 +16,18 @@ namespace NuKeeper.Engine.Packages
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
         private readonly UserSettings _settings;
+        private readonly IExternalProcess _externalProccess;
 
         public PackageUpdater(
             IGithub github,
             INuKeeperLogger logger,
-            UserSettings settings)
+            UserSettings settings,
+            IExternalProcess externalProcess)
         {
             _github = github;
             _logger = logger;
             _settings = settings;
+            _externalProccess = externalProcess;
         }
 
         public async Task UpdatePackageInProjects(
@@ -79,7 +83,7 @@ namespace NuKeeper.Engine.Packages
         {
             if (packageReferenceType != PackageReferenceType.ProjectFile)
             {
-                return new NuGetFileRestoreCommand(_logger, _settings);
+                return new NuGetFileRestoreCommand(_logger, _settings, _externalProccess);
             }
 
             return null;
@@ -89,10 +93,10 @@ namespace NuKeeper.Engine.Packages
         {
             if (packageReferenceType != PackageReferenceType.PackagesConfig)
             {
-                return new DotNetUpdatePackageCommand(_logger, _settings);
+                return new DotNetUpdatePackageCommand(_logger, _settings, _externalProccess);
             }
 
-            return new NuGetUpdatePackageCommand(_logger, _settings);
+            return new NuGetUpdatePackageCommand(_logger, _settings, _externalProccess);
         }
 
         private async Task MakeGitHubPullRequest(
