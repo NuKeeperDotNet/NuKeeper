@@ -73,6 +73,61 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
+        public void WhenThereAreOnlyNewPatchVersion()
+        {
+            var current = new NuGetVersion(1, 2, 3);
+            var candidates = new List<PackageSearchMedatadata>
+            {
+                MetadataForVersion(1, 2, 7),
+                MetadataForVersion(1, 2, 5),
+                MetadataForVersion(1, 2, 4),
+                MetadataForVersion(1, 2, 6),
+                MetadataForVersion(1, 2, 8)
+            };
+
+            var result = VersionChanges.MakeVersions(current, candidates, VersionChange.Major);
+
+            Assert.That(result.AllowedChange, Is.EqualTo(VersionChange.Major));
+            Assert.That(result.Major.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 8)));
+
+            Assert.That(result.Selected(), Is.EqualTo(result.Major));
+            Assert.That(result.Selected(), Is.EqualTo(result.Minor));
+            Assert.That(result.Selected(), Is.EqualTo(result.Patch));
+            Assert.That(result.Major, Is.EqualTo(result.Minor));
+            Assert.That(result.Major, Is.EqualTo(result.Patch));
+        }
+
+        [Test]
+        public void WhenThereAreOnlyNewMinorAndPatchVersion()
+        {
+            var current = new NuGetVersion(1, 2, 3);
+            var candidates = new List<PackageSearchMedatadata>
+            {
+                MetadataForVersion(1, 2, 7),
+                MetadataForVersion(1, 3, 5),
+                MetadataForVersion(1, 2, 4),
+                MetadataForVersion(1, 4, 1),
+                MetadataForVersion(1, 2, 6),
+                MetadataForVersion(1, 2, 8),
+                MetadataForVersion(1, 3, 7)
+            };
+
+            var result = VersionChanges.MakeVersions(current, candidates, VersionChange.Major);
+
+            Assert.That(result.AllowedChange, Is.EqualTo(VersionChange.Major));
+            Assert.That(result.Major.Identity.Version, Is.EqualTo(new NuGetVersion(1, 4, 1)));
+            Assert.That(result.Minor.Identity.Version, Is.EqualTo(new NuGetVersion(1, 4, 1)));
+            Assert.That(result.Patch.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 8)));
+
+            Assert.That(result.Selected(), Is.EqualTo(result.Major));
+            Assert.That(result.Selected(), Is.EqualTo(result.Minor));
+            Assert.That(result.Selected(), Is.Not.EqualTo(result.Patch));
+
+            Assert.That(result.Major, Is.EqualTo(result.Minor));
+            Assert.That(result.Major, Is.Not.EqualTo(result.Patch));
+        }
+
+        [Test]
         public void WhenMinorChangesAreAllowed()
         {
             var current = new NuGetVersion(1, 2, 3);
