@@ -17,7 +17,7 @@ namespace NuKeeper.Tests.NuGet.Api
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var data = new PackageLookupResult(VersionChange.Major, null, null);
+            var data = new PackageLookupResult(VersionChange.Major, null, null, null);
 
             reporter.Report(data);
 
@@ -38,7 +38,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
                 "someSource", DateTimeOffset.Now);
 
-            var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata);
+            var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -59,7 +59,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 "someSource", DateTimeOffset.Now);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -84,7 +84,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 "someSource", DateTimeOffset.Now);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor, null);
 
             reporter.Report(data);
 
@@ -105,7 +105,7 @@ namespace NuKeeper.Tests.NuGet.Api
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
                 "someSource", DateTimeOffset.Now);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null, null);
 
             reporter.Report(data);
 

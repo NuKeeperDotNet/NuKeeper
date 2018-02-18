@@ -44,7 +44,7 @@ namespace NuKeeper.NuGet.Api
 
         private void ProcessLookupResult(PackageLookupResult packageLookup, Dictionary<string, PackageLookupResult> result)
         {
-            var matchingVersion = packageLookup.Match;
+            var matchingVersion = packageLookup.Selected();
 
             if (matchingVersion?.Identity?.Version != null)
             {

@@ -1,19 +1,46 @@
+using System;
+
 namespace NuKeeper.NuGet.Api
 {
     public class PackageLookupResult
     {
         public PackageLookupResult(
             VersionChange allowedChange,
-            PackageSearchMedatadata highest,
-            PackageSearchMedatadata match)
+            PackageSearchMedatadata major,
+            PackageSearchMedatadata minor,
+            PackageSearchMedatadata patch)
         {
             AllowedChange = allowedChange;
-            Highest = highest;
-            Match = match;
+            Major = major;
+            Minor = minor;
+            Patch = patch;
         }
 
         public VersionChange AllowedChange { get; }
-        public PackageSearchMedatadata Highest { get; }
-        public PackageSearchMedatadata Match { get; }
+
+        public PackageSearchMedatadata Major { get; }
+        public PackageSearchMedatadata Minor { get; }
+        public PackageSearchMedatadata Patch { get; }
+
+        public PackageSearchMedatadata Selected()
+        {
+            switch (AllowedChange)
+            {
+                case VersionChange.Major:
+                    return Major;
+
+                case VersionChange.Minor:
+                    return Minor;
+
+                case VersionChange.Patch:
+                    return Patch;
+
+                case VersionChange.None:
+                    return null;
+
+                default:
+                    throw new Exception($"Unknown version change {AllowedChange}");
+            }
+        }
     }
 }

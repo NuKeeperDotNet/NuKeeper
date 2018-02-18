@@ -9,7 +9,7 @@ namespace NuKeeper.RepositoryInspection
     public class PackageUpdateSet
     {
         public PackageUpdateSet(PackageLookupResult data, IEnumerable<PackageInProject> currentPackages)
-            : this(data.AllowedChange, data.Highest, data.Match, currentPackages)
+            : this(data.AllowedChange, data.Major, data.Selected(), currentPackages)
         { }
 
         public PackageUpdateSet(VersionChange allowedChange,

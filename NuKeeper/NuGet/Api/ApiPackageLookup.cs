@@ -1,4 +1,3 @@
-﻿using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 
@@ -16,18 +15,8 @@ namespace NuKeeper.NuGet.Api
         public async Task<PackageLookupResult> FindVersionUpdate(
             PackageIdentity package, VersionChange allowedChange)
         {
-            var filter = VersionChangeFilter.FilterFor(allowedChange);
-
-            var versions = await _packageVersionsLookup.Lookup(package.Id);
-            var orderedByVersion = versions
-                .OrderByDescending(p => p.Identity.Version)
-                .ToList();
-
-            var highest = orderedByVersion.FirstOrDefault();
-            var highestThatMatchesFilter = orderedByVersion
-                .FirstOrDefault(p => filter(package.Version, p.Identity.Version));
-
-            return new PackageLookupResult(allowedChange, highest, highestThatMatchesFilter);
+            var foundVersions = await _packageVersionsLookup.Lookup(package.Id);
+            return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
     }
 }
