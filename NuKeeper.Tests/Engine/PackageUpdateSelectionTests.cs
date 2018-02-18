@@ -202,8 +202,8 @@ namespace NuKeeper.Tests.Engine
 
             var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(VersionChange.Major, 
-                latest, latest, currentPackages);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, currentPackages);
         }
 
         private PackageUpdateSet UpdateFooFromOneVersion()
@@ -216,13 +216,11 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("foo", "1.0.1", PathToProjectTwo())
             };
 
-            var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now);
-
             var matchVersion = new NuGetVersion("4.0.0");
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion), "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(VersionChange.Major,
-                latest, match, currentPackages);
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            return new PackageUpdateSet(updates, currentPackages);
         }
 
         private PackageUpdateSet UpdateBarFromTwoVersions()
@@ -235,12 +233,11 @@ namespace NuKeeper.Tests.Engine
                 new PackageInProject("bar", "1.2.1", PathToProjectTwo())
             };
 
-            var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now);
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
             var match = new PackageSearchMedatadata(matchId, "ASource", DateTimeOffset.Now);
 
-            return new PackageUpdateSet(VersionChange.Major, 
-                latest, match, currentPackages);
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            return new PackageUpdateSet(updates, currentPackages);
         }
 
         private PackageIdentity LatestVersionOfPackageFoobar()

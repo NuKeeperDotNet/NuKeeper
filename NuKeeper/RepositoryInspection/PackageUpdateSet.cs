@@ -9,14 +9,15 @@ namespace NuKeeper.RepositoryInspection
     public class PackageUpdateSet
     {
         public PackageUpdateSet(PackageLookupResult data, IEnumerable<PackageInProject> currentPackages)
-            : this(data.AllowedChange, data.Major, data.Selected(), currentPackages)
-        { }
-
-        public PackageUpdateSet(VersionChange allowedChange,
-            PackageSearchMedatadata highest,
-            PackageSearchMedatadata match,
-            IEnumerable<PackageInProject> currentPackages)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            var highest = data.Major;
+            var match = data.Selected();
+
             if (highest == null)
             {
                 throw new ArgumentNullException(nameof(highest));
@@ -39,7 +40,7 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
-            AllowedChange = allowedChange;
+            AllowedChange = data.AllowedChange;
             Highest = highest;
             Match = match;
             CurrentPackages = currentPackagesList;
