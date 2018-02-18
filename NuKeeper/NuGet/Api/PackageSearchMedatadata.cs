@@ -28,5 +28,15 @@ namespace NuKeeper.NuGet.Api
         public PackageIdentity Identity { get; }
         public string Source { get; }
         public DateTimeOffset? Published { get; }
+
+        public override string ToString()
+        {
+            if (Published.HasValue)
+            {
+                return $"{Identity} from {Source}, published at {DateFormat.AsUtcIso8601(Published)}";
+            }
+
+            return $"{Identity} from {Source}, no published date";
+        }
     }
 }
