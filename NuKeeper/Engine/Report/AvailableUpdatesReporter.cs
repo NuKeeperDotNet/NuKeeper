@@ -1,7 +1,5 @@
-using System;
 using NuKeeper.RepositoryInspection;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using NuKeeper.Logging;
@@ -48,7 +46,7 @@ namespace NuKeeper.Engine.Report
             var lowest = versionsInUse.Min();
             var highest = versionsInUse.Max();
 
-            var highestDate = ToUtcIso8601(update.Highest.Published);
+            var highestDate = DateFormat.AsUtcIso8601(update.Highest.Published);
             var packageSource = update.Match.Source;
 
             writer.WriteLine($"{update.MatchId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
@@ -62,18 +60,6 @@ namespace NuKeeper.Engine.Report
 
             var output = new FileStream(fileName, FileMode.OpenOrCreate);
             return new StreamWriter(output);
-        }
-
-        private static string ToUtcIso8601(DateTimeOffset? source)
-        {
-            if (!source.HasValue)
-            {
-                return string.Empty;
-            }
-
-            const string iso8601Format = "yyyy-MM-ddTHH\\:mm\\:ss";
-            var utcValue = source.Value.ToUniversalTime();
-            return string.Concat(utcValue.ToString(iso8601Format, CultureInfo.InvariantCulture), "Z");
         }
     }
 }
