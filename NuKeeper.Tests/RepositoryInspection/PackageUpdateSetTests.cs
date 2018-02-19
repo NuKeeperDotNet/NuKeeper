@@ -24,7 +24,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(null, packages));
 
-            Assert.That(exception.ParamName, Is.EqualTo("data"));
+            Assert.That(exception.ParamName, Is.EqualTo("packages"));
         }
 
 
@@ -40,7 +40,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(lookupResult, packages));
 
-            Assert.That(exception.ParamName, Is.EqualTo("highest"));
+            Assert.That(exception.ParamName, Is.EqualTo("packages"));
         }
 
         [Test]

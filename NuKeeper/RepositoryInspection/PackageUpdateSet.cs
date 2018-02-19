@@ -8,25 +8,19 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        public PackageUpdateSet(PackageLookupResult data, IEnumerable<PackageInProject> currentPackages)
+        public PackageUpdateSet(PackageLookupResult packages, IEnumerable<PackageInProject> currentPackages)
         {
-            if (data == null)
+            if (packages == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(packages));
             }
 
-            var highest = data.Major;
-            var match = data.Selected();
-
-            if (highest == null)
+            if (packages.Major == null)
             {
-                throw new ArgumentNullException(nameof(highest));
+                throw new ArgumentNullException(nameof(packages));
             }
 
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            Packages = packages;
 
             if (currentPackages == null)
             {
@@ -40,23 +34,19 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
-            AllowedChange = data.AllowedChange;
-            Highest = highest;
-            Match = match;
             CurrentPackages = currentPackagesList;
-
             CheckIdConsistency();
         }
 
-        public VersionChange AllowedChange { get; }
-        public PackageSearchMedatadata Highest { get; }
-        public PackageSearchMedatadata Match { get; }
-
+        public PackageLookupResult Packages { get; }
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
+
+        public VersionChange AllowedChange => Packages.AllowedChange;
+        public PackageSearchMedatadata Highest => Packages.Major;
+        public PackageSearchMedatadata Match => Packages.Selected();
 
         public string MatchId => Match.Identity.Id;
         public NuGetVersion MatchVersion => Match.Identity.Version;
-
         public NuGetVersion HighestVersion=> Highest.Identity.Version;
 
         public int CountCurrentVersions()
