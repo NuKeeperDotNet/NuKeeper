@@ -51,9 +51,17 @@ namespace NuKeeper.Engine
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());
                 var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
+                string highestPublishedAt = string.Empty;
+                if (updates.Packages.Major.Published.HasValue)
+                {
+                    highestPublishedAt = " published at " +
+                        CodeQuote(DateFormat.AsUtcIso8601(updates.Packages.Major.Published));
+                }
                 builder.AppendLine(
-                    $"There is also a higher version, {highest}, but this was not applied as only {allowedChange} version changes are allowed.");
+                    $"There is also a higher version, {highest}{highestPublishedAt}, but this was not applied as only {allowedChange} version changes are allowed.");
             }
+
+            builder.AppendLine();
 
             if (updates.CurrentPackages.Count == 1)
             {
@@ -71,7 +79,7 @@ namespace NuKeeper.Engine
             }
 
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
-            builder.AppendLine("");
+            builder.AppendLine();
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
             return builder.ToString();
         }
