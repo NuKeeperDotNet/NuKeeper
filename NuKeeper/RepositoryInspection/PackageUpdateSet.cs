@@ -15,9 +15,9 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentNullException(nameof(packages));
             }
 
-            if (packages.Major == null)
+            if (packages.Selected() == null)
             {
-                throw new ArgumentNullException(nameof(packages));
+                throw new ArgumentException(nameof(packages));
             }
 
             Packages = packages;

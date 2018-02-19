@@ -40,6 +40,12 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
+            if (updates.Selected.Published.HasValue)
+            {
+                var pubDate = CodeQuote(DateFormat.AsUtcIso8601(updates.Selected.Published));
+                builder.AppendLine($"{packageId} {newVersion} was published at {pubDate}");
+            }
+
             var highestVersion = updates.HighestVersion;
             if (highestVersion != null && (highestVersion > updates.SelectedVersion))
             {
