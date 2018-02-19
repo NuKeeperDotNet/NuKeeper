@@ -38,9 +38,7 @@ namespace NuKeeper.Tests.RepositoryInspection
 
             var lookupResult = new PackageLookupResult(VersionChange.Major, null, null, null);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => new PackageUpdateSet(lookupResult, packages));
-
-            Assert.That(exception.ParamName, Is.EqualTo("packages"));
+            Assert.Throws<ArgumentException>(() => new PackageUpdateSet(lookupResult, packages));
         }
 
         [Test]
