@@ -44,7 +44,7 @@ namespace NuKeeper.Engine.Packages
 
             foreach (var updateSet in capped)
             {
-                _logger.Info($"Selected package update of {updateSet.MatchId} to {updateSet.MatchVersion}");
+                _logger.Info($"Selected package update of {updateSet.SelectedId} to {updateSet.SelectedVersion}");
             }
 
             return capped;
@@ -64,12 +64,12 @@ namespace NuKeeper.Engine.Packages
 
         private static bool MatchesInclude(Regex regex, PackageUpdateSet packageUpdateSet)
         {
-            return regex == null || regex.IsMatch(packageUpdateSet.MatchId);
+            return regex == null || regex.IsMatch(packageUpdateSet.SelectedId);
         }
 
         private static bool MatchesExclude(Regex regex, PackageUpdateSet packageUpdateSet)
         {
-            return regex != null && regex.IsMatch(packageUpdateSet.MatchId);
+            return regex != null && regex.IsMatch(packageUpdateSet.SelectedId);
         }
 
         private static bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)

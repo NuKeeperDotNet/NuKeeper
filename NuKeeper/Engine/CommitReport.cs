@@ -9,7 +9,7 @@ namespace NuKeeper.Engine
         private const string CommitEmoji = "package";
         public static string MakePullRequestTitle(PackageUpdateSet updates)
         {
-            return $"Automatic update of {updates.MatchId} to {updates.MatchVersion}";
+            return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
         public static string MakeCommitMessage(PackageUpdateSet updates)
@@ -25,8 +25,8 @@ namespace NuKeeper.Engine
                 .Select(v => CodeQuote(v.ToString()))
                 .ToList();
  
-            var newVersion = CodeQuote(updates.MatchVersion.ToString());
-            var packageId = CodeQuote(updates.MatchId);
+            var newVersion = CodeQuote(updates.SelectedVersion.ToString());
+            var packageId = CodeQuote(updates.SelectedId);
 
             var builder = new StringBuilder();
 
@@ -41,10 +41,10 @@ namespace NuKeeper.Engine
             }
 
             var highestVersion = updates.HighestVersion;
-            if (highestVersion != null && (highestVersion > updates.MatchVersion))
+            if (highestVersion != null && (highestVersion > updates.SelectedVersion))
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());
-                var highest = CodeQuote(updates.MatchId + " " + highestVersion);
+                var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
                 builder.AppendLine(
                     $"There is also a higher version, {highest}, but this was not applied as only {allowedChange} version changes are allowed.");
             }
@@ -60,7 +60,7 @@ namespace NuKeeper.Engine
 
             foreach (var current in updates.CurrentPackages)
             {
-                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.MatchVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
+                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.SelectedVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
                 builder.AppendLine(line);
             }
 

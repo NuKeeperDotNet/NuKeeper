@@ -46,10 +46,10 @@ namespace NuKeeper.Engine.Report
             var lowest = versionsInUse.Min();
             var highest = versionsInUse.Max();
 
-            var highestDate = DateFormat.AsUtcIso8601(update.Highest.Published);
-            var packageSource = update.Match.Source;
+            var highestDate = DateFormat.AsUtcIso8601(update.Packages.Major.Published);
+            var packageSource = update.Selected.Source;
 
-            writer.WriteLine($"{update.MatchId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
+            writer.WriteLine($"{update.SelectedId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
         }
 
         private StreamWriter MakeOutputStream(string name)
