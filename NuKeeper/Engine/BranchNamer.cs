@@ -6,7 +6,7 @@ namespace NuKeeper.Engine
     {
         public static string MakeName(PackageUpdateSet updateSet)
         {
-            return $"nukeeper-update-{updateSet.MatchId}-to-{updateSet.MatchVersion}";
+            return $"nukeeper-update-{updateSet.SelectedId}-to-{updateSet.SelectedVersion}";
         }
     }
 }

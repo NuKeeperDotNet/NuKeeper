@@ -8,25 +8,19 @@ namespace NuKeeper.RepositoryInspection
 {
     public class PackageUpdateSet
     {
-        public PackageUpdateSet(PackageLookupResult data, IEnumerable<PackageInProject> currentPackages)
+        public PackageUpdateSet(PackageLookupResult packages, IEnumerable<PackageInProject> currentPackages)
         {
-            if (data == null)
+            if (packages == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(packages));
             }
 
-            var highest = data.Major;
-            var match = data.Selected();
-
-            if (highest == null)
+            if (packages.Selected() == null)
             {
-                throw new ArgumentNullException(nameof(highest));
+                throw new ArgumentException(nameof(packages));
             }
 
-            if (match == null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
+            Packages = packages;
 
             if (currentPackages == null)
             {
@@ -40,24 +34,19 @@ namespace NuKeeper.RepositoryInspection
                 throw new ArgumentException($"{nameof(currentPackages)} is empty", nameof(currentPackages));
             }
 
-            AllowedChange = data.AllowedChange;
-            Highest = highest;
-            Match = match;
             CurrentPackages = currentPackagesList;
-
             CheckIdConsistency();
         }
 
-        public VersionChange AllowedChange { get; }
-        public PackageSearchMedatadata Highest { get; }
-        public PackageSearchMedatadata Match { get; }
-
+        public PackageLookupResult Packages { get; }
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
-        public string MatchId => Match.Identity.Id;
-        public NuGetVersion MatchVersion => Match.Identity.Version;
+        public VersionChange AllowedChange => Packages.AllowedChange;
+        public PackageSearchMedatadata Selected => Packages.Selected();
 
-        public NuGetVersion HighestVersion=> Highest.Identity.Version;
+        public string SelectedId => Selected.Identity.Id;
+        public NuGetVersion SelectedVersion => Selected.Identity.Version;
+        public NuGetVersion HighestVersion=> Packages.Major.Identity.Version;
 
         public int CountCurrentVersions()
         {
@@ -69,14 +58,14 @@ namespace NuKeeper.RepositoryInspection
 
         private void CheckIdConsistency()
         {
-            if (CurrentPackages.Any(p => p.Id != MatchId))
+            if (CurrentPackages.Any(p => p.Id != SelectedId))
             {
                 var errorIds = CurrentPackages
                     .Select(p => p.Id)
                     .Distinct()
-                    .Where(id => id != MatchId);
+                    .Where(id => id != SelectedId);
 
-                throw new ArgumentException($"Updates must all be for package '{MatchId}', got '{errorIds.JoinWithCommas()}'");
+                throw new ArgumentException($"Updates must all be for package '{SelectedId}', got '{errorIds.JoinWithCommas()}'");
             }
         }
     }

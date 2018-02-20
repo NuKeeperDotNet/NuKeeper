@@ -44,12 +44,12 @@ namespace NuKeeper.NuGet.Api
 
         private void ProcessLookupResult(PackageLookupResult packageLookup, Dictionary<string, PackageLookupResult> result)
         {
-            var matchingVersion = packageLookup.Selected();
+            var selectedVersion = packageLookup.Selected();
 
-            if (matchingVersion?.Identity?.Version != null)
+            if (selectedVersion?.Identity?.Version != null)
             {
                 _lookupReporter.Report(packageLookup);
-                var packageId = matchingVersion.Identity.Id;
+                var packageId = selectedVersion.Identity.Id;
                 result.Add(packageId, packageLookup);
             }
         }

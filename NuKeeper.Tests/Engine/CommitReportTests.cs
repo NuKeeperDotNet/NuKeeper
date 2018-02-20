@@ -92,6 +92,17 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
+        public void OneUpdate_MakeCommitDetails_HasPublishedDate()
+        {
+            var updates = UpdateSetFor(MakePackageForV110());
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("`foo.bar 1.2.3` was published at `2018-02-19T11:12:07Z`"));
+        }
+
+
+        [Test]
         public void OneUpdate_MakeCommitDetails_HasProjectDetails()
         {
             var updates = UpdateSetFor(MakePackageForV110());
@@ -200,6 +211,17 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4`, but this was not applied as only `Minor` version changes are allowed."));
         }
 
+        [Test]
+        public void OneUpdateWithDate_MakeCommitDetails_HasVersionLimitDataWithDate()
+        {
+            var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32 ,45, TimeSpan.Zero);
+            var updates = UpdateSetForLimited(publishedAt, MakePackageForV110());
+
+            var report = CommitReport.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`, but this was not applied as only `Minor` version changes are allowed."));
+        }
+
         private static void AssertContainsStandardText(string report)
         {
             Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
@@ -219,7 +241,8 @@ namespace NuKeeper.Tests.Engine
         {
             var newPackage = NewPackageFooBar123();
 
-            var latest = new PackageSearchMedatadata(newPackage, "someSource", DateTimeOffset.Now);
+            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
+            var latest = new PackageSearchMedatadata(newPackage, "someSource", publishedDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -227,11 +250,16 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
+            return UpdateSetForLimited(null, packages);
+        }
+
+        private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
+        {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, "someSource", DateTimeOffset.Now);
+            var latest = new PackageSearchMedatadata(latestId, "someSource", publishedAt);
 
             var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), "someSource", DateTimeOffset.Now);
+                NewPackageFooBar123(), "someSource", null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
             return new PackageUpdateSet(updates, packages);
