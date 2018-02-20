@@ -42,8 +42,9 @@ namespace NuKeeper.Engine
 
             if (updates.Selected.Published.HasValue)
             {
+                var packageWithVersion = CodeQuote(updates.SelectedId + " " + updates.SelectedVersion);
                 var pubDate = CodeQuote(DateFormat.AsUtcIso8601(updates.Selected.Published));
-                builder.AppendLine($"{packageId} {newVersion} was published at {pubDate}");
+                builder.AppendLine($"{packageWithVersion} was published at {pubDate}");
             }
 
             var highestVersion = updates.HighestVersion;
@@ -78,8 +79,8 @@ namespace NuKeeper.Engine
                 builder.AppendLine(line);
             }
 
-            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine();
+            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
             return builder.ToString();
         }
