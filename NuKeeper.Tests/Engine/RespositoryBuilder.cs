@@ -24,7 +24,8 @@ namespace NuKeeper.Tests.Engine
         {
             const string omniUrl = "http://somewhere.com/fork";
             var owner = new User(omniUrl, "test user", null, 0, "test inc",
-                DateTimeOffset.Now, 0, null, 0, 0, false, omniUrl, 1, 1,
+                DateTimeOffset.Now, DateTimeOffset.Now, 
+                0, null, 0, 0, false, omniUrl, 1, 1,
                 "testville", "testUser", "Testy",
                 1, null, 0, 0,
                 1, omniUrl, null, false, "test", null);
@@ -36,8 +37,8 @@ namespace NuKeeper.Tests.Engine
             return new Repository(omniUrl, forkHtmlUrl, forkCloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
-                perms, parent,
-                null, false, false, false, false, 2, 122, true, true, true);
+                perms, parent, null, null,
+                false, false, false, false, 2, 122, true, true, true);
         }
 
         private static Repository MakeParentRepo(
@@ -46,7 +47,8 @@ namespace NuKeeper.Tests.Engine
         {
             const string omniUrl = "http://somewhere.com/parent";
             var owner = new User(omniUrl, "test user", null, 0, "test inc",
-                DateTimeOffset.Now, 0, null, 0, 0, false, omniUrl, 1, 1,
+                DateTimeOffset.Now, DateTimeOffset.Now,
+                0, null, 0, 0, false, omniUrl, 1, 1,
                 "testville", "testUser", "Testy",
                 1, null, 0, 0,
                 1, omniUrl, null, false, "test", null);
@@ -55,8 +57,10 @@ namespace NuKeeper.Tests.Engine
 
             return new Repository(omniUrl, htmlUrl, cloneUrl, omniUrl, omniUrl, omniUrl, omniUrl,
                 123, owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
-                1, 1, "master", 1, null, DateTimeOffset.Now, DateTimeOffset.Now, perms, null,
-                null, false, false, false, false, 2, 122, true, true, true);
+                1, 1, "master", 1, null,
+                DateTimeOffset.Now, DateTimeOffset.Now,
+                perms, null, null, null,
+                false, false, false, false, 2, 122, true, true, true);
         }
     }
 }
