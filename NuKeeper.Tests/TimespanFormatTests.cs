@@ -101,6 +101,28 @@ namespace NuKeeper.Tests
         }
 
         [Test]
+        public void TestMonthStart()
+        {
+            var end = new DateTime(2018, 2, 1);
+            var start = end.AddDays(-1);
+
+            var result = TimeSpanFormat.Ago(start, end);
+
+            Assert.That(result, Is.EqualTo("1 day ago"));
+        }
+
+        [Test]
+        public void TestYearStart()
+        {
+            var end = new DateTime(2018, 1, 1);
+            var start = end.AddDays(-1);
+
+            var result = TimeSpanFormat.Ago(start, end);
+
+            Assert.That(result, Is.EqualTo("1 day ago"));
+        }
+
+        [Test]
         public void TestTwoDatesTenMonthsApart()
         {
             var end = new DateTime(2018, 4,5);

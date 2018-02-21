@@ -6,9 +6,15 @@ namespace NuKeeper
     {
         public static string Ago(DateTime start, DateTime end)
         {
+            var duration = end.Subtract(start);
             if (start.Year == end.Year && start.Month == end.Month)
             {
-                var duration = end.Subtract(start);
+                return Ago(duration);
+            }
+
+            if (duration.TotalDays < 29)
+            {
+                // no exact size for "a month", but this is a lower bound
                 return Ago(duration);
             }
 
