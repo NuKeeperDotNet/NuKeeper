@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 using NuKeeper.RepositoryInspection;
@@ -43,8 +44,10 @@ namespace NuKeeper.Engine
             if (updates.Selected.Published.HasValue)
             {
                 var packageWithVersion = CodeQuote(updates.SelectedId + " " + updates.SelectedVersion);
-                var pubDate = CodeQuote(DateFormat.AsUtcIso8601(updates.Selected.Published));
-                builder.AppendLine($"{packageWithVersion} was published at {pubDate}");
+                var pubDateString = CodeQuote(DateFormat.AsUtcIso8601(updates.Selected.Published));
+                var pubDate = updates.Selected.Published.Value.UtcDateTime;
+                builder.AppendLine($"{packageWithVersion} was published at {pubDateString}");
+                builder.AppendLine(TimeSpanFormat.Ago(pubDate, DateTime.UtcNow));
             }
 
             var highestVersion = updates.HighestVersion;
