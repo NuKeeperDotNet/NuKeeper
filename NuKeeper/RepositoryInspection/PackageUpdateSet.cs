@@ -46,7 +46,6 @@ namespace NuKeeper.RepositoryInspection
 
         public string SelectedId => Selected.Identity.Id;
         public NuGetVersion SelectedVersion => Selected.Identity.Version;
-        public NuGetVersion HighestVersion=> Packages.Major.Identity.Version;
 
         public int CountCurrentVersions()
         {

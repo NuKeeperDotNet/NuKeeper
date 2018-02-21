@@ -33,7 +33,10 @@ namespace NuKeeper.Engine.Report
 
         private void WriteHeading(StreamWriter writer)
         {
-            writer.WriteLine("Package id,Usage count,Versions in use,Lowest version in use,Highest Version in use,Highest available,Highest published date,Package source");
+            writer.WriteLine(
+                "Package id,Package source," +
+                "Usage count,Versions in use,Lowest version in use,Highest Version in use," +
+                "Highest available,Highest published date");
         }
 
         private void WriteLine(StreamWriter writer, PackageUpdateSet update)
@@ -46,10 +49,17 @@ namespace NuKeeper.Engine.Report
             var lowest = versionsInUse.Min();
             var highest = versionsInUse.Max();
 
-            var highestDate = DateFormat.AsUtcIso8601(update.Packages.Major.Published);
             var packageSource = update.Selected.Source;
 
-            writer.WriteLine($"{update.SelectedId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
+            var major = update.Packages.Major;
+            var highestVersion = major?.Identity.Version;
+            var highestDate = DateFormat.AsUtcIso8601(major?.Published);
+
+            writer.WriteLine(
+                $"{update.SelectedId},{packageSource}," +
+                $"{occurences},{update.CountCurrentVersions()},{lowest},{highest}," +
+                $"{highestVersion},{highestDate}"
+                );
         }
 
         private StreamWriter MakeOutputStream(string name)
