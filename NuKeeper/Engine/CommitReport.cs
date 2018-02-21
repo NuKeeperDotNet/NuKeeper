@@ -46,8 +46,9 @@ namespace NuKeeper.Engine
                 var packageWithVersion = CodeQuote(updates.SelectedId + " " + updates.SelectedVersion);
                 var pubDateString = CodeQuote(DateFormat.AsUtcIso8601(updates.Selected.Published));
                 var pubDate = updates.Selected.Published.Value.UtcDateTime;
-                builder.AppendLine($"{packageWithVersion} was published at {pubDateString}");
-                builder.AppendLine(TimeSpanFormat.Ago(pubDate, DateTime.UtcNow));
+                var ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
+
+                builder.AppendLine($"{packageWithVersion} was published at {pubDateString}, {ago}");
             }
 
             var highestVersion = updates.HighestVersion;
