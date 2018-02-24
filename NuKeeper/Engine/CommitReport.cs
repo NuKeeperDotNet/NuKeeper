@@ -51,7 +51,7 @@ namespace NuKeeper.Engine
                 builder.AppendLine($"{packageWithVersion} was published at {pubDateString}, {ago}");
             }
 
-            var highestVersion = updates.HighestVersion;
+            var highestVersion = updates.Packages.Major?.Identity.Version;
             if (highestVersion != null && (highestVersion > updates.SelectedVersion))
             {
                 var allowedChange = CodeQuote(updates.AllowedChange.ToString());

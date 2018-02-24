@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NuKeeper.Logging;
+using NuKeeper.NuGet.Api;
 
 namespace NuKeeper.Engine.Report
 {
@@ -33,7 +34,13 @@ namespace NuKeeper.Engine.Report
 
         private void WriteHeading(StreamWriter writer)
         {
-            writer.WriteLine("Package id,Usage count,Versions in use,Lowest version in use,Highest Version in use,Highest available,Highest published date,Package source");
+            writer.WriteLine(
+                "Package id,Package source," +
+                "Usage count,Versions in use,Lowest version in use,Highest Version in use," +
+                "Major version update,Major published date," +
+                "Minor version update,Minor published date," +
+                "Patch version update,Patch published date,"
+                );
         }
 
         private void WriteLine(StreamWriter writer, PackageUpdateSet update)
@@ -46,10 +53,28 @@ namespace NuKeeper.Engine.Report
             var lowest = versionsInUse.Min();
             var highest = versionsInUse.Max();
 
-            var highestDate = DateFormat.AsUtcIso8601(update.Packages.Major.Published);
             var packageSource = update.Selected.Source;
 
-            writer.WriteLine($"{update.SelectedId},{occurences},{update.CountCurrentVersions()},{lowest},{highest},{update.HighestVersion},{highestDate},{packageSource}");
+            var majorData = PackageVersionAndDate(update.Packages.Major);
+            var minorData = PackageVersionAndDate(update.Packages.Minor);
+            var patchData = PackageVersionAndDate(update.Packages.Patch);
+
+            writer.WriteLine(
+                $"{update.SelectedId},{packageSource}," +
+                $"{occurences},{update.CountCurrentVersions()},{lowest},{highest}," +
+                $"{majorData},{minorData},{patchData}");
+        }
+
+        private static string PackageVersionAndDate(PackageSearchMedatadata packageVersion)
+        {
+            if (packageVersion == null)
+            {
+                return ",";
+            }
+
+            var version = packageVersion.Identity.Version;
+            var date = DateFormat.AsUtcIso8601(packageVersion.Published);
+            return $"{version},{date}";
         }
 
         private StreamWriter MakeOutputStream(string name)
