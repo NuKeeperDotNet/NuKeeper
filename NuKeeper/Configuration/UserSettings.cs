@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
+using NuKeeper.Engine.Report;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
@@ -19,5 +20,7 @@ namespace NuKeeper.Configuration
         public ForkMode ForkMode { get; set; }
 
         public LogLevel LogLevel { get; set; }
+
+        public ReportMode ReportMode { get; set; }
     }
 }

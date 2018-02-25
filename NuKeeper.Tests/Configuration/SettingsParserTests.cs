@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using NuKeeper.Configuration;
+using NuKeeper.Engine.Report;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
@@ -30,6 +31,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }
 
         [Test]
@@ -44,6 +46,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }
 
         private static RawConfiguration ValidRepoSettings()
@@ -56,7 +59,8 @@ namespace NuKeeper.Tests.Configuration
                 GithubRepositoryUri = new Uri("https://github.com/NuKeeperDotNet/NuKeeper"),
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
-                ForkMode = ForkMode.PreferFork
+                ForkMode = ForkMode.PreferFork,
+                ReportMode = ReportMode.Off
             };
         }
 
@@ -70,7 +74,8 @@ namespace NuKeeper.Tests.Configuration
                 GithubOrganisationName = "NuKeeperDotNet",
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
-                ForkMode = ForkMode.PreferFork
+                ForkMode = ForkMode.PreferFork,
+                ReportMode = ReportMode.Off
             };
         }
 

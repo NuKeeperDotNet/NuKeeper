@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Engine.Packages;
@@ -18,7 +18,7 @@ namespace NuKeeper.Engine
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
-        private readonly IAvailableUpdatesReporter availableUpdatesReporter;
+        private readonly IAvailableUpdatesReporter _availableUpdatesReporter;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
@@ -35,7 +35,7 @@ namespace NuKeeper.Engine
             _repositoryScanner = repositoryScanner;
             _logger = logger;
             _solutionsRestore = solutionsRestore;
-            this.availableUpdatesReporter = availableUpdatesReporter;
+            _availableUpdatesReporter = availableUpdatesReporter;
         }
 
         public async Task Run(IGitDriver git, RepositoryData repository)
@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
 
             var updates = await FindPackageUpdateSets(git);
 
-            availableUpdatesReporter.Report(repository.Pull.Name, updates);
+            _availableUpdatesReporter.Report(repository.Pull.Name, updates);
 
             if (updates.Count == 0)
             {

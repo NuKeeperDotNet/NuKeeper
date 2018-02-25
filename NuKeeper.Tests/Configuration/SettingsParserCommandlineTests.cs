@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Configuration;
+using NuKeeper.Engine.Report;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 using NUnit.Framework;
@@ -53,6 +54,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
             Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 
@@ -102,6 +104,18 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferSingleRepository));
+        }
+
+        [Test]
+        public void ReportModeOverrideIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("report=ReportOnly");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.ReportOnly));
         }
 
         [Test]
@@ -257,6 +271,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
             Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 

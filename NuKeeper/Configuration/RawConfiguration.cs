@@ -1,7 +1,7 @@
 using System;
 using EasyConfig;
 using EasyConfig.Attributes;
-using NuKeeper.Engine;
+using NuKeeper.Engine.Report;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Api;
 
@@ -51,5 +51,9 @@ namespace NuKeeper.Configuration
         [JsonConfig("fork_mode"), Default("PreferFork")]
         [OverriddenBy(ConfigurationSources.CommandLine, "fork")]
         public ForkMode ForkMode;
+
+        [JsonConfig("report_mode"), Default("Off")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "report")]
+        public ReportMode ReportMode;
     }
 }
