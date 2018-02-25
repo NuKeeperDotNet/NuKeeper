@@ -49,6 +49,7 @@ namespace NuKeeper.Engine
 
             var updates = await FindPackageUpdateSets(git);
 
+            _logger.Verbose($"Report mode is {_settings.ReportMode}");
             switch (_settings.ReportMode)
             {
                 case ReportMode.Off:
@@ -62,6 +63,7 @@ namespace NuKeeper.Engine
                 case ReportMode.ReportOnly:
                     // report and exit
                     _availableUpdatesReporter.Report(repository.Pull.Name, updates);
+                    _logger.Info("Exiting after reports only");
                     return;
 
                 default:

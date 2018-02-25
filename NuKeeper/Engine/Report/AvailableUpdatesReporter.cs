@@ -20,8 +20,8 @@ namespace NuKeeper.Engine.Report
         {
             using (var writer = MakeOutputStream(name))
             {
-                WriteHeading(writer);
                 _logger.Verbose($"writing {updates.Count} lines to report");
+                WriteHeading(writer);
 
                 foreach (var update in updates)
                 {
@@ -29,6 +29,7 @@ namespace NuKeeper.Engine.Report
                 }
 
                 writer.Close();
+                _logger.Verbose("Report written");
             }
         }
 
