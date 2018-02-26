@@ -89,7 +89,7 @@ namespace NuKeeper.Engine
             var highestPublishedAt = HighestPublishedAt(updates.Packages.Major.Published);
 
             builder.AppendLine(
-                $"There is also a higher version, {highest}{highestPublishedAt}," +
+                $"There is also a higher version, {highest}{highestPublishedAt}, " +
                 $"but this was not applied as only {allowedChange} version changes are allowed.");
         }
 
