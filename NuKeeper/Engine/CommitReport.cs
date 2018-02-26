@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
@@ -54,16 +55,7 @@ namespace NuKeeper.Engine
             var highestVersion = updates.Packages.Major?.Identity.Version;
             if (highestVersion != null && (highestVersion > updates.SelectedVersion))
             {
-                var allowedChange = CodeQuote(updates.AllowedChange.ToString());
-                var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
-                string highestPublishedAt = string.Empty;
-                if (updates.Packages.Major.Published.HasValue)
-                {
-                    highestPublishedAt = " published at " +
-                        CodeQuote(DateFormat.AsUtcIso8601(updates.Packages.Major.Published));
-                }
-                builder.AppendLine(
-                    $"There is also a higher version, {highest}{highestPublishedAt}, but this was not applied as only {allowedChange} version changes are allowed.");
+                LogHighestVersion(updates, highestVersion, builder);
             }
 
             builder.AppendLine();
@@ -87,6 +79,32 @@ namespace NuKeeper.Engine
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
             return builder.ToString();
+        }
+
+        private static void LogHighestVersion(PackageUpdateSet updates, NuGetVersion highestVersion, StringBuilder builder)
+        {
+            var allowedChange = CodeQuote(updates.AllowedChange.ToString());
+            var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
+
+            var highestPublishedAt = HighestPublishedAt(updates.Packages.Major.Published);
+
+            builder.AppendLine(
+                $"There is also a higher version, {highest}{highestPublishedAt}, " +
+                $"but this was not applied as only {allowedChange} version changes are allowed.");
+        }
+
+        private static string HighestPublishedAt(DateTimeOffset? highestPublishedAt)
+        {
+            if (!highestPublishedAt.HasValue)
+            {
+                return string.Empty;
+            }
+
+            var highestPubDate = highestPublishedAt.Value;
+            var formattedPubDate = CodeQuote(DateFormat.AsUtcIso8601(highestPubDate));
+            var highestAgo = TimeSpanFormat.Ago(highestPubDate.UtcDateTime, DateTime.UtcNow);
+
+            return $" published at {formattedPubDate}, {highestAgo}";
         }
 
         private static string CodeQuote(string value)

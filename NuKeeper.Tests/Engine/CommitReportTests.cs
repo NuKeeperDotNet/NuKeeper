@@ -219,7 +219,8 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitReport.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`, but this was not applied as only `Minor` version changes are allowed."));
+            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`,"));
+            Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
         }
 
         private static void AssertContainsStandardText(string report)
