@@ -10,16 +10,18 @@ namespace NuKeeper.Engine.Report
 {
     public class AvailableUpdatesReporter: IAvailableUpdatesReporter
     {
+        private readonly IReportStreamSource _reportStreamSource;
         private readonly INuKeeperLogger _logger;
 
-        public AvailableUpdatesReporter(INuKeeperLogger logger)
+        public AvailableUpdatesReporter(IReportStreamSource reportStreamSource, INuKeeperLogger logger)
         {
+            _reportStreamSource = reportStreamSource;
             _logger = logger;
         }
 
         public void Report(string name, List<PackageUpdateSet> updates)
         {
-            using (var writer = MakeOutputStream(name))
+            using (var writer = _reportStreamSource.GetStream(name))
             {
                 _logger.Verbose($"writing {updates.Count} lines to report");
                 WriteHeading(writer);
@@ -84,16 +86,6 @@ namespace NuKeeper.Engine.Report
             var version = packageVersion.Identity.Version;
             var date = DateFormat.AsUtcIso8601(packageVersion.Published);
             return $"{version},{date}";
-        }
-
-        private StreamWriter MakeOutputStream(string name)
-        {
-            var fileName = name + "_nukeeeper_report.csv";
-
-            _logger.Verbose($"writing report to file at '{fileName}'");
-
-            var output = new FileStream(fileName, FileMode.Create);
-            return new StreamWriter(output);
         }
     }
 }
