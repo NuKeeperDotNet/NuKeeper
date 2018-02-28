@@ -43,7 +43,7 @@ namespace NuKeeper.Engine.Report
                 "Usage count,Versions in use,Lowest version in use,Highest Version in use," +
                 "Major version update,Major published date," +
                 "Minor version update,Minor published date," +
-                "Patch version update,Patch published date,"
+                "Patch version update,Patch published date"
                 );
         }
 
