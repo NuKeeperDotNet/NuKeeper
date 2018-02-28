@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using NSubstitute;
 using NuGet.Packaging.Core;
@@ -16,7 +17,7 @@ namespace NuKeeper.Tests.Engine.Report
     public class AvailableUpdatesReporterTests
     {
         [Test]
-        public void NoRowsHasHeader()
+        public void NoRowsHasHeaderLineInOutput()
         {
             var rows = new List<PackageUpdateSet>();
 
@@ -30,7 +31,7 @@ namespace NuKeeper.Tests.Engine.Report
         }
 
         [Test]
-        public void OneRow()
+        public void OneRowHasOutput()
         {
             var rows = new List<PackageUpdateSet>
             {
@@ -44,6 +45,24 @@ namespace NuKeeper.Tests.Engine.Report
 
             var lines = output.Split(Environment.NewLine);
             Assert.That(lines.Length, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void OneRowHasMatchedCommas()
+        {
+            var rows = new List<PackageUpdateSet>
+            {
+                UpdateSetFor(MakePackageForV110())
+            };
+
+            var output = ReportToString(rows);
+            var lines = output.Split(Environment.NewLine);
+
+            foreach (var line in lines)
+            {
+                var commas = line.Count(c => c == ',');
+                Assert.That(commas, Is.EqualTo(11), $"Failed on line {line}");
+            }
         }
 
         private static string ReportToString(List<PackageUpdateSet> rows)
