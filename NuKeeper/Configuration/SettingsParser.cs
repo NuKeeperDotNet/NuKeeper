@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -53,6 +53,7 @@ namespace NuKeeper.Configuration
                 AllowedChange = settings.AllowedChange,
                 ForkMode = settings.ForkMode,
                 LogLevel = settings.LogLevel,
+                ReportMode = settings.ReportMode,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
                 NuGetSources = ReadNuGetSources(settings),
                 PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include)),

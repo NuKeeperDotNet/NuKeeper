@@ -1,4 +1,4 @@
-﻿using NuGet.Common;
+using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
@@ -45,6 +45,7 @@ namespace NuKeeper
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
             container.Register<IPackageUpdater, PackageUpdater>();
+            container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
             container.Register<IForkFinder, ForkFinder>();
 

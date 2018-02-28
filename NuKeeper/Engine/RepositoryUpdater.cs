@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Git;
@@ -18,7 +20,8 @@ namespace NuKeeper.Engine
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
-        private readonly IAvailableUpdatesReporter availableUpdatesReporter;
+        private readonly IAvailableUpdatesReporter _availableUpdatesReporter;
+        private readonly UserSettings _settings;
 
         public RepositoryUpdater(
             IPackageUpdatesLookup packageLookup, 
@@ -27,7 +30,8 @@ namespace NuKeeper.Engine
             IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger,
             SolutionsRestore solutionsRestore,
-            IAvailableUpdatesReporter availableUpdatesReporter)
+            IAvailableUpdatesReporter availableUpdatesReporter,
+            UserSettings settings)
         {
             _packageLookup = packageLookup;
             _updateSelection = updateSelection;
@@ -35,7 +39,8 @@ namespace NuKeeper.Engine
             _repositoryScanner = repositoryScanner;
             _logger = logger;
             _solutionsRestore = solutionsRestore;
-            this.availableUpdatesReporter = availableUpdatesReporter;
+            _availableUpdatesReporter = availableUpdatesReporter;
+            _settings = settings;
         }
 
         public async Task Run(IGitDriver git, RepositoryData repository)
@@ -44,7 +49,26 @@ namespace NuKeeper.Engine
 
             var updates = await FindPackageUpdateSets(git);
 
-            availableUpdatesReporter.Report(repository.Pull.Name, updates);
+            _logger.Verbose($"Report mode is {_settings.ReportMode}");
+            switch (_settings.ReportMode)
+            {
+                case ReportMode.Off:
+                    break;
+
+                case ReportMode.On:
+                    // report and continue
+                    _availableUpdatesReporter.Report(repository.Pull.Name, updates);
+                    break;
+
+                case ReportMode.ReportOnly:
+                    // report and exit
+                    _availableUpdatesReporter.Report(repository.Pull.Name, updates);
+                    _logger.Info("Exiting after reports only");
+                    return;
+
+                default:
+                    throw new Exception($"Unknown report mode: '{_settings.ReportMode}'");
+            }
 
             if (updates.Count == 0)
             {
