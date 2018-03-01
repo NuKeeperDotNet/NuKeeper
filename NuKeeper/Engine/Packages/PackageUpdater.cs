@@ -33,7 +33,7 @@ namespace NuKeeper.Engine.Packages
         {
             try
             {
-                _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
+                _logger.Terse(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
 
                 git.Checkout(repository.DefaultBranch);
 
@@ -44,12 +44,12 @@ namespace NuKeeper.Engine.Packages
 
                 await UpdateAllCurrentUsages(updateSet);
 
-                var commitMessage = CommitReport.MakeCommitMessage(updateSet);
+                var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
 
                 git.Push("nukeeper_push", branchName);
 
-                var prTitle = CommitReport.MakePullRequestTitle(updateSet);
+                var prTitle = CommitWording.MakePullRequestTitle(updateSet);
                 await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName);
 
                 git.Checkout(repository.DefaultBranch);
@@ -112,7 +112,7 @@ namespace NuKeeper.Engine.Packages
 
             var pr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch)
             {
-                Body = CommitReport.MakeCommitDetails(updates)
+                Body = CommitWording.MakeCommitDetails(updates)
             };
 
             await _github.OpenPullRequest(repository.Pull, pr);

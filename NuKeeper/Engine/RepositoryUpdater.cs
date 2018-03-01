@@ -104,11 +104,11 @@ namespace NuKeeper.Engine
             var packages = _repositoryScanner.FindAllNuGetPackages(git.WorkingFolder)
                 .ToList();
 
-            _logger.Log(EngineReport.PackagesFound(packages));
+            _logger.Log(UpdatesLogger.PackagesFound(packages));
 
             // look for package updates
             var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            _logger.Log(EngineReport.UpdatesFound(updates));
+            _logger.Log(UpdatesLogger.UpdatesFound(updates));
             return updates;
         }
 

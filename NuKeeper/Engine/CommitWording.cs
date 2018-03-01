@@ -6,7 +6,7 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public static class CommitReport
+    public static class CommitWording
     {
         private const string CommitEmoji = "package";
         public static string MakePullRequestTitle(PackageUpdateSet updates)
