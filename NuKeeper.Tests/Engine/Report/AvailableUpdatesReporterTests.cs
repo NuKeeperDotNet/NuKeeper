@@ -33,10 +33,7 @@ namespace NuKeeper.Tests.Engine.Report
         [Test]
         public void OneRowHasOutput()
         {
-            var rows = new List<PackageUpdateSet>
-            {
-                UpdateSetFor(MakePackageForV110())
-            };
+            var rows = OnePackageUpdateSet();
 
             var output = ReportToString(rows);
 
@@ -50,10 +47,7 @@ namespace NuKeeper.Tests.Engine.Report
         [Test]
         public void OneRowHasMatchedCommas()
         {
-            var rows = new List<PackageUpdateSet>
-            {
-                UpdateSetFor(MakePackageForV110())
-            };
+            var rows = new List<PackageUpdateSet>();
 
             var output = ReportToString(rows);
             var lines = output.Split(Environment.NewLine);
@@ -63,6 +57,29 @@ namespace NuKeeper.Tests.Engine.Report
                 var commas = line.Count(c => c == ',');
                 Assert.That(commas, Is.EqualTo(11), $"Failed on line {line}");
             }
+        }
+
+        [Test]
+        public void TwoRowsHaveOutput()
+        {
+            var package1 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            var package2 = new PackageIdentity("fish", new NuGetVersion("2.3.4"));
+
+            var rows = new List<PackageUpdateSet>
+            {
+                UpdateSetFor(package1, MakePackageForV110(package1)),
+                UpdateSetFor(package2, MakePackageForV110(package2))
+            };
+
+            var output = ReportToString(rows);
+
+            Assert.That(output, Is.Not.Null);
+            Assert.That(output, Is.Not.Empty);
+
+            var lines = output.Split(Environment.NewLine);
+            Assert.That(lines.Length, Is.EqualTo(3));
+            Assert.That(lines[1], Does.Contain("foo.bar,"));
+            Assert.That(lines[2], Does.Contain("fish,"));
         }
 
         private static string ReportToString(List<PackageUpdateSet> rows)
@@ -87,27 +104,30 @@ namespace NuKeeper.Tests.Engine.Report
             return data.Trim();
         }
 
-        private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
+        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
         {
-            var newPackage = NewPackageFooBar123();
-
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, "someSource", publishedDate);
+            var latest = new PackageSearchMedatadata(package, "someSource", publishedDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 
-        private static PackageInProject MakePackageForV110()
+        private static PackageInProject MakePackageForV110(PackageIdentity package)
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
                 PackageReferenceType.PackagesConfig);
-            return new PackageInProject("foo.bar", "1.1.0", path);
+            return new PackageInProject(package.Id, package.Version.ToString(), path);
+        }
+        private static List<PackageUpdateSet> OnePackageUpdateSet()
+        {
+            var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+
+            return new List<PackageUpdateSet>
+            {
+                UpdateSetFor(package, MakePackageForV110(package))
+            };
         }
 
-        private static PackageIdentity NewPackageFooBar123()
-        {
-            return new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-        }
     }
 }
