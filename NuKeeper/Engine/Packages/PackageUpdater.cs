@@ -33,7 +33,7 @@ namespace NuKeeper.Engine.Packages
         {
             try
             {
-                _logger.Terse(EngineReport.OldVersionsToBeUpdated(updateSet));
+                _logger.Terse(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
 
                 git.Checkout(repository.DefaultBranch);
 

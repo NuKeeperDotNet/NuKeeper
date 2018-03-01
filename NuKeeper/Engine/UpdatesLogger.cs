@@ -6,7 +6,7 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public static class EngineReport
+    public static class UpdatesLogger
     {
         public static LogData PackagesFound(List<PackageInProject> packages)
         {
