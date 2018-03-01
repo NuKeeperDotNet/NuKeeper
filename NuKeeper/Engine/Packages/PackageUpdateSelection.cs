@@ -40,7 +40,7 @@ namespace NuKeeper.Engine.Packages
                 .Take(_maxPullRequests)
                 .ToList();
 
-            _logger.Terse($"Selection of package updates: {unfiltered.Count} potential, filtered to {filtered.Count} and capped at {capped.Count}");
+            LogPackageCounts(unfiltered.Count, filtered.Count, capped.Count);
 
             foreach (var updateSet in capped)
             {
@@ -48,6 +48,22 @@ namespace NuKeeper.Engine.Packages
             }
 
             return capped;
+        }
+
+        private void LogPackageCounts(int potential, int filtered, int capped)
+        {
+            var message = $"Selection of package updates: {potential} potential";
+            if (filtered < potential)
+            {
+                message += $", filtered to {filtered}";
+            }
+
+            if (capped < filtered)
+            {
+                message +=  $", capped at {capped}";
+            }
+
+            _logger.Terse(message);
         }
 
         private int Priority(PackageUpdateSet update)
