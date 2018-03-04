@@ -1,3 +1,4 @@
+using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,24 @@ namespace NuKeeper.Engine.Packages
 
         private static int Priority(PackageUpdateSet update)
         {
-            return
-                update.CountCurrentVersions() * 100  +
-                update.CurrentPackages.Count;
+
+            const int Shift = 100;
+            var score = update.CountCurrentVersions();
+            score = score * Shift;
+            score = score + update.CurrentPackages.Count;
+            score = score * Shift;
+
+            var newVersion = update.Selected.Identity.Version;
+            var versionInUse = update.CurrentPackages
+                .Select(p => p.Version)
+                .Max();
+            score = score + ScoreVersionChange(newVersion, versionInUse);
+            return score;
+        }
+
+        private static int ScoreVersionChange(NuGetVersion newVersion, NuGetVersion oldVersion)
+        {
+            return 0;
         }
     }
 }

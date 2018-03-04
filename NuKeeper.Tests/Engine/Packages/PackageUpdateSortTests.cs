@@ -130,6 +130,30 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(output[2].CurrentPackages.Count, Is.EqualTo(10));
         }
 
+        [Test]
+        public void WillSortByBiggestVersionChange()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                PackageChange("1.2.4", "1.2.3"),
+                PackageChange("1.3.0", "1.2.3"),
+                PackageChange("2.0.0", "1.2.3")
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(SelectedVersion(output[0]), Is.EqualTo("2.0.0"));
+            Assert.That(SelectedVersion(output[1]), Is.EqualTo("1.3.0"));
+            Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.2.4"));
+        }
+
+        private string SelectedVersion(PackageUpdateSet packageUpdateSet)
+        {
+            return packageUpdateSet.Selected.Identity.Version.ToString();
+        }
+
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
@@ -148,6 +172,7 @@ namespace NuKeeper.Tests.Engine.Packages
 
         private static PackageUpdateSet OnePackageUpdateSet(int projectCount)
         {
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
             var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
 
             var projects = new List<PackageInProject>();
@@ -156,11 +181,13 @@ namespace NuKeeper.Tests.Engine.Packages
                 projects.Add(MakePackageInProjectFor(package));
             }
 
-            return UpdateSetFor(package, projects.ToArray());
+            return UpdateSetFor(newPackage, projects.ToArray());
         }
 
         private PackageUpdateSet MakeTwoProjectVersions()
         {
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
+
             var package123 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
             var package124 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.4"));
             var projects = new List<PackageInProject>
@@ -169,7 +196,21 @@ namespace NuKeeper.Tests.Engine.Packages
                 MakePackageInProjectFor(package124),
             };
 
-            return UpdateSetFor(package124, projects.ToArray());
+            return UpdateSetFor(newPackage, projects.ToArray());
         }
+
+        private static PackageUpdateSet PackageChange(string newVersion, string oldVersion)
+        {
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion(newVersion));
+            var oldPackage = new PackageIdentity("foo.bar", new NuGetVersion(oldVersion));
+
+            var projects = new List<PackageInProject>
+            {
+                MakePackageInProjectFor(oldPackage)
+            };
+
+            return UpdateSetFor(newPackage, projects.ToArray());
+        }
+
     }
 }
