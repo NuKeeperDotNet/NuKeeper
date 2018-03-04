@@ -29,7 +29,7 @@ namespace NuKeeper.Tests.Engine.Packages
         {
             var items = new List<PackageUpdateSet>
             {
-                OnePackageUpdateSet()
+                OnePackageUpdateSet(1)
             };
 
             var output = PackageUpdateSort.Sort(items)
@@ -38,6 +38,39 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(output, Is.Not.Null);
             Assert.That(output.Count, Is.EqualTo(1));
             Assert.That(output[0], Is.EqualTo(items[0]));
+        }
+
+        [Test]
+        public void CanSortTwoItems()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet(1),
+                OnePackageUpdateSet(2)
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output, Is.Not.Null);
+            Assert.That(output.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void CanSortThreeItems()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet(1),
+                OnePackageUpdateSet(2),
+                OnePackageUpdateSet(3),
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output, Is.Not.Null);
+            Assert.That(output.Count, Is.EqualTo(3));
         }
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
@@ -55,11 +88,18 @@ namespace NuKeeper.Tests.Engine.Packages
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }
-        private static PackageUpdateSet OnePackageUpdateSet()
+
+        private static PackageUpdateSet OnePackageUpdateSet(int projectCount)
         {
             var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
 
-            return UpdateSetFor(package, MakePackageForV110(package));
+            var projects = new List<PackageInProject>();
+            foreach(int i in Enumerable.Range(1, projectCount))
+            {
+                projects.Add(MakePackageForV110(package));
+            }
+
+            return UpdateSetFor(package, projects.ToArray());
         }
     }
 }
