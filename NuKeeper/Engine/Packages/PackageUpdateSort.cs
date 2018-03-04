@@ -14,7 +14,9 @@ namespace NuKeeper.Engine.Packages
 
         private static int Priority(PackageUpdateSet update)
         {
-            return update.CountCurrentVersions();
+            return
+                update.CountCurrentVersions() * 100  +
+                update.CurrentPackages.Count;
         }
     }
 }

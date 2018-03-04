@@ -76,16 +76,7 @@ namespace NuKeeper.Tests.Engine.Packages
         [Test]
         public void TwoPackageVersionsIsSortedToTop()
         {
-            var package123 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-            var package124 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.4"));
-            var projects = new List<PackageInProject>
-            {
-                MakePackageInProjectFor(package123),
-                MakePackageInProjectFor(package124),
-            };
-
-            var twoVersions = UpdateSetFor(package124, projects.ToArray());
-
+            var twoVersions = MakeTwoProjectVersions();
             var items = new List<PackageUpdateSet>
             {
                 OnePackageUpdateSet(3),
@@ -98,6 +89,45 @@ namespace NuKeeper.Tests.Engine.Packages
 
             Assert.That(output, Is.Not.Null);
             Assert.That(output[0], Is.EqualTo(twoVersions));
+        }
+
+        [Test]
+        public void WillSortByProjectCount()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet(1),
+                OnePackageUpdateSet(2),
+                OnePackageUpdateSet(3),
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(output[0].CurrentPackages.Count, Is.EqualTo(3));
+            Assert.That(output[1].CurrentPackages.Count, Is.EqualTo(2));
+            Assert.That(output[2].CurrentPackages.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void WillSortByProjectVersionsOverProjectCount()
+        {
+            var twoVersions = MakeTwoProjectVersions();
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet(10),
+                OnePackageUpdateSet(20),
+                twoVersions,
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(output[0], Is.EqualTo(twoVersions));
+            Assert.That(output[1].CurrentPackages.Count, Is.EqualTo(20));
+            Assert.That(output[2].CurrentPackages.Count, Is.EqualTo(10));
         }
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
@@ -127,6 +157,19 @@ namespace NuKeeper.Tests.Engine.Packages
             }
 
             return UpdateSetFor(package, projects.ToArray());
+        }
+
+        private PackageUpdateSet MakeTwoProjectVersions()
+        {
+            var package123 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            var package124 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.4"));
+            var projects = new List<PackageInProject>
+            {
+                MakePackageInProjectFor(package123),
+                MakePackageInProjectFor(package124),
+            };
+
+            return UpdateSetFor(package124, projects.ToArray());
         }
     }
 }
