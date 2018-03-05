@@ -31,7 +31,15 @@ _ReSharper*/
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
 
+# JetBrains Rider
+.idea/
+*.sln.iml
 
-NuKeeper/Properties/launchSettings.json
+# Visual Studio and Visual Studio Code
 .vs/
 .vscode/
+
+# Custom
+NuKeeper/Properties/launchSettings.json
+
+
