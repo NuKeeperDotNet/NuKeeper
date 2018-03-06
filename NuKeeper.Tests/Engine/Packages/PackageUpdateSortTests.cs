@@ -149,6 +149,26 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.2.4"));
         }
 
+        [Test]
+        public void WillSortByGettingOutOfBetaFirst()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                PackageChange("2.0.0", "1.2.3"),
+                PackageChange("1.2.4", "1.2.3-beta1"),
+                PackageChange("1.3.0-pre-2", "1.2.3-beta1")
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(SelectedVersion(output[0]), Is.EqualTo("1.2.4"));
+            Assert.That(SelectedVersion(output[1]), Is.EqualTo("2.0.0"));
+            Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.3.0-pre-2"));
+        }
+
+
         private string SelectedVersion(PackageUpdateSet packageUpdateSet)
         {
             return packageUpdateSet.Selected.Identity.Version.ToString();

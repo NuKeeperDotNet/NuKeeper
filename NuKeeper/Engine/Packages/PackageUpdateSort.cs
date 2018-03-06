@@ -58,7 +58,7 @@ namespace NuKeeper.Engine.Packages
             long preReleaseScore = 0;
             if (oldVersion.IsPrerelease && !newVersion.IsPrerelease)
             {
-                preReleaseScore = Shift * 10;
+               preReleaseScore = Shift * 12;
             }
 
             var majors = newVersion.Major - oldVersion.Major;
