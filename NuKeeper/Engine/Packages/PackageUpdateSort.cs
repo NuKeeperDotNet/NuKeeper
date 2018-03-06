@@ -38,9 +38,8 @@ namespace NuKeeper.Engine.Packages
                 return 0;
             }
 
-            var today = DateTime.UtcNow;
-            var interval = today.Subtract(publishedDate.Value.ToUniversalTime().DateTime);
-
+            var published = publishedDate.Value.ToUniversalTime().DateTime;
+            var interval = DateTime.UtcNow.Subtract(published);
             return interval.Days;
         }
 
