@@ -8,6 +8,8 @@ namespace NuKeeper.Engine.Packages
 {
     public static class PackageUpdateSort
     {
+        private const long Shift = 1000;
+
         public static IEnumerable<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> packages)
         {
             return packages.OrderByDescending(Priority);
@@ -15,42 +17,70 @@ namespace NuKeeper.Engine.Packages
 
         private static long Priority(PackageUpdateSet update)
         {
+            long countCurrentVersions = update.CountCurrentVersions();
+            long countUsages = update.CurrentPackages.Count;
+            var versionChangeScore = ScoreVersionChange(update);
+            var ageScore = ScoreAge(update);
 
-            const long Shift = 1000;
-            long score = update.CountCurrentVersions();
+            long score = countCurrentVersions;
             score = score * Shift;
-            score = score + update.CurrentPackages.Count;
+            score = score + countUsages;
             score = score * Shift;
+            score = score + versionChangeScore + ageScore;
+            return score;
+        }
 
+        private static long ScoreAge(PackageUpdateSet update)
+        {
+            var publishedDate = update.Selected.Published;
+            if (!publishedDate.HasValue)
+            {
+                return 0;
+            }
+
+            var today = DateTime.UtcNow;
+            var interval = today.Subtract(publishedDate.Value.ToUniversalTime().DateTime);
+
+            return interval.Days;
+        }
+
+        private static long ScoreVersionChange(PackageUpdateSet update)
+        {
             var newVersion = update.Selected.Identity.Version;
             var versionInUse = update.CurrentPackages
                 .Select(p => p.Version)
                 .Max();
-            score = score + ScoreVersionChange(newVersion, versionInUse);
-            return score;
+
+            return ScoreVersionChange(newVersion, versionInUse);
         }
 
-        private static int ScoreVersionChange(NuGetVersion newVersion, NuGetVersion oldVersion)
+        private static long ScoreVersionChange(NuGetVersion newVersion, NuGetVersion oldVersion)
         {
+            long preReleaseScore = 0;
+            if (oldVersion.IsPrerelease && !newVersion.IsPrerelease)
+            {
+                preReleaseScore = Shift * 10;
+            }
+
             var majors = newVersion.Major - oldVersion.Major;
             if (majors > 0)
             {
-                return majors * 100;
+                return (majors * 100) + preReleaseScore;
             }
 
             var minors = newVersion.Minor - oldVersion.Minor;
             if (minors > 0)
             {
-                return minors * 10;
+                return (minors * 10) + preReleaseScore;
             }
 
             var patches = newVersion.Patch - oldVersion.Patch;
             if (patches > 0)
             {
-                return patches;
+                return patches + preReleaseScore;
             }
 
-            return 0;
+            return preReleaseScore;
         }
     }
 }

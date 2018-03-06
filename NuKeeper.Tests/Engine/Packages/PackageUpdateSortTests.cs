@@ -136,8 +136,9 @@ namespace NuKeeper.Tests.Engine.Packages
             var items = new List<PackageUpdateSet>
             {
                 PackageChange("1.2.4", "1.2.3"),
-                PackageChange("1.3.0", "1.2.3"),
-                PackageChange("2.0.0", "1.2.3")
+                PackageChange("2.0.0", "1.2.3"),
+                PackageChange("4.0.0", "1.2.3"),
+                PackageChange("6.0.0", "1.2.3"),
             };
 
             var output = PackageUpdateSort.Sort(items)
