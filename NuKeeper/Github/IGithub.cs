@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Engine;
 using Octokit;
@@ -7,7 +7,7 @@ namespace NuKeeper.Github
 {
     public interface IGithub
     {
-        Task<string> GetCurrentUser();
+        Task<Account> GetCurrentUser();
 
         Task OpenPullRequest(ForkData target, NewPullRequest request);
 

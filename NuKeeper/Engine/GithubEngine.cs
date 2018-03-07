@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
@@ -35,15 +35,16 @@ namespace NuKeeper.Engine
             var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
-                Username = githubUser,
+                Username = githubUser.Login,
                 Password = _githubToken
             };
+            var userIdentity = new Identity(githubUser.Name, githubUser.Email);
 
             var repositories = await _repositoryDiscovery.GetRepositories();
 
             foreach (var repository in repositories)
             {
-                await _repositoryEngine.Run(repository, gitCreds);
+                await _repositoryEngine.Run(repository, gitCreds, userIdentity);
             }
         }
     }
