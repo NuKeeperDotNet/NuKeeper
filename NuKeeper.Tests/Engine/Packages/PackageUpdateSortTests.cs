@@ -13,6 +13,8 @@ namespace NuKeeper.Tests.Engine.Packages
     [TestFixture]
     public class PackageUpdateSortTests
     {
+        private static readonly DateTimeOffset StandardPublishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
+
         [Test]
         public void CanSortWhenListIsEmpty()
         {
@@ -169,6 +171,25 @@ namespace NuKeeper.Tests.Engine.Packages
         }
 
 
+        [Test]
+        public void WillSortByOldestFirstOverPatchVersionIncrement()
+        {
+            var items = new List<PackageUpdateSet>
+            {
+                PackageChange("1.2.6", "1.2.3", StandardPublishedDate),
+                PackageChange("1.2.5", "1.2.3", StandardPublishedDate.AddYears(-1)),
+                PackageChange("1.2.4", "1.2.3", StandardPublishedDate.AddYears(-2))
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(SelectedVersion(output[0]), Is.EqualTo("1.2.4"));
+            Assert.That(SelectedVersion(output[1]), Is.EqualTo("1.2.5"));
+            Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.2.6"));
+        }
+
         private string SelectedVersion(PackageUpdateSet packageUpdateSet)
         {
             return packageUpdateSet.Selected.Identity.Version.ToString();
@@ -176,8 +197,12 @@ namespace NuKeeper.Tests.Engine.Packages
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
         {
-            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(package, "someSource", publishedDate);
+            return UpdateSetFor(package, StandardPublishedDate, packages);
+        }
+
+        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
+        {
+            var latest = new PackageSearchMedatadata(package, "someSource", published);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -196,7 +221,7 @@ namespace NuKeeper.Tests.Engine.Packages
             var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
 
             var projects = new List<PackageInProject>();
-            foreach(int i in Enumerable.Range(1, projectCount))
+            foreach(var i in Enumerable.Range(1, projectCount))
             {
                 projects.Add(MakePackageInProjectFor(package));
             }
@@ -219,17 +244,22 @@ namespace NuKeeper.Tests.Engine.Packages
             return UpdateSetFor(newPackage, projects.ToArray());
         }
 
-        private static PackageUpdateSet PackageChange(string newVersion, string oldVersion)
+        private static PackageUpdateSet PackageChange(string newVersion, string oldVersion, DateTimeOffset? publishedDate = null)
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion(newVersion));
             var oldPackage = new PackageIdentity("foo.bar", new NuGetVersion(oldVersion));
+
+            if (!publishedDate.HasValue)
+            {
+                publishedDate = StandardPublishedDate;
+            }
 
             var projects = new List<PackageInProject>
             {
                 MakePackageInProjectFor(oldPackage)
             };
 
-            return UpdateSetFor(newPackage, projects.ToArray());
+            return UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
         }
 
     }
