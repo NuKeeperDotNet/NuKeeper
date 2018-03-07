@@ -1,4 +1,3 @@
-﻿
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
@@ -29,7 +28,8 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds)
+        public async Task Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds,
+            Identity userIdentity)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace NuKeeper.Engine
                 }
 
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
-                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds);
+                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
 
                 await _repositoryUpdater.Run(git, repo);
 

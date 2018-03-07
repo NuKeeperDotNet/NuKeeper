@@ -10,12 +10,13 @@ namespace NuKeeper.Git
     {
         private readonly INuKeeperLogger _logger;
         private readonly Credentials _gitCredentials;
+        private readonly Identity _identity;
         private bool _fetchFinished;
 
         public IFolder WorkingFolder { get; }
 
         public LibGit2SharpDriver(INuKeeperLogger logger,  
-            IFolder workingFolder, Credentials gitCredentials)
+            IFolder workingFolder, Credentials gitCredentials, Identity userIdentity)
         {
             if (gitCredentials == null)
             {
@@ -25,6 +26,7 @@ namespace NuKeeper.Git
             _logger = logger;
             WorkingFolder = workingFolder;
             _gitCredentials = gitCredentials;
+            _identity = userIdentity;
         }
         public void Clone(Uri pullEndpoint)
         {
@@ -99,7 +101,7 @@ namespace NuKeeper.Git
             _logger.Verbose($"Git commit with message '{message}'");
             using (var repo = MakeRepo())
             {
-                var sig = repo.Config.BuildSignature(DateTimeOffset.Now);
+                var sig = new Signature(_identity, DateTimeOffset.Now);
                 Commands.Stage(repo, "*");
                 repo.Commit(message, sig, sig);
             }

@@ -25,12 +25,12 @@ namespace NuKeeper.Github
             };
         }
 
-        public async Task<string> GetCurrentUser()
+        public async Task<Account> GetCurrentUser()
         {
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Verbose($"Read github user '{userLogin}'");
-            return userLogin;
+            return user;
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
