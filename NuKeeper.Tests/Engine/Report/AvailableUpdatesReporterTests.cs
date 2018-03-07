@@ -128,6 +128,5 @@ namespace NuKeeper.Tests.Engine.Report
                 UpdateSetFor(package, MakePackageForV110(package))
             };
         }
-
     }
 }

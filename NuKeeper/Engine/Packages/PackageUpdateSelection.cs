@@ -27,8 +27,7 @@ namespace NuKeeper.Engine.Packages
             IGitDriver git,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
-            var unfiltered = potentialUpdates
-                .OrderByDescending(Priority)
+            var unfiltered = PackageUpdateSort.Sort(potentialUpdates)
                 .ToList();
 
             var filtered = unfiltered
@@ -64,11 +63,6 @@ namespace NuKeeper.Engine.Packages
             }
 
             _logger.Terse(message);
-        }
-
-        private int Priority(PackageUpdateSet update)
-        {
-            return update.CountCurrentVersions();
         }
 
         private bool MatchesIncludeExclude(PackageUpdateSet packageUpdateSet)
