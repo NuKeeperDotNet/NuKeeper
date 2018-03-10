@@ -208,8 +208,6 @@ namespace NuKeeper.Tests.Engine
 
         private PackageUpdateSet UpdateFooFromOneVersion()
         {
-            var newPackage = LatestVersionOfPackageFoo();
-
             var currentPackages = new List<PackageInProject>
             {
                 new PackageInProject("foo", "1.0.1", PathToProjectOne()),
@@ -225,8 +223,6 @@ namespace NuKeeper.Tests.Engine
 
         private PackageUpdateSet UpdateBarFromTwoVersions()
         {
-            var newPackage = LatestVersionOfPackageBar();
-
             var currentPackages = new List<PackageInProject>
             {
                 new PackageInProject("bar", "1.0.1", PathToProjectOne()),
@@ -243,16 +239,6 @@ namespace NuKeeper.Tests.Engine
         private PackageIdentity LatestVersionOfPackageFoobar()
         {
             return new PackageIdentity("foobar", new NuGetVersion("1.2.3"));
-        }
-
-        private PackageIdentity LatestVersionOfPackageFoo()
-        {
-            return new PackageIdentity("foo", new NuGetVersion("1.2.3"));
-        }
-
-        private PackageIdentity LatestVersionOfPackageBar()
-        {
-            return new PackageIdentity("bar", new NuGetVersion("2.3.4"));
         }
 
         private PackagePath PathToProjectOne()
