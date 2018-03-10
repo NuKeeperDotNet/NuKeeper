@@ -28,7 +28,15 @@ namespace NuKeeper.Tests
         }
 
         [Test]
-        public void UnknownDurationTypeIsNotParsed()
+        public void ZeroIsParsed()
+        {
+            // when you send a zero, no point in specifying the units
+            var value = DurationParser.Parse("0");
+            Assert.That(value, Is.EqualTo(TimeSpan.Zero));
+        }
+
+        [Test]
+        public void UnknownUnitsIsNotParsed()
         {
             var value = DurationParser.Parse("37x");
             Assert.That(value, Is.Null);

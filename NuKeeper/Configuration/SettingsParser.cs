@@ -48,6 +48,13 @@ namespace NuKeeper.Configuration
                 EnsureTrailingSlash(settings.GithubApiEndpoint),
                 settings.GithubToken);
 
+            var minPackageAge = DurationParser.Parse(settings.MinPackageAge);
+            if (!minPackageAge.HasValue)
+            {
+                minPackageAge = TimeSpan.Zero;
+                Console.WriteLine($"Min package age '{settings.MinPackageAge}' could not be parsed");
+            }
+
             var userPrefs = new UserSettings
             {
                 AllowedChange = settings.AllowedChange,
@@ -57,7 +64,8 @@ namespace NuKeeper.Configuration
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
                 NuGetSources = ReadNuGetSources(settings),
                 PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include)),
-                PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude))
+                PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude)),
+                MinimumPackageAge = minPackageAge.Value
             };
 
             return new SettingsContainer

@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using NuKeeper.Engine.Report;
 using NuKeeper.Logging;
@@ -14,6 +15,8 @@ namespace NuKeeper.Configuration
         public Regex PackageExcludes { get; set; }
 
         public int MaxPullRequestsPerRepository { get; set; }
+
+        public TimeSpan MinimumPackageAge { get; set; }
 
         public VersionChange AllowedChange { get; set; }
 

@@ -11,6 +11,11 @@ namespace NuKeeper
                 return null;
             }
 
+            if (value == "0")
+            {
+                return TimeSpan.Zero;
+            }
+
             char suffix = value[value.Length - 1];
             var prefix = value.Substring(0, value.Length - 1);
 
