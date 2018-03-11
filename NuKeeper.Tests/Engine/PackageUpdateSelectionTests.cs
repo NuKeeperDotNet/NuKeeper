@@ -198,7 +198,7 @@ namespace NuKeeper.Tests.Engine
                 UpdateFooFromOneVersion()
             };
 
-            var target = OneTargetSelection(TimeSpan.FromDays(7));
+            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
@@ -214,12 +214,44 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
             };
 
-            var target = OneTargetSelection(TimeSpan.FromDays(7));
+            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
             var results = target.SelectTargets(GitWithNoBranches(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public void WhenMinAgeIsLowBothPackagesAreIncluded()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
+                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
+            };
+
+            var target = MinAgeTargetSelection(TimeSpan.FromHours(12));
+
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void WhenMinAgeIsHighNeitherPackagesAreIncluded()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
+                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
+            };
+
+            var target = MinAgeTargetSelection(TimeSpan.FromDays(10));
+
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(0));
         }
 
         private PackageUpdateSet UpdateFoobarFromOneVersion()
@@ -287,14 +319,26 @@ namespace NuKeeper.Tests.Engine
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static IPackageUpdateSelection OneTargetSelection(TimeSpan? minAge = null)
+        private static IPackageUpdateSelection OneTargetSelection()
         {
             const int maxPullRequests = 1;
 
             var settings = new UserSettings
             {
                 MaxPullRequestsPerRepository = maxPullRequests,
-                MinimumPackageAge = minAge ?? TimeSpan.Zero
+                MinimumPackageAge = TimeSpan.Zero
+            };
+            return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+        }
+
+        private static IPackageUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
+        {
+            const int maxPullRequests = 1000;
+
+            var settings = new UserSettings
+            {
+                MaxPullRequestsPerRepository = maxPullRequests,
+                MinimumPackageAge = minAge
             };
             return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
         }
