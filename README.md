@@ -62,6 +62,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 | allowed_version_change           | No                | Yes (`change`)       | Major                               |
 | fork_mode                        | No                | Yes (`fork`)         | PreferFork                          |
 | report_mode                      | No                | Yes (`report`)       | Off                                 |
+| min_package_age                  | No                | Yes (`minage`)       | 7d                                  |
 
  * *github_api_endpoint* This is the api endpoint for the github instance you're targetting. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository.
@@ -78,6 +79,12 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 
  * *fork_mode* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below.
  * *report_mode* Values are `Off`, `On`, `ReportOnly`. This setting controls if a CSV report file of possible updates is generated. The default value `Off` means that no report is generated. `On` will generate it and then proceed with the run, `ReportOnly` is used to generate the report and then exit without making any PRs.
+
+ *  *min_package_age* In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age, 
+This age is the duration between the published date of the selected package update, to now. 
+The default is 7 days. A value can be expressed in command options as an integer and a unit suffix, 
+where the unit is one of `h` for hour, `d` for days, `w` for weeks. A zero with no unit is also allowed.
+e.g. `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks. 
 
 ### Command-line arguments
 
@@ -96,6 +103,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 | change                           | No                         |
 | fork                             | No                         |
 | report                           | No                         |
+| minage                           | No                         |
 
  * *mode* One of `repository` or `organisation`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
@@ -110,6 +118,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
  * *change* Overrides  `allowed_version_change` in `config.json`
  * *fork* Overrides  `fork_mode` in `config.json`
  * *report* Overrides `report_mode` in `config.json`
+ * *minage* Overrides `min_package_age` in `config.json`
 
 
 ## When to use NuKeeper
