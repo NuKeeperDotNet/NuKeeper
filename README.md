@@ -80,11 +80,12 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
  * *fork_mode* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below.
  * *report_mode* Values are `Off`, `On`, `ReportOnly`. This setting controls if a CSV report file of possible updates is generated. The default value `Off` means that no report is generated. `On` will generate it and then proceed with the run, `ReportOnly` is used to generate the report and then exit without making any PRs.
 
- *  *min_package_age* In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age, 
-This age is the duration between the published date of the selected package update, to now. 
-The default is 7 days. A value can be expressed in command options as an integer and a unit suffix, 
+ *  *min_package_age* In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age. 
+The default is 7 days.
+This age is the duration between the published date of the selected package update and now. 
+ A value can be expressed in command options as an integer and a unit suffix, 
 where the unit is one of `h` for hour, `d` for days, `w` for weeks. A zero with no unit is also allowed.
-e.g. `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks. 
+Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks. 
 
 ### Command-line arguments
 
