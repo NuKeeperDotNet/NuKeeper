@@ -190,6 +190,38 @@ namespace NuKeeper.Tests.Engine
             git.Received().BranchExists(Arg.Any<string>());
         }
 
+        [Test]
+        public void WhenThePackageIsNotOldEnough()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion()
+            };
+
+            var target = OneTargetSelection(TimeSpan.FromDays(7));
+
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void WhenTheFirstPackageIsNotOldEnough()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
+                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
+            };
+
+            var target = OneTargetSelection(TimeSpan.FromDays(7));
+
+            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+        }
+
         private PackageUpdateSet UpdateFoobarFromOneVersion()
         {
             var newPackage = LatestVersionOfPackageFoobar();
@@ -206,8 +238,10 @@ namespace NuKeeper.Tests.Engine
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageUpdateSet UpdateFooFromOneVersion()
+        private PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
         {
+            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
+
             var currentPackages = new List<PackageInProject>
             {
                 new PackageInProject("foo", "1.0.1", PathToProjectOne()),
@@ -215,14 +249,16 @@ namespace NuKeeper.Tests.Engine
             };
 
             var matchVersion = new NuGetVersion("4.0.0");
-            var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion), "ASource", DateTimeOffset.Now);
+            var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion), "ASource", pubDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageUpdateSet UpdateBarFromTwoVersions()
+        private PackageUpdateSet UpdateBarFromTwoVersions(TimeSpan? packageAge = null)
         {
+            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
+
             var currentPackages = new List<PackageInProject>
             {
                 new PackageInProject("bar", "1.0.1", PathToProjectOne()),
@@ -230,7 +266,7 @@ namespace NuKeeper.Tests.Engine
             };
 
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, "ASource", DateTimeOffset.Now);
+            var match = new PackageSearchMedatadata(matchId, "ASource", pubDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
@@ -251,12 +287,14 @@ namespace NuKeeper.Tests.Engine
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static IPackageUpdateSelection OneTargetSelection()
+        private static IPackageUpdateSelection OneTargetSelection(TimeSpan? minAge = null)
         {
             const int maxPullRequests = 1;
+
             var settings = new UserSettings
             {
-                MaxPullRequestsPerRepository = maxPullRequests
+                MaxPullRequestsPerRepository = maxPullRequests,
+                MinimumPackageAge = minAge ?? TimeSpan.Zero
             };
             return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
         }
