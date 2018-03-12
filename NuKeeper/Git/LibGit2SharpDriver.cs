@@ -15,12 +15,22 @@ namespace NuKeeper.Git
 
         public IFolder WorkingFolder { get; }
 
-        public LibGit2SharpDriver(INuKeeperLogger logger,  
+        public LibGit2SharpDriver(INuKeeperLogger logger,
             IFolder workingFolder, Credentials gitCredentials, Identity userIdentity)
         {
+            if (workingFolder == null)
+            {
+                throw new ArgumentNullException(nameof(workingFolder));
+            }
+
             if (gitCredentials == null)
             {
                 throw new ArgumentNullException(nameof(gitCredentials));
+            }
+
+            if (userIdentity == null)
+            {
+                throw new ArgumentNullException(nameof(userIdentity));
             }
 
             _logger = logger;

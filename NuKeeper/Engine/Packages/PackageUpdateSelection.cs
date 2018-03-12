@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ namespace NuKeeper.Engine.Packages
         private readonly Regex _excludeFilter;
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
+        private readonly DateTime _maxPublishedDate;
 
         public PackageUpdateSelection(UserSettings settings, INuKeeperLogger logger)
         {
@@ -21,6 +23,7 @@ namespace NuKeeper.Engine.Packages
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;
             _excludeFilter = settings.PackageExcludes;
+            _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumPackageAge);
         }
 
         public List<PackageUpdateSet> SelectTargets(
@@ -32,6 +35,7 @@ namespace NuKeeper.Engine.Packages
 
             var filtered = unfiltered
                 .Where(MatchesIncludeExclude)
+                .Where(MatchesMinAge)
                 .Where(up => !HasExistingBranch(git, up))
                 .ToList();
 
@@ -80,6 +84,17 @@ namespace NuKeeper.Engine.Packages
         private static bool MatchesExclude(Regex regex, PackageUpdateSet packageUpdateSet)
         {
             return regex != null && regex.IsMatch(packageUpdateSet.SelectedId);
+        }
+
+        private bool MatchesMinAge(PackageUpdateSet packageUpdateSet)
+        {
+            var published = packageUpdateSet.Selected.Published;
+            if (!published.HasValue)
+            {
+                return true;
+            }
+
+            return published.Value.UtcDateTime <= _maxPublishedDate;
         }
 
         private static bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)

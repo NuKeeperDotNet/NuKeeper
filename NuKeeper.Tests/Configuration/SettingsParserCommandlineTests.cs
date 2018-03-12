@@ -51,11 +51,32 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+            Assert.That(settings.UserSettings.PackageIncludes, Is.Null);
+            Assert.That(settings.UserSettings.PackageExcludes, Is.Null);
+        }
+
+        [Test]
+        public void ValidRepoCommandLineHasDefaultUserOptions()
+        {
+            var commandLine = ValidRepoCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.FromDays(7)));
+        }
+
+        [Test]
+        public void ValidRepoCommandLineHasDefaultUserEnums()
+        {
+            var commandLine = ValidRepoCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
-            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
         }
 
         [Test]
@@ -272,7 +293,34 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.FromDays(7)));
             Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+        }
+
+        [Test]
+        public void MinPackageAgeIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("MinAge=3w");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.FromDays(21)));
+        }
+
+        [Test]
+        public void InvalidMinPackageAgeIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("MinAge=78ff");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.Zero));
         }
 
         private static IEnumerable<string> ValidRepoCommandLine()
