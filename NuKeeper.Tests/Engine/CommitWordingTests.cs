@@ -223,6 +223,36 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
         }
 
+        [Test]
+        public void OneUpdateWithMajorVersionChange()
+        {
+            var updates = UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110());
+
+            var report = CommitWording.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.StartWith("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0"));
+        }
+
+        [Test]
+        public void OneUpdateWithMinorVersionChange()
+        {
+            var updates = UpdateSetForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110());
+
+            var report = CommitWording.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.1` from `1.1.0"));
+        }
+
+        [Test]
+        public void OneUpdateWithPatchVersionChange()
+        {
+            var updates = UpdateSetForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110());
+
+            var report = CommitWording.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.StartWith("NuKeeper has generated a patch update of `foo.bar` to `1.1.9` from `1.1.0"));
+        }
+
         private static void AssertContainsStandardText(string report)
         {
             Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3`"));
@@ -241,13 +271,18 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
         {
             var newPackage = NewPackageFooBar123();
+            return UpdateSetForNewVersion(newPackage, packages);
+        }
 
+        private static PackageUpdateSet UpdateSetForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
+        {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(newPackage, "someSource", publishedDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
         }
+
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
@@ -268,7 +303,12 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageIdentity NewPackageFooBar123()
         {
-            return new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            return NewPackageFooBar("1.2.3");
+        }
+
+        private static PackageIdentity NewPackageFooBar(string version)
+        {
+            return new PackageIdentity("foo.bar", new NuGetVersion(version));
         }
 
         private static PackageInProject MakePackageForV110()
