@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitWording.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3` from `1.1.0`"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3` from `1.1.0`"));
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitWording.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3`"));
             Assert.That(report, Does.Contain("2 versions of `foo.bar` were found in use: `1.1.0`, `1.0.0`"));
         }
 
@@ -186,7 +186,7 @@ namespace NuKeeper.Tests.Engine
 
             var report = CommitWording.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3` from `1.1.0`"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3` from `1.1.0`"));
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace NuKeeper.Tests.Engine
 
         private static void AssertContainsStandardText(string report)
         {
-            Assert.That(report, Does.StartWith("NuKeeper has generated an update of `foo.bar` to `1.2.3`"));
+            Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3`"));
             Assert.That(report, Does.Contain("This is an automated update. Merge only if it passes tests"));
             Assert.That(report, Does.EndWith("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper" + Environment.NewLine));
             Assert.That(report, Does.Contain("1.1.0"));

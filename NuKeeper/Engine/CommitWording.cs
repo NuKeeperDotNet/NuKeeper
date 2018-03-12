@@ -21,24 +21,31 @@ namespace NuKeeper.Engine
 
         public static string MakeCommitDetails(PackageUpdateSet updates)
         {
-            var oldVersions = updates.CurrentPackages
+            var versionsInUse = updates.CurrentPackages
                 .Select(u => u.Version)
                 .Distinct()
+                .ToList();
+
+            var oldVersions = versionsInUse
                 .Select(v => CodeQuote(v.ToString()))
                 .ToList();
- 
+
+            var minOldVersion = versionsInUse.Min();
+
             var newVersion = CodeQuote(updates.SelectedVersion.ToString());
             var packageId = CodeQuote(updates.SelectedId);
+
+            var changeLevel = ChangeLevel(minOldVersion, updates.SelectedVersion);
 
             var builder = new StringBuilder();
 
             if (oldVersions.Count == 1)
             {
-                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion} from {oldVersions.JoinWithCommas()}");
+                builder.AppendLine($"NuKeeper has generated a {changeLevel} update of {packageId} to {newVersion} from {oldVersions.JoinWithCommas()}");
             }
             else
             {
-                builder.AppendLine($"NuKeeper has generated an update of {packageId} to {newVersion}");
+                builder.AppendLine($"NuKeeper has generated a {changeLevel} update of {packageId} to {newVersion}");
                 builder.AppendLine($"{oldVersions.Count} versions of {packageId} were found in use: {oldVersions.JoinWithCommas()}");
             }
 
@@ -79,6 +86,31 @@ namespace NuKeeper.Engine
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
             return builder.ToString();
+        }
+
+        private static string ChangeLevel(NuGetVersion oldVersion, NuGetVersion newVersion)
+        {
+            if (newVersion.Major > oldVersion.Major)
+            {
+                return "major";
+            }
+
+            if (newVersion.Minor > oldVersion.Minor)
+            {
+                return "minor";
+            }
+
+            if (newVersion.Patch > oldVersion.Patch)
+            {
+                return "patch";
+            }
+
+            if (!newVersion.IsPrerelease && oldVersion.IsPrerelease)
+            {
+                return "out of beta";
+            }
+
+            return string.Empty;
         }
 
         private static void LogHighestVersion(PackageUpdateSet updates, NuGetVersion highestVersion, StringBuilder builder)
