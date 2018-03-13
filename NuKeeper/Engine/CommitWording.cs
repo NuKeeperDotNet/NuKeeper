@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
 
@@ -84,7 +85,13 @@ namespace NuKeeper.Engine
 
             builder.AppendLine();
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
+            if (SourceIsPublicNuget(updates.Selected.Source))
+            {
+                builder.AppendLine();
+                builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
+            }
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
+
             return builder.ToString();
         }
 
@@ -142,6 +149,19 @@ namespace NuKeeper.Engine
         private static string CodeQuote(string value)
         {
             return "`" + value + "`";
+        }
+
+        private static bool SourceIsPublicNuget(string sourceUrl)
+        {
+            return
+                !string.IsNullOrWhiteSpace(sourceUrl) &&
+                sourceUrl.StartsWith("https://api.nuget.org/");
+        }
+
+        private static string NugetPackageLink(PackageIdentity package)
+        {
+            var url = $"https://www.nuget.org/packages/{package.Id}/{package.Version}";
+            return $"[{package.Id} {package.Version} on NuGet.org]({url})";
         }
     }
 }
