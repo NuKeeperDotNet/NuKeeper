@@ -261,6 +261,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Contain("This is an automated update. Merge only if it passes tests"));
             Assert.That(report, Does.EndWith("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper" + Environment.NewLine));
             Assert.That(report, Does.Contain("1.1.0"));
+            Assert.That(report, Does.Contain("[foo.bar 1.2.3 on NuGet.org](https://www.nuget.org/packages/foo.bar/1.2.3)"));
 
             Assert.That(report, Does.Not.Contain("Exception"));
             Assert.That(report, Does.Not.Contain("System.String"));
