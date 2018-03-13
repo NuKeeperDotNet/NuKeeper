@@ -11,6 +11,8 @@ namespace NuKeeper.Tests.Engine
     [TestFixture]
     public class CommitWordingTests
     {
+        private const string NugetSource = "https://api.nuget.org/v3/index.json";
+
         [Test]
         public void MarkPullRequestTitle_UpdateIsCorrect()
         {
@@ -263,8 +265,8 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Not.Contain("Exception"));
             Assert.That(report, Does.Not.Contain("System.String"));
             Assert.That(report, Does.Not.Contain("Generic"));
-            Assert.That(report, Does.Not.Contain("["));
-            Assert.That(report, Does.Not.Contain("]"));
+            Assert.That(report, Does.Not.Contain("[ "));
+            Assert.That(report, Does.Not.Contain(" ]"));
             Assert.That(report, Does.Not.Contain("There is also a higher version"));
         }
 
@@ -277,12 +279,11 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, "someSource", publishedDate);
+            var latest = new PackageSearchMedatadata(newPackage, NugetSource, publishedDate);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
         }
-
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
@@ -292,10 +293,10 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, "someSource", publishedAt);
+            var latest = new PackageSearchMedatadata(latestId, NugetSource, publishedAt);
 
             var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), "someSource", null);
+                NewPackageFooBar123(), NugetSource, null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
             return new PackageUpdateSet(updates, packages);
