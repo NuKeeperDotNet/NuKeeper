@@ -255,6 +255,17 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.StartWith("NuKeeper has generated a patch update of `foo.bar` to `1.1.9` from `1.1.0"));
         }
 
+        [Test]
+        public void OneUpdateWithInternalPackageSource()
+        {
+            var updates = UpdateSetForInternalSource(MakePackageForV110());
+
+            var report = CommitWording.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.Not.Contain("on NuGet.org"));
+            Assert.That(report, Does.Not.Contain("www.nuget.org"));
+        }
+
         private static void AssertContainsStandardText(string report)
         {
             Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.3`"));
@@ -285,6 +296,17 @@ namespace NuKeeper.Tests.Engine
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
         }
+
+        private static PackageUpdateSet UpdateSetForInternalSource(params PackageInProject[] packages)
+        {
+            var newPackage = NewPackageFooBar123();
+            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
+            var latest = new PackageSearchMedatadata(newPackage, "http://internalfeed.myco.com/api", publishedDate);
+
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
 
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
