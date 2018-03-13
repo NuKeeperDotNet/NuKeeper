@@ -83,15 +83,15 @@ namespace NuKeeper.Engine
                 builder.AppendLine(line);
             }
 
+            builder.AppendLine();
+            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             if (SourceIsPublicNuget(updates.Selected.Source))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
             }
-
-            builder.AppendLine();
-            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
+
             return builder.ToString();
         }
 
@@ -161,7 +161,7 @@ namespace NuKeeper.Engine
         private static string NugetPackageLink(PackageIdentity package)
         {
             var url = $"https://www.nuget.org/packages/{package.Id}/{package.Version}";
-            return $"[{package.Id} {package.Version}]({url})";
+            return $"[{package.Id} {package.Version} on NuGet.org]({url})";
         }
     }
 }
