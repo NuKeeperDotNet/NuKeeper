@@ -123,8 +123,8 @@ namespace NuKeeper.Git
 
             if (repoSignature == null)
             {
-                throw new ArgumentNullException(nameof(repoSignature),
-                    "Failed to build git user identify from .gitconfig");
+                throw new InvalidOperationException(
+                    "Failed to build signature, did not get valid git user identity from github token or from repo config");
             }
 
             return repoSignature;
