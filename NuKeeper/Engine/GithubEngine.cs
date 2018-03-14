@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
