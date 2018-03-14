@@ -57,16 +57,20 @@ namespace NuKeeper.Engine
 
         private Identity GetUserIdentity(Account githubUser)
         {
-            try
+            if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {
-                return new Identity(githubUser.Name, githubUser.Email);
-            }
-            catch (ArgumentException e)
-            {
-                _logger.Error(
-                    "GitHub user name or public email missing from profile, falling back to .gitconfig", e);
+                _logger.Terse(
+                    "GitHub user name missing from profile, falling back to .gitconfig");
                 return null;
             }
+            if (string.IsNullOrWhiteSpace(githubUser?.Email))
+            {
+                _logger.Terse(
+                    "GitHub public email missing from profile, falling back to .gitconfig");
+                return null;
+            }
+
+            return new Identity(githubUser.Name, githubUser.Email);
         }
     }
 }
