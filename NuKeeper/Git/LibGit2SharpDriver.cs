@@ -28,11 +28,6 @@ namespace NuKeeper.Git
                 throw new ArgumentNullException(nameof(gitCredentials));
             }
 
-            if (userIdentity == null)
-            {
-                throw new ArgumentNullException(nameof(userIdentity));
-            }
-
             _logger = logger;
             WorkingFolder = workingFolder;
             _gitCredentials = gitCredentials;
@@ -119,19 +114,20 @@ namespace NuKeeper.Git
 
         private Signature GetSignature(Repository repo)
         {
-            if (_identity == null)
+            if (_identity != null)
             {
-                var signature =  repo.Config.BuildSignature(DateTimeOffset.Now);
-
-                if (signature == null)
-                {
-                    throw new ArgumentNullException(
-                        nameof(signature),
-                        "Failed to build git user identify from .gitconfig");
-                }
+                return new Signature(_identity, DateTimeOffset.Now);
             }
 
-            return new Signature(_identity, DateTimeOffset.Now);
+            var repoSignature =  repo.Config.BuildSignature(DateTimeOffset.Now);
+
+            if (repoSignature == null)
+            {
+                throw new InvalidOperationException(
+                    "Failed to build signature, did not get valid git user identity from github token or from repo config");
+            }
+
+            return repoSignature;
         }
 
         public void Push(string remoteName, string branchName)
