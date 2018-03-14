@@ -111,10 +111,27 @@ namespace NuKeeper.Git
             _logger.Verbose($"Git commit with message '{message}'");
             using (var repo = MakeRepo())
             {
-                var sig = new Signature(_identity, DateTimeOffset.Now);
+                var signature = GetSignature(repo);
                 Commands.Stage(repo, "*");
-                repo.Commit(message, sig, sig);
+                repo.Commit(message, signature, signature);
             }
+        }
+
+        private Signature GetSignature(Repository repo)
+        {
+            if (_identity == null)
+            {
+                var signature =  repo.Config.BuildSignature(DateTimeOffset.Now);
+
+                if (signature == null)
+                {
+                    throw new ArgumentNullException(
+                        nameof(signature),
+                        "Failed to build git user identify from .gitconfig");
+                }
+            }
+
+            return new Signature(_identity, DateTimeOffset.Now);
         }
 
         public void Push(string remoteName, string branchName)
