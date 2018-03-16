@@ -37,30 +37,28 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
         {
-            IExternalProcess process;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            var process = OsExternalProcess();
+            return await process.Run(".", command, "", ensureSuccess);
+        }
+
+        private static IExternalProcess OsExternalProcess()
+        {
+            if (IsWindows())
             {
-                process = new WindowsExternalProcess();
-            }
-            else
-            {
-                process = new UnixProcess();
+                return new WindowsExternalProcess();
             }
 
-            return await process.Run(".", command, "", ensureSuccess);
+            return new UnixProcess();
         }
 
         private static string DirCommand()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return "dir";
-            }
-            else
-            {
-                return "ls";
-            }
+            return IsWindows() ? "dir" : "ls";
+        }
 
+        private static bool IsWindows()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         }
     }
 }
