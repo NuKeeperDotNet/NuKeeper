@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.ProcessRunner
 {
-    public class WindowsExternalProcess : IExternalProcess
+    public class UnixProcess : IExternalProcess
     {
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            var processInfo = new ProcessStartInfo("cmd.exe", $"/C {command} {arguments}")
+            var processInfo = new ProcessStartInfo(command, arguments)
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,

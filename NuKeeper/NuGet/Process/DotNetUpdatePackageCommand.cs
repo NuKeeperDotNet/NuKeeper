@@ -29,13 +29,10 @@ namespace NuKeeper.NuGet.Process
         {
             var dirName = currentPackage.Path.Info.DirectoryName;
             var sources = GetSourcesCommandLine(_sources);
-            var updateCommand = $"cd {dirName}"
-                + $" & dotnet restore {sources}"
-                + $" & dotnet remove package {currentPackage.Id}"
-                + $" & dotnet add package {currentPackage.Id} -v {newVersion} -s {packageSource}";
-            _logger.Verbose(updateCommand);
 
-            await _externalProcess.Run(updateCommand, true);
+            await _externalProcess.Run(dirName, "dotnet", $"restore {sources}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"remove package {currentPackage.Id}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"add package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)
