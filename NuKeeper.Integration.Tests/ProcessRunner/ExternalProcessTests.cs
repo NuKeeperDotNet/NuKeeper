@@ -19,7 +19,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
             Assert.That(result.Success, Is.True);
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public async Task InvalidCommandShouldFail()
         {
             var result = await RunExternalProcess(Guid.NewGuid().ToString("N"), false);
