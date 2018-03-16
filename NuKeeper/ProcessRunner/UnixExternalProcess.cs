@@ -22,10 +22,10 @@ namespace NuKeeper.ProcessRunner
             }
             catch (Exception ex)
             {
-                if (ensureSuccess)
-                {
-                    throw;
-                }
+                //if (ensureSuccess)
+                //{
+                //    throw;
+                //}
 
                 var message = $"Could not create unix process info: {ex.GetType().Name} {ex.Message}";
                 return new ProcessOutput(string.Empty, message, 1);
