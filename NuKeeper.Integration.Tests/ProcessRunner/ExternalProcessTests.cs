@@ -1,30 +1,29 @@
-﻿using System;
+using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.ProcessRunner
 {
-    [TestFixture, Category("WindowsOnly")]
+    [TestFixture]
     public class ExternalProcessTests
     {
         [Test]
         public async Task ValidCommandShouldSucceed()
         {
-            var process = new ExternalProcess();
-            var result = await process.Run("dir", false);
+            var result = await RunExternalProcess(DirCommand(), false);
 
             Assert.That(result.ExitCode, Is.EqualTo(0));
             Assert.That(result.Output, Is.Not.Empty);
             Assert.That(result.Success, Is.True);
         }
 
-        [Test]
+        [Test, Category("WindowsOnly")]
         public async Task InvalidCommandShouldFail()
         {
-            var process = new ExternalProcess();
-            var result = await process.Run(Guid.NewGuid().ToString("N"), false);
-
+            var result = await RunExternalProcess(Guid.NewGuid().ToString("N"), false);
+        
             Assert.That(result.ExitCode, Is.Not.EqualTo(0));
             Assert.That(result.ErrorOutput, Is.Not.Empty);
             Assert.That(result.Success, Is.False);
@@ -33,9 +32,34 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         [Test]
         public void InvalidCommandShouldThrowWhenSuccessIsEnsured()
         {
-            var process = new ExternalProcess();
+            Assert.ThrowsAsync(Is.AssignableTo<Exception>(),
+                () => RunExternalProcess(Guid.NewGuid().ToString("N"), true));
+        }
 
-            Assert.ThrowsAsync<Exception>(() => process.Run(Guid.NewGuid().ToString("N"), true));
+        private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
+        {
+            var process = OsExternalProcess();
+            return await process.Run(".", command, "", ensureSuccess);
+        }
+
+        private static IExternalProcess OsExternalProcess()
+        {
+            if (IsWindows())
+            {
+                return new WindowsExternalProcess();
+            }
+
+            return new UnixProcess();
+        }
+
+        private static string DirCommand()
+        {
+            return IsWindows() ? "dir" : "ls";
+        }
+
+        private static bool IsWindows()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         }
     }
 }

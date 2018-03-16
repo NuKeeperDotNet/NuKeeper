@@ -30,7 +30,7 @@ namespace NuKeeper
             container.Register<IFolder, Folder>();
             container.Register<IFolderFactory, FolderFactory>();
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
-            container.Register<IExternalProcess, ExternalProcess>();
+            container.Register<IExternalProcess, WindowsExternalProcess>();
 
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();

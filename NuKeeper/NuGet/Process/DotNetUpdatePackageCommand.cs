@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Versioning;
@@ -22,20 +22,17 @@ namespace NuKeeper.NuGet.Process
         {
             _logger = logger;
             _sources = settings.NuGetSources;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new WindowsExternalProcess();
         }
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
             var dirName = currentPackage.Path.Info.DirectoryName;
             var sources = GetSourcesCommandLine(_sources);
-            var updateCommand = $"cd {dirName}"
-                + $" & dotnet restore {sources}"
-                + $" & dotnet remove package {currentPackage.Id}"
-                + $" & dotnet add package {currentPackage.Id} -v {newVersion} -s {packageSource}";
-            _logger.Verbose(updateCommand);
 
-            await _externalProcess.Run(updateCommand, true);
+            await _externalProcess.Run(dirName, "dotnet", $"restore {sources}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"remove package {currentPackage.Id}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"add package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)
