@@ -19,7 +19,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
             Assert.That(result.Success, Is.True);
         }
 
-        [Test]
+        [Test, Category("WindowsOnly")]
         public async Task InvalidCommandShouldFail()
         {
             var result = await RunExternalProcess(Guid.NewGuid().ToString("N"), false);
@@ -30,19 +30,10 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         }
 
         [Test]
-        public async Task InvalidCommandShouldThrowWhenSuccessIsEnsured()
+        public void InvalidCommandShouldThrowWhenSuccessIsEnsured()
         {
-            Exception exThrown = null;
-            try
-            {
-                await RunExternalProcess(Guid.NewGuid().ToString("N"), true);
-            }
-            catch (Exception ex)
-            {
-                exThrown = ex;
-            }
-
-            Assert.That(exThrown, Is.Not.Null);
+            Assert.ThrowsAsync(Is.AssignableTo<Exception>(),
+                () => RunExternalProcess(Guid.NewGuid().ToString("N"), true));
         }
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
