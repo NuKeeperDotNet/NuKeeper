@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Versioning;
@@ -22,7 +22,7 @@ namespace NuKeeper.NuGet.Process
         {
             _logger = logger;
             _sources = settings.NuGetSources;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new WindowsExternalProcess();
         }
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)

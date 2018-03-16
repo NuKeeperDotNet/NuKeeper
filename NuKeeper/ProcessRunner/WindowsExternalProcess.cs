@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NuKeeper.ProcessRunner
 {
-    public class ExternalProcess : IExternalProcess
+    public class WindowsExternalProcess : IExternalProcess
     {
         public async Task<ProcessOutput> Run(string command, bool ensureSuccess)
         {
