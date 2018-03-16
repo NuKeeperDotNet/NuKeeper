@@ -8,10 +8,11 @@ namespace NuKeeper.ProcessRunner
     {
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            ProcessStartInfo processInfo;
+            Process process;
+
             try
             {
-                processInfo = new ProcessStartInfo(command, arguments)
+                var processInfo = new ProcessStartInfo(command, arguments)
                 {
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -19,19 +20,19 @@ namespace NuKeeper.ProcessRunner
                     UseShellExecute = false,
                     WorkingDirectory = workingDirectory
                 };
+
+                process = Process.Start(processInfo);
             }
             catch (Exception ex)
             {
-                //if (ensureSuccess)
-                //{
-                //    throw;
-                //}
+                if (ensureSuccess)
+                {
+                    throw;
+                }
 
-                var message = $"Could not create unix process info: {ex.GetType().Name} {ex.Message}";
+                var message = $"Error starting unix external process for {command}: {ex.GetType().Name} {ex.Message}";
                 return new ProcessOutput(string.Empty, message, 1);
             }
-
-            var process = Process.Start(processInfo);
 
             if (process == null)
             {
