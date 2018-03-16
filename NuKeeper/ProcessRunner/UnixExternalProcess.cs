@@ -8,14 +8,28 @@ namespace NuKeeper.ProcessRunner
     {
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            var processInfo = new ProcessStartInfo(command, arguments)
+            ProcessStartInfo processInfo;
+            try
             {
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                WorkingDirectory = workingDirectory
-            };
+                processInfo = new ProcessStartInfo(command, arguments)
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    WorkingDirectory = workingDirectory
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ensureSuccess)
+                {
+                    throw;
+                }
+
+                var message = $"Could not create unix process info: {ex.GetType().Name} {ex.Message}";
+                return new ProcessOutput(string.Empty, message, 1);
+            }
 
             var process = Process.Start(processInfo);
 
