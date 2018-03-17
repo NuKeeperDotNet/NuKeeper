@@ -21,7 +21,7 @@ namespace NuKeeper.NuGet.Process
         {
             _logger = logger;
             _sources = settings.NuGetSources;
-            _externalProcess = externalProcess ?? new WindowsExternalProcess();
+            _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
         public async Task Invoke(FileInfo file)

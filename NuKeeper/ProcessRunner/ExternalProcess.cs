@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.ProcessRunner
 {
-    public class UnixProcess : IExternalProcess
+    public class ExternalProcess : IExternalProcess
     {
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
@@ -12,15 +12,7 @@ namespace NuKeeper.ProcessRunner
 
             try
             {
-                var processInfo = new ProcessStartInfo(command, arguments)
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    WorkingDirectory = workingDirectory
-                };
-
+                var processInfo = MakeProcessStartInfo(workingDirectory, command, arguments);
                 process = Process.Start(processInfo);
             }
             catch (Exception ex)
@@ -30,7 +22,7 @@ namespace NuKeeper.ProcessRunner
                     throw;
                 }
 
-                var message = $"Error starting unix external process for {command}: {ex.GetType().Name} {ex.Message}";
+                var message = $"Error starting external process for {command}: {ex.GetType().Name} {ex.Message}";
                 return new ProcessOutput(string.Empty, message, 1);
             }
 
@@ -52,6 +44,18 @@ namespace NuKeeper.ProcessRunner
             }
 
             return new ProcessOutput(textOut, errorOut, exitCode);
+        }
+
+        private static ProcessStartInfo MakeProcessStartInfo(string workingDirectory, string command, string arguments)
+        {
+            return new ProcessStartInfo(command, arguments)
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                WorkingDirectory = workingDirectory
+            };
         }
     }
 }
