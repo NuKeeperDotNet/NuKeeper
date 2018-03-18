@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NUnit.Framework;
@@ -49,18 +48,8 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
         {
-            var process = ExternalProcess();
+            IExternalProcess process = new ExternalProcess();
             return await process.Run(".", command, args, ensureSuccess);
-        }
-
-        private static IExternalProcess ExternalProcess()
-        {
-            return new ExternalProcess();
-        }
-
-        private static bool IsWindows()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         }
 
         private static void AssertSuccess(ProcessOutput result)
