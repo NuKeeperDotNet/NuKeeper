@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuKeeper.ProcessRunner;
 using NUnit.Framework;
@@ -12,11 +11,17 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         [Test]
         public async Task ValidCommandShouldSucceed()
         {
-            var result = await RunExternalProcess(DirCommand(), false);
+            var result = await RunExternalProcess("whoami", false);
 
-            Assert.That(result.ExitCode, Is.EqualTo(0));
-            Assert.That(result.Output, Is.Not.Empty);
-            Assert.That(result.Success, Is.True);
+            AssertSuccess(result);
+        }
+
+        [Test]
+        public async Task DotNetCanRun()
+        {
+            var result = await RunExternalProcess("dotnet", "--version", true);
+
+            AssertSuccess(result);
         }
 
         [Test]
@@ -38,23 +43,21 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
         {
-            var process = ExternalProcess();
-            return await process.Run(".", command, "", ensureSuccess);
+            return await RunExternalProcess(command, "", ensureSuccess);
         }
 
-        private static IExternalProcess ExternalProcess()
+        private static async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
         {
-            return new ExternalProcess();
+            IExternalProcess process = new ExternalProcess();
+            return await process.Run(".", command, args, ensureSuccess);
         }
 
-        private static string DirCommand()
+        private static void AssertSuccess(ProcessOutput result)
         {
-            return IsWindows() ? "cmdkey" : "ls";
-        }
-
-        private static bool IsWindows()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            Assert.That(result.ExitCode, Is.EqualTo(0), result.ErrorOutput);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Output, Is.Not.Empty);
+            Assert.That(result.ErrorOutput, Is.Empty);
         }
     }
 }
