@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -33,14 +33,14 @@ namespace NuKeeper.NuGet.Process
 
         private static string FindNugetInPackagesUnderProfile()
         {
-            var profile = Environment.GetEnvironmentVariable("userprofile");
+            var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
             if (string.IsNullOrWhiteSpace(profile))
             {
                 throw new Exception("Could not find user profile path");
             }
 
-            var commandlinePackageDir = Path.Combine(profile, ".nuget\\packages\\nuget.commandline");
+            var commandlinePackageDir = Path.Combine(profile, ".nuget", "packages", "nuget.commandline");
 
             if (!Directory.Exists(commandlinePackageDir))
             {
@@ -56,7 +56,7 @@ namespace NuKeeper.NuGet.Process
                 throw new Exception("Could not find a version of nuget.commandline");
             }
 
-            var nugetProgramPath = Path.Combine(highestVersion, "tools\\NuGet.exe");
+            var nugetProgramPath = Path.Combine(highestVersion, "tools", "NuGet.exe");
             return Path.GetFullPath(nugetProgramPath);
         }
     }
