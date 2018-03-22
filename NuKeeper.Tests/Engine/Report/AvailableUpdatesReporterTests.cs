@@ -115,7 +115,9 @@ namespace NuKeeper.Tests.Engine.Report
 
         private static PackageInProject MakePackageForV110(PackageIdentity package)
         {
-            var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
+            var path = new PackagePath(
+                OsSpecifics.GenerateBaseDirectory(),
+                Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }

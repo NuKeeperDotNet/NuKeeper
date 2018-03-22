@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using NUnit.Framework;
 using NuKeeper.RepositoryInspection;
 
@@ -7,17 +7,25 @@ namespace NuKeeper.Tests.RepositoryInspection
     [TestFixture]
     public class PackagePathTests
     {
+        private string _baseDirectory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _baseDirectory = OsSpecifics.GenerateBaseDirectory();
+        }
+
         [Test]
         public void ConstructorShouldProduceExpectedSimplePropsForProjectFile()
         {
             var sep = Path.DirectorySeparatorChar;
 
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder", 
-                $"{sep}checkout1{sep}src{sep}myproj.csproj", 
+                _baseDirectory,
+                $"{sep}checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
-            Assert.That(path.BaseDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder"));
+            Assert.That(path.BaseDirectory, Is.EqualTo(_baseDirectory));
             Assert.That(path.RelativePath, Is.EqualTo($"checkout1{sep}src{sep}myproj.csproj"));
             Assert.That(path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
@@ -27,11 +35,11 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var sep = Path.DirectorySeparatorChar;
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder", 
+                _baseDirectory,
                 $"{sep}checkout1{sep}src{sep}packages.config",
                 PackageReferenceType.PackagesConfig);
 
-            Assert.That(path.BaseDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder"));
+            Assert.That(path.BaseDirectory, Is.EqualTo(_baseDirectory));
             Assert.That(path.RelativePath, Is.EqualTo($"checkout1{sep}src{sep}packages.config"));
             Assert.That(path.PackageReferenceType, Is.EqualTo(PackageReferenceType.PackagesConfig));
         }
@@ -41,7 +49,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var sep = Path.DirectorySeparatorChar;
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder", 
+                _baseDirectory,
                 $"checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
@@ -49,18 +57,18 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedParsedFullPath()
         {
             var sep = Path.DirectorySeparatorChar;
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder",
+                _baseDirectory,
                 $"checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
 
-            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src"));
+            Assert.That(path.FullName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src{sep}myproj.csproj"));
         }
 
         [Test]
@@ -69,7 +77,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             var sep = Path.DirectorySeparatorChar;
 
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder",
+                _baseDirectory,
                 $"{sep}checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
@@ -77,19 +85,19 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedPathForProjectFile()
         {
             var sep = Path.DirectorySeparatorChar;
 
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder",
+                _baseDirectory,
                 $"{sep}checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
             Assert.That(path.Info, Is.Not.Null);
-            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.Info.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src"));
+            Assert.That(path.Info.FullName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src{sep}myproj.csproj"));
         }
 
         [Test]
@@ -97,7 +105,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         {
             var sep = Path.DirectorySeparatorChar;
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder", 
+                _baseDirectory,
                 $"{sep}checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
@@ -106,19 +114,19 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedParsedFullPathWithExtraSlash()
         {
             var sep = Path.DirectorySeparatorChar;
             var path = new PackagePath(
-                $"c:{sep}temp{sep}somefolder",
+                _baseDirectory,
                 $"{sep}checkout1{sep}src{sep}myproj.csproj",
                 PackageReferenceType.ProjectFile);
 
 
-            Assert.That(path.BaseDirectory, Is.EqualTo($"c:{sep}temp{sep}somefolder"));
-            Assert.That(path.Info.DirectoryName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src"));
-            Assert.That(path.FullName, Is.EqualTo($"c:{sep}temp{sep}somefolder{sep}checkout1{sep}src{sep}myproj.csproj"));
+            Assert.That(path.BaseDirectory, Is.EqualTo(_baseDirectory));
+            Assert.That(path.Info.DirectoryName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src"));
+            Assert.That(path.FullName, Is.EqualTo($"{_baseDirectory}{sep}checkout1{sep}src{sep}myproj.csproj"));
         }
     }
 }

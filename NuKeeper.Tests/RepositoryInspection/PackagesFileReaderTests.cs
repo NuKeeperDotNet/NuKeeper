@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Text;
 using NuGet.Versioning;
@@ -131,7 +131,9 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private PackagePath TempPath()
         {
-            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
+            return new PackagePath(
+                OsSpecifics.GenerateBaseDirectory(),
+                Path.Combine("src", "packages.config"),
                 PackageReferenceType.PackagesConfig);
         }
 
