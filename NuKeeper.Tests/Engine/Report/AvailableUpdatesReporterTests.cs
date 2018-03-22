@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using NSubstitute;
 using NuGet.Packaging.Core;
@@ -116,10 +115,9 @@ namespace NuKeeper.Tests.Engine.Report
 
         private static PackageInProject MakePackageForV110(PackageIdentity package)
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            var baseDirectory = isWindows ? "c:\\temp" : "/temp";
-
-            var path = new PackagePath(baseDirectory, Path.Combine("folder", "src", "project1", "packages.config"),
+            var path = new PackagePath(
+                OsSpecifics.GenerateBaseDirectory(),
+                Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }

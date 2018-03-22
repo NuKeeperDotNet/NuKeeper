@@ -1,6 +1,5 @@
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
@@ -51,8 +50,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [SetUp]
         public void SetUp()
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            _sampleDirectory = isWindows ? "c:\\temp\\somewhere" : "/temp/somewhere";
+            _sampleDirectory = OsSpecifics.GenerateBaseDirectory();
             _sampleFile = Path.Combine("src", "packages.config");
         }
 

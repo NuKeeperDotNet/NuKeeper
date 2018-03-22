@@ -1,5 +1,4 @@
 using System.IO;
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NuKeeper.RepositoryInspection;
 
@@ -13,9 +12,7 @@ namespace NuKeeper.Tests.RepositoryInspection
         [SetUp]
         public void SetUp()
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            var sep = Path.DirectorySeparatorChar;
-            _baseDirectory = isWindows ? $"c:{sep}temp{sep}somefolder" : $"{sep}home{sep}somefolder";
+            _baseDirectory = OsSpecifics.GenerateBaseDirectory();
         }
 
         [Test]
