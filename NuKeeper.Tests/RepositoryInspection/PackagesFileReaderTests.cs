@@ -1,5 +1,6 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using NuGet.Versioning;
 using NuKeeper.RepositoryInspection;
@@ -131,7 +132,10 @@ namespace NuKeeper.Tests.RepositoryInspection
 
         private PackagePath TempPath()
         {
-            return new PackagePath("c:\\temp\\somewhere", "src\\packages.config",
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var baseDirectory = isWindows ? "c:\\temp\\somewhere" : "/temp/somewhere";
+
+            return new PackagePath(baseDirectory, Path.Combine("src", "packages.config"),
                 PackageReferenceType.PackagesConfig);
         }
 

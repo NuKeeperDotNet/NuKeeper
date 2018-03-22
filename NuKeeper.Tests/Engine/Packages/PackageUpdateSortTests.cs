@@ -6,7 +6,9 @@ using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace NuKeeper.Tests.Engine.Packages
 {
@@ -210,7 +212,10 @@ namespace NuKeeper.Tests.Engine.Packages
 
         private static PackageInProject MakePackageInProjectFor(PackageIdentity package)
         {
-            var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var baseDirectory = isWindows ? "c:\\temp" : "/temp";
+
+            var path = new PackagePath(baseDirectory, Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }
