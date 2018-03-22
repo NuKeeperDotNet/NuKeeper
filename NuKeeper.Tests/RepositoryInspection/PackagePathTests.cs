@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using NUnit.Framework;
 using NuKeeper.RepositoryInspection;
 
@@ -49,7 +49,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedParsedFullPath()
         {
             var sep = Path.DirectorySeparatorChar;
@@ -77,7 +77,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedPathForProjectFile()
         {
             var sep = Path.DirectorySeparatorChar;
@@ -106,7 +106,7 @@ namespace NuKeeper.Tests.RepositoryInspection
             Assert.That(path.Info.Name, Is.EqualTo("myproj.csproj"));
         }
 
-        [Test, Category("WindowsOnly")]
+        [Test]
         public void ConstructorShouldProduceExpectedParsedFullPathWithExtraSlash()
         {
             var sep = Path.DirectorySeparatorChar;

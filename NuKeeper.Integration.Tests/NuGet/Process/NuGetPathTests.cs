@@ -1,9 +1,9 @@
-﻿using NuKeeper.NuGet.Process;
+using NuKeeper.NuGet.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
-    [TestFixture, Category("WindowsOnly")]
+    [TestFixture]
     public class NuGetPathTests
     {
         [Test]
