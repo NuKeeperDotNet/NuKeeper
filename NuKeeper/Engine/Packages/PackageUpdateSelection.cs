@@ -12,14 +12,19 @@ namespace NuKeeper.Engine.Packages
     public class PackageUpdateSelection : IPackageUpdateSelection
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IExistingBranchFilter _existingBranchFilter;
+
         private readonly Regex _excludeFilter;
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
         private readonly DateTime _maxPublishedDate;
 
-        public PackageUpdateSelection(UserSettings settings, INuKeeperLogger logger)
+        public PackageUpdateSelection(UserSettings settings,
+            INuKeeperLogger logger, IExistingBranchFilter existingBranchFilter)
         {
             _logger = logger;
+            _existingBranchFilter = existingBranchFilter;
+
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;
             _excludeFilter = settings.PackageExcludes;
@@ -36,7 +41,7 @@ namespace NuKeeper.Engine.Packages
             var filtered = unfiltered
                 .Where(MatchesIncludeExclude)
                 .Where(MatchesMinAge)
-                .Where(up => !HasExistingBranch(git, up))
+                .Where(up => ! _existingBranchFilter.HasExistingBranch(git, up))
                 .ToList();
 
             var capped = filtered
@@ -95,12 +100,6 @@ namespace NuKeeper.Engine.Packages
             }
 
             return published.Value.UtcDateTime <= _maxPublishedDate;
-        }
-
-        private static bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)
-        {
-            var qualifiedBranchName = "origin/" + BranchNamer.MakeName(packageUpdateSet);
-            return git.BranchExists(qualifiedBranchName);
         }
     }
 }
