@@ -16,5 +16,7 @@ namespace NuKeeper.Github
         Task<Repository> GetUserRepository(string userName, string repositoryName);
 
         Task<Repository> MakeUserFork(string owner, string repositoryName);
+
+        Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName);
     }
 }

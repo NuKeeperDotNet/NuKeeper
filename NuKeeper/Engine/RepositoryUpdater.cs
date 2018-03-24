@@ -76,7 +76,7 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            var targetUpdates = _updateSelection.SelectTargets(git, updates);
+            var targetUpdates = await _updateSelection.SelectTargets(repository.Push, updates);
 
             if (updates.Count == 0)
             {

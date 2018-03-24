@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.RepositoryInspection;
 
@@ -31,18 +31,14 @@ namespace NuKeeper.Engine.Packages
             _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumPackageAge);
         }
 
-        public List<PackageUpdateSet> SelectTargets(
-            IGitDriver git,
+        public async Task<List<PackageUpdateSet>> SelectTargets(
+            ForkData pushFork,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
             var unfiltered = PackageUpdateSort.Sort(potentialUpdates)
                 .ToList();
 
-            var filtered = unfiltered
-                .Where(MatchesIncludeExclude)
-                .Where(MatchesMinAge)
-                .Where(up => ! _existingBranchFilter.HasExistingBranch(git, up))
-                .ToList();
+            var filtered = await ApplyFilters(pushFork, unfiltered);
 
             var capped = filtered
                 .Take(_maxPullRequests)
@@ -56,6 +52,17 @@ namespace NuKeeper.Engine.Packages
             }
 
             return capped;
+        }
+
+        private async Task<List<PackageUpdateSet>> ApplyFilters(
+            ForkData pushFork, IEnumerable<PackageUpdateSet> all)
+        {
+            var filteredLocally = all
+                .Where(MatchesIncludeExclude)
+                .Where(MatchesMinAge);
+
+            var filtered = await _existingBranchFilter.CanMakeBranchFor(pushFork, filteredLocally);
+            return filtered.ToList();
         }
 
         private void LogPackageCounts(int potential, int filtered, int capped)

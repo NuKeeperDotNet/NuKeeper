@@ -1,4 +1,6 @@
-using NuKeeper.Git;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Github;
 using NuKeeper.RepositoryInspection;
 
@@ -13,11 +15,19 @@ namespace NuKeeper.Engine.Packages
             _github = github;
         }
 
-        public bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)
+        public async Task<IEnumerable<PackageUpdateSet>> CanMakeBranchFor(ForkData pushFork, IEnumerable<PackageUpdateSet> packageUpdateSets)
         {
-            var qualifiedBranchName = "origin/" + BranchNamer.MakeName(packageUpdateSet);
-            return git.BranchExists(qualifiedBranchName);
+            var results = await packageUpdateSets
+                .WhereAsync(async p => await CanMakeBranchFor(pushFork, p));
+
+            return results.ToList();
         }
 
+        private async Task<bool> CanMakeBranchFor(ForkData pushFork, PackageUpdateSet packageUpdateSet)
+        {
+            var branchName = BranchNamer.MakeName(packageUpdateSet);
+            var githubBranch = await _github.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName);
+            return (githubBranch == null);
+        }
     }
 }
