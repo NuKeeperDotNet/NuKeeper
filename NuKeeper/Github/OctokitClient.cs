@@ -74,9 +74,14 @@ namespace NuKeeper.Github
 
         public async Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName)
         {
-            var branch = await _client.Repository.Branch.Get(userName, repositoryName, branchName);
-
-            return branch;
+            try
+            {
+                return await _client.Repository.Branch.Get(userName, repositoryName, branchName);
+            }
+            catch (NotFoundException)
+            {
+                return null;
+            }
         }
 
         public async Task OpenPullRequest(ForkData target, NewPullRequest request)
