@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
+using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Git;
 using NuKeeper.NuGet.Api;
 using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
@@ -18,26 +19,26 @@ namespace NuKeeper.Tests.Engine
     public class PackageUpdateSelectionTests
     {
         [Test]
-        public void WhenThereAreNoInputs_NoTargetsOut()
+        public async Task WhenThereAreNoInputs_NoTargetsOut()
         {
             var updateSets = Enumerable.Empty<PackageUpdateSet>();
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
         }
 
         [Test]
-        public void WhenThereIsOneInput_ItIsTheTarget()
+        public async Task WhenThereIsOneInput_ItIsTheTarget()
         {
             var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -45,7 +46,7 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void WhenThereAreTwoInputs_MoreVersionsFirst_FirstIsTheTarget()
+        public async Task WhenThereAreTwoInputs_MoreVersionsFirst_FirstIsTheTarget()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -55,14 +56,14 @@ namespace NuKeeper.Tests.Engine
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
-        public void WhenThereAreTwoInputs_MoreVersionsSecond_SecondIsTheTarget()
+        public async Task WhenThereAreTwoInputs_MoreVersionsSecond_SecondIsTheTarget()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -72,14 +73,14 @@ namespace NuKeeper.Tests.Engine
 
             var target = OneTargetSelection();
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
-        public void WhenThereAreIncludes_OnlyConsiderMatches()
+        public async Task WhenThereAreIncludes_OnlyConsiderMatches()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -93,16 +94,17 @@ namespace NuKeeper.Tests.Engine
                 PackageIncludes = new Regex("bar")
             };
 
-            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new PackageUpdateSelection(settings,
+                new NullNuKeeperLogger(), BranchFilter());
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
-        public void WhenThereAreExcludes_OnlyConsiderNonMatching()
+        public async Task WhenThereAreExcludes_OnlyConsiderNonMatching()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -116,16 +118,17 @@ namespace NuKeeper.Tests.Engine
                 PackageExcludes = new Regex("bar")
             };
 
-            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new PackageUpdateSelection(settings,
+                new NullNuKeeperLogger(), BranchFilter());
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
-        public void WhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
+        public async Task WhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -141,16 +144,17 @@ namespace NuKeeper.Tests.Engine
                 PackageIncludes = new Regex("foo")
             };
 
-            var target = new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new PackageUpdateSelection(settings,
+                new NullNuKeeperLogger(), BranchFilter());
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
-        public void WhenExistingBranchesAreFilteredOut()
+        public async Task WhenExistingBranchesAreFilteredOut()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -158,18 +162,20 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var git = GitWithAllBranches();
+            var filter = BranchFilter(new List<PackageUpdateSet>());
 
-            var target = OneTargetSelection();
+            var target = OneTargetSelection(filter);
 
-            var results = target.SelectTargets(git, updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(0));
-            git.Received(2).BranchExists(Arg.Any<string>());
+            await filter.Received(1).CanMakeBranchFor(
+                Arg.Any<ForkData>(),
+                Arg.Any<IEnumerable<PackageUpdateSet>>());
         }
 
         [Test]
-        public void WhenFirstPackageIsFilteredOutByBranch()
+        public async Task WhenFirstPackageIsFilteredOutByBranch()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -177,21 +183,21 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var git = Substitute.For<IGitDriver>();
-            git.BranchExists(Arg.Is<string>(s => s.Contains("foo"))).Returns(true);
-            git.BranchExists(Arg.Is<string>(s => s.Contains("bar"))).Returns(false);
+            var filter = BranchFilter(updateSets.Skip(1));
 
-            var target = OneTargetSelection();
+            var target = OneTargetSelection(filter);
 
-            var results = target.SelectTargets(git, updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
-            git.Received().BranchExists(Arg.Any<string>());
+            await filter.Received(1).CanMakeBranchFor(
+                Arg.Any<ForkData>(),
+                Arg.Any<IEnumerable<PackageUpdateSet>>());
         }
 
         [Test]
-        public void WhenThePackageIsNotOldEnough()
+        public async Task WhenThePackageIsNotOldEnough()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -200,13 +206,13 @@ namespace NuKeeper.Tests.Engine
 
             var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public void WhenTheFirstPackageIsNotOldEnough()
+        public async Task WhenTheFirstPackageIsNotOldEnough()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -216,14 +222,14 @@ namespace NuKeeper.Tests.Engine
 
             var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
-        public void WhenMinAgeIsLowBothPackagesAreIncluded()
+        public async Task WhenMinAgeIsLowBothPackagesAreIncluded()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -233,13 +239,13 @@ namespace NuKeeper.Tests.Engine
 
             var target = MinAgeTargetSelection(TimeSpan.FromHours(12));
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(2));
         }
 
         [Test]
-        public void WhenMinAgeIsHighNeitherPackagesAreIncluded()
+        public async Task WhenMinAgeIsHighNeitherPackagesAreIncluded()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -249,7 +255,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = MinAgeTargetSelection(TimeSpan.FromDays(10));
 
-            var results = target.SelectTargets(GitWithNoBranches(), updateSets);
+            var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -321,6 +327,11 @@ namespace NuKeeper.Tests.Engine
 
         private static IPackageUpdateSelection OneTargetSelection()
         {
+            return OneTargetSelection(BranchFilter());
+        }
+
+        private static IPackageUpdateSelection OneTargetSelection(IExistingBranchFilter filter)
+        {
             const int maxPullRequests = 1;
 
             var settings = new UserSettings
@@ -328,7 +339,8 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequestsPerRepository = maxPullRequests,
                 MinimumPackageAge = TimeSpan.Zero
             };
-            return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+            return new PackageUpdateSelection(settings,
+                new NullNuKeeperLogger(), filter);
         }
 
         private static IPackageUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
@@ -340,21 +352,35 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequestsPerRepository = maxPullRequests,
                 MinimumPackageAge = minAge
             };
-            return new PackageUpdateSelection(settings, new NullNuKeeperLogger());
+            return new PackageUpdateSelection(settings,
+                new NullNuKeeperLogger(), BranchFilter());
         }
 
-        private static IGitDriver GitWithAllBranches()
+        private static ForkData PushFork()
         {
-            var git = Substitute.For<IGitDriver>();
-            git.BranchExists(Arg.Any<string>()).Returns(true);
-            return git;
+            return new ForkData(new Uri("http://github.com/foo/bar"), "me", "test");
         }
 
-        private static IGitDriver GitWithNoBranches()
+        private static IExistingBranchFilter BranchFilter()
         {
-            var git = Substitute.For<IGitDriver>();
-            git.BranchExists(Arg.Any<string>()).Returns(false);
-            return git;
+            var filter = Substitute.For<IExistingBranchFilter>();
+            filter.CanMakeBranchFor(
+                    Arg.Any<ForkData>(),
+                    Arg.Any<IEnumerable<PackageUpdateSet>>())
+                .Returns(x => Task.FromResult(x.Arg<IEnumerable<PackageUpdateSet>>()));
+
+            return filter;
+        }
+
+        private static IExistingBranchFilter BranchFilter(IEnumerable<PackageUpdateSet> results)
+        {
+            var filter = Substitute.For<IExistingBranchFilter>();
+            filter.CanMakeBranchFor(
+                    Arg.Any<ForkData>(),
+                    Arg.Any<IEnumerable<PackageUpdateSet>>())
+                .Returns(x => Task.FromResult(results));
+
+            return filter;
         }
     }
 }

@@ -4,10 +4,10 @@ using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {
-    public interface IPackageUpdateSelection
+    public interface IExistingBranchFilter
     {
-        Task<List<PackageUpdateSet>> SelectTargets(
+        Task<IEnumerable<PackageUpdateSet>> CanMakeBranchFor(
             ForkData pushFork,
-            IEnumerable<PackageUpdateSet> potentialUpdates);
+            IEnumerable<PackageUpdateSet> packageUpdateSets);
     }
 }

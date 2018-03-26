@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Git;
 using NuKeeper.Logging;
 using NuKeeper.RepositoryInspection;
 
@@ -12,32 +12,33 @@ namespace NuKeeper.Engine.Packages
     public class PackageUpdateSelection : IPackageUpdateSelection
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IExistingBranchFilter _existingBranchFilter;
+
         private readonly Regex _excludeFilter;
         private readonly Regex _includeFilter;
         private readonly int _maxPullRequests;
         private readonly DateTime _maxPublishedDate;
 
-        public PackageUpdateSelection(UserSettings settings, INuKeeperLogger logger)
+        public PackageUpdateSelection(UserSettings settings,
+            INuKeeperLogger logger, IExistingBranchFilter existingBranchFilter)
         {
             _logger = logger;
+            _existingBranchFilter = existingBranchFilter;
+
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;
             _excludeFilter = settings.PackageExcludes;
             _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumPackageAge);
         }
 
-        public List<PackageUpdateSet> SelectTargets(
-            IGitDriver git,
+        public async Task<List<PackageUpdateSet>> SelectTargets(
+            ForkData pushFork,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
             var unfiltered = PackageUpdateSort.Sort(potentialUpdates)
                 .ToList();
 
-            var filtered = unfiltered
-                .Where(MatchesIncludeExclude)
-                .Where(MatchesMinAge)
-                .Where(up => !HasExistingBranch(git, up))
-                .ToList();
+            var filtered = await ApplyFilters(pushFork, unfiltered);
 
             var capped = filtered
                 .Take(_maxPullRequests)
@@ -51,6 +52,17 @@ namespace NuKeeper.Engine.Packages
             }
 
             return capped;
+        }
+
+        private async Task<List<PackageUpdateSet>> ApplyFilters(
+            ForkData pushFork, IEnumerable<PackageUpdateSet> all)
+        {
+            var filteredLocally = all
+                .Where(MatchesIncludeExclude)
+                .Where(MatchesMinAge);
+
+            var filtered = await _existingBranchFilter.CanMakeBranchFor(pushFork, filteredLocally);
+            return filtered.ToList();
         }
 
         private void LogPackageCounts(int potential, int filtered, int capped)
@@ -95,12 +107,6 @@ namespace NuKeeper.Engine.Packages
             }
 
             return published.Value.UtcDateTime <= _maxPublishedDate;
-        }
-
-        private static bool HasExistingBranch(IGitDriver git, PackageUpdateSet packageUpdateSet)
-        {
-            var qualifiedBranchName = "origin/" + BranchNamer.MakeName(packageUpdateSet);
-            return git.BranchExists(qualifiedBranchName);
         }
     }
 }

@@ -70,7 +70,21 @@ namespace NuKeeper.Github
                 _logger.Error("User fork not created", ex);
                 return null;
             }
+        }
 
+        public async Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName)
+        {
+            try
+            {
+                var result = await _client.Repository.Branch.Get(userName, repositoryName, branchName);
+                _logger.Verbose($"Branch found for {userName} / {repositoryName} / {branchName}");
+                return result;
+            }
+            catch (NotFoundException)
+            {
+                _logger.Verbose($"No branch found for {userName} / {repositoryName} / {branchName}");
+                return null;
+            }
         }
 
         public async Task OpenPullRequest(ForkData target, NewPullRequest request)
