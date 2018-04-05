@@ -15,17 +15,10 @@ namespace NuKeeper.Engine.FilesUpdate
             "app.config.razor",
         };
 
-        private readonly IFolder _workingFolder;
-
-        public ConfigFileFinder(IFolder workingFolder)
-        {
-            _workingFolder = workingFolder;
-        }
-
-        public IEnumerable<FileInfo> FindConfigFiles()
+        public IEnumerable<FileInfo> FindInFolder(IFolder workingFolder)
         {
             return configFileNames.SelectMany
-                (fileName => _workingFolder.Find(fileName));
+                (fileName => workingFolder.Find(fileName));
         }
     }
 }

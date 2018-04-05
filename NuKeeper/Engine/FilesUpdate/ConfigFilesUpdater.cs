@@ -1,24 +1,26 @@
 using NuGet.Packaging.Core;
+using NuKeeper.Files;
 using NuKeeper.Logging;
 using System.IO;
 
 namespace NuKeeper.Engine.FilesUpdate
 {
-    public class ConfigFilesUpdater
+    public class ConfigFilesUpdater: IConfigFilesUpdater
     {
         private readonly IConfigFileFinder _finder;
         private readonly INuKeeperLogger _logger;
 
-        public ConfigFilesUpdater(IConfigFileFinder finder)
+        public ConfigFilesUpdater(IConfigFileFinder finder, INuKeeperLogger logger)
         {
             _finder = finder;
+            _logger = logger;
         }
 
-        public void Update(PackageIdentity from, PackageIdentity to)
+        public void Update(IFolder folder, PackageIdentity from, PackageIdentity to)
         {
             var updater = new ConfigFileUpdater(from, to);
 
-            var files = _finder.FindConfigFiles();
+            var files = _finder.FindInFolder(folder);
 
             foreach (var file in files)
             {
