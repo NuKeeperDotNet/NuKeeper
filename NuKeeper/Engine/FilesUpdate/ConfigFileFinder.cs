@@ -5,7 +5,7 @@ using NuKeeper.Files;
 
 namespace NuKeeper.Engine.FilesUpdate
 {
-    public class ConfigFileFinder
+    public class ConfigFileFinder : IConfigFileFinder
     {
         private static readonly List<string> configFileNames = new List<string>
         {
@@ -15,10 +15,11 @@ namespace NuKeeper.Engine.FilesUpdate
             "app.config.razor",
         };
 
-        public IEnumerable<FileInfo> FindInFolder(IFolder workingFolder)
+        public List<FileInfo> FindInFolder(IFolder workingFolder)
         {
-            return configFileNames.SelectMany
-                (fileName => workingFolder.Find(fileName));
+            return configFileNames
+                .SelectMany(fileName => workingFolder.Find(fileName))
+                .ToList();
         }
     }
 }

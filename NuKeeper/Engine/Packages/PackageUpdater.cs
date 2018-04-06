@@ -82,9 +82,10 @@ namespace NuKeeper.Engine.Packages
 
         private void UpdateConfigFiles(IGitDriver git, PackageUpdateSet updateSet)
         {
+            var targetVersion = updateSet.Selected.Identity;
             foreach (var currentVersion in updateSet.CurrentPackages)
             {
-                _configFilesUpdater.Update(git.WorkingFolder, currentVersion.Identity, updateSet.Selected.Identity);
+                _configFilesUpdater.Update(git.WorkingFolder, currentVersion.Identity, targetVersion);
             }
         }
         private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)

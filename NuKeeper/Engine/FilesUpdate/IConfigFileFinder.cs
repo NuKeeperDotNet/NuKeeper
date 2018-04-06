@@ -6,6 +6,6 @@ namespace NuKeeper.Engine.FilesUpdate
 {
     public interface IConfigFileFinder
     {
-        IEnumerable<FileInfo> FindInFolder(IFolder workingFolder);
+        List<FileInfo> FindInFolder(IFolder workingFolder);
     }
 }
