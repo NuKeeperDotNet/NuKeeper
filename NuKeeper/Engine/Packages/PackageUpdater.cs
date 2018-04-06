@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Engine.FilesUpdate;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Logging;
@@ -13,15 +14,18 @@ namespace NuKeeper.Engine.Packages
     public class PackageUpdater : IPackageUpdater
     {
         private readonly IGithub _github;
+        private readonly IConfigFilesUpdater _configFilesUpdater;
         private readonly INuKeeperLogger _logger;
         private readonly UserSettings _settings;
 
         public PackageUpdater(
             IGithub github,
+            IConfigFilesUpdater configFilesUpdater,
             INuKeeperLogger logger,
             UserSettings settings)
         {
             _github = github;
+            _configFilesUpdater = configFilesUpdater;
             _logger = logger;
             _settings = settings;
         }
@@ -43,6 +47,7 @@ namespace NuKeeper.Engine.Packages
                 git.CheckoutNewBranch(branchName);
 
                 await UpdateAllCurrentUsages(updateSet);
+                UpdateConfigFiles(git, updateSet);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
@@ -75,6 +80,21 @@ namespace NuKeeper.Engine.Packages
             }
         }
 
+        private void UpdateConfigFiles(IGitDriver git, PackageUpdateSet updateSet)
+        {
+            try
+            {
+                var targetVersion = updateSet.Selected.Identity;
+                foreach (var currentVersion in updateSet.CurrentPackages)
+                {
+                    _configFilesUpdater.Update(git.WorkingFolder, currentVersion.Identity, targetVersion);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Failed to update config files", ex);
+            }
+        }
         private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
         {
             if (packageReferenceType != PackageReferenceType.ProjectFile)

@@ -1,6 +1,7 @@
 using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Engine.FilesUpdate;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Files;
@@ -31,6 +32,9 @@ namespace NuKeeper
             container.Register<IFolderFactory, FolderFactory>();
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
             container.Register<IExternalProcess, ExternalProcess>();
+
+            container.Register<IConfigFilesUpdater, ConfigFilesUpdater>();
+            container.Register<IConfigFileFinder, ConfigFileFinder>();
 
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
