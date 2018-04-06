@@ -75,6 +75,21 @@ namespace NuKeeper.Tests.Engine.FilesUpdate
             Assert.That(result, Does.Contain("newVersion=\"6.1.2.3\""));
         }
 
+        [Test]
+        public void ShouldNotPerformUpdateWhenVersionDoesNotMatch()
+        {
+            var from = MakePackageVersion("System.Net.Http.Formatting", "5.2.4.0");
+            var to = MakePackageVersion("System.Net.Http.Formatting", "6.1.2.3");
+            var updater = new ConfigFileUpdater(from, to);
+
+            var result = updater.ApplyUpdate(WebConfigFileContents);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Does.Contain("<assemblyIdentity name=\"System.Net.Http.Formatting\" "));
+            Assert.That(result, Does.Contain("oldVersion=\"0.0.0.0-5.2.3.0\""));
+            Assert.That(result, Does.Contain("newVersion=\"5.2.3.0\""));
+        }
+
         private PackageIdentity MakePackageVersion(string name, string version)
         {
             return new PackageIdentity(name, new NuGetVersion(version));

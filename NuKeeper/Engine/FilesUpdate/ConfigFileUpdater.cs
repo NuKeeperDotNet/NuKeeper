@@ -6,9 +6,7 @@ namespace NuKeeper.Engine.FilesUpdate
     public class ConfigFileUpdater
     {
         private const string RegexpTemplate =
-@"<dependentAssembly>\s*<assemblyIdentity name=""{PackageId}"" publicKeyToken=""\w*""[\w\s"" =]*\/>
-        <bindingRedirect oldVersion=""[\d|\.]+-{targetVersion}"" newVersion=""{targetVersion}"" \/>
-      <\/dependentAssembly>";
+@"<dependentAssembly>\s*<assemblyIdentity name=""{PackageId}"" publicKeyToken=""\w*""[\w\s"" =]*\/>\s*<bindingRedirect oldVersion=""[\d|\.]+-{targetVersion}"" newVersion=""{targetVersion}"" \/>\s*<\/dependentAssembly>";
 
         private readonly PackageIdentity _from;
         private readonly PackageIdentity _to;
