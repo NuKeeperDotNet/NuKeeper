@@ -18,9 +18,16 @@ namespace NuKeeper.Engine.FilesUpdate
 
         public void Update(IFolder folder, PackageIdentity from, PackageIdentity to)
         {
-            var updater = new ConfigFileUpdater(from, to);
-
             var files = _finder.FindInFolder(folder);
+
+            _logger.Verbose($"Found {files.Count} config files");
+
+            if (files.Count == 0)
+            {
+                return;
+            }
+
+            var updater = new ConfigFileUpdater(from, to);
 
             foreach (var file in files)
             {
