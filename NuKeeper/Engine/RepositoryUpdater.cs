@@ -1,42 +1,38 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Git;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection;
+using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Engine
 {
     public class RepositoryUpdater : IRepositoryUpdater
-    {   
-        private readonly IPackageUpdatesLookup _packageLookup;
+    {
+        private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
-        private readonly IRepositoryScanner _repositoryScanner;
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
         private readonly IAvailableUpdatesReporter _availableUpdatesReporter;
         private readonly UserSettings _settings;
 
         public RepositoryUpdater(
-            IPackageUpdatesLookup packageLookup, 
+            IUpdateFinder updateFinder,
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
-            IRepositoryScanner repositoryScanner,
             INuKeeperLogger logger,
             SolutionsRestore solutionsRestore,
             IAvailableUpdatesReporter availableUpdatesReporter,
             UserSettings settings)
         {
-            _packageLookup = packageLookup;
+            _updateFinder = updateFinder;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
-            _repositoryScanner = repositoryScanner;
             _logger = logger;
             _solutionsRestore = solutionsRestore;
             _availableUpdatesReporter = availableUpdatesReporter;
@@ -47,7 +43,7 @@ namespace NuKeeper.Engine
         {
             GitInit(git, repository);
 
-            var updates = await FindPackageUpdateSets(git);
+            var updates = await _updateFinder.FindPackageUpdateSets(git.WorkingFolder);
 
             _logger.Verbose($"Report mode is {_settings.ReportMode}");
             switch (_settings.ReportMode)
@@ -96,20 +92,6 @@ namespace NuKeeper.Engine
             git.Clone(repository.Pull.Uri);
             repository.DefaultBranch = git.GetCurrentHead();
             git.AddRemote("nukeeper_push", repository.Push.Uri);
-        }
-
-        private async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IGitDriver git)
-        {
-            // scan for nuget packages
-            var packages = _repositoryScanner.FindAllNuGetPackages(git.WorkingFolder)
-                .ToList();
-
-            _logger.Log(UpdatesLogger.PackagesFound(packages));
-
-            // look for package updates
-            var updates = await _packageLookup.FindUpdatesForPackages(packages);
-            _logger.Log(UpdatesLogger.UpdatesFound(updates));
-            return updates;
         }
 
         private async Task UpdateAllTargets(IGitDriver git,

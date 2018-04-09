@@ -3,7 +3,8 @@ using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Types.Formats;
 
 namespace NuKeeper.Engine
 {

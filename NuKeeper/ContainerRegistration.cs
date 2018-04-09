@@ -3,13 +3,14 @@ using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
-using NuKeeper.Files;
 using NuKeeper.Github;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Types.Files;
+using NuKeeper.Types.Logging;
 using SimpleInjector;
 
 namespace NuKeeper

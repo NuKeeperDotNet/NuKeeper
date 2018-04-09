@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using NuKeeper.Files;
+using System.Threading.Tasks;
 using NuKeeper.NuGet.Process;
+using NuKeeper.Types.Files;
 
 namespace NuKeeper.Engine
 {

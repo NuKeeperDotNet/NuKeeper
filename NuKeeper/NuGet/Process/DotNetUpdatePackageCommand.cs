@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
-using NuKeeper.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.ProcessRunner;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Types.Formats;
+using NuKeeper.Types.Logging;
 
 namespace NuKeeper.NuGet.Process
 {

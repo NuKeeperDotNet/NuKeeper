@@ -1,10 +1,11 @@
-using NuKeeper.RepositoryInspection;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NuGet.Versioning;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Types.Formats;
 
 namespace NuKeeper.Engine.Report
 {

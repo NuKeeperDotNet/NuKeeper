@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using NuKeeper.Git;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {

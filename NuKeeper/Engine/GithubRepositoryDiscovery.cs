@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
-using NuKeeper.Logging;
+using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Engine
 {

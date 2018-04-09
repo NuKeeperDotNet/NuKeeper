@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using NuKeeper.RepositoryInspection;
+using System.Collections.Generic;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Report
 {

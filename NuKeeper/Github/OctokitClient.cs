@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
-using NuKeeper.Logging;
+using NuKeeper.Types.Logging;
 using Octokit;
 
 namespace NuKeeper.Github
