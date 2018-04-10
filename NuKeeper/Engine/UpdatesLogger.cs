@@ -1,6 +1,6 @@
 using System.Linq;
+using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Formats;
 
 namespace NuKeeper.Engine
 {

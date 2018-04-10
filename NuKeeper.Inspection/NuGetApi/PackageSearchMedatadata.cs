@@ -1,6 +1,6 @@
 using System;
 using NuGet.Packaging.Core;
-using NuKeeper.Types.Formats;
+using NuKeeper.Inspection.Formats;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

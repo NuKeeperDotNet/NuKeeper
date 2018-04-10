@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Types.Formats;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

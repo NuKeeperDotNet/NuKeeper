@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NuKeeper.Types.Formats
+namespace NuKeeper.Inspection.Formats
 {
     public static class StringExtensions
     {

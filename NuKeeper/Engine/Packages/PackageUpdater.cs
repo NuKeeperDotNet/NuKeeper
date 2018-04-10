@@ -89,7 +89,7 @@ namespace NuKeeper.Engine.Packages
         {
             if (packageReferenceType != PackageReferenceType.PackagesConfig)
             {
-                return new DotNetUpdatePackageCommand(_logger, _settings);
+                return new DotNetUpdatePackageCommand(_settings);
             }
 
             return new NuGetUpdatePackageCommand(_logger, _settings);
