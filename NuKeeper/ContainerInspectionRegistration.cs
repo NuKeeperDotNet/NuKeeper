@@ -4,6 +4,7 @@ using SimpleInjector;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -20,7 +21,10 @@ namespace NuKeeper
                 NugetSources = settings.UserSettings.NuGetSources?.ToList()
             };
 
+            var logger = new ConsoleLogger(settings.UserSettings.LogLevel);
+
             container.RegisterInstance(packageLookupSettings);
+            container.RegisterInstance(logger);
 
             container.Register<ILogger, NuGetLogger>();
 

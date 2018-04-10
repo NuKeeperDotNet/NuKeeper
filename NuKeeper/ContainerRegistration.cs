@@ -2,9 +2,6 @@ using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Github;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.Report;
-using NuKeeper.Logging;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
 using SimpleInjector;
@@ -29,7 +26,6 @@ namespace NuKeeper
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
 
-            container.Register<INuKeeperLogger, ConsoleLogger>();
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
             container.Register<IExternalProcess, ExternalProcess>();
 

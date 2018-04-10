@@ -1,16 +1,14 @@
 using System;
-using NuKeeper.Configuration;
-using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper.Logging
+namespace NuKeeper.Inspection.Logging
 {
     public class ConsoleLogger : INuKeeperLogger
     {
         private readonly LogLevel _logLevel;
 
-        public ConsoleLogger(UserSettings settings)
+        public ConsoleLogger(LogLevel logLevel)
         {
-            _logLevel = settings.LogLevel;
+            _logLevel = logLevel;
         }
 
         public void Error(string message, Exception ex = null)
