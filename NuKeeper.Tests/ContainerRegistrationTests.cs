@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NUnit.Framework;

@@ -1,9 +1,11 @@
+using System.Linq;
 using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Github;
+using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -21,9 +23,16 @@ namespace NuKeeper
         {
             var container = new Container();
 
+            var packageLookupSettings = new PackageUpdateLookupSettings
+            {
+                AllowedChange = settings.UserSettings.AllowedChange,
+                NugetSources = settings.UserSettings?.NuGetSources.ToList()
+            };
+
             container.Register(() => settings.ModalSettings, Lifestyle.Singleton);
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
+            container.RegisterInstance(packageLookupSettings);
 
             container.Register<INuKeeperLogger, ConsoleLogger>();
             container.Register<ILogger, NuGetLogger>();
@@ -46,6 +55,8 @@ namespace NuKeeper
             container.Register<GithubEngine>();
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
+            container.Register<IUpdateFinder, UpdateFinder>();
+
             container.Register<IPackageUpdater, PackageUpdater>();
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();

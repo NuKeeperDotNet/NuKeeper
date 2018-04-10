@@ -8,7 +8,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection
 {
-    public class UpdateFinder
+    public class UpdateFinder: IUpdateFinder
     {
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly IPackageUpdatesLookup _packageUpdatesLookup;

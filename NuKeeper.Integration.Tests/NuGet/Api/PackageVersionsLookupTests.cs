@@ -52,9 +52,15 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
         }
 
-        private static IEnumerable<string> BuildDefaultSettings()
+        private static PackageUpdateLookupSettings BuildDefaultSettings()
         {
-            return new [] { "https://api.nuget.org/v3/index.json" };
+            return new PackageUpdateLookupSettings
+            {
+                NugetSources = new List<string>
+                {
+                    "https://api.nuget.org/v3/index.json"
+                }
+            };
         }
     }
 }

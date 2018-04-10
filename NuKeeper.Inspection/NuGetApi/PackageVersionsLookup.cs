@@ -13,12 +13,12 @@ namespace NuKeeper.Inspection.NuGetApi
     public class PackageVersionsLookup : IPackageVersionsLookup
     {
         private readonly ILogger _logger;
-        private readonly IEnumerable<string> _sources;
+        private readonly List<string> _sources;
 
-        public PackageVersionsLookup(ILogger logger, IEnumerable<string> nugetSources)
+        public PackageVersionsLookup(ILogger logger, PackageUpdateLookupSettings settings)
         {
             _logger = logger;
-            _sources = nugetSources;
+            _sources = settings.NugetSources;
         }
 
         public async Task<IEnumerable<PackageSearchMedatadata>> Lookup(string packageName)

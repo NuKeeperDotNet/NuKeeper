@@ -10,10 +10,10 @@ namespace NuKeeper.Inspection.NuGetApi
         private readonly IBulkPackageLookup _bulkPackageLookup;
         private readonly VersionChange _allowedChange;
 
-        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, VersionChange allowedChange)
+        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, PackageUpdateLookupSettings settings)
         {
             _bulkPackageLookup = bulkPackageLookup;
-            _allowedChange = allowedChange;
+            _allowedChange = settings.AllowedChange;
         }
 
         public async Task<List<PackageUpdateSet>> FindUpdatesForPackages(IReadOnlyCollection<PackageInProject> packages)

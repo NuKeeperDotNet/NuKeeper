@@ -100,9 +100,15 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 
-        private static IEnumerable<string> BuildDefaultSettings()
+        private static PackageUpdateLookupSettings BuildDefaultSettings()
         {
-            return new[] { "https://api.nuget.org/v3/index.json" };
+            return new PackageUpdateLookupSettings
+            {
+                NugetSources = new List<string>
+                {
+                    "https://api.nuget.org/v3/index.json"
+                }
+            };
         }
 
         private PackageIdentity Current(string packageId)
