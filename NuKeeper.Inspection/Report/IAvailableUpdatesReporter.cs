@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Report
+namespace NuKeeper.Inspection.Report
 {
     public interface IAvailableUpdatesReporter
     {

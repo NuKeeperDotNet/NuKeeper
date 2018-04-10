@@ -1,9 +1,9 @@
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Engine.Report;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.Report;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
@@ -43,8 +43,6 @@ namespace NuKeeper
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
 
             container.Register<IPackageUpdater, PackageUpdater>();
-            container.Register<IReportStreamSource, ReportStreamSource>();
-            container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
             container.Register<IForkFinder, ForkFinder>();
         }
     }

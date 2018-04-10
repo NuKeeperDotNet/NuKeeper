@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Configuration;
-using NuKeeper.Engine.Report;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration

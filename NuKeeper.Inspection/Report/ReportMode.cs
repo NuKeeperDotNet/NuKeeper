@@ -1,4 +1,4 @@
-namespace NuKeeper.Engine.Report
+namespace NuKeeper.Inspection.Report
 {
     public enum ReportMode
     {

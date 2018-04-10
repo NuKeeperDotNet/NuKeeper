@@ -4,10 +4,10 @@ using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Report
+namespace NuKeeper.Inspection.Report
 {
     public class AvailableUpdatesReporter: IAvailableUpdatesReporter
     {

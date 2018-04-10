@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Engine.Report;
 using NuKeeper.Git;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine

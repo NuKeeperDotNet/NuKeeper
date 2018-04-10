@@ -1,9 +1,9 @@
 using System;
 using EasyConfig;
 using EasyConfig.Attributes;
-using NuKeeper.Engine.Report;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 
 namespace NuKeeper.Configuration
 {

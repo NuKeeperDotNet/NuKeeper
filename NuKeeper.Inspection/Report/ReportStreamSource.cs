@@ -1,7 +1,7 @@
 using System.IO;
 using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper.Engine.Report
+namespace NuKeeper.Inspection.Report
 {
     public class ReportStreamSource: IReportStreamSource
     {

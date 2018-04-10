@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace NuKeeper.Engine.Report
+namespace NuKeeper.Inspection.Report
 {
     public interface IReportStreamSource
     {

@@ -1,11 +1,12 @@
 using System.Linq;
 using NuGet.Common;
+using SimpleInjector;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
-using SimpleInjector;
 
 namespace NuKeeper
 {
@@ -33,6 +34,9 @@ namespace NuKeeper
             container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<IUpdateFinder, UpdateFinder>();
+
+            container.Register<IReportStreamSource, ReportStreamSource>();
+            container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
         }
     }
 }
