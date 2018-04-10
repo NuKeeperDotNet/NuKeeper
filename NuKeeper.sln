@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection", "NuKeeper.Inspection\NuKeeper.Inspection.csproj", "{6EA16D83-81DF-4E55-8761-22ADF468C56B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Inpection.Tests", "NuKeeper.Inpection.Tests\NuKeeper.Inpection.Tests.csproj", "{481264E4-E03A-4AB4-8EE5-23B4EFAFE15F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Inspection.Tests", "NuKeeper.Inpection.Tests\NuKeeper.Inspection.Tests.csproj", "{481264E4-E03A-4AB4-8EE5-23B4EFAFE15F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

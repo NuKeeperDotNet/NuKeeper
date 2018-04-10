@@ -7,7 +7,7 @@ using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Inpection.Tests.RepositoryInspection
+namespace NuKeeper.Inspection.Tests.RepositoryInspection
 {
     [TestFixture]
     public class PackageUpdateSetTests

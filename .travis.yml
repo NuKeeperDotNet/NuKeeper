@@ -5,6 +5,7 @@ dotnet: 2.1.4
 script:
   - dotnet build -c Release -f netcoreapp2.0
   - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Inspection.Tests/NuKeeper.Inspection.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
 
  

@@ -1,7 +1,7 @@
 using System;
 using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper.Inpection.Tests
+namespace NuKeeper.Inspection.Tests
 {
     internal class NullNuKeeperLogger : INuKeeperLogger
     {

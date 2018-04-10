@@ -1,7 +1,7 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Inpection.Tests.RepositoryInspection
+namespace NuKeeper.Inspection.Tests.RepositoryInspection
 {
     public static class PackageAssert
     {

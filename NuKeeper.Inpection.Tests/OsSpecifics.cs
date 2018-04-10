@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace NuKeeper.Inpection.Tests
+namespace NuKeeper.Inspection.Tests
 {
     public static class OsSpecifics
     {
