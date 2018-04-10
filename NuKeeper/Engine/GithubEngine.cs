@@ -3,8 +3,8 @@ using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using Octokit;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Engine
 {

@@ -6,8 +6,8 @@ using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Git;
 using NuKeeper.Inspection;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Engine
 {

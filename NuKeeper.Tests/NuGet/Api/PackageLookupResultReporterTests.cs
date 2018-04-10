@@ -2,8 +2,8 @@ using System;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Types.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.NuGet.Api

@@ -5,12 +5,12 @@ using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Report;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Logging;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
-using NuKeeper.Types.Logging;
 using SimpleInjector;
 
 namespace NuKeeper

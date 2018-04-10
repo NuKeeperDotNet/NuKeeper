@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Files
 {

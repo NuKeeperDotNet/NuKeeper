@@ -1,6 +1,6 @@
 using System;
 using NuKeeper.Configuration;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Logging
 {

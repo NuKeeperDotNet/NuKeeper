@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

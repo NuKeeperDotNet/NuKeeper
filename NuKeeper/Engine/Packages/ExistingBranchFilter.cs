@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Github;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Engine.Packages
 {

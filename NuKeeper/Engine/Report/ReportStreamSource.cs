@@ -1,5 +1,5 @@
-using NuKeeper.Types.Logging;
 using System.IO;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Engine.Report
 {

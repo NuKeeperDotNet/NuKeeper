@@ -1,5 +1,5 @@
 using NuGet.Common;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

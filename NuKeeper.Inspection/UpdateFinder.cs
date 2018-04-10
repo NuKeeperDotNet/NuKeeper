@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Inspection
 {

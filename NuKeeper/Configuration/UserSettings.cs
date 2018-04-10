@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
 using NuKeeper.Engine.Report;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Configuration
 {

@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {

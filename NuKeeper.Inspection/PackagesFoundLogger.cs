@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Inspection.Formats;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Inspection
 {

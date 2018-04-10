@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.NuGet.Process;
-using NuKeeper.Types.Logging;
 using Octokit;
 
 namespace NuKeeper.Engine.Packages

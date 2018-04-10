@@ -9,9 +9,8 @@
     <WarningsAsErrors />
     <NoWarn />
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\NuKeeper.Types\NuKeeper.Types.csproj" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

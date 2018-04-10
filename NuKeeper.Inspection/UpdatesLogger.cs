@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Inspection
 {

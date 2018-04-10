@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
-using NuKeeper.Types.Logging;
+using NuKeeper.Inspection.Logging;
 using Octokit;
 
 namespace NuKeeper.Engine

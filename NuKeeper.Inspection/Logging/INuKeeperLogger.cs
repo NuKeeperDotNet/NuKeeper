@@ -1,6 +1,6 @@
 using System;
 
-namespace NuKeeper.Types.Logging
+namespace NuKeeper.Inspection.Logging
 {
     public interface INuKeeperLogger
     {
