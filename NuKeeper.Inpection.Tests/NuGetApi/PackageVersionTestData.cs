@@ -5,7 +5,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
 
-namespace NuKeeper.Tests.NuGet.Api
+namespace NuKeeper.Inpection.Tests.NuGetApi
 {
     public static class PackageVersionTestData
     {

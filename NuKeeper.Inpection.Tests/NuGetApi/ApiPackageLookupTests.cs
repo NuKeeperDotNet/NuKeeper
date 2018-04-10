@@ -7,7 +7,7 @@ using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.NuGet.Api
+namespace NuKeeper.Inpection.Tests.NuGetApi
 {
     [TestFixture]
     public class ApiPackageLookupTests

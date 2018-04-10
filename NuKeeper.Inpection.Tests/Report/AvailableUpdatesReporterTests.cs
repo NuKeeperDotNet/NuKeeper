@@ -11,7 +11,7 @@ using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Engine.Report
+namespace NuKeeper.Inpection.Tests.Report
 {
     [TestFixture]
     public class AvailableUpdatesReporterTests

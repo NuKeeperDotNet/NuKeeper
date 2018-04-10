@@ -212,7 +212,7 @@ namespace NuKeeper.Tests.Engine.Packages
         private static PackageInProject MakePackageInProjectFor(PackageIdentity package)
         {
             var path = new PackagePath(
-                OsSpecifics.GenerateBaseDirectory(),
+                Path.GetTempPath(),
                 Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);

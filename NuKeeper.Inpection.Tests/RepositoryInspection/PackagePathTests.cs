@@ -2,7 +2,7 @@ using System.IO;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.RepositoryInspection
+namespace NuKeeper.Inpection.Tests.RepositoryInspection
 {
     [TestFixture]
     public class PackagePathTests

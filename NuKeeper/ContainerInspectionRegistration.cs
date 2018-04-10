@@ -21,10 +21,10 @@ namespace NuKeeper
                 NugetSources = settings.UserSettings.NuGetSources?.ToList()
             };
 
-            var logger = new ConsoleLogger(settings.UserSettings.LogLevel);
-
             container.RegisterInstance(packageLookupSettings);
-            container.RegisterInstance(logger);
+
+            container.RegisterInstance<INuKeeperLogger>(
+                new ConsoleLogger(settings.UserSettings.LogLevel));
 
             container.Register<ILogger, NuGetLogger>();
 
