@@ -1,6 +1,6 @@
 using System.IO;
+using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
-using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.Tests.RepositoryInspection
 {

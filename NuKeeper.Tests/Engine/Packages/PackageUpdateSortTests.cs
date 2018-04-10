@@ -1,13 +1,13 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine.Packages;
-using NuKeeper.NuGet.Api;
-using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine.Packages
 {

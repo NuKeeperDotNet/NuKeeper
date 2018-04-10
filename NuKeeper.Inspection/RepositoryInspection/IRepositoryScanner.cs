@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using NuKeeper.Types.Files;
+using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

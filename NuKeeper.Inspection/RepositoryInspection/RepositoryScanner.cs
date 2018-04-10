@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NuKeeper.Types.Files;
+using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

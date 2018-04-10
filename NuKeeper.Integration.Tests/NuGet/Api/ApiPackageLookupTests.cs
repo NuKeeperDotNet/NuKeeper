@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
@@ -91,15 +91,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(package.Minor.Identity.Version.Major, Is.EqualTo(8));
             Assert.That(package.Major.Identity.Version.Major, Is.GreaterThan(8));
         }
-
-        private static UserSettings BuildDefaultSettings()
-        {
-            return new UserSettings
-            {
-                NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
-            };
-        }
-
         private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
@@ -109,6 +100,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         private PackageIdentity Current(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1,2,3));
+        }
+
+        private static IEnumerable<string> BuildDefaultSettings()
+        {
+            return new[] {"https://api.nuget.org/v3/index.json"};
         }
     }
 }

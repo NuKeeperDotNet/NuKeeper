@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace NuKeeper.Types.Files
+namespace NuKeeper.Inspection.Files
 {
     public  interface IFolder
     {

@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Types.Formats;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests

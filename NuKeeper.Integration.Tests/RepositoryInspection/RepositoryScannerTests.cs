@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using NuGet.Versioning;
-using NuKeeper.Files;
+using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.RepositoryInspection

@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.NuGet.Api;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api
@@ -52,12 +52,9 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
         }
 
-        private static UserSettings BuildDefaultSettings()
+        private static IEnumerable<string> BuildDefaultSettings()
         {
-            return new UserSettings
-            {
-                NuGetSources = new[] { "https://api.nuget.org/v3/index.json" }
-            };
+            return new [] { "https://api.nuget.org/v3/index.json" };
         }
     }
 }

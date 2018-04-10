@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Inspection.NuGetApi;
 
 namespace NuKeeper.Tests.NuGet.Api
 {

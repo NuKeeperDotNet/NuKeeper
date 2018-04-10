@@ -1,10 +1,9 @@
-using NuKeeper.Types;
-using NuKeeper.Types.Logging;
 using System;
 using System.IO;
 using System.Linq;
+using NuKeeper.Types.Logging;
 
-namespace NuKeeper.Types.Files
+namespace NuKeeper.Inspection.Files
 {
     public class FolderFactory : IFolderFactory
     {

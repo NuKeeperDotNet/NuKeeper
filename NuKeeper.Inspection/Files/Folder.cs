@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using NuKeeper.Types.Logging;
 
-namespace NuKeeper.Types.Files
+namespace NuKeeper.Inspection.Files
 {
     public class Folder : IFolder
     {

@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using NuGet.Versioning;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.RepositoryInspection

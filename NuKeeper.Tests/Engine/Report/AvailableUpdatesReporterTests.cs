@@ -7,8 +7,8 @@ using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine.Report;
-using NuKeeper.NuGet.Api;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine.Report

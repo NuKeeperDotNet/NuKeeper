@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Types.Files;
+using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Git
 {

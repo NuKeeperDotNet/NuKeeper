@@ -1,4 +1,4 @@
-namespace NuKeeper.Types.Files
+namespace NuKeeper.Inspection.Files
 {
     public interface IFolderFactory
     {

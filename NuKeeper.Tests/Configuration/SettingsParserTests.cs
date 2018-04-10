@@ -1,8 +1,8 @@
 using System;
 using NuKeeper.Configuration;
 using NuKeeper.Engine.Report;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Types.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration

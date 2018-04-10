@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using LibGit2Sharp;
-using NuKeeper.Types.Files;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Git

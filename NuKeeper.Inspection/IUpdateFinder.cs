@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Types.Files;
 
 namespace NuKeeper.Inspection
 {

@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Logging;
+using NuKeeper.Types.Logging;
 
 namespace NuKeeper.Tests
 {

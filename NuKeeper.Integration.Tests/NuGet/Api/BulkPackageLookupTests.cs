@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
@@ -101,12 +100,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 
-        private static UserSettings BuildDefaultSettings()
+        private static IEnumerable<string> BuildDefaultSettings()
         {
-            return new UserSettings
-            {
-                NuGetSources = new[] {"https://api.nuget.org/v3/index.json"}
-            };
+            return new[] { "https://api.nuget.org/v3/index.json" };
         }
 
         private PackageIdentity Current(string packageId)
