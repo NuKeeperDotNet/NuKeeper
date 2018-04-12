@@ -1,5 +1,5 @@
 using NuGet.Versioning;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Linq;

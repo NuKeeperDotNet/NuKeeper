@@ -9,8 +9,8 @@ using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
-using NuKeeper.NuGet.Api;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine

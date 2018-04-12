@@ -1,15 +1,9 @@
-using NuGet.Common;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Engine.Report;
-using NuKeeper.Files;
 using NuKeeper.Github;
-using NuKeeper.Logging;
-using NuKeeper.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
-using NuKeeper.RepositoryInspection;
 using SimpleInjector;
 
 namespace NuKeeper
@@ -20,15 +14,18 @@ namespace NuKeeper
         {
             var container = new Container();
 
+            Register(container, settings);
+            ContainerInpectionRegistration.Register(container, settings);
+
+            return container;
+        }
+
+        private static void Register(Container container, SettingsContainer settings)
+        {
             container.Register(() => settings.ModalSettings, Lifestyle.Singleton);
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
 
-            container.Register<INuKeeperLogger, ConsoleLogger>();
-            container.Register<ILogger, NuGetLogger>();
-
-            container.Register<IFolder, Folder>();
-            container.Register<IFolderFactory, FolderFactory>();
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
             container.Register<IExternalProcess, ExternalProcess>();
 
@@ -36,21 +33,13 @@ namespace NuKeeper
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
             container.Register<IExistingBranchFilter, ExistingBranchFilter>();
-            container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
-            container.Register<IBulkPackageLookup, BulkPackageLookup>();
-            container.Register<IPackageVersionsLookup, PackageVersionsLookup>();
-            container.Register<IApiPackageLookup, ApiPackageLookup>();
-            container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<GithubEngine>();
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
-            container.Register<IPackageUpdater, PackageUpdater>();
-            container.Register<IReportStreamSource, ReportStreamSource>();
-            container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
-            container.Register<IForkFinder, ForkFinder>();
 
-            return container;
+            container.Register<IPackageUpdater, PackageUpdater>();
+            container.Register<IForkFinder, ForkFinder>();
         }
     }
 }

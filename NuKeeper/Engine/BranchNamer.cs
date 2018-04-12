@@ -1,4 +1,4 @@
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {

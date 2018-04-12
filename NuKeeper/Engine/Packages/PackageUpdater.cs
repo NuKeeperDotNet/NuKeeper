@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
-using NuKeeper.Logging;
+using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.NuGet.Process;
-using NuKeeper.RepositoryInspection;
 using Octokit;
 
 namespace NuKeeper.Engine.Packages
@@ -89,7 +89,7 @@ namespace NuKeeper.Engine.Packages
         {
             if (packageReferenceType != PackageReferenceType.PackagesConfig)
             {
-                return new DotNetUpdatePackageCommand(_logger, _settings);
+                return new DotNetUpdatePackageCommand(_settings);
             }
 
             return new NuGetUpdatePackageCommand(_logger, _settings);

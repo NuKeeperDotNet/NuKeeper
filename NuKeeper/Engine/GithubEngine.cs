@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
-using NuKeeper.Files;
-using NuKeeper.Logging;
+using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using Octokit;
 
 namespace NuKeeper.Engine

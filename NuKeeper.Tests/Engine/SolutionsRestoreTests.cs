@@ -1,8 +1,8 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Engine;
-using NuKeeper.Files;
+using NuKeeper.Inspection.Files;
 using NuKeeper.NuGet.Process;
 using NUnit.Framework;
 

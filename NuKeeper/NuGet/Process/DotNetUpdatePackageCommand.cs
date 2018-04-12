@@ -3,24 +3,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
-using NuKeeper.Logging;
+using NuKeeper.Inspection.Formats;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.ProcessRunner;
-using NuKeeper.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
     public class DotNetUpdatePackageCommand : IUpdatePackageCommand
     {
-        private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
         private readonly string[] _sources;
 
         public DotNetUpdatePackageCommand(
-            INuKeeperLogger logger,
             UserSettings settings,
             IExternalProcess externalProcess = null)
         {
-            _logger = logger;
             _sources = settings.NuGetSources;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }

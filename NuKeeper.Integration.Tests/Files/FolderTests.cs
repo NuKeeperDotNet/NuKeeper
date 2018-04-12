@@ -1,4 +1,4 @@
-﻿using NuKeeper.Files;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Integration.Tests.NuGet.Api;
 using NUnit.Framework;
 

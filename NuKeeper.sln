@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection", "NuKeeper.Inspection\NuKeeper.Inspection.csproj", "{6EA16D83-81DF-4E55-8761-22ADF468C56B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection.Tests", "NuKeeper.Inspection.Tests\NuKeeper.Inspection.Tests.csproj", "{79562D03-D39D-4822-9F4B-B1001F556EA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{68B2FDA7-A728-4D4C-8B7F-4F824FD4E03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68B2FDA7-A728-4D4C-8B7F-4F824FD4E03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68B2FDA7-A728-4D4C-8B7F-4F824FD4E03C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EA16D83-81DF-4E55-8761-22ADF468C56B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EA16D83-81DF-4E55-8761-22ADF468C56B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EA16D83-81DF-4E55-8761-22ADF468C56B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EA16D83-81DF-4E55-8761-22ADF468C56B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79562D03-D39D-4822-9F4B-B1001F556EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79562D03-D39D-4822-9F4B-B1001F556EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79562D03-D39D-4822-9F4B-B1001F556EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79562D03-D39D-4822-9F4B-B1001F556EA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,7 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Logging;
+using NuKeeper.Inspection.Formats;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.NuGet.Process

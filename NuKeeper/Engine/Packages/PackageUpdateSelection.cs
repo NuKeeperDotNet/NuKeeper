@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Logging;
-using NuKeeper.RepositoryInspection;
+using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {

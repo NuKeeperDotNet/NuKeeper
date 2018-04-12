@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.NuGet.Api;
+using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
