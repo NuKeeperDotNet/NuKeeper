@@ -49,6 +49,21 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testDotNetCoreProject);
         }
 
+        [Test]
+        [Ignore("Known failure, issue #243")]
+        public async Task ShouldUpdateDuplicateProject()
+        {
+            const string name = nameof(ShouldUpdateDuplicateProject);
+            var projectPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, name, $"AnotherProject.csproj");
+            Directory.CreateDirectory(Path.GetDirectoryName(projectPath));
+            using (File.Create(projectPath))
+            {
+                // close file stream automatically
+            };
+
+            await ExecuteValidUpdateTest(_testDotNetCoreProject);
+        }
+
         private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
         {
             const string packageSource = "https://api.nuget.org/v3/index.json";
