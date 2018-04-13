@@ -36,6 +36,23 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 </Project>
 ";
 
+        private readonly string _testDotNetClassicProject =
+@"<Project ToolsVersion=""14.0"" DefaultTargets=""Build"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+  <Import Project=""$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"" Condition=""Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"" />
+  <PropertyGroup>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include=""Microsoft.AspNet.WebApi.Client"" Version=""{packageVersion}"" />
+    <!-- without the second package, 'dotnet add' will refuse to run -->
+    <!-- as the heuristic will consider this a packages.config project -->
+    <PackageReference Include=""Newtonsoft.Json"">
+      <Version>11.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
+</Project>";
+
         [Test]
         [Ignore("Known failure, issue #239")]
         public async Task ShouldNotThrowOnWebProjectMixedStyleUpdates()
@@ -62,6 +79,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             };
 
             await ExecuteValidUpdateTest(_testDotNetCoreProject);
+        }
+
+        [Test]
+        public async Task ShouldUpdateDotnetClassicWithPackageReference()
+        {
+            await ExecuteValidUpdateTest(_testDotNetClassicProject);
         }
 
         private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
