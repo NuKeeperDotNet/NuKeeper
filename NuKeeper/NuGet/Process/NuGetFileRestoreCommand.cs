@@ -29,6 +29,13 @@ namespace NuKeeper.NuGet.Process
         {
             _logger.Info($"Nuget restore on {file.DirectoryName} {file.Name}");
             var nuget = NuGetPath.FindExecutable();
+
+            if (string.IsNullOrWhiteSpace(nuget))
+            {
+                _logger.Info("Cannot find NuGet exe for solution restore");
+                return;
+            }
+
             var sources = GetSourcesCommandLine(_sources);
 
             var arguments = $"restore {file.Name} {sources}";
