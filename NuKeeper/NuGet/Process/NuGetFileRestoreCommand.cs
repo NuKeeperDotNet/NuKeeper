@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Formats;
@@ -28,6 +29,13 @@ namespace NuKeeper.NuGet.Process
         public async Task Invoke(FileInfo file)
         {
             _logger.Info($"Nuget restore on {file.DirectoryName} {file.Name}");
+
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _logger.Info("Cannot run NuGet.exe as OS Platform is not Windows");
+                return;
+            }
+
             var nuget = NuGetPath.FindExecutable();
 
             if (string.IsNullOrWhiteSpace(nuget))
@@ -39,7 +47,7 @@ namespace NuKeeper.NuGet.Process
             var sources = GetSourcesCommandLine(_sources);
 
             var arguments = $"restore {file.Name} {sources}";
-            _logger.Verbose(arguments);
+            _logger.Verbose($"{nuget} {arguments}");
 
             var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, arguments, ensureSuccess: false);
 
@@ -49,7 +57,7 @@ namespace NuKeeper.NuGet.Process
             }
             else
             {
-                _logger.Verbose($"Restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
+                _logger.Verbose($"Nuget restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
             }
         }
 
