@@ -54,15 +54,27 @@ namespace NuKeeper.Engine.Packages
             return capped;
         }
 
-        private async Task<List<PackageUpdateSet>> ApplyFilters(
-            ForkData pushFork, IEnumerable<PackageUpdateSet> all)
+        private async Task<IList<PackageUpdateSet>> ApplyFilters(
+            ForkData pushFork, IList<PackageUpdateSet> all)
         {
             var filteredLocally = all
                 .Where(MatchesIncludeExclude)
-                .Where(MatchesMinAge);
+                .Where(MatchesMinAge)
+                .ToList();
 
-            var filtered = await _existingBranchFilter.CanMakeBranchFor(pushFork, filteredLocally);
-            return filtered.ToList();
+            if (filteredLocally.Count < all.Count)
+            {
+                _logger.Verbose($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
+            }
+
+            var filteredByBranch = await _existingBranchFilter.CanMakeBranchFor(pushFork, filteredLocally);
+
+            if (filteredByBranch.Count < filteredLocally.Count)
+            {
+                _logger.Verbose($"Filtered by existing branch from {filteredLocally.Count} to {filteredByBranch.Count}");
+            }
+
+            return filteredByBranch;
         }
 
         private void LogPackageCounts(int potential, int filtered, int capped)

@@ -19,7 +19,7 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public async Task<IEnumerable<PackageUpdateSet>> CanMakeBranchFor(ForkData pushFork, IEnumerable<PackageUpdateSet> packageUpdateSets)
+        public async Task<IList<PackageUpdateSet>> CanMakeBranchFor(ForkData pushFork, IEnumerable<PackageUpdateSet> packageUpdateSets)
         {
             var results = await packageUpdateSets
                 .WhereAsync(async p => await CanMakeBranchFor(pushFork, p));

@@ -183,7 +183,7 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var filter = BranchFilter(updateSets.Skip(1));
+            var filter = BranchFilter(updateSets.Skip(1).ToList());
 
             var target = OneTargetSelection(filter);
 
@@ -367,12 +367,12 @@ namespace NuKeeper.Tests.Engine
             filter.CanMakeBranchFor(
                     Arg.Any<ForkData>(),
                     Arg.Any<IEnumerable<PackageUpdateSet>>())
-                .Returns(x => Task.FromResult(x.Arg<IEnumerable<PackageUpdateSet>>()));
+                .Returns(x => Task.FromResult(x.Arg<IList<PackageUpdateSet>>()));
 
             return filter;
         }
 
-        private static IExistingBranchFilter BranchFilter(IEnumerable<PackageUpdateSet> results)
+        private static IExistingBranchFilter BranchFilter(IList<PackageUpdateSet> results)
         {
             var filter = Substitute.For<IExistingBranchFilter>();
             filter.CanMakeBranchFor(
