@@ -49,7 +49,7 @@ namespace NuKeeper.Configuration
         public VersionChange AllowedChange;
 
         [JsonConfig("min_package_age"), Default("7d")]
-        [OverriddenBy(ConfigurationSources.CommandLine, "MinAge")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "age")]
         public string MinPackageAge;
 
         [JsonConfig("fork_mode"), Default("PreferFork")]
