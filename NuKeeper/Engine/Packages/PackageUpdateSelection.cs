@@ -31,7 +31,7 @@ namespace NuKeeper.Engine.Packages
             _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumPackageAge);
         }
 
-        public async Task<List<PackageUpdateSet>> SelectTargets(
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
@@ -54,8 +54,8 @@ namespace NuKeeper.Engine.Packages
             return capped;
         }
 
-        private async Task<IList<PackageUpdateSet>> ApplyFilters(
-            ForkData pushFork, IList<PackageUpdateSet> all)
+        private async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyFilters(
+            ForkData pushFork, IReadOnlyCollection<PackageUpdateSet> all)
         {
             var filteredLocally = all
                 .Where(MatchesIncludeExclude)
