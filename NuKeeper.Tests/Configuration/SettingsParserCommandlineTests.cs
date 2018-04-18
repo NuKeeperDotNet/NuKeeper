@@ -301,7 +301,7 @@ namespace NuKeeper.Tests.Configuration
         public void MinPackageAgeIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("age=3w");
+                .Append("MinAge=3w");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
@@ -314,7 +314,7 @@ namespace NuKeeper.Tests.Configuration
         public void InvalidMinPackageAgeIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("age=78ff");
+                .Append("MinAge=78ff");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
