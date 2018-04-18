@@ -298,10 +298,10 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
-        public void MinPackageAgeIsParsed()
+        public void ValidMinPackageAgeIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("MinAge=3w");
+                .Append("age=3w");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
@@ -311,10 +311,23 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
-        public void InvalidMinPackageAgeIsParsed()
+        public void ZeroMinPackageAgeIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("MinAge=78ff");
+                .Append("age=0");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.Zero));
+        }
+
+        [Test]
+        public void InvalidMinPackageAgeIsParsedAsZero()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("age=78ff");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
