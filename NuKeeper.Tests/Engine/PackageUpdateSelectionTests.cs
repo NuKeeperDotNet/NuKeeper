@@ -42,7 +42,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("foo"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("foo"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("foo"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -183,14 +183,14 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var filter = BranchFilter(updateSets.Skip(1));
+            var filter = BranchFilter(updateSets.Skip(1).ToList());
 
             var target = OneTargetSelection(filter);
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
             await filter.Received(1).CanMakeBranchFor(
                 Arg.Any<ForkData>(),
                 Arg.Any<IEnumerable<PackageUpdateSet>>());
@@ -225,7 +225,7 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -367,12 +367,12 @@ namespace NuKeeper.Tests.Engine
             filter.CanMakeBranchFor(
                     Arg.Any<ForkData>(),
                     Arg.Any<IEnumerable<PackageUpdateSet>>())
-                .Returns(x => Task.FromResult(x.Arg<IEnumerable<PackageUpdateSet>>()));
+                .Returns(x => Task.FromResult(x.Arg<IReadOnlyCollection<PackageUpdateSet>>()));
 
             return filter;
         }
 
-        private static IExistingBranchFilter BranchFilter(IEnumerable<PackageUpdateSet> results)
+        private static IExistingBranchFilter BranchFilter(IReadOnlyCollection<PackageUpdateSet> results)
         {
             var filter = Substitute.For<IExistingBranchFilter>();
             filter.CanMakeBranchFor(

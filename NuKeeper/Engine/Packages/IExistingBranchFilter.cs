@@ -6,7 +6,7 @@ namespace NuKeeper.Engine.Packages
 {
     public interface IExistingBranchFilter
     {
-        Task<IEnumerable<PackageUpdateSet>> CanMakeBranchFor(
+        Task<IReadOnlyCollection<PackageUpdateSet>> CanMakeBranchFor(
             ForkData pushFork,
             IEnumerable<PackageUpdateSet> packageUpdateSets);
     }

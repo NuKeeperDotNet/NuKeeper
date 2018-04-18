@@ -68,5 +68,10 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 throw new ArgumentException($"Updates must all be for package '{SelectedId}', got '{errorIds.JoinWithCommas()}'");
             }
         }
+
+        public override string ToString()
+        {
+            return $"{SelectedId} to {SelectedVersion} in {CurrentPackages.Count} places";
+        }
     }
 }

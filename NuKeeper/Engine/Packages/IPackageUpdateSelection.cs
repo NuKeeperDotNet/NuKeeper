@@ -6,7 +6,7 @@ namespace NuKeeper.Engine.Packages
 {
     public interface IPackageUpdateSelection
     {
-        Task<List<PackageUpdateSet>> SelectTargets(
+        Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
             IEnumerable<PackageUpdateSet> potentialUpdates);
     }
