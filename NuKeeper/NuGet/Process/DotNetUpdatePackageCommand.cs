@@ -27,9 +27,9 @@ namespace NuKeeper.NuGet.Process
             var dirName = currentPackage.Path.Info.DirectoryName;
             var sources = GetSourcesCommandLine(_sources);
 
-            await _externalProcess.Run(dirName, "dotnet", $"restore {sources}", true);
-            await _externalProcess.Run(dirName, "dotnet", $"remove package {currentPackage.Id}", true);
-            await _externalProcess.Run(dirName, "dotnet", $"add package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"restore {sources} {currentPackage.Path.RelativePath}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"remove {currentPackage.Path.RelativePath} package {currentPackage.Id}", true);
+            await _externalProcess.Run(dirName, "dotnet", $"add {currentPackage.Path.RelativePath} package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)

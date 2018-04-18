@@ -67,7 +67,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         }
 
         [Test]
-        [Ignore("Known failure, issue #243")]
         public async Task ShouldUpdateDuplicateProject()
         {
             const string name = nameof(ShouldUpdateDuplicateProject);
