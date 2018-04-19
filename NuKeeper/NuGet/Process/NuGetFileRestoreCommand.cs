@@ -3,9 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.NuGet.Process
@@ -59,6 +61,11 @@ namespace NuKeeper.NuGet.Process
             {
                 _logger.Verbose($"Nuget restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
             }
+        }
+
+        public async Task Invoke(NuGetVersion selectedVersion, string source, PackageInProject current)
+        {
+            await Invoke(current.Path.Info);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)

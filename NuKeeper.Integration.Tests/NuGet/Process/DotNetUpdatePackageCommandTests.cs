@@ -22,8 +22,13 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
     <VSToolsPath Condition=""'$(VSToolsPath)' == ''"">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- without the second package, 'dotnet add' will refuse to run -->
+    <!-- as the heuristic will consider this a packages.config project -->
+    <PackageReference Include=""Newtonsoft.Json"" Version=""11.0.2"" />
+  </ItemGroup>
   <Import Project=""$(MSBuildBinPath)\Microsoft.CSharp.targets"" />
-  <Import Project=""$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets"" Condition=""'$(VSToolsPath)' != ''"" />
+  <Import Project=""$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets"" Condition=""Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')"" />
 </Project>";
 
         private readonly string _testDotNetCoreProject =
@@ -55,7 +60,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 </Project>";
 
         [Test]
-        [Ignore("Known failure, issue #239")]
         public async Task ShouldNotThrowOnWebProjectMixedStyleUpdates()
         {
             await ExecuteValidUpdateTest(_testWebApiProject);

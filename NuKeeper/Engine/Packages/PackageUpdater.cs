@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -64,35 +65,38 @@ namespace NuKeeper.Engine.Packages
         {
             foreach (var current in updateSet.CurrentPackages)
             {
-                var restoreCommand = GetRestoreCommand(current.Path.PackageReferenceType);
-                if (restoreCommand != null)
+                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType);
+                foreach (var updateCommand in updateCommands)
                 {
-                    await restoreCommand.Invoke(current.Path.Info);
+                    await updateCommand.Invoke(updateSet.SelectedVersion, updateSet.Selected.Source, current);
                 }
-
-                var updateCommand = GetUpdateCommand(current.Path.PackageReferenceType);
-                await updateCommand.Invoke(updateSet.SelectedVersion, updateSet.Selected.Source, current);
             }
         }
 
-        private IFileRestoreCommand GetRestoreCommand(PackageReferenceType packageReferenceType)
+        private IReadOnlyCollection<IPackageCommand> GetUpdateCommands(PackageReferenceType packageReferenceType)
         {
-            if (packageReferenceType != PackageReferenceType.ProjectFile)
+            switch (packageReferenceType)
             {
-                return new NuGetFileRestoreCommand(_logger, _settings);
+                case PackageReferenceType.PackagesConfig:
+                    return new IPackageCommand[]
+                    {
+                        new NuGetFileRestoreCommand(_logger, _settings),
+                        new NuGetUpdatePackageCommand(_logger, _settings)
+                    };
+
+                case PackageReferenceType.ProjectFileOldStyle:
+                    return new IPackageCommand[]
+                    {
+                        new UpdateProjectImportsCommand(),
+                        new NuGetFileRestoreCommand(_logger, _settings),
+                        new DotNetUpdatePackageCommand(_logger, _settings)
+                    };
+
+                case PackageReferenceType.ProjectFile:
+                    return new[] {new DotNetUpdatePackageCommand(_logger, _settings)};
+
+                default: throw new ArgumentOutOfRangeException(nameof(packageReferenceType));
             }
-
-            return null;
-        }
-
-        private IUpdatePackageCommand GetUpdateCommand(PackageReferenceType packageReferenceType)
-        {
-            if (packageReferenceType != PackageReferenceType.PackagesConfig)
-            {
-                return new DotNetUpdatePackageCommand(_logger, _settings);
-            }
-
-            return new NuGetUpdatePackageCommand(_logger, _settings);
         }
 
         private async Task MakeGitHubPullRequest(
