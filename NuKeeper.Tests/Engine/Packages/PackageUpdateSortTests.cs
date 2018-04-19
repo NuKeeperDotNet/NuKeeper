@@ -203,7 +203,7 @@ namespace NuKeeper.Tests.Engine.Packages
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
         {
-            var latest = new PackageSearchMedatadata(package, "someSource", published);
+            var latest = new PackageSearchMedatadata(package, "someSource", published, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);

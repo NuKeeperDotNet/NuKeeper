@@ -85,7 +85,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         {
             var version = new NuGetVersion(major, minor, patch);
             var metadata = new PackageIdentity("TestPackage", version);
-            return new PackageSearchMedatadata(metadata, "someSource", DateTimeOffset.Now);
+            return new PackageSearchMedatadata(metadata, "someSource", DateTimeOffset.Now, null);
         }
     }
 }

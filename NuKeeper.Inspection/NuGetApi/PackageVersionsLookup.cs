@@ -34,7 +34,7 @@ namespace NuKeeper.Inspection.NuGetApi
             var sourceRepository = BuildSourceRepository(source);
             var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
             var metadatas = await FindPackage(metadataResource, packageName);
-            return metadatas.Select(m => new PackageSearchMedatadata(m.Identity, source, m.Published));
+            return metadatas.Select(m => BuildData(source, m));
         }
 
         private static SourceRepository BuildSourceRepository(string source)
@@ -52,6 +52,15 @@ namespace NuKeeper.Inspection.NuGetApi
         {
             return await metadataResource
                 .GetMetadataAsync(packageName, false, false, _logger, CancellationToken.None);
+        }
+
+        private PackageSearchMedatadata BuildData(string source, IPackageSearchMetadata metadata)
+        {
+            var deps = metadata.DependencySets
+                .SelectMany(set => set.Packages)
+                .Distinct();
+
+            return new PackageSearchMedatadata(metadata.Identity, source, metadata.Published, deps);
         }
     }
 }
