@@ -47,6 +47,25 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(latest.Published.HasValue, Is.True);
         }
 
+        [Test]
+        public async Task PackageShouldHaveDependencies()
+        {
+            var lookup = BuildPackageLookup();
+
+            var packages = await lookup.Lookup("Moq");
+
+            Assert.That(packages, Is.Not.Null);
+
+            var packageList = packages.ToList();
+            var latest = packageList
+                .OrderByDescending(p => p.Identity.Version)
+                .FirstOrDefault();
+
+            Assert.That(latest, Is.Not.Null);
+            Assert.That(latest.Dependencies, Is.Not.Null);
+            Assert.That(latest.Dependencies, Is.Not.Empty);
+        }
+
         private IPackageVersionsLookup BuildPackageLookup()
         {
             return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
