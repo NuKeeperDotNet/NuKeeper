@@ -20,6 +20,10 @@ namespace NuKeeper.Inspection.Logging
             else
             {
                 Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+                if (_logLevel == LogLevel.Verbose)
+                {
+                    Console.Error.WriteLine(ex.StackTrace);
+                }
             }
         }
 
