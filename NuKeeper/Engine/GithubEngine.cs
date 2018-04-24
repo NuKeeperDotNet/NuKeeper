@@ -1,8 +1,10 @@
+using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
@@ -35,6 +37,8 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
+            _logger.Verbose($"{Now()} : Started");
+
             _folderFactory.DeleteExistingTempDirs();
 
             var githubUser = await _github.GetCurrentUser();
@@ -52,24 +56,29 @@ namespace NuKeeper.Engine
             {
                 await _repositoryEngine.Run(repository, gitCreds, userIdentity);
             }
+
+            _logger.Verbose($"{Now()} : Done");
         }
 
         private Identity GetUserIdentity(Account githubUser)
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {
-                _logger.Terse(
-                    "GitHub user name missing from profile, falling back to .gitconfig");
+                _logger.Terse("GitHub user name missing from profile, falling back to .gitconfig");
                 return null;
             }
             if (string.IsNullOrWhiteSpace(githubUser?.Email))
             {
-                _logger.Terse(
-                    "GitHub public email missing from profile, falling back to .gitconfig");
+                _logger.Terse("GitHub public email missing from profile, falling back to .gitconfig");
                 return null;
             }
 
             return new Identity(githubUser.Name, githubUser.Email);
+        }
+
+        private static string Now()
+        {
+            return DateFormat.AsUtcIso8601(DateTimeOffset.Now);
         }
     }
 }
