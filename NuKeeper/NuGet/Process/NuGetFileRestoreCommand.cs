@@ -32,7 +32,7 @@ namespace NuKeeper.NuGet.Process
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _logger.Info("Cannot run NuGet.exe as OS Platform is not Windows");
+                _logger.Info("Cannot run NuGet.exe file restore as OS Platform is not Windows");
                 return;
             }
 

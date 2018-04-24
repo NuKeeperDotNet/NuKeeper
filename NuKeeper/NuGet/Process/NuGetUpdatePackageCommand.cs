@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -28,8 +29,21 @@ namespace NuKeeper.NuGet.Process
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _logger.Info("Cannot run NuGet.exe package update as OS Platform is not Windows");
+                return;
+            }
+
             var dirName = currentPackage.Path.Info.DirectoryName;
+
             var nuget = NuGetPath.FindExecutable();
+            if (string.IsNullOrWhiteSpace(nuget))
+            {
+                _logger.Info("Cannot find NuGet exe for package update");
+                return;
+            }
+
             var sources = GetSourcesCommandLine(_sources);
             var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
             _logger.Verbose(arguments);
