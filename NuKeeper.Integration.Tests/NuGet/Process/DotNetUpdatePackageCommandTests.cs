@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.NuGet.Process;
 using NUnit.Framework;
 
@@ -102,8 +103,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var command =
-                new DotNetUpdatePackageCommand(
+            var command = new DotNetUpdatePackageCommand(
+                    new NullNuKeeperLogger(),
                     new UserSettings { NuGetSources = new[] { packageSource } });
 
             await command.Invoke(new NuGetVersion(newPackageVersion), packageSource,
