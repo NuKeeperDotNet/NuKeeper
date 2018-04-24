@@ -37,7 +37,7 @@ namespace NuKeeper.Engine
 
         public async Task Run()
         {
-            _logger.Verbose($"{Now()} : Started");
+            _logger.Verbose($"{Now()}: Started");
 
             _folderFactory.DeleteExistingTempDirs();
 
@@ -57,7 +57,7 @@ namespace NuKeeper.Engine
                 await _repositoryEngine.Run(repository, gitCreds, userIdentity);
             }
 
-            _logger.Verbose($"{Now()} : Done");
+            _logger.Verbose($"{Now()}: Done");
         }
 
         private Identity GetUserIdentity(Account githubUser)
