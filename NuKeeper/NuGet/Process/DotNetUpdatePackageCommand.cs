@@ -28,14 +28,16 @@ namespace NuKeeper.NuGet.Process
 
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
-            var dirName = currentPackage.Path.Info.DirectoryName;
+            var projectPath = currentPackage.Path.Info.DirectoryName;
+            var projectFileName = currentPackage.Path.Info.Name;
+
             var sources = GetSourcesCommandLine(_sources);
 
-            _logger.Verbose($"dotnet update package {currentPackage.Id} in path {dirName} {currentPackage.Path.RelativePath} from sources {sources}");
+            _logger.Verbose($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from sources {sources}");
 
-            await _externalProcess.Run(dirName, "dotnet", $"restore {sources} {currentPackage.Path.RelativePath}", true);
-            await _externalProcess.Run(dirName, "dotnet", $"remove {currentPackage.Path.RelativePath} package {currentPackage.Id}", true);
-            await _externalProcess.Run(dirName, "dotnet", $"add {currentPackage.Path.RelativePath} package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
+            await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
+            await _externalProcess.Run(projectPath, "dotnet", $"remove {projectFileName} package {currentPackage.Id}", true);
+            await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
         }
 
         private static string GetSourcesCommandLine(IEnumerable<string> sources)
