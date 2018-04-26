@@ -16,7 +16,7 @@ namespace NuKeeper.Engine.Packages
 
             var first = priorityOrder.First();
             var rest = priorityOrder.Skip(1).ToList();
-            var depIndex = IndexOfAnyDependency(rest, first.Selected.Dependencies);
+            var depIndex = IndexOfAnyDependency(first.Selected.Dependencies, rest);
 
             if (depIndex == -1)
             {
@@ -30,18 +30,18 @@ namespace NuKeeper.Engine.Packages
         }
 
         private static int IndexOfAnyDependency(
-            List<PackageUpdateSet> sets,
-            IReadOnlyCollection<PackageDependency> dependencies)
+            IReadOnlyCollection<PackageDependency> dependencies,
+            List<PackageUpdateSet> sets)
         {
-            var checkDeps = dependencies
+            var targetDependencyIds = dependencies
                 .Select(d => d.Id)
                 .ToList();
 
-            for (int i = 0; i < sets.Count; i++)
+            for (var i = 0; i < sets.Count; i++)
             {
-                var item = sets[i];
+                var testId = sets[i].SelectedId;
 
-                if (checkDeps.Any(d => d == item.SelectedId))
+                if (targetDependencyIds.Any(d => d == testId))
                 {
                     return i;
                 }
