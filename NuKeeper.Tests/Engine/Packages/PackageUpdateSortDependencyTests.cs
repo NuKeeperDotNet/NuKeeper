@@ -17,26 +17,82 @@ namespace NuKeeper.Tests.Engine.Packages
         private static readonly DateTimeOffset StandardPublishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
 
         [Test]
-        public void WillSortByProjectCount()
+        public void WillSortByProjectCountWhenThereAreNoDeps()
         {
+            var upstream = OnePackageUpdateSet("upstream", 1, null);
+            var downstream = OnePackageUpdateSet("downstream", 2, null);
+
             var items = new List<PackageUpdateSet>
             {
-                OnePackageUpdateSet(1),
-                OnePackageUpdateSet(2)
+                downstream,
+                upstream
+            };
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(2));
+            Assert.That(output[0].SelectedId, Is.EqualTo("downstream"));
+            Assert.That(output[1].SelectedId, Is.EqualTo("upstream"));
+        }
+
+        [Test]
+        public void WillSortByDependencyWhenItExisits()
+        {
+            var upstream = OnePackageUpdateSet("upstream", 1, null);
+            var depOnUpstream = new List<PackageDependency>
+            {
+                new PackageDependency("upstream", VersionRange.All)
+            };
+
+            var downstream = OnePackageUpdateSet("downstream", 2, depOnUpstream);
+
+            var items = new List<PackageUpdateSet>
+            {
+                downstream,
+                upstream
             };
 
             var output = PackageUpdateSort.Sort(items)
                 .ToList();
 
             Assert.That(output.Count, Is.EqualTo(2));
-            Assert.That(output[0].CurrentPackages.Count, Is.EqualTo(2));
-            Assert.That(output[1].CurrentPackages.Count, Is.EqualTo(1));
+            Assert.That(output[0].SelectedId, Is.EqualTo("upstream"));
+            Assert.That(output[1].SelectedId, Is.EqualTo("downstream"));
         }
 
-        private static PackageUpdateSet OnePackageUpdateSet(int projectCount)
+
+        [Test]
+        public void WillSortSecondAndThirdByDependencyWhenItExisits()
         {
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
-            var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            var upstream = OnePackageUpdateSet("upstream", 1, null);
+            var depOnUpstream = new List<PackageDependency>
+            {
+                new PackageDependency("upstream", VersionRange.All)
+            };
+
+            var downstream = OnePackageUpdateSet("downstream", 2, depOnUpstream);
+
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet("nodeps", 3, null),
+                downstream,
+                upstream
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(output[0].SelectedId, Is.EqualTo("nodeps"));
+            Assert.That(output[1].SelectedId, Is.EqualTo("upstream"));
+            Assert.That(output[2].SelectedId, Is.EqualTo("downstream"));
+        }
+
+        private static PackageUpdateSet OnePackageUpdateSet(string packageName, int projectCount,
+            List<PackageDependency> deps)
+        {
+            var newPackage = new PackageIdentity(packageName, new NuGetVersion("1.4.5"));
+            var package = new PackageIdentity(packageName, new NuGetVersion("1.2.3"));
 
             var projects = new List<PackageInProject>();
             foreach (var i in Enumerable.Range(1, projectCount))
@@ -44,7 +100,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 projects.Add(MakePackageInProjectFor(package));
             }
 
-            return UpdateSetFor(newPackage, projects.ToArray());
+            return UpdateSetFor(newPackage, projects, deps);
         }
 
         private static PackageInProject MakePackageInProjectFor(PackageIdentity package)
@@ -56,14 +112,16 @@ namespace NuKeeper.Tests.Engine.Packages
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }
 
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
+        private static PackageUpdateSet UpdateSetFor(PackageIdentity package,
+            List<PackageInProject> packages, List<PackageDependency> deps)
         {
-            return UpdateSetFor(package, StandardPublishedDate, packages);
+            return UpdateSetFor(package, StandardPublishedDate, packages, deps);
         }
 
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
+        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published,
+            List<PackageInProject> packages, List<PackageDependency> deps)
         {
-            var latest = new PackageSearchMedatadata(package, "someSource", published, null);
+            var latest = new PackageSearchMedatadata(package, "someSource", published, deps);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
