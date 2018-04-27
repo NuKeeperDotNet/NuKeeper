@@ -1,7 +1,7 @@
 language: csharp
 mono: none
 dist: trusty
-dotnet: 2.1.4
+dotnet: 2.1.105
 script:
   - dotnet build -c Release -f netcoreapp2.0
   - dotnet test -c Release -f netcoreapp2.0 NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
