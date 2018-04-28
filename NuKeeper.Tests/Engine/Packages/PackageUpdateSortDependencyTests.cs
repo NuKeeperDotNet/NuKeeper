@@ -36,7 +36,7 @@ namespace NuKeeper.Tests.Engine.Packages
         }
 
         [Test]
-        public void WillSortByDependencyWhenItExisits()
+        public void WillSortByDependencyWhenItExists()
         {
             var upstream = OnePackageUpdateSet("upstream", 1, null);
             var depOnUpstream = new List<PackageDependency>
@@ -60,9 +60,8 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(output[1].SelectedId, Is.EqualTo("downstream"));
         }
 
-
         [Test]
-        public void WillSortSecondAndThirdByDependencyWhenItExisits()
+        public void WillSortSecondAndThirdByDependencyWhenItExists()
         {
             var upstream = OnePackageUpdateSet("upstream", 1, null);
             var depOnUpstream = new List<PackageDependency>
@@ -86,6 +85,39 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(output[0].SelectedId, Is.EqualTo("nodeps"));
             Assert.That(output[1].SelectedId, Is.EqualTo("upstream"));
             Assert.That(output[2].SelectedId, Is.EqualTo("downstream"));
+        }
+
+        [Test]
+        public void SortWithThreeLevels()
+        {
+            var level1 = OnePackageUpdateSet("l1", 1, null);
+            var depOnLevel1 = new List<PackageDependency>
+            {
+                new PackageDependency("l1", VersionRange.All)
+            };
+
+            var level2 = OnePackageUpdateSet("l2", 2, depOnLevel1);
+            var depOnLevel2 = new List<PackageDependency>
+            {
+                new PackageDependency("l2", VersionRange.All)
+            };
+
+            var level3 = OnePackageUpdateSet("l3", 2, depOnLevel2);
+
+            var items = new List<PackageUpdateSet>
+            {
+                level3,
+                level2,
+                level1
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(output[0].SelectedId, Is.EqualTo("l1"));
+            Assert.That(output[1].SelectedId, Is.EqualTo("l2"));
+            Assert.That(output[2].SelectedId, Is.EqualTo("l3"));
         }
 
         private static PackageUpdateSet OnePackageUpdateSet(string packageName, int projectCount,
