@@ -1,15 +1,15 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Engine.Packages;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NuKeeper.Engine.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Tests.Engine.Packages
+namespace NuKeeper.Tests.Engine.Sort
 {
     [TestFixture]
     public class PackageUpdateSortTests

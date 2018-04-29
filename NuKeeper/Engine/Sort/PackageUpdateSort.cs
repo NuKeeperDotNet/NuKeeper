@@ -1,11 +1,11 @@
-using NuGet.Versioning;
-using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Packages
+namespace NuKeeper.Engine.Sort
 {
     public static class PackageUpdateSort
     {

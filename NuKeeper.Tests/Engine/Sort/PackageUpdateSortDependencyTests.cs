@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Engine.Packages;
+using NuKeeper.Engine.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Engine.Packages
+namespace NuKeeper.Tests.Engine.Sort
 {
     [TestFixture]
     public class PackageUpdateSortDependencyTests
