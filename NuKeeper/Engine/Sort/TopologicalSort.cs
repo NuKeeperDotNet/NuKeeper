@@ -68,7 +68,6 @@ namespace NuKeeper.Engine.Sort
 
             if (item.Mark == Mark.Temporary)
             {
-                // cycle!
                 _logger.Terse($"Cannot sort packages by dependencies, cycle found at package {item.PackageId}");
                 _cycleFound = true;
                 return;
