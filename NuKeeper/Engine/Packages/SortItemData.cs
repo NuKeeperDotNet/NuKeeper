@@ -24,5 +24,7 @@ namespace NuKeeper.Engine.Packages
         public IReadOnlyCollection<PackageDependency> Dependencies { get; }
 
         public Mark Mark { get; set; }
+
+        public string PackageId => PackageUpdateSet.SelectedId;
     }
 }

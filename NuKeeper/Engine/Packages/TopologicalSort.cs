@@ -49,6 +49,11 @@ namespace NuKeeper.Engine.Packages
 
         private void Visit(SortItemData item)
         {
+            if (_cycleFound)
+            {
+                return;
+            }
+
             if (item.Mark == Mark.Permanent)
             {
                 return;
@@ -57,16 +62,19 @@ namespace NuKeeper.Engine.Packages
             if (item.Mark == Mark.Temporary)
             {
                 // cycle!
-                _logger.Terse($"Cannot sort packages by dependency, cycle found at package {item.PackageUpdateSet.SelectedId}");
+                _logger.Terse($"Cannot sort packages by dependency, cycle found at package {item.PackageId}");
                 _cycleFound = true;
                 return;
             }
 
             item.Mark = Mark.Temporary;
-            foreach (var dep in item.Dependencies)
+            var nodesDependedOn = item.Dependencies
+                .Select(dep => _data.FirstOrDefault(i => i.PackageId == dep.Id))
+                .Where(dep => dep != null);
+
+            foreach (var dep in nodesDependedOn)
             {
-                var nodeForDep = _data.First(i => i.PackageUpdateSet.SelectedId == dep.Id);
-                Visit(nodeForDep);
+                Visit(dep);
             }
 
             item.Mark = Mark.Permanent;
