@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Sort
@@ -12,13 +11,9 @@ namespace NuKeeper.Engine.Sort
         private const long Shift = 1000;
 
         public static IEnumerable<PackageUpdateSet> Sort(
-            IEnumerable<PackageUpdateSet> packages,
-            INuKeeperLogger logger)
+            IReadOnlyCollection<PackageUpdateSet> packages)
         {
-            var priorityOrder = packages.OrderByDescending(Priority);
-
-            var depSorter = new TopologicalSort(logger);
-            return depSorter.Sort(priorityOrder.ToList());
+            return packages.OrderByDescending(Priority);
         }
 
         private static long Priority(PackageUpdateSet update)

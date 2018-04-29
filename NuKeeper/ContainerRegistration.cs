@@ -1,6 +1,7 @@
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
+using NuKeeper.Engine.Sort;
 using NuKeeper.Github;
 using NuKeeper.NuGet.Process;
 using NuKeeper.ProcessRunner;
@@ -32,6 +33,7 @@ namespace NuKeeper
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
+            container.Register<IPackageUpdateSetSort, PackageUpdateSetSort>();
             container.Register<IExistingBranchFilter, ExistingBranchFilter>();
 
             container.Register<GithubEngine>();

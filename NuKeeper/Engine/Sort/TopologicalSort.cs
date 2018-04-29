@@ -13,23 +13,30 @@ namespace NuKeeper.Engine.Sort
         private readonly INuKeeperLogger _logger;
         private readonly List<PackageUpdateSet> _sortedList = new List<PackageUpdateSet>();
         private List<SortItemData> _data;
-        private bool _cycleFound = false;
+        private bool _cycleFound;
 
         public TopologicalSort(INuKeeperLogger logger)
         {
             _logger = logger;
         }
 
-        public IList<PackageUpdateSet> Sort(IList<PackageUpdateSet> priorityOrder)
+        public IEnumerable<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
-            if (priorityOrder.Count < 2)
+            if (input.Count < 2)
             {
-                return priorityOrder;
+                _logger.Verbose($"No need to sort {input.Count} packages by dependencies");
+                return input;
             }
 
-            _data = priorityOrder
-                .Select(p => MakeNode(p, priorityOrder))
+            _data = input
+                .Select(p => MakeNode(p, input))
                 .ToList();
+
+            if (!_data.Any(i => i.Dependencies.Any()))
+            {
+                _logger.Verbose("There are no dependencies between packages being updated");
+                return input;
+            }
 
             foreach (var item in _data)
             {
@@ -41,9 +48,10 @@ namespace NuKeeper.Engine.Sort
 
             if (_cycleFound)
             {
-                return priorityOrder;
+                return input;
             }
 
+            _logger.Verbose("Sorted packages by dependencies");
             return _sortedList;
         }
 
@@ -81,7 +89,7 @@ namespace NuKeeper.Engine.Sort
             _sortedList.Add(item.PackageUpdateSet);
         }
 
-        private static SortItemData MakeNode(PackageUpdateSet set, IList<PackageUpdateSet> all)
+        private static SortItemData MakeNode(PackageUpdateSet set, IEnumerable<PackageUpdateSet> all)
         {
             var relevantDeps = set.Selected.Dependencies
                 .Where(dep => all.Any(a => a.SelectedId == dep.Id));

@@ -9,6 +9,7 @@ using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
+using NuKeeper.Engine.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreNoInputs_NoTargetsOut()
         {
-            var updateSets = Enumerable.Empty<PackageUpdateSet>();
+            var updateSets = new List<PackageUpdateSet>();
 
             var target = OneTargetSelection();
 
@@ -94,8 +95,8 @@ namespace NuKeeper.Tests.Engine
                 PackageIncludes = new Regex("bar")
             };
 
-            var target = new PackageUpdateSelection(settings,
-                new NullNuKeeperLogger(), BranchFilter());
+            var target = new PackageUpdateSelection(settings, BranchFilter(),
+                MakeSort(), new NullNuKeeperLogger());
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -118,8 +119,8 @@ namespace NuKeeper.Tests.Engine
                 PackageExcludes = new Regex("bar")
             };
 
-            var target = new PackageUpdateSelection(settings,
-                new NullNuKeeperLogger(), BranchFilter());
+            var target = new PackageUpdateSelection(settings, BranchFilter(),
+                MakeSort(), new NullNuKeeperLogger());
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -144,8 +145,8 @@ namespace NuKeeper.Tests.Engine
                 PackageIncludes = new Regex("foo")
             };
 
-            var target = new PackageUpdateSelection(settings,
-                new NullNuKeeperLogger(), BranchFilter());
+            var target = new PackageUpdateSelection(settings, BranchFilter(),
+                MakeSort(), new NullNuKeeperLogger());
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -340,8 +341,8 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequestsPerRepository = maxPullRequests,
                 MinimumPackageAge = TimeSpan.Zero
             };
-            return new PackageUpdateSelection(settings,
-                new NullNuKeeperLogger(), filter);
+            return new PackageUpdateSelection(settings, filter,
+                MakeSort(), new NullNuKeeperLogger());
         }
 
         private static IPackageUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
@@ -353,8 +354,8 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequestsPerRepository = maxPullRequests,
                 MinimumPackageAge = minAge
             };
-            return new PackageUpdateSelection(settings,
-                new NullNuKeeperLogger(), BranchFilter());
+            return new PackageUpdateSelection(settings, BranchFilter(),
+                MakeSort(), new NullNuKeeperLogger());
         }
 
         private static ForkData PushFork()
@@ -382,6 +383,11 @@ namespace NuKeeper.Tests.Engine
                 .Returns(x => Task.FromResult(results));
 
             return filter;
+        }
+
+        private static IPackageUpdateSetSort MakeSort()
+        {
+            return new PackageUpdateSetSort(new NullNuKeeperLogger());
         }
     }
 }

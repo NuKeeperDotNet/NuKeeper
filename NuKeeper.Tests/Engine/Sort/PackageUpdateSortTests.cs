@@ -255,9 +255,10 @@ namespace NuKeeper.Tests.Engine.Sort
             return UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
         }
 
-        private List<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> input)
+        private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
-            return PackageUpdateSort.Sort(input, new NullNuKeeperLogger())
+            var sorter = new PackageUpdateSetSort(new NullNuKeeperLogger());
+            return sorter.Sort(input)
                 .ToList();
         }
     }

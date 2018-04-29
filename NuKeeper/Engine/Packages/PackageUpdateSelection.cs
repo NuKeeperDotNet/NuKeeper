@@ -14,6 +14,7 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly INuKeeperLogger _logger;
         private readonly IExistingBranchFilter _existingBranchFilter;
+        private readonly IPackageUpdateSetSort _sort;
 
         private readonly Regex _excludeFilter;
         private readonly Regex _includeFilter;
@@ -21,10 +22,13 @@ namespace NuKeeper.Engine.Packages
         private readonly DateTime _maxPublishedDate;
 
         public PackageUpdateSelection(UserSettings settings,
-            INuKeeperLogger logger, IExistingBranchFilter existingBranchFilter)
+            IExistingBranchFilter existingBranchFilter,
+            IPackageUpdateSetSort sort,
+            INuKeeperLogger logger)
         {
             _logger = logger;
             _existingBranchFilter = existingBranchFilter;
+            _sort = sort;
 
             _maxPullRequests = settings.MaxPullRequestsPerRepository;
             _includeFilter = settings.PackageIncludes;
@@ -34,9 +38,9 @@ namespace NuKeeper.Engine.Packages
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
-            IEnumerable<PackageUpdateSet> potentialUpdates)
+            IReadOnlyCollection<PackageUpdateSet> potentialUpdates)
         {
-            var unfiltered = PackageUpdateSort.Sort(potentialUpdates, _logger)
+            var unfiltered = _sort.Sort(potentialUpdates)
                 .ToList();
 
             var filtered = await ApplyFilters(pushFork, unfiltered);
