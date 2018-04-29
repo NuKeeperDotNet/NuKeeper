@@ -6,7 +6,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Sort
 {
-    public static class PackageUpdateSort
+    public static class PrioritySort
     {
         private const long Shift = 1000;
 
