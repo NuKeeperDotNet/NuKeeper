@@ -1,41 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
-using NuGet.Packaging.Core;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {
-    public enum Mark
-    {
-        None,
-        Temporary,
-        Permanent
-    }
-
-    public class NodeData
-    {
-        public NodeData(PackageUpdateSet set, IEnumerable<PackageDependency> deps)
-        {
-            PackageUpdateSet = set;
-            Dependencies = new List<PackageDependency>(deps);
-            Mark = Mark.None;
-        }
-        public PackageUpdateSet PackageUpdateSet { get; }
-
-        public IReadOnlyCollection<PackageDependency> Dependencies { get; }
-
-        public Mark Mark { get; set; }
-    }
-
     /// <summary>
     /// https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
     /// </summary>
-    public class DependencyOrder
+    public class TopologicalSort
     {
-        private List<PackageUpdateSet> _output;
-        private List<NodeData> _data;
+        private readonly INuKeeperLogger _logger;
+        private readonly List<PackageUpdateSet> _sortedList = new List<PackageUpdateSet>();
+        private List<SortItemData> _data;
+        private bool _cycleFound = false;
 
-        private bool _cycleFound;
+        public TopologicalSort(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
 
         public IList<PackageUpdateSet> Sort(IList<PackageUpdateSet> priorityOrder)
         {
@@ -43,9 +26,6 @@ namespace NuKeeper.Engine.Packages
             {
                 return priorityOrder;
             }
-
-            _output = new List<PackageUpdateSet>();
-            _cycleFound = false;
 
             _data = priorityOrder
                 .Select(p => MakeNode(p, priorityOrder))
@@ -64,10 +44,10 @@ namespace NuKeeper.Engine.Packages
                 return priorityOrder;
             }
 
-            return _output;
+            return _sortedList;
         }
 
-        private void Visit(NodeData item)
+        private void Visit(SortItemData item)
         {
             if (item.Mark == Mark.Permanent)
             {
@@ -77,6 +57,7 @@ namespace NuKeeper.Engine.Packages
             if (item.Mark == Mark.Temporary)
             {
                 // cycle!
+                _logger.Terse($"Cannot sort packages by dependency, cycle found at package {item.PackageUpdateSet.SelectedId}");
                 _cycleFound = true;
                 return;
             }
@@ -89,14 +70,15 @@ namespace NuKeeper.Engine.Packages
             }
 
             item.Mark = Mark.Permanent;
-            _output.Add(item.PackageUpdateSet);
+            _sortedList.Add(item.PackageUpdateSet);
         }
 
-        private static NodeData MakeNode(PackageUpdateSet set, IList<PackageUpdateSet> all)
+        private static SortItemData MakeNode(PackageUpdateSet set, IList<PackageUpdateSet> all)
         {
             var relevantDeps = set.Selected.Dependencies
                 .Where(dep => all.Any(a => a.SelectedId == dep.Id));
-            return new NodeData(set, relevantDeps);
+
+            return new SortItemData(set, relevantDeps);
         }
     }
 }

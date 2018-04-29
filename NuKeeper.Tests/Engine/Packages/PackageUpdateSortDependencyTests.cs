@@ -27,8 +27,8 @@ namespace NuKeeper.Tests.Engine.Packages
                 downstream,
                 upstream
             };
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(2));
             Assert.That(output[0].SelectedId, Is.EqualTo("downstream"));
@@ -52,8 +52,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 upstream
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(2));
             Assert.That(output[0].SelectedId, Is.EqualTo("upstream"));
@@ -78,8 +77,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 upstream
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(output[0].SelectedId, Is.EqualTo("nodeps"));
@@ -111,8 +109,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 level1
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(output[0].SelectedId, Is.EqualTo("l1"));
@@ -139,8 +136,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 level1
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(output[0].SelectedId, Is.EqualTo("l1"));
@@ -175,8 +171,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 packageB
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(2));
             Assert.That(output[0].SelectedId, Is.EqualTo("PackageA"));
@@ -220,6 +215,12 @@ namespace NuKeeper.Tests.Engine.Packages
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
+        }
+
+        private List<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> input)
+        {
+            return PackageUpdateSort.Sort(input, new NullNuKeeperLogger())
+                .ToList();
         }
     }
 }

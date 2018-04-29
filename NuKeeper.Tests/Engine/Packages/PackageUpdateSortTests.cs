@@ -21,8 +21,7 @@ namespace NuKeeper.Tests.Engine.Packages
         {
             var items = new List<PackageUpdateSet>();
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output, Is.Not.Null);
         }
@@ -35,8 +34,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 OnePackageUpdateSet(1)
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output, Is.Not.Null);
             Assert.That(output.Count, Is.EqualTo(1));
@@ -52,8 +50,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 OnePackageUpdateSet(2)
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output, Is.Not.Null);
             Assert.That(output.Count, Is.EqualTo(2));
@@ -69,8 +66,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 OnePackageUpdateSet(3),
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output, Is.Not.Null);
             Assert.That(output.Count, Is.EqualTo(3));
@@ -87,8 +83,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 twoVersions
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output, Is.Not.Null);
             Assert.That(output[0], Is.EqualTo(twoVersions));
@@ -104,8 +99,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 OnePackageUpdateSet(3),
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(output[0].CurrentPackages.Count, Is.EqualTo(3));
@@ -124,8 +118,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 twoVersions,
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(output[0], Is.EqualTo(twoVersions));
@@ -143,8 +136,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 PackageChange("1.3.0", "1.2.3")
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(SelectedVersion(output[0]), Is.EqualTo("2.0.0"));
@@ -162,8 +154,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 PackageChange("1.3.0-pre-2", "1.2.3-beta1")
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(SelectedVersion(output[0]), Is.EqualTo("1.2.4"));
@@ -182,8 +173,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 PackageChange("1.2.4", "1.2.3", StandardPublishedDate.AddYears(-2))
             };
 
-            var output = PackageUpdateSort.Sort(items)
-                .ToList();
+            var output = Sort(items);
 
             Assert.That(output.Count, Is.EqualTo(3));
             Assert.That(SelectedVersion(output[0]), Is.EqualTo("1.2.4"));
@@ -265,5 +255,10 @@ namespace NuKeeper.Tests.Engine.Packages
             return UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
         }
 
+        private List<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> input)
+        {
+            return PackageUpdateSort.Sort(input, new NullNuKeeperLogger())
+                .ToList();
+        }
     }
 }

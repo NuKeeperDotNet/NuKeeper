@@ -35,7 +35,7 @@ namespace NuKeeper.Engine.Packages
             ForkData pushFork,
             IEnumerable<PackageUpdateSet> potentialUpdates)
         {
-            var unfiltered = PackageUpdateSort.Sort(potentialUpdates)
+            var unfiltered = PackageUpdateSort.Sort(potentialUpdates, _logger)
                 .ToList();
 
             var filtered = await ApplyFilters(pushFork, unfiltered);

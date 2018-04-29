@@ -3,6 +3,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -10,11 +11,13 @@ namespace NuKeeper.Engine.Packages
     {
         private const long Shift = 1000;
 
-        public static IEnumerable<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> packages)
+        public static IEnumerable<PackageUpdateSet> Sort(
+            IEnumerable<PackageUpdateSet> packages,
+            INuKeeperLogger logger)
         {
             var priorityOrder = packages.OrderByDescending(Priority);
 
-            var depSorter = new DependencyOrder();
+            var depSorter = new TopologicalSort(logger);
             return depSorter.Sort(priorityOrder.ToList());
         }
 
