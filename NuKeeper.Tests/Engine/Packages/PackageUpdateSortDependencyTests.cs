@@ -120,6 +120,69 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(output[2].SelectedId, Is.EqualTo("l3"));
         }
 
+        [Test]
+        public void SortWhenTwoPackagesDependOnSameUpstream()
+        {
+            var level1 = OnePackageUpdateSet("l1", 1, null);
+            var depOnLevel1 = new List<PackageDependency>
+            {
+                new PackageDependency("l1", VersionRange.All)
+            };
+
+            var level2A = OnePackageUpdateSet("l2a", 2, depOnLevel1);
+            var level2B = OnePackageUpdateSet("l2b", 2, depOnLevel1);
+
+            var items = new List<PackageUpdateSet>
+            {
+                level2A,
+                level2B,
+                level1
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(3));
+            Assert.That(output[0].SelectedId, Is.EqualTo("l1"));
+
+            // prior ordering should be preserved here
+            Assert.That(output[1].SelectedId, Is.EqualTo("l2a"));
+            Assert.That(output[2].SelectedId, Is.EqualTo("l2b"));
+        }
+
+        [Test]
+        public void SortWhenDependenciesAreCircular()
+        {
+            var depOnA = new List<PackageDependency>
+            {
+                new PackageDependency("PackageA", VersionRange.All)
+            };
+
+            var depOnB = new List<PackageDependency>
+            {
+                new PackageDependency("PackageB", VersionRange.All)
+            };
+
+            // circular dependencies should not happen, but probably will
+            // do not break
+            var packageA = OnePackageUpdateSet("PackageA", 1, depOnB);
+            var packageB = OnePackageUpdateSet("PackageB", 1, depOnA);
+
+
+            var items = new List<PackageUpdateSet>
+            {
+                packageA,
+                packageB
+            };
+
+            var output = PackageUpdateSort.Sort(items)
+                .ToList();
+
+            Assert.That(output.Count, Is.EqualTo(2));
+            Assert.That(output[0].SelectedId, Is.EqualTo("PackageA"));
+            Assert.That(output[1].SelectedId, Is.EqualTo("PackageB"));
+        }
+
         private static PackageUpdateSet OnePackageUpdateSet(string packageName, int projectCount,
             List<PackageDependency> deps)
         {
