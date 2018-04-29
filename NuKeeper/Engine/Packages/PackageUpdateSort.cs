@@ -13,7 +13,9 @@ namespace NuKeeper.Engine.Packages
         public static IEnumerable<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> packages)
         {
             var priorityOrder = packages.OrderByDescending(Priority);
-            return DependencyOrder.Sort(priorityOrder.ToList());
+
+            var depSorter = new DependencyOrder();
+            return depSorter.Sort(priorityOrder.ToList());
         }
 
         private static long Priority(PackageUpdateSet update)

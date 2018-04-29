@@ -5,49 +5,98 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {
-    public static class DependencyOrder
+    public enum Mark
     {
-        public static IEnumerable<PackageUpdateSet> Sort(IList<PackageUpdateSet> priorityOrder)
+        None,
+        Temporary,
+        Permanent
+    }
+
+    public class NodeData
+    {
+        public NodeData(PackageUpdateSet set, IEnumerable<PackageDependency> deps)
+        {
+            PackageUpdateSet = set;
+            Dependencies = new List<PackageDependency>(deps);
+            Mark = Mark.None;
+        }
+        public PackageUpdateSet PackageUpdateSet { get; }
+
+        public IReadOnlyCollection<PackageDependency> Dependencies { get; }
+
+        public Mark Mark { get; set; }
+    }
+
+    /// <summary>
+    /// https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+    /// </summary>
+    public class DependencyOrder
+    {
+        private List<PackageUpdateSet> _output;
+        private List<NodeData> _data;
+
+        private bool _cycleFound;
+
+        public IList<PackageUpdateSet> Sort(IList<PackageUpdateSet> priorityOrder)
         {
             if (priorityOrder.Count < 2)
             {
                 return priorityOrder;
             }
 
-            var first = priorityOrder.First();
-            var rest = priorityOrder.Skip(1).ToList();
-            var depIndex = IndexOfAnyDependency(first.Selected.Dependencies, rest);
+            _output = new List<PackageUpdateSet>();
+            _cycleFound = false;
 
-            if (depIndex == -1)
-            {
-                return new List<PackageUpdateSet> { first }
-                    .Concat(Sort(rest))
-                    .ToList();
-            }
-
-            rest.Insert(depIndex + 1, first);
-            return Sort(rest);
-        }
-
-        private static int IndexOfAnyDependency(
-            IReadOnlyCollection<PackageDependency> dependencies,
-            List<PackageUpdateSet> sets)
-        {
-            var targetDependencyIds = dependencies
-                .Select(d => d.Id)
+            _data = priorityOrder
+                .Select(p => MakeNode(p, priorityOrder))
                 .ToList();
 
-            for (var i = 0; i < sets.Count; i++)
+            foreach (var item in _data)
             {
-                var testId = sets[i].SelectedId;
-
-                if (targetDependencyIds.Any(d => d == testId))
+                if (item.Mark == Mark.None)
                 {
-                    return i;
+                    Visit(item);
                 }
             }
 
-            return -1;
+            if (_cycleFound)
+            {
+                return priorityOrder;
+            }
+
+            return _output;
+        }
+
+        private void Visit(NodeData item)
+        {
+            if (item.Mark == Mark.Permanent)
+            {
+                return;
+            }
+
+            if (item.Mark == Mark.Temporary)
+            {
+                // cycle!
+                _cycleFound = true;
+                return;
+            }
+
+            item.Mark = Mark.Temporary;
+            foreach (var dep in item.Dependencies)
+            {
+                var nodeForDep = _data.First(i => i.PackageUpdateSet.SelectedId == dep.Id);
+                Visit(nodeForDep);
+            }
+
+            item.Mark = Mark.Permanent;
+            _output.Add(item.PackageUpdateSet);
+        }
+
+        private static NodeData MakeNode(PackageUpdateSet set, IList<PackageUpdateSet> all)
+        {
+            var relevantDeps = set.Selected.Dependencies
+                .Where(dep => all.Any(a => a.SelectedId == dep.Id));
+            return new NodeData(set, relevantDeps);
         }
     }
 }
