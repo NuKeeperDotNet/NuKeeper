@@ -26,5 +26,10 @@ namespace NuKeeper.Engine.Sort
         public Mark Mark { get; set; }
 
         public string PackageId => PackageUpdateSet.SelectedId;
+
+        public override string ToString()
+        {
+            return $"{PackageId}, {Dependencies.Count}";
+        }
     }
 }

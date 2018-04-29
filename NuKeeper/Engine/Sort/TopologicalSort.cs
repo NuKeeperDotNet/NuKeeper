@@ -24,7 +24,6 @@ namespace NuKeeper.Engine.Sort
         {
             if (input.Count < 2)
             {
-                _logger.Verbose($"No need to sort {input.Count} packages by dependencies");
                 return input;
             }
 
@@ -34,7 +33,7 @@ namespace NuKeeper.Engine.Sort
 
             if (!_data.Any(i => i.Dependencies.Any()))
             {
-                _logger.Verbose("No dependencies between packages being updated, no need to sort packages by dependencies");
+                _logger.Verbose("No dependencies between packages being updated, no need to sort on this");
                 return input;
             }
 
@@ -70,7 +69,7 @@ namespace NuKeeper.Engine.Sort
             if (item.Mark == Mark.Temporary)
             {
                 // cycle!
-                _logger.Terse($"Cannot sort packages by dependency, cycle found at package {item.PackageId}");
+                _logger.Terse($"Cannot sort packages by dependencies, cycle found at package {item.PackageId}");
                 _cycleFound = true;
                 return;
             }
