@@ -8,7 +8,7 @@ namespace NuKeeper.Engine.Sort
     /// <summary>
     /// https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
     /// </summary>
-    public class TopologicalSort
+    public class TopologicalSort : IPackageUpdateSetSort
     {
         private readonly INuKeeperLogger _logger;
         private readonly List<PackageUpdateSet> _sortedList = new List<PackageUpdateSet>();

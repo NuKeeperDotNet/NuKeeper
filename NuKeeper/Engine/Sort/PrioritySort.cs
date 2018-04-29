@@ -6,11 +6,11 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Sort
 {
-    public static class PrioritySort
+    public class PrioritySort : IPackageUpdateSetSort
     {
         private const long Shift = 1000;
 
-        public static IEnumerable<PackageUpdateSet> Sort(
+        public IEnumerable<PackageUpdateSet> Sort(
             IReadOnlyCollection<PackageUpdateSet> packages)
         {
             return packages.OrderByDescending(Priority);

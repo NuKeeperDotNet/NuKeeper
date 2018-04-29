@@ -16,9 +16,11 @@ namespace NuKeeper.Engine.Sort
 
         public IEnumerable<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
-            var priorityOrder = PrioritySort.Sort(input);
-            var depSorter = new TopologicalSort(_logger);
-            return depSorter.Sort(priorityOrder.ToList());
+            var prioritySorter = new PrioritySort();
+            var topoSorter = new TopologicalSort(_logger);
+
+            var priorityOrder = prioritySorter.Sort(input);
+            return topoSorter.Sort(priorityOrder.ToList());
         }
     }
 }
