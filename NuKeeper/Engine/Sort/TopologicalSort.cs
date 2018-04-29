@@ -34,7 +34,7 @@ namespace NuKeeper.Engine.Sort
 
             if (!_data.Any(i => i.Dependencies.Any()))
             {
-                _logger.Verbose("There are no dependencies between packages being updated");
+                _logger.Verbose("No dependencies between packages being updated, no need to sort packages by dependencies");
                 return input;
             }
 
