@@ -8,6 +8,6 @@ namespace NuKeeper.Engine.Packages
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
-            IEnumerable<PackageUpdateSet> potentialUpdates);
+            IReadOnlyCollection<PackageUpdateSet> potentialUpdates);
     }
 }

@@ -1,16 +1,17 @@
-using NuGet.Versioning;
-using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Versioning;
+using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Packages
+namespace NuKeeper.Engine.Sort
 {
-    public static class PackageUpdateSort
+    public class PrioritySort : IPackageUpdateSetSort
     {
         private const long Shift = 1000;
 
-        public static IEnumerable<PackageUpdateSet> Sort(IEnumerable<PackageUpdateSet> packages)
+        public IEnumerable<PackageUpdateSet> Sort(
+            IReadOnlyCollection<PackageUpdateSet> packages)
         {
             return packages.OrderByDescending(Priority);
         }
