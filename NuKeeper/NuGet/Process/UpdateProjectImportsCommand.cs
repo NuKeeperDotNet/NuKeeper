@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -12,13 +13,28 @@ namespace NuKeeper.NuGet.Process
     {
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
-            using (var projectContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
+            var projectsToUpdate = new Stack<string>();
+            projectsToUpdate.Push(currentPackage.Path.FullName);
+
+            while (projectsToUpdate.TryPop(out var currentProject))
             {
-                await UpdateConditionsOnProjects(projectContents);
+                using (var projectContents = File.Open(currentProject, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    var projectsToCheck = await UpdateConditionsOnProjects(projectContents);
+                    foreach (var potentialProject in projectsToCheck)
+                    {
+                        var fullPath =
+                            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(currentProject), potentialProject));
+                        if (File.Exists(fullPath))
+                        {
+                            projectsToUpdate.Push(fullPath);
+                        }
+                    }
+                }
             }
         }
 
-        private async Task UpdateConditionsOnProjects(Stream fileContents)
+        private async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
@@ -27,27 +43,38 @@ namespace NuKeeper.NuGet.Process
 
             if (project == null)
             {
-                return;
+                return Enumerable.Empty<string>();
             }
 
             var imports = project.Elements(ns + "Import");
-            var importsWithToolsPath = imports.Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)"))).ToList();
+            var importsWithToolsPath = imports
+                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)"))).ToList();
             var importsWithoutCondition = importsWithToolsPath.Where(i => !i.Attributes("Condition").Any());
             var importsWithBrokenVsToolsCondition = importsWithToolsPath.Where(i =>
                 i.Attributes("Condition").Any(a => a.Value == "\'$(VSToolsPath)\' != \'\'"));
 
-            bool saveRequired = false;
+            var saveRequired = false;
             foreach (var importToFix in importsWithBrokenVsToolsCondition.Concat(importsWithoutCondition))
             {
                 saveRequired = true;
                 UpdateImportNode(importToFix);
             }
 
-            if(saveRequired)
+            if (saveRequired)
             {
                 fileContents.Seek(0, SeekOrigin.Begin);
                 await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
             }
+
+            return FindProjectReferences(project, ns);
+        }
+
+        private static IEnumerable<string> FindProjectReferences(XElement project, XNamespace ns)
+        {
+            var itemGroups = project.Elements(ns + "ItemGroup");
+            var projectReferences = itemGroups.SelectMany(ig => ig.Elements(ns + "ProjectReference"));
+            var includes = projectReferences.Attributes("Include").Select(a => a.Value);
+            return includes;
         }
 
         private static void UpdateImportNode(XElement importToFix)
