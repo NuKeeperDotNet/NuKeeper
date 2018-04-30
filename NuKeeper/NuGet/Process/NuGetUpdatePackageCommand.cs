@@ -45,7 +45,7 @@ namespace NuKeeper.NuGet.Process
             }
 
             var sources = GetSourcesCommandLine(_sources);
-            var arguments = $"update {currentPackage.Path.RelativePath} -Id {currentPackage.Id} -Version {newVersion} {sources}";
+            var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
             _logger.Verbose(arguments);
 
             await _externalProcess.Run(dirName, nuget, arguments, true);
