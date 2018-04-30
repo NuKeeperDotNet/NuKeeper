@@ -10,7 +10,7 @@ using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class DotNetUpdatePackageCommand : IUpdatePackageCommand
+    public class DotNetUpdatePackageCommand : IPackageCommand
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;

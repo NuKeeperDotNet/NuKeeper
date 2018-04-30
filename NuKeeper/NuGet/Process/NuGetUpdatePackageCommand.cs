@@ -11,7 +11,7 @@ using NuKeeper.ProcessRunner;
 
 namespace NuKeeper.NuGet.Process
 {
-    public class NuGetUpdatePackageCommand : IUpdatePackageCommand
+    public class NuGetUpdatePackageCommand : IPackageCommand
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
