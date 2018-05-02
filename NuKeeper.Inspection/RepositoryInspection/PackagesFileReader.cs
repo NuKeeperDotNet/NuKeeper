@@ -7,7 +7,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public class PackagesFileReader
+    public class PackagesFileReader : IPackageReferenceFinder
     {
         private readonly INuKeeperLogger _logger;
 
@@ -23,6 +23,11 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 return Read(fileContents, packagePath);
             }
+        }
+
+        public IEnumerable<string> GetFilePatterns()
+        {
+            return new[] {"packages.config"};
         }
 
         public IEnumerable<PackageInProject> Read(Stream fileContents, PackagePath path)
