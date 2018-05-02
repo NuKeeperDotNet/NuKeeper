@@ -95,6 +95,9 @@ namespace NuKeeper.Engine.Packages
                 case PackageReferenceType.ProjectFile:
                     return new[] {new DotNetUpdatePackageCommand(_logger, _settings)};
 
+                case PackageReferenceType.Nuspec:
+                    return new[] { new UpdateNuspecCommand() };
+
                 default: throw new ArgumentOutOfRangeException(nameof(packageReferenceType));
             }
         }
