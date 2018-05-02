@@ -4,6 +4,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
     {
         PackagesConfig,
         ProjectFile,
-        ProjectFileOldStyle
+        ProjectFileOldStyle,
+        Nuspec
     }
 }

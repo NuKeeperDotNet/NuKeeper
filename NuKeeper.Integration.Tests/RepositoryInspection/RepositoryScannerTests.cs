@@ -26,6 +26,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
+        private const string NuspecWithDependency =
+            @"<package><metadata><dependencies>
+<dependency id=""foo"" version=""3.3.3.5"" /></dependencies></metadata></package>";
+
         [Test]
         public void ValidEmptyDirectoryWorks()
         {
@@ -95,6 +99,19 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         }
 
         [Test]
+        public void FindsNuspec()
+        {
+            var scanner = MakeScanner();
+            var temporaryPath = GetUniqueTempFolder();
+
+            WriteFile(temporaryPath, "sample.nuspec", NuspecWithDependency);
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            Assert.That(results, Has.Count.EqualTo(1));
+        }
+
+        [Test]
         public void CorrectItemInCsProjFile()
         {
             var scanner = MakeScanner();
@@ -150,7 +167,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var logger = new NullNuKeeperLogger();
             return new RepositoryScanner(
                 new ProjectFileReader(logger),
-                new PackagesFileReader(logger));
+                new PackagesFileReader(logger),
+                new NuspecFileReader(logger));
         }
 
         private void WriteFile(IFolder path, string fileName, string contents)
