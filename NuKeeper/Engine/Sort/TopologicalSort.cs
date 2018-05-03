@@ -50,7 +50,7 @@ namespace NuKeeper.Engine.Sort
                 return input;
             }
 
-            _logger.Verbose("Sorted packages by dependencies");
+            ReportSort(input.ToList(), _sortedList);
             return _sortedList;
         }
 
@@ -93,6 +93,28 @@ namespace NuKeeper.Engine.Sort
                 .Where(dep => all.Any(a => a.SelectedId == dep.Id));
 
             return new SortItemData(set, relevantDeps);
+        }
+
+        private void ReportSort(IList<PackageUpdateSet> input, IList<PackageUpdateSet> output)
+        {
+            bool hasChange = false;
+
+            for (int i = 0; i < output.Count; i++)
+            {
+                if (input[i] != output[i])
+                {
+                    hasChange = true;
+                    var firstChange = output[i];
+                    var originalIndex = input.IndexOf(firstChange);
+                    _logger.Verbose($"Resorted packages by dependencies, first change is {firstChange.SelectedId} moved to position {i} from {originalIndex}.");
+                    break;
+                }
+            }
+
+            if (!hasChange)
+            {
+                _logger.Verbose("Sorted packages by dependencies but no change made");
+            }
         }
     }
 }
