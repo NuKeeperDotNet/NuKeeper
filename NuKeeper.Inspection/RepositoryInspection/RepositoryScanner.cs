@@ -7,56 +7,34 @@ namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class RepositoryScanner: IRepositoryScanner
     {
-        private readonly ProjectFileReader _projectFileReader;
-        private readonly PackagesFileReader _packagesFileReader;
+        private readonly IReadOnlyCollection<IPackageReferenceFinder> _finders;
 
-        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader)
+        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader, NuspecFileReader nuspecFileReader)
         {
-            _projectFileReader = projectFileReader;
-            _packagesFileReader = packagesFileReader;
+            _finders = new IPackageReferenceFinder[] {projectFileReader, packagesFileReader, nuspecFileReader};
         }
 
         public IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
         {
-
-            return PackageFiles(workingFolder)
-                .Concat(ProjectFiles(workingFolder))
+            return _finders
+                .SelectMany(f => FindPackages(workingFolder, f))
                 .ToList();
         }
 
-        private IEnumerable<PackageInProject> PackageFiles(IFolder workingFolder)
+        private IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
+            IPackageReferenceFinder packageReferenceFinder)
         {
-            var packagesFiles = workingFolder.Find("packages.config")
+            var files =  packageReferenceFinder
+                .GetFilePatterns()
+                .SelectMany(workingFolder.Find)
                 .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
 
-            var results = new List<PackageInProject>();
-
-            foreach (var packagesFile in packagesFiles)
-            {
-                var packages = _packagesFileReader.ReadFile(workingFolder.FullPath,
-                    GetRelativeFileName(workingFolder.FullPath, packagesFile.FullName));
-                results.AddRange(packages);
-            }
-
-            return results;
-        }
-
-        private IEnumerable<PackageInProject> ProjectFiles(IFolder workingFolder)
-        {
-            var projectFiles = workingFolder.Find("*.csproj")
-                .Concat(workingFolder.Find("*.vbproj"))
-                .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
-
-            var results = new List<PackageInProject>();
-
-            foreach (var projectFile in projectFiles)
-            {
-                var packages = _projectFileReader.ReadFile(workingFolder.FullPath,
-                    GetRelativeFileName(workingFolder.FullPath, projectFile.FullName));
-                results.AddRange(packages);
-            }
-
-            return results;
+            return files.SelectMany(f =>
+                packageReferenceFinder.ReadFile(
+                    workingFolder.FullPath,
+                    GetRelativeFileName(
+                        workingFolder.FullPath,
+                        f.FullName)));
         }
 
         private string GetRelativeFileName(string rootDir, string fileName)

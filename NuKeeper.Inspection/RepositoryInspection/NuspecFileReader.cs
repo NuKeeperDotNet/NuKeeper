@@ -7,18 +7,18 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public class PackagesFileReader : IPackageReferenceFinder
+    public class NuspecFileReader : IPackageReferenceFinder
     {
         private readonly INuKeeperLogger _logger;
 
-        public PackagesFileReader(INuKeeperLogger logger)
+        public NuspecFileReader(INuKeeperLogger logger)
         {
             _logger = logger;
         }
 
         public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
-            var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.PackagesConfig);
+            var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.Nuspec);
             using (var fileContents = File.OpenRead(packagePath.FullName))
             {
                 return Read(fileContents, packagePath);
@@ -27,21 +27,21 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IEnumerable<string> GetFilePatterns()
         {
-            return new[] {"packages.config"};
+            return new[] {"*.nuspec"};
         }
 
         public IEnumerable<PackageInProject> Read(Stream fileContents, PackagePath path)
         {
             var xml = XDocument.Load(fileContents);
 
-            var packagesNode = xml.Element("packages");
+            var packagesNode = xml.Element("package")?.Element("metadata")?.Element("dependencies");
             if (packagesNode == null)
             {
                 return Enumerable.Empty<PackageInProject>();
             }
 
             var packageNodeList = packagesNode.Elements()
-                .Where(x => x.Name == "package");
+                .Where(x => x.Name == "dependency");
 
             return packageNodeList
                 .Select(el => XmlToPackage(el, path))

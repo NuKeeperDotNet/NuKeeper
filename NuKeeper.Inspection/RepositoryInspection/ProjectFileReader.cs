@@ -7,7 +7,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public class ProjectFileReader
+    public class ProjectFileReader : IPackageReferenceFinder
     {
         private const string VisualStudioLegacyProjectNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private readonly INuKeeperLogger _logger;
@@ -23,6 +23,11 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 return Read(fileContents, baseDirectory, relativePath);
             }
+        }
+
+        public IEnumerable<string> GetFilePatterns()
+        {
+            return new[] {"*.csproj", "*.vbproj"};
         }
 
         public IEnumerable<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)
