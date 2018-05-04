@@ -4,12 +4,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.NuGet.Process
 {
     public class UpdateNuspecCommand : IPackageCommand
     {
+        private readonly INuKeeperLogger _logger;
+
+        public UpdateNuspecCommand(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
         {
             using (var nuspecContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
@@ -34,6 +42,7 @@ namespace NuKeeper.NuGet.Process
 
             foreach (var dependencyToUpdate in packageNodeList)
             {
+                _logger.Verbose($"Updating nuspec depenencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
                 dependencyToUpdate.Attribute("version").Value = newVersion.ToString();
             }
 
