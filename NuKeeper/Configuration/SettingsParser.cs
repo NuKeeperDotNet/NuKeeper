@@ -89,11 +89,18 @@ namespace NuKeeper.Configuration
             switch (mode.Value)
             {
                 case GithubMode.Repository:
+                    if (settings.GithubToken == null)
+                    {
+                        Console.WriteLine("Missing required github token");
+                        return null;
+                    }
+
                     if (settings.GithubRepositoryUri == null)
                     {
                         Console.WriteLine("Missing required repository uri");
                         return null;
                     }
+
                     return new ModalSettings
                     {
                         Mode = GithubMode.Repository,
@@ -101,6 +108,12 @@ namespace NuKeeper.Configuration
                     };
 
                 case GithubMode.Organisation:
+                    if (settings.GithubToken == null)
+                    {
+                        Console.WriteLine("Missing required github token");
+                        return null;
+                    }
+
                     if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
                     {
                         Console.WriteLine("Missing required organisation name");
@@ -111,6 +124,14 @@ namespace NuKeeper.Configuration
                         Mode = GithubMode.Organisation,
                         OrganisationName = settings.GithubOrganisationName
                     };
+
+                case GithubMode.Inspect:
+                {
+                        return new ModalSettings
+                        {
+                            Mode = GithubMode.Inspect
+                        };
+                }
 
                 default:
                     Console.WriteLine($"Mode parse went wrong: {settings.Mode}");
@@ -131,6 +152,9 @@ namespace NuKeeper.Configuration
                 case ModeNames.Org:
                 case ModeNames.Organisation:
                     return GithubMode.Organisation;
+
+                case ModeNames.Inspect:
+                    return GithubMode.Inspect;
 
                 default:
                     return null;

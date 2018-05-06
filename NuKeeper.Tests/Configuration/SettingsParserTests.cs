@@ -49,6 +49,21 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }
 
+        [Test]
+        public void ValidInspectConfigIsParsed()
+        {
+            var raw = ValidInspectSettings();
+
+            var settings = SettingsParser.ParseToSettings(raw);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Inspect));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+        }
+
+
+
         private static RawConfiguration ValidRepoSettings()
         {
             return new RawConfiguration
@@ -57,6 +72,7 @@ namespace NuKeeper.Tests.Configuration
                 NuGetSources = "https://api.nuget.org/v3/index.json",
                 Mode = "repository",
                 GithubRepositoryUri = new Uri("https://github.com/NuKeeperDotNet/NuKeeper"),
+                GithubToken = "abc123",
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
@@ -72,12 +88,25 @@ namespace NuKeeper.Tests.Configuration
                 NuGetSources = "https://api.nuget.org/v3/index.json",
                 Mode = "organisation",
                 GithubOrganisationName = "NuKeeperDotNet",
+                GithubToken = "abc123",
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
                 ReportMode = ReportMode.Off
             };
         }
+
+        private static RawConfiguration ValidInspectSettings()
+        {
+            return new RawConfiguration
+            {
+                NuGetSources = "https://api.nuget.org/v3/index.json",
+                Mode = "inspect",
+                LogLevel = LogLevel.Info,
+                ReportMode = ReportMode.Off
+            };
+        }
+
 
         private static void AssertSettingsNotNull(SettingsContainer settings)
         {

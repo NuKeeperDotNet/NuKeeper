@@ -1,8 +1,9 @@
-﻿namespace NuKeeper.Configuration
+namespace NuKeeper.Configuration
 {
     public enum GithubMode
     {
         Repository,
-        Organisation
+        Organisation,
+        Inspect
     }
 }

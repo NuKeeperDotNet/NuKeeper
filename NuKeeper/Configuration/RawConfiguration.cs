@@ -12,7 +12,7 @@ namespace NuKeeper.Configuration
         [CommandLine("mode", "m"), Required]
         public string Mode;
 
-        [Environment("NuKeeper_github_token"), Required, SensitiveInformation]
+        [Environment("NuKeeper_github_token"), SensitiveInformation]
         [OverriddenBy(ConfigurationSources.CommandLine, "t")]
         public string GithubToken;
 
