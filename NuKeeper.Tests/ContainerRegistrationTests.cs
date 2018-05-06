@@ -18,6 +18,16 @@ namespace NuKeeper.Tests
             Assert.That(engine, Is.Not.Null);
         }
 
+        [Test]
+        public void InspectorCanBeResolved()
+        {
+            var container = ContainerRegistration.Init(MakeValidSettings());
+
+            var inspector = container.GetInstance<Inspector>();
+
+            Assert.That(inspector, Is.Not.Null);
+        }
+
         private static SettingsContainer MakeValidSettings()
         {
             var settings = new SettingsContainer();

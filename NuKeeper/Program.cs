@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -18,8 +18,18 @@ namespace NuKeeper
             }
 
             var container = ContainerRegistration.Init(settings);
-            var engine = container.GetInstance<GithubEngine>();
-            await engine.Run();
+
+            if (settings.ModalSettings.Mode == GithubMode.Inspect)
+            {
+                var inpector = container.GetInstance<Inspector>();
+                await inpector.Run();
+            }
+            else
+            {
+                var engine = container.GetInstance<GithubEngine>();
+                await engine.Run();
+
+            }
 
             return 0;
         }
