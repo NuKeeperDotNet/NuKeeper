@@ -27,7 +27,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Repository));
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
@@ -42,7 +42,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
@@ -57,7 +57,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ParseToSettings(raw);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Inspect));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }

@@ -19,7 +19,7 @@ namespace NuKeeper
 
             var container = ContainerRegistration.Init(settings);
 
-            if (settings.ModalSettings.Mode == GithubMode.Inspect)
+            if (settings.ModalSettings.Mode == RunMode.Inspect)
             {
                 var inpector = container.GetInstance<Inspector>();
                 await inpector.Run();

@@ -1,6 +1,6 @@
 namespace NuKeeper.Configuration
 {
-    public enum GithubMode
+    public enum RunMode
     {
         Repository,
         Organisation,

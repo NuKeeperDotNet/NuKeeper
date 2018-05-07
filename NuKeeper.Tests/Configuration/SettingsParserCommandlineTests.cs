@@ -48,7 +48,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Repository));
             Assert.That(settings.ModalSettings.Repository, Is.Not.Null);
             Assert.That(settings.ModalSettings.Repository.RepositoryName, Is.EqualTo("NuKeeper"));
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
@@ -201,7 +201,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
         }
 
         [Test]
@@ -233,7 +233,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Repository));
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
             Assert.That(settings.ModalSettings.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
         }
@@ -375,7 +375,7 @@ namespace NuKeeper.Tests.Configuration
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.ModalSettings, Is.Not.Null);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Inspect));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
         }
 
         private static IEnumerable<string> ValidRepoCommandLine()

@@ -33,7 +33,7 @@ namespace NuKeeper.Tests
             var settings = new SettingsContainer();
             settings.ModalSettings = new ModalSettings
                 {
-                    Mode = GithubMode.Organisation,
+                    Mode = RunMode.Organisation,
                     OrganisationName = "test1"
                 };
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");

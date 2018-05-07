@@ -19,7 +19,7 @@ namespace NuKeeper.Tests.Engine
             var github = Substitute.For<IGithub>();
             var settings = new ModalSettings
             {
-                Mode = GithubMode.Repository,
+                Mode = RunMode.Repository,
                 Repository = new RepositorySettings()
             };
 
@@ -109,7 +109,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new ModalSettings
             {
-                Mode = GithubMode.Organisation,
+                Mode = RunMode.Organisation,
                 OrganisationName = "testOrg"
             };
         }
