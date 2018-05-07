@@ -9,12 +9,12 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class AvailableUpdatesReporter: IAvailableUpdatesReporter
+    public class CsvFileReporter: IAvailableUpdatesReporter
     {
         private readonly IReportStreamSource _reportStreamSource;
         private readonly INuKeeperLogger _logger;
 
-        public AvailableUpdatesReporter(IReportStreamSource reportStreamSource, INuKeeperLogger logger)
+        public CsvFileReporter(IReportStreamSource reportStreamSource, INuKeeperLogger logger)
         {
             _reportStreamSource = reportStreamSource;
             _logger = logger;
