@@ -1,6 +1,7 @@
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.Report;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -20,6 +21,9 @@ namespace NuKeeper
         public async Task Run()
         {
             var updates = await _updateFinder.FindPackageUpdateSets(CurrentFolder());
+
+            var reporter = new ConsoleReporter();
+            reporter.Report("ConsoleReport", updates);
         }
 
         private IFolder CurrentFolder()

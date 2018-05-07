@@ -20,7 +20,7 @@ namespace NuKeeper.Inspection.Report
             _logger = logger;
         }
 
-        public void Report(string name, List<PackageUpdateSet> updates)
+        public void Report(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
             using (var writer = _reportStreamSource.GetStream(name))
             {

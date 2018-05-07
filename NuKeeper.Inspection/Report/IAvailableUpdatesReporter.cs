@@ -5,6 +5,6 @@ namespace NuKeeper.Inspection.Report
 {
     public interface IAvailableUpdatesReporter
     {
-        void Report(string name, List<PackageUpdateSet> updates);
+        void Report(string name, IReadOnlyCollection<PackageUpdateSet> updates);
     }
 }
