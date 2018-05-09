@@ -27,10 +27,10 @@ namespace NuKeeper.Engine
         {
             switch (_settings.Mode)
             {
-                case GithubMode.Organisation:
+                case RunMode.Organisation:
                     return await FromOrganisation(_settings.OrganisationName);
 
-                case GithubMode.Repository:
+                case RunMode.Repository:
                     return new[] { _settings.Repository };
 
                 default:

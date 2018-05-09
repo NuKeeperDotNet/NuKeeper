@@ -88,19 +88,32 @@ namespace NuKeeper.Configuration
 
             switch (mode.Value)
             {
-                case GithubMode.Repository:
+                case RunMode.Repository:
+                    if (settings.GithubToken == null)
+                    {
+                        Console.WriteLine("Missing required github token");
+                        return null;
+                    }
+
                     if (settings.GithubRepositoryUri == null)
                     {
                         Console.WriteLine("Missing required repository uri");
                         return null;
                     }
+
                     return new ModalSettings
                     {
-                        Mode = GithubMode.Repository,
+                        Mode = RunMode.Repository,
                         Repository = ReadRepositorySettings(settings)
                     };
 
-                case GithubMode.Organisation:
+                case RunMode.Organisation:
+                    if (settings.GithubToken == null)
+                    {
+                        Console.WriteLine("Missing required github token");
+                        return null;
+                    }
+
                     if (string.IsNullOrWhiteSpace(settings.GithubOrganisationName))
                     {
                         Console.WriteLine("Missing required organisation name");
@@ -108,9 +121,17 @@ namespace NuKeeper.Configuration
                     }
                     return new ModalSettings
                     {
-                        Mode = GithubMode.Organisation,
+                        Mode = RunMode.Organisation,
                         OrganisationName = settings.GithubOrganisationName
                     };
+
+                case RunMode.Inspect:
+                {
+                        return new ModalSettings
+                        {
+                            Mode = RunMode.Inspect,
+                        };
+                }
 
                 default:
                     Console.WriteLine($"Mode parse went wrong: {settings.Mode}");
@@ -118,7 +139,7 @@ namespace NuKeeper.Configuration
             }
         }
 
-        private static GithubMode? ParseMode(string mode)
+        private static RunMode? ParseMode(string mode)
         {
             var modeString = mode?.ToLowerInvariant() ?? string.Empty;
 
@@ -126,11 +147,14 @@ namespace NuKeeper.Configuration
             {
                 case ModeNames.Repo:
                 case ModeNames.Repository:
-                    return  GithubMode.Repository;
+                    return  RunMode.Repository;
 
                 case ModeNames.Org:
                 case ModeNames.Organisation:
-                    return GithubMode.Organisation;
+                    return RunMode.Organisation;
+
+                case ModeNames.Inspect:
+                    return RunMode.Inspect;
 
                 default:
                     return null;

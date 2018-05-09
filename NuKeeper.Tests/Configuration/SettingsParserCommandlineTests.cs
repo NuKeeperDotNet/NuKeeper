@@ -13,6 +13,15 @@ namespace NuKeeper.Tests.Configuration
     public class SettingsParserCommandlineTests
     {
         [Test]
+        public void EmptyListIsNotParsed()
+        {
+            var commandLine = new List<string>();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
         public void ValidRepoCommandLineIsParsed()
         {
             var commandLine = ValidRepoCommandLine();
@@ -22,13 +31,24 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void RepoCommandLineWithoutGithubTokenIsNotParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Where(i => ! i.StartsWith("t="));
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
         public void ValidRepoCommandLineHasSpecifiedValues()
         {
             var commandLine = ValidRepoCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Repository));
             Assert.That(settings.ModalSettings.Repository, Is.Not.Null);
             Assert.That(settings.ModalSettings.Repository.RepositoryName, Is.EqualTo("NuKeeper"));
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
@@ -181,7 +201,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
         }
 
         [Test]
@@ -197,7 +217,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
         }
 
         [Test]
@@ -213,7 +233,7 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Repository));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Repository));
         }
 
         [Test]
@@ -261,13 +281,24 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void OrgCommandLineWithoutGithubTokenIsNotParsed()
+        {
+            var commandLine = ValidOrgCommandLine()
+                .Where(i => !i.StartsWith("t="));
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Null);
+        }
+
+        [Test]
         public void ValidOrgCommandLineHasSpecifiedValues()
         {
             var commandLine = ValidOrgCommandLine();
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(GithubMode.Organisation));
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Organisation));
             Assert.That(settings.ModalSettings.OrganisationName, Is.EqualTo("NuKeeperDotNet"));
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("abc123"));
         }
@@ -336,6 +367,17 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.Zero));
         }
 
+        [Test]
+        public void ValidInspectCommandLineIsParsed()
+        {
+            var commandLine = ValidInspectCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
+        }
+
         private static IEnumerable<string> ValidRepoCommandLine()
         {
             return new List<string>
@@ -353,6 +395,14 @@ namespace NuKeeper.Tests.Configuration
                 "mode=organisation",
                 "org=NuKeeperDotNet",
                 "t=abc123"
+            };
+        }
+
+        private static IEnumerable<string> ValidInspectCommandLine()
+        {
+            return new List<string>
+            {
+                "mode=inspect"
             };
         }
 

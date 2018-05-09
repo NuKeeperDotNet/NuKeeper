@@ -40,7 +40,7 @@ namespace NuKeeper
             container.Register<IUpdateFinder, UpdateFinder>();
 
             container.Register<IReportStreamSource, ReportStreamSource>();
-            container.Register<IAvailableUpdatesReporter, AvailableUpdatesReporter>();
+            container.Register<IAvailableUpdatesReporter, CsvFileReporter>();
         }
     }
 }

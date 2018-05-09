@@ -1,4 +1,4 @@
-﻿namespace NuKeeper.Configuration
+namespace NuKeeper.Configuration
 {
     public static class ModeNames
     {
@@ -7,5 +7,7 @@
 
         public const string Organisation = "organisation";
         public const string Org = "org";
+
+        public const string Inspect = "inspect";
     }
 }

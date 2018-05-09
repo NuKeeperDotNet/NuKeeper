@@ -18,12 +18,22 @@ namespace NuKeeper.Tests
             Assert.That(engine, Is.Not.Null);
         }
 
+        [Test]
+        public void InspectorCanBeResolved()
+        {
+            var container = ContainerRegistration.Init(MakeValidSettings());
+
+            var inspector = container.GetInstance<Inspector>();
+
+            Assert.That(inspector, Is.Not.Null);
+        }
+
         private static SettingsContainer MakeValidSettings()
         {
             var settings = new SettingsContainer();
             settings.ModalSettings = new ModalSettings
                 {
-                    Mode = GithubMode.Organisation,
+                    Mode = RunMode.Organisation,
                     OrganisationName = "test1"
                 };
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");

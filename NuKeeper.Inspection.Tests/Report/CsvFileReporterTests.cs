@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace NuKeeper.Inspection.Tests.Report
 {
     [TestFixture]
-    public class AvailableUpdatesReporterTests
+    public class CsvFileReporterTests
     {
         [Test]
         public void NoRowsHasHeaderLineInOutput()
@@ -91,7 +91,7 @@ namespace NuKeeper.Inspection.Tests.Report
             streamSource.GetStream(Arg.Any<string>())
                 .Returns(writer);
 
-            var reporter = new AvailableUpdatesReporter(streamSource, new NullNuKeeperLogger());
+            var reporter = new CsvFileReporter(streamSource, new NullNuKeeperLogger());
 
             reporter.Report("test", rows);
 
