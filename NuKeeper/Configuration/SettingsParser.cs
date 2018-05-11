@@ -65,7 +65,8 @@ namespace NuKeeper.Configuration
                 NuGetSources = ReadNuGetSources(settings),
                 PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include)),
                 PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude)),
-                MinimumPackageAge = minPackageAge.Value
+                MinimumPackageAge = minPackageAge.Value,
+                Directory = settings.Dir
             };
 
             return new SettingsContainer
@@ -129,7 +130,7 @@ namespace NuKeeper.Configuration
                 {
                         return new ModalSettings
                         {
-                            Mode = RunMode.Inspect,
+                            Mode = RunMode.Inspect
                         };
                 }
 

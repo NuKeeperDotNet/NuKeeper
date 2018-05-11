@@ -4,6 +4,7 @@ using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 using System.IO;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 
 namespace NuKeeper
 {
@@ -18,17 +19,23 @@ namespace NuKeeper
             _logger = logger;
         }
 
-        public async Task Run()
+        public async Task Run(UserSettings settings)
         {
-            var updates = await _updateFinder.FindPackageUpdateSets(CurrentFolder());
+            var folder = CurrentFolder(settings);
+            var updates = await _updateFinder.FindPackageUpdateSets(folder);
 
             var reporter = new ConsoleReporter();
             reporter.Report("ConsoleReport", updates);
         }
 
-        private IFolder CurrentFolder()
+        private IFolder CurrentFolder(UserSettings settings)
         {
-            var dir = Directory.GetCurrentDirectory();
+            string dir = settings.Directory;
+            if (string.IsNullOrWhiteSpace(dir))
+            {
+                dir = Directory.GetCurrentDirectory();
+            }
+
             return new Folder(_logger, new DirectoryInfo(dir));
         }
     }
