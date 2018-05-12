@@ -22,13 +22,12 @@ namespace NuKeeper
             if (settings.ModalSettings.Mode == RunMode.Inspect)
             {
                 var inpector = container.GetInstance<Inspector>();
-                await inpector.Run();
+                await inpector.Run(settings.UserSettings);
             }
             else
             {
                 var engine = container.GetInstance<GithubEngine>();
                 await engine.Run();
-
             }
 
             return 0;

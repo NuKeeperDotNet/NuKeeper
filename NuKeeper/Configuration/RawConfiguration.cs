@@ -59,5 +59,8 @@ namespace NuKeeper.Configuration
         [JsonConfig("report_mode"), Default("Off")]
         [OverriddenBy(ConfigurationSources.CommandLine, "report")]
         public ReportMode ReportMode;
+
+        [CommandLine("dir")]
+        public string Dir { get; set; }
     }
 }
