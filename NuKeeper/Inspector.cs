@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -5,6 +6,7 @@ using NuKeeper.Inspection.Report;
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
+using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper
 {
@@ -21,14 +23,12 @@ namespace NuKeeper
 
         public async Task Run(UserSettings settings)
         {
-            var folder = CurrentFolder(settings);
+            var folder = TargetFolder(settings);
             var updates = await _updateFinder.FindPackageUpdateSets(folder);
-
-            var reporter = new ConsoleReporter();
-            reporter.Report("ConsoleReport", updates);
+            Report(updates);
         }
 
-        private IFolder CurrentFolder(UserSettings settings)
+        private IFolder TargetFolder(UserSettings settings)
         {
             string dir = settings.Directory;
             if (string.IsNullOrWhiteSpace(dir))
@@ -38,5 +38,12 @@ namespace NuKeeper
 
             return new Folder(_logger, new DirectoryInfo(dir));
         }
+
+        private static void Report(List<PackageUpdateSet> updates)
+        {
+            var reporter = new ConsoleReporter();
+            reporter.Report("ConsoleReport", updates);
+        }
+
     }
 }
