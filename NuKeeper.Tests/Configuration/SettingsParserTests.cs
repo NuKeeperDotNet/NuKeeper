@@ -62,7 +62,18 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }
 
+        [Test]
+        public void ValidInspectConfigWithDirIsParsed()
+        {
+            var raw = ValidInspectSettings();
+            raw.Dir = "c:\\temp";
 
+            var settings = SettingsParser.ParseToSettings(raw);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
+            Assert.That(settings.UserSettings.Directory, Is.EqualTo("c:\\temp"));
+        }
 
         private static RawConfiguration ValidRepoSettings()
         {

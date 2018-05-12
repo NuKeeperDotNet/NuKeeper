@@ -378,6 +378,19 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
         }
 
+        [Test]
+        public void InspectCommandLineWithDirIsParsed()
+        {
+            var commandLine = ValidInspectCommandLine()
+                .Append("dir=/foo/bar");
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
+            Assert.That(settings.UserSettings.Directory, Is.EqualTo("/foo/bar"));
+        }
+
         private static IEnumerable<string> ValidRepoCommandLine()
         {
             return new List<string>
