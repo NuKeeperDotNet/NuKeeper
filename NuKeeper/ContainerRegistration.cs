@@ -41,6 +41,7 @@ namespace NuKeeper
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
 
             container.Register<IPackageUpdater, PackageUpdater>();
+            container.Register<ILocalPackageUpdater, LocalPackageUpdater>();
             container.Register<IForkFinder, ForkFinder>();
         }
     }
