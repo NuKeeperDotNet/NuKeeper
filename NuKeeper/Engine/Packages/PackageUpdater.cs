@@ -12,7 +12,7 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
-        private readonly IUpdateRunner _localUpdater;
+        private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
             IGithub github,
@@ -20,7 +20,7 @@ namespace NuKeeper.Engine.Packages
             INuKeeperLogger logger)
         {
             _github = github;
-            _localUpdater = localUpdater;
+            _updateRunner = localUpdater;
             _logger = logger;
         }
 
@@ -40,7 +40,7 @@ namespace NuKeeper.Engine.Packages
                 _logger.Verbose($"Using branch name: '{branchName}'");
                 git.CheckoutNewBranch(branchName);
 
-                await _localUpdater.Update(updateSet);
+                await _updateRunner.Update(updateSet);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
