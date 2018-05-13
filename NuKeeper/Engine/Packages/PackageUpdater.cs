@@ -24,7 +24,7 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public async Task UpdatePackageInProjects(
+        public async Task MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
             RepositoryData repository)
