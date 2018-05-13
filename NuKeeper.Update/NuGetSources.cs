@@ -1,3 +1,4 @@
+using System;
 using NuKeeper.Inspection.Formats;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,28 +7,33 @@ namespace NuKeeper.Update
 {
     public class NuGetSources
     {
-        public NuGetSources(IEnumerable<string> sources)
+        public NuGetSources(IEnumerable<string> items)
         {
-            Sources = sources.ToList();
+            if (items == null)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+
+            Items = items.ToList();
         }
 
-        public NuGetSources(params string[] sources)
+        public NuGetSources(params string[] items)
         {
-            Sources = sources.ToList();
+            Items = items.ToList();
         }
 
-        public IReadOnlyCollection<string> Sources { get; }
+        public IReadOnlyCollection<string> Items { get; }
 
         public string CommandLine(string prefix)
         {
-            return Sources
+            return Items
                 .Select(s => $"{prefix} {s}")
                 .JoinWithSeparator(" ");
         }
 
         public override string ToString()
         {
-            return Sources.JoinWithCommas();
+            return Items.JoinWithCommas();
         }
     }
 }

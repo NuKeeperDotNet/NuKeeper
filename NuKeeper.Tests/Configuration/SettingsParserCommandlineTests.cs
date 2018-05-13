@@ -71,7 +71,8 @@ namespace NuKeeper.Tests.Configuration
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
-            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+            Assert.That(settings.UserSettings.NuGetSources.Items.Count, Is.EqualTo(1));
+            Assert.That(settings.UserSettings.NuGetSources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
             Assert.That(settings.UserSettings.PackageIncludes, Is.Null);
             Assert.That(settings.UserSettings.PackageExcludes, Is.Null);
         }
@@ -325,7 +326,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
             Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.FromDays(7)));
-            Assert.That(settings.UserSettings.NuGetSources, Is.EqualTo(new[] { "https://api.nuget.org/v3/index.json" }));
+            Assert.That(settings.UserSettings.NuGetSources.Items.Count, Is.EqualTo(1));
+            Assert.That(settings.UserSettings.NuGetSources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
         }
 
         [Test]
