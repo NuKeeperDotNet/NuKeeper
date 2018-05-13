@@ -8,12 +8,12 @@ using NuKeeper.NuGet.Process;
 
 namespace NuKeeper.Engine.Packages
 {
-    public class LocalPackageUpdater : ILocalPackageUpdater
+    public class UpdateRunner : IUpdateRunner
     {
         private readonly INuKeeperLogger _logger;
         private readonly UserSettings _settings;
 
-        public LocalPackageUpdater(
+        public UpdateRunner(
             INuKeeperLogger logger,
             UserSettings settings)
         {

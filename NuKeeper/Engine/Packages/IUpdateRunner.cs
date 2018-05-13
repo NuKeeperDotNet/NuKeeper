@@ -3,7 +3,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {
-    public interface ILocalPackageUpdater
+    public interface IUpdateRunner
     {
         Task Update(PackageUpdateSet updateSet);
     }

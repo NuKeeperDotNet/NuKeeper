@@ -12,11 +12,11 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
-        private readonly ILocalPackageUpdater _localUpdater;
+        private readonly IUpdateRunner _localUpdater;
 
         public PackageUpdater(
             IGithub github,
-            ILocalPackageUpdater localUpdater,
+            IUpdateRunner localUpdater,
             INuKeeperLogger logger)
         {
             _github = github;
