@@ -1,7 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process

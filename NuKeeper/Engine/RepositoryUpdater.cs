@@ -8,6 +8,7 @@ using NuKeeper.Inspection;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Update.Process;
 
 namespace NuKeeper.Engine
 {

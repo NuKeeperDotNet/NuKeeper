@@ -1,4 +1,4 @@
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process

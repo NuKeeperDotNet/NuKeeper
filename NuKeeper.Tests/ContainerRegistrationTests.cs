@@ -37,7 +37,10 @@ namespace NuKeeper.Tests
                     OrganisationName = "test1"
                 };
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
-            settings.UserSettings = new UserSettings();
+            settings.UserSettings = new UserSettings
+                {
+                    NuGetSources = new string[] { "foo" }
+                };
             return settings;
         }
     }

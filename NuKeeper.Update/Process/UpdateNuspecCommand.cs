@@ -7,7 +7,7 @@ using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.NuGet.Process
+namespace NuKeeper.Update.Process
 {
     public class UpdateNuspecCommand : IPackageCommand
     {
@@ -38,7 +38,8 @@ namespace NuKeeper.NuGet.Process
             }
 
             var packageNodeList = packagesNode.Elements()
-                .Where(x => x.Name == "dependency" && x.Attributes("id").Any(a => a.Value == currentPackage.Id));
+                .Where(x => x.Name == "dependency" && x.Attributes("id")
+                .Any(a => a.Value == currentPackage.Id));
 
             foreach (var dependencyToUpdate in packageNodeList)
             {

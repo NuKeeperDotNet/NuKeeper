@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
+    <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="config.json">

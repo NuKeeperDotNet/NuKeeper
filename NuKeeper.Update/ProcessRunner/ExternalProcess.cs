@@ -2,18 +2,18 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace NuKeeper.ProcessRunner
+namespace NuKeeper.Update.ProcessRunner
 {
     public class ExternalProcess : IExternalProcess
     {
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            Process process;
+            System.Diagnostics.Process process;
 
             try
             {
                 var processInfo = MakeProcessStartInfo(workingDirectory, command, arguments);
-                process = Process.Start(processInfo);
+                process = System.Diagnostics.Process.Start(processInfo);
             }
             catch (Exception ex)
             {

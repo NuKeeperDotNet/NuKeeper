@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Packages
+namespace NuKeeper.Update
 {
     public interface IUpdateRunner
     {
