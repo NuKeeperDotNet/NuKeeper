@@ -6,7 +6,7 @@ namespace NuKeeper.Engine.Packages
 {
     public interface IPackageUpdater
     {
-        Task UpdatePackageInProjects(
+        Task MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
             RepositoryData repository);

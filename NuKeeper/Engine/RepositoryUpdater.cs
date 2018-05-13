@@ -100,7 +100,7 @@ namespace NuKeeper.Engine
         {
             foreach (var updateSet in targetUpdates)
             {
-                await _packageUpdater.UpdatePackageInProjects(git, updateSet, repository);
+                await _packageUpdater.MakeUpdatePullRequest(git, updateSet, repository);
             }
         }
     }
