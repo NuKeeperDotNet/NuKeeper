@@ -10,7 +10,7 @@ namespace NuKeeper
     {
         public static void Register(Container container, SettingsContainer settings)
         {
-            container.Register(() => new NuGetSources(settings.UserSettings.NuGetSources), Lifestyle.Singleton);
+            container.Register(() => settings.UserSettings.NuGetSources, Lifestyle.Singleton);
 
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
             container.Register<IExternalProcess, ExternalProcess>();

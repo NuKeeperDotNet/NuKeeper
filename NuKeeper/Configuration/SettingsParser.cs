@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
+using NuKeeper.Update;
 
 namespace NuKeeper.Configuration
 {
@@ -200,12 +201,13 @@ namespace NuKeeper.Configuration
             };
         }
 
-        private static string[] ReadNuGetSources(RawConfiguration settings)
+        private static NuGetSources ReadNuGetSources(RawConfiguration settings)
         {
-            return settings.NuGetSources.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
+            var items = settings.NuGetSources.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
+            return new NuGetSources(items);
         }
 
-        private static Uri EnsureTrailingSlash(Uri uri)
+            private static Uri EnsureTrailingSlash(Uri uri)
         {
             if (uri == null)
             {

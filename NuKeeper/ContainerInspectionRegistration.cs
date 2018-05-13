@@ -18,7 +18,7 @@ namespace NuKeeper
             var packageLookupSettings = new PackageUpdateLookupSettings
             {
                 AllowedChange = settings.UserSettings.AllowedChange,
-                NugetSources = settings.UserSettings.NuGetSources?.ToList()
+                NugetSources = settings.UserSettings.NuGetSources.Sources
             };
 
             container.RegisterInstance(packageLookupSettings);
