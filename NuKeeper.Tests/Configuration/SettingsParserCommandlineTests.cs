@@ -125,6 +125,34 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
+        public void SourcesDefaultIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine();
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            var sources = settings.UserSettings.NuGetSources;
+            Assert.That(sources.Items.Count, Is.EqualTo(1));
+            Assert.That(sources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
+        }
+
+        [Test]
+        public void SourcesOverrideIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("sources=foo;blah");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            var sources = settings.UserSettings.NuGetSources;
+            Assert.That(sources.Items.Count, Is.EqualTo(2));
+            Assert.That(sources.Items.First(), Is.EqualTo("foo"));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("blah"));
+        }
+
+        [Test]
         public void AllowedChangeOverrideIsParsed()
         {
             var commandLine = ValidRepoCommandLine()

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -75,6 +76,36 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.Directory, Is.EqualTo("c:\\temp"));
         }
 
+        [Test]
+        public void ValidInspectConfigWithoutSourcesIsParsedToDefault()
+        {
+            var raw = ValidInspectSettings();
+
+            var settings = SettingsParser.ParseToSettings(raw);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
+            var sources = settings.UserSettings.NuGetSources;
+            Assert.That(sources.Items.Count, Is.EqualTo(1));
+            Assert.That(sources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
+        }
+
+        [Test]
+        public void ValidInspectConfigWithSourcesIsParsed()
+        {
+            var raw = ValidInspectSettings();
+            raw.NuGetSources = "foo;fish";
+
+            var settings = SettingsParser.ParseToSettings(raw);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
+            var sources = settings.UserSettings.NuGetSources;
+            Assert.That(sources.Items.Count, Is.EqualTo(2));
+            Assert.That(sources.Items.First(), Is.EqualTo("foo"));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("fish"));
+        }
+
         private static RawConfiguration ValidRepoSettings()
         {
             return new RawConfiguration
@@ -117,7 +148,6 @@ namespace NuKeeper.Tests.Configuration
                 ReportMode = ReportMode.Off
             };
         }
-
 
         private static void AssertSettingsNotNull(SettingsContainer settings)
         {
