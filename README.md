@@ -41,6 +41,17 @@ In Organisation Mode **NuKeeper** will perform the checks and generate PRs for a
 ```
 $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 ```
+
+### Inspect mode
+
+Inspect mode is used to look at files already present on a file system and report possible updates, without any git or github interaction, or changes made locally. A git token is not needed.
+
+The `dir` option can be used to specify the folder to inspect, otherwise the current folder will be used.
+
+```
+$ dotnet run mode=inspect dir=c:\code\MyProject
+```
+
 ### Environment Variables
 
 | Name                             | Required?                       | Overridable via CLI? |
@@ -105,8 +116,9 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 | fork                             | No                         |
 | report                           | No                         |
 | age                              | No                         |
+| dir                              | No                         |
 
- * *mode* One of `repository` or `organisation`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
+ * *mode* One of `repository`, `organisation`, `inspect`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
  * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode. Aliased to `repo`.
  * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used in `repository` mode. Aliased to `org`.
@@ -120,6 +132,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
  * *fork* Overrides  `fork_mode` in `config.json`
  * *report* Overrides `report_mode` in `config.json`
  * *age* Overrides `min_package_age` in `config.json`
+ * *dir* Directory the folder to inspect in `inspect` mode. Not used in other modes.
 
 
 ## When to use NuKeeper
