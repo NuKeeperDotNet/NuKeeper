@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <IsPackable>true</IsPackable>
+    <PackageVersion>0.0.1</PackageVersion>
     <PackAsTool>true</PackAsTool>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>NuKeeper</RootNamespace>
