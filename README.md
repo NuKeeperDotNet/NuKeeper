@@ -41,6 +41,17 @@ In Organisation Mode **NuKeeper** will perform the checks and generate PRs for a
 ```
 $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 ```
+
+### Inspect mode
+
+Inspect mode is used to look at files already present on a file system and report possible updates, without any git or github interaction, or changes made locally. A git token is not needed.
+
+The `dir` option can be used to specify the folder to inspect, otherwise the current folder will be used.
+
+```
+$ dotnet run mode=inspect dir=c:\code\MyProject
+```
+
 ### Environment Variables
 
 | Name                             | Required?                       | Overridable via CLI? |
@@ -105,8 +116,9 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 | fork                             | No                         |
 | report                           | No                         |
 | age                              | No                         |
+| dir                              | No                         |
 
- * *mode* One of `repository` or `organisation`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
+ * *mode* One of `repository`, `organisation`, `inspect`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
  * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode. Aliased to `repo`.
  * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used in `repository` mode. Aliased to `org`.
@@ -120,6 +132,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
  * *fork* Overrides  `fork_mode` in `config.json`
  * *report* Overrides `report_mode` in `config.json`
  * *age* Overrides `min_package_age` in `config.json`
+ * *dir* Directory the folder to inspect in `inspect` mode. Not used in other modes.
 
 
 ## When to use NuKeeper
@@ -179,7 +192,7 @@ NuKeeper works with github and git, no other source control systems are supporte
 
 You will need the command line version of `dotnet` installed.
 
-It currently only runs on windows due to using `cmd` to invoke command-line processes for `dotnet`.
+NuKeeper runs on both Windows and linux. However on Linux, only .NET core project updates are supported. This is due to the older `.csproj` and `packages.config` file format using the `nuget.exe` tool, which is windows only. 
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line.
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality.
