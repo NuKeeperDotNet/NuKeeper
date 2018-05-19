@@ -9,7 +9,7 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageProjectUrl>https://github.com/NuKeeperDotNet/NuKeeper/</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>NuGet;Packag;update</PackageTags>
+    <PackageTags>NuGet;Package;Update</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/NuKeeperDotNet/NuKeeper.git</RepositoryUrl>
   </PropertyGroup>
