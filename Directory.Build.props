@@ -4,7 +4,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <PackageVersion>0.0.2</PackageVersion>
-    <Copyright>Copyright (c) NuKeeper 20157-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <Copyright>Copyright (c) NuKeeper 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageProjectUrl>https://github.com/NuKeeperDotNet/NuKeeper/</PackageProjectUrl>
