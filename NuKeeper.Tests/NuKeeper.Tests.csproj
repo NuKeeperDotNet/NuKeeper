@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
+    <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
     <ProjectReference Include="..\NuKeeper\NuKeeper.csproj" />
   </ItemGroup>
   <ItemGroup>
