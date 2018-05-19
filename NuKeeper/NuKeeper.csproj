@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <PackageVersion>0.0.1</PackageVersion>
+    <PackAsTool>true</PackAsTool>
+    <PackageProjectUrl>https://github.com/NuKeeperDotNet/NuKeeper/</PackageProjectUrl>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>NuKeeper</RootNamespace>
     <AssemblyName>NuKeeper</AssemblyName>
   </PropertyGroup>

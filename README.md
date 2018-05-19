@@ -4,6 +4,10 @@
 [![Build Status](https://travis-ci.org/NuKeeperDotNet/NuKeeper.svg?branch=master)](https://travis-ci.org/NuKeeperDotNet/NuKeeper/)
 [![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
 
+[On NuGet](https://www.nuget.org/packages/NuKeeper/).
+`dotnet tool install --global NuKeeper`
+
+
 Automagically generate pull requests to update NuGet packages in .NET projects.
 
 ## Why
