@@ -4,6 +4,10 @@
 [![Build Status](https://travis-ci.org/NuKeeperDotNet/NuKeeper.svg?branch=master)](https://travis-ci.org/NuKeeperDotNet/NuKeeper/)
 [![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
 
+[On NuGet](https://www.nuget.org/packages/NuKeeper/).
+`dotnet tool install --global NuKeeper`
+
+
 Automagically generate pull requests to update NuGet packages in .NET projects.
 
 ## Why
@@ -192,7 +196,7 @@ NuKeeper works with github and git, no other source control systems are supporte
 
 You will need the command line version of `dotnet` installed.
 
-It currently only runs on windows due to using `cmd` to invoke command-line processes for `dotnet`.
+NuKeeper runs on both Windows and linux. However on Linux, only .NET core project updates are supported. This is due to the older `.csproj` and `packages.config` file format using the `nuget.exe` tool, which is windows only. 
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line.
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality.
