@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process

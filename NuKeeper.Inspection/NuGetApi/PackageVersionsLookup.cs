@@ -13,7 +13,7 @@ namespace NuKeeper.Inspection.NuGetApi
     public class PackageVersionsLookup : IPackageVersionsLookup
     {
         private readonly ILogger _logger;
-        private readonly List<string> _sources;
+        private readonly IReadOnlyCollection<string> _sources;
 
         public PackageVersionsLookup(ILogger logger, PackageUpdateLookupSettings settings)
         {

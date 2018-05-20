@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace NuKeeper.ProcessRunner
+namespace NuKeeper.Update.ProcessRunner
 {
     public interface IExternalProcess
     {

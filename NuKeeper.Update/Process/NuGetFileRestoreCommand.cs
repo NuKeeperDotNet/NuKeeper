@@ -4,27 +4,26 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.ProcessRunner;
+using NuKeeper.Update.ProcessRunner;
 
-namespace NuKeeper.NuGet.Process
+namespace NuKeeper.Update.Process
 {
     public class NuGetFileRestoreCommand : IFileRestoreCommand
     {
-        private readonly string[] _sources;
+        private readonly NuGetSources _sources;
         private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
 
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
-            UserSettings settings,
+            NuGetSources sources,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _sources = settings.NuGetSources;
+            _sources = sources;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
@@ -46,7 +45,7 @@ namespace NuKeeper.NuGet.Process
                 return;
             }
 
-            var sources = GetSourcesCommandLine(_sources);
+            var sources = _sources.CommandLine("-Source");
 
             var arguments = $"restore {file.Name} {sources}";
             _logger.Verbose($"{nuget} {arguments}");
@@ -66,11 +65,6 @@ namespace NuKeeper.NuGet.Process
         public async Task Invoke(NuGetVersion selectedVersion, string source, PackageInProject current)
         {
             await Invoke(current.Path.Info);
-        }
-
-        private static string GetSourcesCommandLine(IEnumerable<string> sources)
-        {
-            return sources.Select(s => $"-Source {s}").JoinWithSeparator(" ");
         }
     }
 }

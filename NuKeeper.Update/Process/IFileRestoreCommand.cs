@@ -1,7 +1,7 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading.Tasks;
 
-namespace NuKeeper.NuGet.Process
+namespace NuKeeper.Update.Process
 {
     public interface IFileRestoreCommand : IPackageCommand
     {

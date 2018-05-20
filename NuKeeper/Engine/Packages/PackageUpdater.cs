@@ -4,6 +4,7 @@ using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Update;
 using Octokit;
 
 namespace NuKeeper.Engine.Packages

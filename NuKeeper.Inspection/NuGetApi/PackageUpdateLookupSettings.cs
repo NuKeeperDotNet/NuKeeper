@@ -6,6 +6,6 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         public VersionChange AllowedChange { get; set; }
 
-        public List<string> NugetSources { get; set; }
+        public IReadOnlyCollection<string> NugetSources { get; set; }
     }
 }

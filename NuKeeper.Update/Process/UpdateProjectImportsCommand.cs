@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.NuGet.Process
+namespace NuKeeper.Update.Process
 {
     public class UpdateProjectImportsCommand : IPackageCommand
     {

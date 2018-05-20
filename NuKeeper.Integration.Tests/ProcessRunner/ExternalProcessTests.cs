@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using NuKeeper.ProcessRunner;
+using NuKeeper.Update.ProcessRunner;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.ProcessRunner

@@ -1,8 +1,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Files;
-using NuKeeper.NuGet.Process;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Update.Process
 {
     public class SolutionsRestore
     {

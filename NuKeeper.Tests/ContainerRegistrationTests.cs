@@ -1,6 +1,7 @@
 using System;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Update;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests
@@ -37,7 +38,10 @@ namespace NuKeeper.Tests
                     OrganisationName = "test1"
                 };
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
-            settings.UserSettings = new UserSettings();
+            settings.UserSettings = new UserSettings
+                {
+                    NuGetSources = new NuGetSources("a.source")
+                };
             return settings;
         }
     }

@@ -3,8 +3,6 @@ using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine.Sort;
 using NuKeeper.Github;
-using NuKeeper.NuGet.Process;
-using NuKeeper.ProcessRunner;
 using SimpleInjector;
 
 namespace NuKeeper
@@ -17,6 +15,7 @@ namespace NuKeeper
 
             Register(container, settings);
             ContainerInspectionRegistration.Register(container, settings);
+            ContainerUpdateRegistration.Register(container, settings);
 
             return container;
         }
@@ -26,9 +25,6 @@ namespace NuKeeper
             container.Register(() => settings.ModalSettings, Lifestyle.Singleton);
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
-
-            container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
-            container.Register<IExternalProcess, ExternalProcess>();
 
             container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
@@ -41,7 +37,6 @@ namespace NuKeeper
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
 
             container.Register<IPackageUpdater, PackageUpdater>();
-            container.Register<IUpdateRunner, UpdateRunner>();
             container.Register<IForkFinder, ForkFinder>();
         }
     }

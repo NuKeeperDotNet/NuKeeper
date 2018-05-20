@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.NuGet.Process
+namespace NuKeeper.Update.Process
 {
     public interface IPackageCommand
     {

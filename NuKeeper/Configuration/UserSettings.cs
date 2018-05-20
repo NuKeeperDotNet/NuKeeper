@@ -3,12 +3,13 @@ using System.Text.RegularExpressions;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
+using NuKeeper.Update;
 
 namespace NuKeeper.Configuration
 {
     public class UserSettings
     {
-        public string[] NuGetSources { get; set; }
+        public NuGetSources NuGetSources { get; set; }
 
         public Regex PackageIncludes { get; set; }
 

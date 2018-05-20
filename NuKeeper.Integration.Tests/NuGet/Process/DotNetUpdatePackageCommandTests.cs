@@ -6,7 +6,8 @@ using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update;
+using NuKeeper.Update.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
@@ -113,7 +114,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var command = new DotNetUpdatePackageCommand(
                     new NullNuKeeperLogger(),
-                    new UserSettings { NuGetSources = new[] { packageSource } });
+                    new NuGetSources(packageSource));
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.ProjectFile));

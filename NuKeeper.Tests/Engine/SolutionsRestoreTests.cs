@@ -1,9 +1,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Engine;
 using NuKeeper.Inspection.Files;
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update.Process;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine

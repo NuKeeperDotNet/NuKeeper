@@ -5,7 +5,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.NuGet.Process;
+using NuKeeper.Update;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
@@ -46,7 +46,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             Directory.CreateDirectory(workDirectory);
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
-
+            
             var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion);
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
@@ -58,9 +58,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
             var command =
-                new NuGetUpdatePackageCommand(
+                new Update.Process.NuGetUpdatePackageCommand(
                     new NullNuKeeperLogger(),
-                    new UserSettings { NuGetSources = new[] { packageSource } });
+                    new NuGetSources(packageSource));
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
