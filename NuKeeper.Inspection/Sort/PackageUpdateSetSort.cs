@@ -3,7 +3,7 @@ using System.Linq;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Sort
+namespace NuKeeper.Inspection.Sort
 {
     public class PackageUpdateSetSort : IPackageUpdateSetSort
     {

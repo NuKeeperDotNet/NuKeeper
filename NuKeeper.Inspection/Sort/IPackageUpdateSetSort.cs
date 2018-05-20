@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Sort
+namespace NuKeeper.Inspection.Sort
 {
     public interface IPackageUpdateSetSort
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Sort
+namespace NuKeeper.Inspection.Sort
 {
     public class PrioritySort : IPackageUpdateSetSort
     {
