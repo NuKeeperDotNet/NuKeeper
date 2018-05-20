@@ -9,7 +9,7 @@ namespace NuKeeper.Configuration
 {
     public class RawConfiguration
     {
-        [CommandLine("mode", "m"), Required]
+        [CommandLine("mode", "m"), Required, Default("inspect")]
         public string Mode;
 
         [Environment("NuKeeper_github_token"), SensitiveInformation]
