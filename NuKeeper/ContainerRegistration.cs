@@ -16,7 +16,7 @@ namespace NuKeeper
             var container = new Container();
 
             Register(container, settings);
-            ContainerInpectionRegistration.Register(container, settings);
+            ContainerInspectionRegistration.Register(container, settings);
 
             return container;
         }

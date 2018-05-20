@@ -11,7 +11,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper
 {
-    public static class ContainerInpectionRegistration
+    public static class ContainerInspectionRegistration
     {
         public static void Register(Container container, SettingsContainer settings)
         {
