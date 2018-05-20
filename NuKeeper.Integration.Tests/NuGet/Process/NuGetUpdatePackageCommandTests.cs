@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.NuGet.Process;
@@ -39,7 +40,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             const string testFolder = nameof(ShouldUpdateDotnetClassicProject);
 
             var testProject = $"{testFolder}.csproj";
-            var workDirectory = Path.Combine(TestContext.CurrentContext.WorkDirectory, testFolder);
+            var tempFolder = UniqueTemporaryFolder();
+
+            var workDirectory = Path.Combine(tempFolder.FullPath, testFolder);
             Directory.CreateDirectory(workDirectory);
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
@@ -59,13 +62,22 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                     new NullNuKeeperLogger(),
                     new UserSettings { NuGetSources = new[] { packageSource } });
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), packageSource,
-                new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
-                    new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig)));
+            var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
+                    new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
+
+            await command.Invoke(new NuGetVersion(newPackageVersion), packageSource, packageToUpdate);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
             Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
+
+            tempFolder.TryDelete();
+        }
+
+        private IFolder UniqueTemporaryFolder()
+        {
+            var factory = new FolderFactory(new NullNuKeeperLogger());
+            return factory.UniqueTemporaryFolder();
         }
     }
 }

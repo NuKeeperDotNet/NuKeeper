@@ -131,7 +131,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         {
             var factory = new FolderFactory(new NullNuKeeperLogger());
             return factory.UniqueTemporaryFolder();
-
         }
     }
 }
