@@ -13,12 +13,13 @@ namespace NuKeeper.Tests.Configuration
     public class SettingsParserCommandlineTests
     {
         [Test]
-        public void EmptyListIsNotParsed()
+        public void EmptyListIsParsedAsInspect()
         {
             var commandLine = new List<string>();
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Null);
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
         }
 
         [Test]
@@ -175,17 +176,17 @@ namespace NuKeeper.Tests.Configuration
         }
 
         [Test]
-        public void MissingModeIsNotParsed()
+        public void MissingModeIsParsedAsInspect()
         {
             var commandLine = new List<string>
             {
-                "repo=https://github.com/NuKeeperDotNet/NuKeeper",
-                "t=abc123"
+                "log=verbose"
             };
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
-            Assert.That(settings, Is.Null);
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
         }
 
         [Test]
