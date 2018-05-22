@@ -1,4 +1,3 @@
-using System.Linq;
 using NuGet.Common;
 using SimpleInjector;
 using NuKeeper.Configuration;
@@ -8,6 +7,7 @@ using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sort;
 
 namespace NuKeeper
 {
@@ -41,6 +41,7 @@ namespace NuKeeper
 
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, CsvFileReporter>();
+            container.Register<IPackageUpdateSetSort, PackageUpdateSetSort>();
         }
     }
 }

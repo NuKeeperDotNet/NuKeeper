@@ -7,17 +7,24 @@ using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sort;
+using System.Linq;
 
 namespace NuKeeper
 {
     public class Inspector
     {
         private readonly IUpdateFinder _updateFinder;
+        private readonly IPackageUpdateSetSort _sorter;
         private readonly INuKeeperLogger _logger;
 
-        public Inspector(IUpdateFinder updateFinder, INuKeeperLogger logger)
+        public Inspector(
+            IUpdateFinder updateFinder,
+            IPackageUpdateSetSort sorter,
+            INuKeeperLogger logger)
         {
             _updateFinder = updateFinder;
+            _sorter = sorter;
             _logger = logger;
         }
 
@@ -25,7 +32,11 @@ namespace NuKeeper
         {
             var folder = TargetFolder(settings);
             var updates = await _updateFinder.FindPackageUpdateSets(folder);
-            Report(updates);
+
+            var sortedUpdates = _sorter.Sort(updates)
+                .ToList();
+
+            Report(sortedUpdates);
         }
 
         private IFolder TargetFolder(UserSettings settings)

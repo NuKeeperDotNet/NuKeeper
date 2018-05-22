@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Engine.Sort
+namespace NuKeeper.Inspection.Sort
 {
     public enum Mark
     {

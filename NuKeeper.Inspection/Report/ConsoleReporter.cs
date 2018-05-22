@@ -11,15 +11,27 @@ namespace NuKeeper.Inspection.Report
         public void Report(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
             Console.WriteLine();
-            if (updates.Count == 0)
-            {
-                Console.WriteLine("No package updates found");
-            }
+            Console.WriteLine(MessageForCount(updates.Count));
+            Console.WriteLine();
 
             foreach (var update in updates)
             {
                 Console.WriteLine(Describe(update));
             }
+        }
+
+        private string MessageForCount(int count)
+        {
+            if (count == 0)
+            {
+                return "Found no package updates";
+            }
+            else if (count == 1)
+            {
+                return "Found 1 package update";
+            }
+
+            return $"Found {count} package updates";
         }
 
         private string Describe(PackageUpdateSet update)
