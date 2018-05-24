@@ -7,6 +7,7 @@ namespace NuKeeper.Inspection.Formats
         public static string Ago(DateTime start, DateTime end)
         {
             var duration = end.Subtract(start);
+
             if (start.Year == end.Year && start.Month == end.Month)
             {
                 return Ago(duration);
