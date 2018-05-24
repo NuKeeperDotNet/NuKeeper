@@ -38,8 +38,13 @@ namespace NuKeeper.Inspection.Report
         private string MessageForAgeSum(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var totalAge = Age.Sum(updates);
-            var ageString = totalAge.ToString("%d");
-            return $"Total package age:{ageString} days";
+            var years = totalAge.TotalDays / 365;
+
+            var result =
+             "Total package age:\n" +
+             $" Days: {totalAge:%d}\n" +
+             $" LibYears: {years:0.0}";
+            return result;
         }
 
         private string Describe(PackageUpdateSet update)
