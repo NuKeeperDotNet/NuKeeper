@@ -7,7 +7,7 @@ namespace NuKeeper.Inspection.Report
 {
     public static class Age
     {
-        public static TimeSpan Sum(IReadOnlyCollection<PackageUpdateSet> updates)
+        public static TimeSpan Sum(IEnumerable<PackageUpdateSet> updates)
         {
             var now = DateTimeOffset.UtcNow;
 
