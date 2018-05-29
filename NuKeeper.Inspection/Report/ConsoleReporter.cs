@@ -12,6 +12,7 @@ namespace NuKeeper.Inspection.Report
         {
             Console.WriteLine();
             Console.WriteLine(MessageForCount(updates.Count));
+            Console.WriteLine(MessageForAgeSum(updates));
             Console.WriteLine();
 
             foreach (var update in updates)
@@ -34,6 +35,18 @@ namespace NuKeeper.Inspection.Report
             return $"Found {count} package updates";
         }
 
+        private string MessageForAgeSum(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            var totalAge = Age.Sum(updates);
+            var years = totalAge.TotalDays / 365;
+
+            var result =
+             "Total package age:\n" +
+             $" Days: {totalAge:%d}\n" +
+             $" LibYears: {years:0.0}";
+            return result;
+        }
+
         private string Describe(PackageUpdateSet update)
         {
             var occurences = update.CurrentPackages.Count;
@@ -54,8 +67,12 @@ namespace NuKeeper.Inspection.Report
                 versionInUse = $"{lowest} - {highest}";
             }
 
-            var pubDate = update.Selected.Published.Value.UtcDateTime;
-            var ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
+            var ago = "?";
+            if (update.Selected.Published.HasValue)
+            {
+                var pubDate = update.Selected.Published.Value.UtcDateTime;
+                ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
+            }
 
             var optS = occurences > 1 ? "s" : string.Empty;
 
