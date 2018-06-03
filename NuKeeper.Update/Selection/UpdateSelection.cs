@@ -27,11 +27,9 @@ namespace NuKeeper.Update.Selection
             IReadOnlyCollection<PackageUpdateSet> candidates,
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
-            var filtered = ApplyFilters(candidates);
+            var filtered = await ApplyFilters(candidates, remoteCheck);
 
-            var remoteFiltered = await ApplyRemoteFilter(filtered, remoteCheck);
-
-            List<PackageUpdateSet> capped = remoteFiltered
+            List<PackageUpdateSet> capped = filtered
                 .Take(_settings.MaxPullRequests)
                 .ToList();
 
@@ -45,8 +43,9 @@ namespace NuKeeper.Update.Selection
             return capped;
         }
 
-        private IReadOnlyCollection<PackageUpdateSet> ApplyFilters(
-            IReadOnlyCollection<PackageUpdateSet> all)
+        private async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyFilters(
+            IReadOnlyCollection<PackageUpdateSet> all,
+            Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             var filteredLocally = all
                 .Where(MatchesIncludeExclude)
@@ -58,7 +57,14 @@ namespace NuKeeper.Update.Selection
                 _logger.Verbose($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
             }
 
-            return filteredLocally;
+            var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
+
+            if (remoteFiltered.Count < filteredLocally.Count)
+            {
+                _logger.Verbose($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
+            }
+
+            return remoteFiltered;
         }
 
         public static async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyRemoteFilter(
