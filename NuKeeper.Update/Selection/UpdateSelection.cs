@@ -29,16 +29,11 @@ namespace NuKeeper.Update.Selection
         {
             var filtered = await ApplyFilters(candidates, remoteCheck);
 
-            List<PackageUpdateSet> capped = filtered
+            var capped = filtered
                 .Take(_settings.MaxPullRequests)
                 .ToList();
 
             LogPackageCounts(candidates.Count, filtered.Count, capped.Count);
-
-            foreach (var updateSet in capped)
-            {
-                _logger.Info($"Selected package update of {updateSet.SelectedId} to {updateSet.SelectedVersion}");
-            }
 
             return capped;
         }
