@@ -29,9 +29,9 @@ namespace NuKeeper.Update.Selection
         {
             var filtered = ApplyFilters(candidates);
 
-            filtered = await ApplyRemoteFilter(filtered, remoteCheck);
+            var remoteFiltered = await ApplyRemoteFilter(filtered, remoteCheck);
 
-            List<PackageUpdateSet> capped = filtered
+            List<PackageUpdateSet> capped = remoteFiltered
                 .Take(_settings.MaxPullRequests)
                 .ToList();
 
