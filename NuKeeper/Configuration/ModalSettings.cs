@@ -5,5 +5,6 @@ namespace NuKeeper.Configuration
         public RunMode Mode { get; set;  }
         public string OrganisationName { get; set; }
         public RepositorySettings Repository { get; set; }
+        public string[] Labels { get; set; }
     }
 }

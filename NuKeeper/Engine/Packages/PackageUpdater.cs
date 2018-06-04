@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
@@ -13,16 +15,19 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly IGithub _github;
         private readonly INuKeeperLogger _logger;
+        private readonly ModalSettings _modalSettings;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
             IGithub github,
             IUpdateRunner localUpdater,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            ModalSettings modalSettings)
         {
             _github = github;
             _updateRunner = localUpdater;
             _logger = logger;
+            _modalSettings = modalSettings;
         }
 
         public async Task MakeUpdatePullRequest(
@@ -79,7 +84,12 @@ namespace NuKeeper.Engine.Packages
                 Body = CommitWording.MakeCommitDetails(updates)
             };
 
-            await _github.OpenPullRequest(repository.Pull, pr);
+            var createdPullRequest = await _github.OpenPullRequest(repository.Pull, pr);
+
+            if (_modalSettings.Labels.Any())
+            {
+                await _github.AddLabelsToIssue(repository.Pull, createdPullRequest.Number, _modalSettings.Labels);
+            }
         }
     }
 }

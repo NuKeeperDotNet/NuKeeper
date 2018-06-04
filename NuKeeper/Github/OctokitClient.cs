@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
@@ -87,11 +88,17 @@ namespace NuKeeper.Github
             }
         }
 
-        public async Task OpenPullRequest(ForkData target, NewPullRequest request)
+        public async Task AddLabelsToIssue(ForkData target, int number, string[] labels)
+        {
+            _logger.Info($"Adding label(s) '{labels.JoinWithCommas()}' to issue '{_apiBase} {target.Owner}/{target.Name} {number}'");
+            await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, number, labels);
+        }
+
+        public async Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request)
         {
             _logger.Info($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Verbose($"PR title: {request.Title}");
-            await _client.PullRequest.Create(target.Owner, target.Name, request);
+            return await _client.PullRequest.Create(target.Owner, target.Name, request);
         }
     }
 }
