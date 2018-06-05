@@ -106,7 +106,8 @@ namespace NuKeeper.Configuration
                     return new ModalSettings
                     {
                         Mode = RunMode.Repository,
-                        Repository = ReadRepositorySettings(settings)
+                        Repository = ReadRepositorySettings(settings),
+                        Labels = ReadMultilineSetting(settings.Labels)
                     };
 
                 case RunMode.Organisation:
@@ -124,7 +125,8 @@ namespace NuKeeper.Configuration
                     return new ModalSettings
                     {
                         Mode = RunMode.Organisation,
-                        OrganisationName = settings.GithubOrganisationName
+                        OrganisationName = settings.GithubOrganisationName,
+                        Labels = ReadMultilineSetting(settings.Labels)
                     };
 
                 case RunMode.Inspect:
@@ -203,11 +205,16 @@ namespace NuKeeper.Configuration
 
         private static NuGetSources ReadNuGetSources(RawConfiguration settings)
         {
-            var items = settings.NuGetSources.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
+            var items = ReadMultilineSetting(settings.NuGetSources);
             return new NuGetSources(items);
         }
 
-            private static Uri EnsureTrailingSlash(Uri uri)
+        private static string[] ReadMultilineSetting(string settingValue)
+        {
+            return settingValue.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static Uri EnsureTrailingSlash(Uri uri)
         {
             if (uri == null)
             {

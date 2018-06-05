@@ -78,6 +78,7 @@ $ dotnet run mode=inspect dir=c:\code\MyProject
 | fork_mode                        | No                | Yes (`fork`)         | PreferFork                          |
 | report_mode                      | No                | Yes (`report`)       | Off                                 |
 | min_package_age                  | No                | Yes (`age`)          | 7d                                  |
+| github_labels                    | No                | Yes (`labels`)       | nukeeper                                  |
 
  * *github_api_endpoint* This is the api endpoint for the github instance you're targetting. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository.
@@ -101,6 +102,7 @@ This age is the duration between the published date of the selected package upda
  A value can be expressed in command options as an integer and a unit suffix, 
 where the unit is one of `h` for hour, `d` for days, `w` for weeks. A zero with no unit is also allowed.
 Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks. 
+ * *labels* Semicolon-separated list of labels to apply to GitHub pull requests.
 
 ### Command-line arguments
 
@@ -121,6 +123,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 | report                           | No                         |
 | age                              | No                         |
 | dir                              | No                         |
+| labels                           | No                         |
 
  * *mode* One of `repository`, `organisation`, `inspect`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
@@ -137,6 +140,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
  * *report* Overrides `report_mode` in `config.json`
  * *age* Overrides `min_package_age` in `config.json`
  * *dir* Directory the folder to inspect in `inspect` mode. Not used in other modes.
+ * *labels* Overrides `github_labels` in `config.json`.
 
 
 ## When to use NuKeeper
