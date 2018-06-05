@@ -84,12 +84,7 @@ namespace NuKeeper.Engine.Packages
                 Body = CommitWording.MakeCommitDetails(updates)
             };
 
-            var createdPullRequest = await _github.OpenPullRequest(repository.Pull, pr);
-
-            if (_modalSettings.Labels.Any())
-            {
-                await _github.AddLabelsToIssue(repository.Pull, createdPullRequest.Number, _modalSettings.Labels);
-            }
+            await _github.OpenPullRequest(repository.Pull, pr, _modalSettings.Labels);
         }
     }
 }

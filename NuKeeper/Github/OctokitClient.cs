@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -88,17 +89,23 @@ namespace NuKeeper.Github
             }
         }
 
-        public async Task AddLabelsToIssue(ForkData target, int number, string[] labels)
-        {
-            _logger.Info($"Adding label(s) '{labels.JoinWithCommas()}' to issue '{_apiBase} {target.Owner}/{target.Name} {number}'");
-            await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, number, labels);
-        }
-
-        public async Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request)
+        public async Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, string[] labels)
         {
             _logger.Info($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Verbose($"PR title: {request.Title}");
-            return await _client.PullRequest.Create(target.Owner, target.Name, request);
+            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, request);
+
+            var labelsToApply = labels?.Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
+            if (labelsToApply != null && labelsToApply.Any())
+            {
+                _logger.Info(
+                    $"Adding label(s) '{labelsToApply.JoinWithCommas()}' to issue "
+                    + $"'{_apiBase} {target.Owner}/{target.Name} {createdPullRequest.Number}'");
+                await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, createdPullRequest.Number,
+                    labelsToApply);
+            }
+
+            return createdPullRequest;
         }
     }
 }
