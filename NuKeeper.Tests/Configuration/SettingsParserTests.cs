@@ -118,7 +118,8 @@ namespace NuKeeper.Tests.Configuration
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
-                ReportMode = ReportMode.Off
+                ReportMode = ReportMode.Off,
+                Labels = "nukeeper"
             };
         }
 
@@ -134,7 +135,8 @@ namespace NuKeeper.Tests.Configuration
                 AllowedChange = VersionChange.Major,
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
-                ReportMode = ReportMode.Off
+                ReportMode = ReportMode.Off,
+                Labels = "nukeeper"
             };
         }
 
@@ -145,7 +147,8 @@ namespace NuKeeper.Tests.Configuration
                 NuGetSources = "https://api.nuget.org/v3/index.json",
                 Mode = "inspect",
                 LogLevel = LogLevel.Info,
-                ReportMode = ReportMode.Off
+                ReportMode = ReportMode.Off,
+                Labels = "nukeeper"
             };
         }
 

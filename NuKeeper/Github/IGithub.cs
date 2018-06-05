@@ -9,7 +9,7 @@ namespace NuKeeper.Github
     {
         Task<Account> GetCurrentUser();
 
-        Task OpenPullRequest(ForkData target, NewPullRequest request);
+        Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels);
 
         Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName);
 

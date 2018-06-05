@@ -62,5 +62,9 @@ namespace NuKeeper.Configuration
 
         [CommandLine("dir")]
         public string Dir { get; set; }
+
+        [JsonConfig("github_labels"), Default("nukeeper")]
+        [OverriddenBy(ConfigurationSources.CommandLine, "labels")]
+        public string Labels;
     }
 }
