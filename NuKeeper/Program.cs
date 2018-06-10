@@ -19,15 +19,22 @@ namespace NuKeeper
 
             var container = ContainerRegistration.Init(settings);
 
-            if (settings.ModalSettings.Mode == RunMode.Inspect)
+            switch (settings.ModalSettings.Mode)
             {
-                var inpector = container.GetInstance<Inspector>();
-                await inpector.Run(settings.UserSettings);
-            }
-            else
-            {
-                var engine = container.GetInstance<GithubEngine>();
-                await engine.Run();
+                case RunMode.Inspect:
+                case RunMode.Update:
+                    var inpector = container.GetInstance<Inspector>();
+                    await inpector.Run(settings);
+                    break;
+
+                case RunMode.Repository:
+                case RunMode.Organisation:
+                    var engine = container.GetInstance<GithubEngine>();
+                    await engine.Run();
+                    break;
+
+                default:
+                    throw new Exception($"Run mode '{settings.ModalSettings.Mode}' was not handled.");
             }
 
             return 0;

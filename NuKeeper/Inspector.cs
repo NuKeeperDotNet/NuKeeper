@@ -16,27 +16,44 @@ namespace NuKeeper
     {
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
+        private readonly ILocalUpdater _updater;
         private readonly INuKeeperLogger _logger;
 
         public Inspector(
             IUpdateFinder updateFinder,
             IPackageUpdateSetSort sorter,
+            ILocalUpdater updater,
             INuKeeperLogger logger)
         {
             _updateFinder = updateFinder;
             _sorter = sorter;
+            _updater = updater;
             _logger = logger;
         }
 
-        public async Task Run(UserSettings settings)
+        public async Task Run(SettingsContainer settings)
+        {
+            var sortedUpdates = await GetSortedUpdates(settings.UserSettings);
+
+            switch (settings.ModalSettings.Mode)
+            {
+                case RunMode.Inspect:
+                    Report(sortedUpdates);
+                    break;
+
+                case RunMode.Update:
+                    await _updater.ApplyAnUpdate(sortedUpdates);
+                    break;
+            }
+        }
+
+        private async Task<IReadOnlyCollection<PackageUpdateSet>> GetSortedUpdates(UserSettings settings)
         {
             var folder = TargetFolder(settings);
             var updates = await _updateFinder.FindPackageUpdateSets(folder);
 
-            var sortedUpdates = _sorter.Sort(updates)
+            return _sorter.Sort(updates)
                 .ToList();
-
-            Report(sortedUpdates);
         }
 
         private IFolder TargetFolder(UserSettings settings)
@@ -50,11 +67,10 @@ namespace NuKeeper
             return new Folder(_logger, new DirectoryInfo(dir));
         }
 
-        private static void Report(List<PackageUpdateSet> updates)
+        private static void Report(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var reporter = new ConsoleReporter();
             reporter.Report("ConsoleReport", updates);
         }
-
     }
 }

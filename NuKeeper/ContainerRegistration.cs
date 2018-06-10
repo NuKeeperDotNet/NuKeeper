@@ -34,6 +34,7 @@ namespace NuKeeper
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
 
+            container.Register<ILocalUpdater, LocalUpdater>();
             container.Register<IPackageUpdater, PackageUpdater>();
             container.Register<IForkFinder, ForkFinder>();
         }
