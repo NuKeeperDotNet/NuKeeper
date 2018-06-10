@@ -23,7 +23,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updateSets = new List<PackageUpdateSet>();
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -34,9 +34,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion()
+            };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -55,11 +58,11 @@ namespace NuKeeper.Tests.Engine
                 UpdateFooFromOneVersion()
             };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
@@ -73,11 +76,11 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
@@ -92,7 +95,7 @@ namespace NuKeeper.Tests.Engine
 
             var filter = BranchFilter(false);
 
-            var target = OneTargetSelection(filter);
+            var target = SelectionForFilter(filter);
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -144,14 +147,14 @@ namespace NuKeeper.Tests.Engine
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static IPackageUpdateSelection OneTargetSelection()
+        private static IPackageUpdateSelection SelectionForFilter(IExistingBranchFilter filter)
         {
-            return OneTargetSelection(BranchFilter(true));
-        }
-
-        private static IPackageUpdateSelection OneTargetSelection(IExistingBranchFilter filter)
-        {
-            var updateSelection = new UpdateSelection(new FilterSettings(), new NullNuKeeperLogger());
+            var settings = new FilterSettings
+            {
+                MaxPullRequests = Int32.MaxValue,
+                MinimumAge = TimeSpan.Zero
+            };
+            var updateSelection = new UpdateSelection(settings, new NullNuKeeperLogger());
             return new PackageUpdateSelection(filter,
                 MakeSort(), updateSelection, new NullNuKeeperLogger());
         }
