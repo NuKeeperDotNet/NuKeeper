@@ -130,10 +130,11 @@ namespace NuKeeper.Configuration
                     };
 
                 case RunMode.Inspect:
-                {
+                case RunMode.Update:
+                    {
                         return new ModalSettings
                         {
-                            Mode = RunMode.Inspect
+                            Mode = mode.Value
                         };
                 }
 
@@ -159,6 +160,9 @@ namespace NuKeeper.Configuration
 
                 case ModeNames.Inspect:
                     return RunMode.Inspect;
+
+                case ModeNames.Update:
+                    return RunMode.Update;
 
                 default:
                     return null;
