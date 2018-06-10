@@ -5,6 +5,7 @@ using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
 using NuKeeper.Update;
+using NuKeeper.Inspection.Report;
 
 namespace NuKeeper
 {
@@ -40,7 +41,12 @@ namespace NuKeeper
                 return;
             }
 
-            await _updateRunner.Update(filtered.First());
+            var candidate = filtered.First();
+
+            var reporter = new ConsoleReporter();
+            _logger.Terse("Updating " + reporter.Describe(candidate));
+
+            await _updateRunner.Update(candidate);
         }
     }
 }
