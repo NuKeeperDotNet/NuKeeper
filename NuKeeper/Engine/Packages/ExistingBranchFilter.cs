@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
@@ -19,15 +17,8 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<PackageUpdateSet>> CanMakeBranchFor(ForkData pushFork, IEnumerable<PackageUpdateSet> packageUpdateSets)
-        {
-            var results = await packageUpdateSets
-                .WhereAsync(async p => await CanMakeBranchFor(pushFork, p));
-
-            return results.ToList();
-        }
-
-        private async Task<bool> CanMakeBranchFor(ForkData pushFork, PackageUpdateSet packageUpdateSet)
+        public async Task<bool> CanMakeBranchFor(PackageUpdateSet packageUpdateSet,
+            ForkData pushFork)
         {
             try
             {
