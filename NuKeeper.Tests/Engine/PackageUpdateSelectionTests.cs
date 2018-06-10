@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Update.Selection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
@@ -24,7 +23,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updateSets = new List<PackageUpdateSet>();
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -35,9 +34,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion()
+            };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
@@ -49,109 +51,37 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreTwoInputs_MoreVersionsFirst_FirstIsTheTarget()
         {
+            // sort should not change this ordering
             var updateSets = new List<PackageUpdateSet>
             {
                 UpdateBarFromTwoVersions(),
                 UpdateFooFromOneVersion()
             };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
         public async Task WhenThereAreTwoInputs_MoreVersionsSecond_SecondIsTheTarget()
         {
+            // sort should change this ordering
             var updateSets = new List<PackageUpdateSet>
             {
                 UpdateFooFromOneVersion(),
                 UpdateBarFromTwoVersions()
             };
 
-            var target = OneTargetSelection();
+            var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-        }
-
-        [Test]
-        public async Task WhenThereAreIncludes_OnlyConsiderMatches()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new UserSettings
-            {
-                MaxPullRequestsPerRepository = 10,
-                PackageIncludes = new Regex("bar")
-            };
-
-            var target = new PackageUpdateSelection(settings, BranchFilter(),
-                MakeSort(), new NullNuKeeperLogger());
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-        }
-
-        [Test]
-        public async Task WhenThereAreExcludes_OnlyConsiderNonMatching()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new UserSettings
-            {
-                MaxPullRequestsPerRepository = 10,
-                PackageExcludes = new Regex("bar")
-            };
-
-            var target = new PackageUpdateSelection(settings, BranchFilter(),
-                MakeSort(), new NullNuKeeperLogger());
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
-        }
-
-        [Test]
-        public async Task WhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFoobarFromOneVersion(),
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new UserSettings 
-            {
-                MaxPullRequestsPerRepository = 10,
-                PackageExcludes = new Regex("bar"),
-                PackageIncludes = new Regex("foo")
-            };
-
-            var target = new PackageUpdateSelection(settings, BranchFilter(),
-                MakeSort(), new NullNuKeeperLogger());
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -163,118 +93,13 @@ namespace NuKeeper.Tests.Engine
                 UpdateBarFromTwoVersions()
             };
 
-            var filter = BranchFilter(new List<PackageUpdateSet>());
+            var filter = BranchFilter(false);
 
-            var target = OneTargetSelection(filter);
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(0));
-            await filter.Received(1).CanMakeBranchFor(
-                Arg.Any<ForkData>(),
-                Arg.Any<IEnumerable<PackageUpdateSet>>());
-        }
-
-        [Test]
-        public async Task WhenFirstPackageIsFilteredOutByBranch()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var filter = BranchFilter(updateSets.Skip(1).ToList());
-
-            var target = OneTargetSelection(filter);
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-            await filter.Received(1).CanMakeBranchFor(
-                Arg.Any<ForkData>(),
-                Arg.Any<IEnumerable<PackageUpdateSet>>());
-        }
-
-        [Test]
-        public async Task WhenThePackageIsNotOldEnough()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion()
-            };
-
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
+            var target = SelectionForFilter(filter);
 
             var results = await target.SelectTargets(PushFork(), updateSets);
 
             Assert.That(results.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public async Task WhenTheFirstPackageIsNotOldEnough()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
-                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
-            };
-
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-        }
-
-        [Test]
-        public async Task WhenMinAgeIsLowBothPackagesAreIncluded()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
-                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
-            };
-
-            var target = MinAgeTargetSelection(TimeSpan.FromHours(12));
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(2));
-        }
-
-        [Test]
-        public async Task WhenMinAgeIsHighNeitherPackagesAreIncluded()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(TimeSpan.FromDays(6)),
-                UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
-            };
-
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(10));
-
-            var results = await target.SelectTargets(PushFork(), updateSets);
-
-            Assert.That(results.Count, Is.EqualTo(0));
-        }
-
-        private PackageUpdateSet UpdateFoobarFromOneVersion()
-        {
-            var newPackage = LatestVersionOfPackageFoobar();
-
-            var currentPackages = new List<PackageInProject>
-            {
-                new PackageInProject("foobar", "1.0.1", PathToProjectOne()),
-                new PackageInProject("foobar", "1.0.1", PathToProjectTwo())
-            };
-
-            var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, currentPackages);
         }
 
         private PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
@@ -312,11 +137,6 @@ namespace NuKeeper.Tests.Engine
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageIdentity LatestVersionOfPackageFoobar()
-        {
-            return new PackageIdentity("foobar", new NuGetVersion("1.2.3"));
-        }
-
         private PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
@@ -327,35 +147,16 @@ namespace NuKeeper.Tests.Engine
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static IPackageUpdateSelection OneTargetSelection()
+        private static IPackageUpdateSelection SelectionForFilter(IExistingBranchFilter filter)
         {
-            return OneTargetSelection(BranchFilter());
-        }
-
-        private static IPackageUpdateSelection OneTargetSelection(IExistingBranchFilter filter)
-        {
-            const int maxPullRequests = 1;
-
-            var settings = new UserSettings
+            var settings = new FilterSettings
             {
-                MaxPullRequestsPerRepository = maxPullRequests,
-                MinimumPackageAge = TimeSpan.Zero
+                MaxPullRequests = Int32.MaxValue,
+                MinimumAge = TimeSpan.Zero
             };
-            return new PackageUpdateSelection(settings, filter,
-                MakeSort(), new NullNuKeeperLogger());
-        }
-
-        private static IPackageUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
-        {
-            const int maxPullRequests = 1000;
-
-            var settings = new UserSettings
-            {
-                MaxPullRequestsPerRepository = maxPullRequests,
-                MinimumPackageAge = minAge
-            };
-            return new PackageUpdateSelection(settings, BranchFilter(),
-                MakeSort(), new NullNuKeeperLogger());
+            var updateSelection = new UpdateSelection(settings, new NullNuKeeperLogger());
+            return new PackageUpdateSelection(filter,
+                MakeSort(), updateSelection, new NullNuKeeperLogger());
         }
 
         private static ForkData PushFork()
@@ -363,24 +164,13 @@ namespace NuKeeper.Tests.Engine
             return new ForkData(new Uri("http://github.com/foo/bar"), "me", "test");
         }
 
-        private static IExistingBranchFilter BranchFilter()
+        private static IExistingBranchFilter BranchFilter(bool result)
         {
             var filter = Substitute.For<IExistingBranchFilter>();
             filter.CanMakeBranchFor(
-                    Arg.Any<ForkData>(),
-                    Arg.Any<IEnumerable<PackageUpdateSet>>())
-                .Returns(x => Task.FromResult(x.Arg<IReadOnlyCollection<PackageUpdateSet>>()));
-
-            return filter;
-        }
-
-        private static IExistingBranchFilter BranchFilter(IReadOnlyCollection<PackageUpdateSet> results)
-        {
-            var filter = Substitute.For<IExistingBranchFilter>();
-            filter.CanMakeBranchFor(
-                    Arg.Any<ForkData>(),
-                    Arg.Any<IEnumerable<PackageUpdateSet>>())
-                .Returns(x => Task.FromResult(results));
+                Arg.Any<PackageUpdateSet>(),
+                    Arg.Any<ForkData>())
+                .Returns(x => Task.FromResult(result));
 
             return filter;
         }
