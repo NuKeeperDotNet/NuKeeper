@@ -87,3 +87,7 @@ If you override this, you can shose to include the public `api.nuget.org` feed o
 ````
 NuKeeper  mode=org org=myteam
 ````
+
+---
+
+For all possible options and modes, see [The ReadMe](README.md)
