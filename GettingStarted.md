@@ -16,7 +16,9 @@ Update NuKeeper with:
 
 ### Inspect mode
 
-Inspect the current folder
+Use inspect mode to find updates that can be applied to a solution.
+
+Inspect the current folder:
 
 ````
 cd C:\code\MyApp
@@ -44,7 +46,9 @@ NuKeeper dir=C:\code\MyApp
 
 ### Update Mode
 
-Apply a selected update to a solution:
+Use update mode to apply an update to code.
+
+Apply a update chosen by NuKeeper to a solution:
 ````
 cd C:\code\MyApp
 NuKeeper mode=update
@@ -56,17 +60,28 @@ or
 NuKeeper mode=update dir=C:\code\MyApp
 ````
 
+Apply an update to a particular package:
+````
+NuKeeper mode=update i=SomePackageName
+````
+
+The `include` option actually is a Regular Expression, which by default will match any text that includes that substring. e..g `i=Newt` matches the package `Newtonsoft.Json`.
+
+
 ### Repository mode
+
+Use repository mode to raise multiple PRs against a github repository. The repository does not need to present on the file system beforehand. it will be fetched to a temporary folder.
+
 
 In order to work with github repositories, you will first need [a GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 
 ````
-NuKeeper mode=repository github_repository_uri=https://github.com/NuKeeperDotNet/NuKeeper.git  t=mygithubtoken
+NuKeeper mode=repository github_repository_uri=https://github.com/NuKeeperDotNet/NuKeeper.git t=mygithubtoken
 ````
 
 #### Hidden token
 
-It is often the case that you don't want to put the github token on the command line, e.g. if this command line is itself stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will autopmatically read it from there.
+The github token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will autopmatically read it from there.
 
 ````
 set NuKeeper_github_token=mygithubtoken
@@ -83,6 +98,8 @@ If you have an internal nuget package feed, then you can specify a list of nuget
 If you override this, you can shose to include the public `api.nuget.org` feed or not. You may not need to, if your internal feed proxies this.
 
 ### Organisation mode
+
+Use organisation mode to raise multiple PRs against multiple github repositories.
 
 ````
 NuKeeper  mode=org org=myteam
