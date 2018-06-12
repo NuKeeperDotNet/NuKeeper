@@ -2,7 +2,7 @@
 
 ## Getting NuKeeper
 
-NuKeeper can be found[On NuGet](https://www.nuget.org/packages/NuKeeper/).
+NuKeeper can be [found on NuGet as a global tool](https://www.nuget.org/packages/NuKeeper/). The [source is on GitHub](https://github.com/NuKeeperDotNet/NuKeeper).
 
 Install NuKeeper with:
 
@@ -65,12 +65,14 @@ Apply an update to a particular package:
 NuKeeper mode=update i=SomePackageName
 ````
 
-The `include` option actually is a Regular Expression, which by default will match any text that includes that substring. e..g `i=Newt` matches the package `Newtonsoft.Json`.
+The `include` option actually is a Regular Expression, which by default will match any text that includes that substring. e.g. `i=Newt` matches the package `Newtonsoft.Json`.
 
 
 ### Repository mode
 
-Use repository mode to raise multiple PRs against a github repository. The repository does not need to present on the file system beforehand. it will be fetched to a temporary folder.
+Use repository mode to raise multiple pull requests against a github repository. The repository does not need to present on the file system beforehand. It will be fetched to a temporary folder.
+
+If you run these commandlines regularly, you can automatically get update pull requests [like this one](https://github.com/NuKeeperDotNet/NuKeeper/pull/280).
 
 
 In order to work with github repositories, you will first need [a GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -81,7 +83,7 @@ NuKeeper mode=repository github_repository_uri=https://github.com/NuKeeperDotNet
 
 #### Hidden token
 
-The github token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will autopmatically read it from there.
+The github token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will automatically read it from there.
 
 ````
 set NuKeeper_github_token=mygithubtoken
@@ -96,6 +98,10 @@ If you have a a different github server, e.g. one hosted inside your organisatio
 If you have an internal nuget package feed, then you can specify a list of nuget sources on the command line. e.g. `sources=https://api.nuget.org/v3/index.json;http://packages.mycompany.com/nugetfeed`
 
 If you override this, you can shose to include the public `api.nuget.org` feed or not. You may not need to, if your internal feed proxies this.
+
+#### Options for controlling pull requests
+
+todo
 
 ### Organisation mode
 
