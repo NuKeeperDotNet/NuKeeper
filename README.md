@@ -46,7 +46,7 @@ NuKeeper will invoke `dotnet` or `NuGet.exe` as needed to update packages. NuKee
 
 ### Repository mode
 
-In Repository Mode **NuKeeper** will perform version checks and generate PRs for a single repository. From within the **NuKeeper** folder, point it at the https url of a github repository, like this:
+In Repository Mode **NuKeeper** will perform version checks and generate PRs for a single repository. From within the **NuKeeper** folder, point it at the https url of a GitHub repository, like this:
 
 ```
 $ dotnet run mode=repository t=<GitToken> github_repository_uri=<RepoUrl>
@@ -62,7 +62,7 @@ $ dotnet run mode=organisation t=<GitToken> github_organisation_name=<OrgName>
 
 ### Inspect mode
 
-Inspect mode is used to look at files already present on a file system and report possible updates, without any git or github interaction, or changes made locally. A git token is not needed.
+Inspect mode is used to look at files already present on a file system and report possible updates, without any git or GitHub interaction, or changes made locally. A git token is not needed.
 
 The `dir` option can be used to specify the folder to inspect, otherwise the current folder will be used.
 
@@ -72,7 +72,7 @@ $ dotnet run mode=inspect dir=c:\code\MyProject
 
 ### Update mode
 
-Update mode is used to look at files already present on a file system and apply an update locally, without any git or github interaction. A git token is not needed.
+Update mode is used to look at files already present on a file system and apply an update locally, without any git or GitHub interaction. A git token is not needed.
 
 
 ### Environment Variables
@@ -99,7 +99,7 @@ Update mode is used to look at files already present on a file system and apply 
 | min_package_age                  | No                | Yes (`age`)          | 7d                                  |
 | github_labels                    | No                | Yes (`labels`)       | nukeeper                                  |
 
- * *github_api_endpoint* This is the api endpoint for the github instance you're targetting. If you are using an internal github server and not the public one, you must set it to the api url for your github server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
+ * *github_api_endpoint* This is the api endpoint for the GitHub instance you're targetting. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server. The value will be e.g. `https://github.mycompany.com/api/v3`. This applies to all modes.
  * *max_pull_requests_per_repository* The maximum number of pull requests to raise on any repository.
  * *nuget_sources* Semicolon-separated list of NuGet repositories to use when searching for updates and when installing them.
  * *log_level*. Controls how much output is displayed. Values are, from least output to most output: `Silent`, `Terse`, `Info`, `Verbose`.
@@ -196,7 +196,7 @@ In this workflow, NuKeeper needs permission to push to the target repository.
 **Fork workflow**. The pull fork and push fork are not the same repository. NuKeeper will pull from the upstream, branch locally, make a change, and push it back to a branch on the origin fork, then PR back to the `master` branch on the upstream.
 
 This workflow can be used if:
--  the user (identified by the github token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there.
+-  the user (identified by the GitHub token) already has a repository with the right name, that is a fork of the target repository and we have permission to push there.
 - Or the user does not have a repository with the right name, but it can be created as a fork of the target.
 
 This is automatic, NuKeeper will find the fork, or attempt to create it if it does not exist.
@@ -209,13 +209,13 @@ In the `SingleRepositoryOnly`, only the single-repository workflow will be tried
 
 If NuKeeper does not find a repository to push to, it will fail to process the upstream repository.
 
-Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the fork workflow. Contributing to an open-source project starts with forking the repo to your own github account.
+Public open-source projects on `github.com` that allow PRs from any outside user are very unlikely to allow that outsider to push to the project's repository, and so this case usually uses the fork workflow. Contributing to an open-source project starts with forking the repo to your own GitHub account.
 
 Some organisations use the single-repository workflow, with all team members allowed to push to the shared repository. This is simpler in most ways.
 
 ## Limitations and warnings
 
-NuKeeper works with github and git, no other source control systems are supported. You can however use the public `github.com`, or an internal hosted github instance by specifying its location with the `-api` option.
+NuKeeper works with GitHub and git, no other source control systems are supported. You can however use the public `github.com`, or an internal hosted GitHub instance by specifying its location with the `-api` option.
 
 You will need the command line version of `dotnet` installed.
 
