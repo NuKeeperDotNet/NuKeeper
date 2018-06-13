@@ -4,6 +4,7 @@ namespace NuKeeper.Configuration
     {
         Repository,
         Organisation,
-        Inspect
+        Inspect,
+        Update
     }
 }

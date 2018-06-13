@@ -26,7 +26,21 @@ Automate the routine task of discovering and applying NuGet package updates.
 
 ## How
 
-Written in .Net core, using http APIs and command-line tools.
+NuKeepee is written in .Net core, using HTTP APIs and command-line tools.
+
+Libraries:
+ * [LibGit2Sharp](https://www.nuget.org/packages/LibGit2Sharp) for git automation
+ * [Octokit](https://www.nuget.org/packages/Octokit/) for GitHub automation
+ * [NuGet.Protocol.Core.v3](https://www.nuget.org/packages/NuGet.Protocol.Core.v3/) for nuget api queries
+
+Command lines called: `nuget.exe` and/or `dotnet`.
+
+NuKeeper can operate on Visual Studio 2017 style projects in cross-platform .NET Core with `<PackageReference>` data in the `.csproj` file, and on Visual Studio 2015 style projects with a package data in `packages.config` file.
+
+NuKeeper will also work in `.vbproj` files.
+
+NuKeeper will invoke `dotnet` or `NuGet.exe` as needed to update packages. NuKeeper can run on both Windows or Linux. However since `NuGet.exe` runs only on Windows, Visual Studio 2015 style, windows-only projects can only be worked with on Windows. The fix to this is to update these projects to the new `<PackageReference>` style, so that they can be worked with using `dotnet` instead of `NuGet.exe`.
+
 
 ## Usage
 
@@ -55,6 +69,11 @@ The `dir` option can be used to specify the folder to inspect, otherwise the cur
 ```
 $ dotnet run mode=inspect dir=c:\code\MyProject
 ```
+
+### Update mode
+
+Update mode is used to look at files already present on a file system and apply an update locally, without any git or github interaction. A git token is not needed.
+
 
 ### Environment Variables
 
@@ -96,12 +115,12 @@ $ dotnet run mode=inspect dir=c:\code\MyProject
  * *fork_mode* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below.
  * *report_mode* Values are `Off`, `On`, `ReportOnly`. This setting controls if a CSV report file of possible updates is generated. The default value `Off` means that no report is generated. `On` will generate it and then proceed with the run, `ReportOnly` is used to generate the report and then exit without making any PRs.
 
- *  *min_package_age* In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age. 
+ *  *min_package_age* In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.
 The default is 7 days.
-This age is the duration between the published date of the selected package update and now. 
- A value can be expressed in command options as an integer and a unit suffix, 
+This age is the duration between the published date of the selected package update and now.
+ A value can be expressed in command options as an integer and a unit suffix,
 where the unit is one of `h` for hour, `d` for days, `w` for weeks. A zero with no unit is also allowed.
-Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks. 
+Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
  * *labels* Semicolon-separated list of labels to apply to GitHub pull requests.
 
 ### Command-line arguments
@@ -125,7 +144,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 | dir                              | No                         |
 | labels                           | No                         |
 
- * *mode* One of `repository`, `organisation`, `inspect`, or synonyms `repo` and `org`. In `organisation` mode, all the repositories in that organisation will be processed.
+ * *mode* One of `repository`, `organisation`, `inspect`, `update` or synonyms `repo` and `org`.
  * *t* Overrides `NuKeeper_github_token` in environment variables.
  * *github_repository_uri* The repository to scan. Required in `repository` mode, not used `organisation` mode. Aliased to `repo`.
  * *github_organisation_name* the organisation to scan. Required in `organisation` mode, not used in `repository` mode. Aliased to `org`.
@@ -200,7 +219,7 @@ NuKeeper works with github and git, no other source control systems are supporte
 
 You will need the command line version of `dotnet` installed.
 
-NuKeeper runs on both Windows and linux. However on Linux, only .NET core project updates are supported. This is due to the older `.csproj` and `packages.config` file format using the `nuget.exe` tool, which is windows only. 
+NuKeeper runs on both Windows and linux. However on Linux, only .NET core project updates are supported. This is due to the older `.csproj` and `packages.config` file format using the `nuget.exe` tool, which is windows only.
 
 For projects using `packages.config`, `NuGet.exe` no longer runs `install.ps1` and `uninstall.ps1` scripts from command line.
 Those are still executed from Visual Studio, resulting in different behaviour for packages relying on this functionality.

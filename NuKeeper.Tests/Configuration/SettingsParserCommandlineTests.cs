@@ -422,6 +422,31 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.Directory, Is.EqualTo("/foo/bar"));
         }
 
+        [Test]
+        public void ValidUpdateCommandLineIsParsed()
+        {
+            var commandLine = ValidUpdateCommandLine();
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Update));
+        }
+
+        [Test]
+        public void UpdateCommandLineWithDirIsParsed()
+        {
+            var commandLine = ValidUpdateCommandLine()
+                .Append("dir=/foo/bar");
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.ModalSettings, Is.Not.Null);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Update));
+            Assert.That(settings.UserSettings.Directory, Is.EqualTo("/foo/bar"));
+        }
+
+
         private static IEnumerable<string> ValidRepoCommandLine()
         {
             return new List<string>
@@ -447,6 +472,14 @@ namespace NuKeeper.Tests.Configuration
             return new List<string>
             {
                 "mode=inspect"
+            };
+        }
+
+        private static IEnumerable<string> ValidUpdateCommandLine()
+        {
+            return new List<string>
+            {
+                "mode=update"
             };
         }
 

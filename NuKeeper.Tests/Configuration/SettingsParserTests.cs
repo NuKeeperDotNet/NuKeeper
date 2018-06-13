@@ -106,6 +106,20 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("fish"));
         }
 
+        [Test]
+        public void ValidUpdateConfigIsParsed()
+        {
+            var raw = ValidUpdateSettings();
+
+            var settings = SettingsParser.ParseToSettings(raw);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Update));
+            Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+        }
+
+
         private static RawConfiguration ValidRepoSettings()
         {
             return new RawConfiguration
@@ -151,6 +165,19 @@ namespace NuKeeper.Tests.Configuration
                 Labels = "nukeeper"
             };
         }
+
+        private static RawConfiguration ValidUpdateSettings()
+        {
+            return new RawConfiguration
+            {
+                NuGetSources = "https://api.nuget.org/v3/index.json",
+                Mode = "update",
+                LogLevel = LogLevel.Info,
+                ReportMode = ReportMode.Off,
+                Labels = "nukeeper"
+            };
+        }
+
 
         private static void AssertSettingsNotNull(SettingsContainer settings)
         {

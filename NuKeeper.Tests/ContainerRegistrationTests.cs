@@ -1,6 +1,7 @@
 using System;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Local;
 using NuKeeper.Update;
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ namespace NuKeeper.Tests
         {
             var container = ContainerRegistration.Init(MakeValidSettings());
 
-            var inspector = container.GetInstance<Inspector>();
+            var inspector = container.GetInstance<LocalEngine>();
 
             Assert.That(inspector, Is.Not.Null);
         }

@@ -9,5 +9,6 @@ namespace NuKeeper.Configuration
         public const string Org = "org";
 
         public const string Inspect = "inspect";
+        public const string Update = "update";
     }
 }
