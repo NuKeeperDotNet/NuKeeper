@@ -1,6 +1,7 @@
 using System;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Local;
 using NuKeeper.Update;
 using NUnit.Framework;
 

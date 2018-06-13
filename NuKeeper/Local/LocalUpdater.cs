@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Update.Selection;
-using NuKeeper.Update;
 using NuKeeper.Inspection.Report;
+using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Update;
+using NuKeeper.Update.Selection;
 
-namespace NuKeeper
+namespace NuKeeper.Local
 {
     public class LocalUpdater : ILocalUpdater
     {

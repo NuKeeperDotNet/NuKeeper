@@ -1,16 +1,16 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
-using System.IO;
-using System.Threading.Tasks;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
-using System.Linq;
 
-namespace NuKeeper
+namespace NuKeeper.Local
 {
     public class LocalEngine
     {

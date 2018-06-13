@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Local;
 
 namespace NuKeeper
 {

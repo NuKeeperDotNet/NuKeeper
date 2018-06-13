@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper
+namespace NuKeeper.Local
 {
     public interface ILocalUpdater
     {

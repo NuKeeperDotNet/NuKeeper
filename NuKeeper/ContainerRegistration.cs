@@ -2,6 +2,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Github;
+using NuKeeper.Local;
 using SimpleInjector;
 
 namespace NuKeeper
