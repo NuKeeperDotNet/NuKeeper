@@ -26,14 +26,21 @@ Automate the routine task of discovering and applying NuGet package updates.
 
 ## How
 
-Written in .Net core, using http APIs and command-line tools.
+NuKeepee is written in .Net core, using HTTP APIs and command-line tools.
 
 Libraries:
  * [LibGit2Sharp](https://www.nuget.org/packages/LibGit2Sharp) for git automation
  * [Octokit](https://www.nuget.org/packages/Octokit/) for GitHub automation
  * [NuGet.Protocol.Core.v3](https://www.nuget.org/packages/NuGet.Protocol.Core.v3/) for nuget api queries
 
- Command lines called: `nuget.exe` and/or `dotnet`.
+Command lines called: `nuget.exe` and/or `dotnet`.
+
+NuKeeper can operate on Visual Studio 2017 style projects in cross-platform .NET Core with `<PackageReference>` data in the `.csproj` file, and on Visual Studio 2015 style projects with a package data in `packages.config` file.
+
+NuKeeper will also work in `.vbproj` files.
+
+NuKeeper will invoke `dotnet` or `NuGet.exe` as needed to update packages. NuKeeper can run on both Windows or Linux. However since `NuGet.exe` runs only on Windows, Visual Studio 2015 style, windows-only projects can only be worked with on Windows. The fix to this is to update these projects to the new `<PackageReference>` style, so that they can be worked with using `dotnet` instead of `NuGet.exe`.
+
 
 ## Usage
 
