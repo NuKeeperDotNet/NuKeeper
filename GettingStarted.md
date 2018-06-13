@@ -4,7 +4,7 @@
 
 NuKeeper can be [found on NuGet as a global tool](https://www.nuget.org/packages/NuKeeper/). The [source is on GitHub](https://github.com/NuKeeperDotNet/NuKeeper).
 
-You will first need .NET Core 2.1 installed. (TODO link!)
+You will first need [.NET Core 2.1 installed](https://www.microsoft.com/net).
 
 Install NuKeeper with:
 
