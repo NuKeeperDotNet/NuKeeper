@@ -2,7 +2,7 @@
 
 ## Getting NuKeeper
 
-NuKeeper can be [found on NuGet as a global tool](https://www.nuget.org/packages/NuKeeper/). The [source is on GitHub](https://github.com/NuKeeperDotNet/NuKeeper).
+NuKeeper [can be found on NuGet as a global tool](https://www.nuget.org/packages/NuKeeper/). The [source is on GitHub](https://github.com/NuKeeperDotNet/NuKeeper).
 
 You will first need [.NET Core 2.1 installed](https://www.microsoft.com/net).
 
@@ -75,12 +75,13 @@ See below for more on `i=pattern`.
 
 ### Repository mode
 
-Use repository mode to raise multiple pull requests against a github repository. The repository does not need to present on the file system beforehand. It will be fetched to a temporary folder.
+Use repository mode to raise multiple pull requests against a GitHub repository. The repository does not need to present on the file system beforehand. It will be fetched to a temporary folder.
 
 If you run these command lines regularly, you can automatically get update pull requests [like this one](https://github.com/NuKeeperDotNet/NuKeeper/pull/280) and always keep a project's dependencies up to date.
 
+Raising a pull request is intended to hook into the automated tests and manual review process that you use. You can then choose to merge or reject the pull rquest based on the outcome.
 
-In order to work with github repositories, you will first need [a GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+In order to work with GitHub repositories, you will first need [a GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
 
 ````
 NuKeeper mode=repository github_repository_uri=https://github.com/NuKeeperDotNet/NuKeeper.git t=mygithubtoken
@@ -88,19 +89,19 @@ NuKeeper mode=repository github_repository_uri=https://github.com/NuKeeperDotNet
 
 #### Hidden token
 
-The github token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will automatically read it from there.
+The GitHub token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the environment variable `NuKeeper_github_token` and NuKeeper will automatically read it from there.
 
 ````
 set NuKeeper_github_token=mygithubtoken
 ````
 
-#### Custom github api server
+#### Custom GitHub api server
 
-If you have a a different github server, e.g. one hosted inside your organisation, you need to find out where its api root url is. You can specify it to Nukeeper with e.g. `api=https://github.mycompany.com/api/v3`. The default is the public aspi at `https://api.github.com`
+If you have a a different GitHub server, e.g. one hosted inside your organisation, you need to find out where its api root url is. You can specify it to Nukeeper with e.g. `api=https://github.mycompany.com/api/v3`. The default is the public aspi at `https://api.github.com`
 
-#### Custom nuget feeds
+#### Custom NuGet feeds
 
-If you have an internal nuget package feed, then you can specify a list of nuget sources on the command line. e.g. `sources=https://api.nuget.org/v3/index.json;http://packages.mycompany.com/nugetfeed`
+If you have an internal NugGet package feed, then you can specify a list of NuGet sources on the command line. e.g. `sources=https://api.nuget.org/v3/index.json;http://packages.mycompany.com/nugetfeed`
 
 If you override this, you can chose to include the public `api.nuget.org` feed or not. You may not need to, if your internal feed proxies this.
 
@@ -131,13 +132,13 @@ Exclude ( `e=pattern` ) specifies that packages that match the pattern will not 
 
 The patterns are regular expressions. This is not a regular expression tutorial, but it is worth knowing a few common ways to use it:
 
- * By default, it is substring match. e.g. `i=NLog` will include all package names that contain the text `NLog` anywhere.
- * You can "anchor" the match to esure that the package name starts and/or ends with the specified text. Using both start and end anchors means that it must be an exact match for the whole package name. e.g. `i=^NLog$` will include only the package `NLog`.
+ * By default, it is substring match. e.g. `i=NLog` will include all package names that contain the text `NLog`.
+ * You can "anchor" the match to ensure that the package name starts and/or ends with the specified text. Using both start and end anchors means that it must be an exact match for the whole package name. e.g. `i=^NLog$` will include only the package `NLog`.
  * You can use `|` as an "or" to match one of several things. However since on the commandline the `|` has special meaning to pipe command output, you have to escape it as `^|`. e.g.  exclude updates to framework packages: `e=(Microsoft^|System^|NETStandard^|AspNet)`
 
 ### Organisation mode
 
-Use organisation mode to raise multiple PRs against multiple github repositories.
+Use organisation mode to raise multiple pull requests against multiple GitHub repositories within the same "organisation" grouping.
 
 ````
 NuKeeper mode=org org=myteam
