@@ -23,7 +23,7 @@ namespace NuKeeper
             {
                 case RunMode.Inspect:
                 case RunMode.Update:
-                    var inpector = container.GetInstance<Inspector>();
+                    var inpector = container.GetInstance<LocalEngine>();
                     await inpector.Run(settings);
                     break;
 

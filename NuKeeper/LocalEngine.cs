@@ -12,14 +12,14 @@ using System.Linq;
 
 namespace NuKeeper
 {
-    public class Inspector
+    public class LocalEngine
     {
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
         private readonly ILocalUpdater _updater;
         private readonly INuKeeperLogger _logger;
 
-        public Inspector(
+        public LocalEngine(
             IUpdateFinder updateFinder,
             IPackageUpdateSetSort sorter,
             ILocalUpdater updater,
