@@ -140,7 +140,7 @@ The patterns are regular expressions. This is not a regular expression tutorial,
 
 ### Organisation mode
 
-Use organisation mode to raise multiple pull requests against multiple GitHub repositories within the same "organisation" grouping.
+Use organisation mode to raise multiple pull requests against multiple GitHub repositories within the same [GitHub Organisation](https://help.github.com/articles/about-organizations/).
 
 ````
 NuKeeper mode=org org=myteam
