@@ -40,6 +40,8 @@ Microsoft.Extensions.Configuration.Json to 2.1.0 from 2.0.2 in 1 place since 13 
 Swashbuckle.AspNetCore to 2.5.0 from 2.4.0 in 1 place since 6 days ago.
 ````
 
+[LibYear](https://libyear.com/) is "a simple measure of software dependency freshness". [There is a similar tool for .NET](https://stevedesmond.ca/blog/happy-libyear).
+
 `NuKeeper` with no `mode` argument is short for `NuKeeper mode=inspect`
 
 You can inspect a different folder:
@@ -133,7 +135,7 @@ Exclude ( `e=pattern` ) specifies that packages that match the pattern will not 
 The patterns are regular expressions. This is not a regular expression tutorial, but it is worth knowing a few common ways to use it:
 
  * By default, it is substring match. e.g. `i=NLog` will include all package names that contain the text `NLog`.
- * You can "anchor" the match to ensure that the package name starts and/or ends with the specified text. Using both start and end anchors means that it must be an exact match for the whole package name. e.g. `i=^NLog$` will include only the package `NLog`.
+ * You can [anchor](https://docs.microsoft.com/en-us/dotnet/standard/base-types/anchors-in-regular-expressions) the match with `^` at the start or `$` at the end to ensure that the package name starts and/or ends with the specified text. Using both start and end anchors means that it must be an exact match for the whole package name. e.g. `i=^NLog$` will include only the package `NLog`.
  * You can use `|` as an "or" to match one of several things. However since on the command line the `|` has special meaning to pipe command output, you have to escape it as `^|`. e.g.  exclude updates to framework packages: `e=(Microsoft^|System^|NETStandard^|AspNet)`
 
 ### Organisation mode
