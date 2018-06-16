@@ -74,6 +74,27 @@ NuKeeper mode=update i=SomePackageName
 
 See below for more on `i=pattern`.
 
+I do not want major version changes, only minor or patch version changes.
+
+````
+NuKeeper mode=update change=minor
+````
+
+I am cautious, only want updates that have been available for 3 weeks or more.
+
+````
+NuKeeper mode=update age=3w
+````
+
+You can specify minimum update age in weeks (`w`), days (`d`) or hours (`h`).
+
+I am living on the edge, I will take updates as soon as they are available.
+
+````
+NuKeeper mode=update age=0
+````
+
+
 
 ### Repository mode
 
