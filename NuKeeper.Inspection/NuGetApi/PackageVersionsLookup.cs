@@ -7,23 +7,27 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
     public class PackageVersionsLookup : IPackageVersionsLookup
     {
         private readonly ILogger _logger;
-        private readonly IReadOnlyCollection<string> _sources;
+        private readonly NuGetSources _sources;
 
         public PackageVersionsLookup(ILogger logger, PackageUpdateLookupSettings settings)
         {
             _logger = logger;
-            _sources = settings.NugetSources;
+            _sources = settings.NuGetSources;
         }
 
         public async Task<IEnumerable<PackageSearchMedatadata>> Lookup(string packageName)
         {
-            var results = await Task.WhenAll(_sources.Select(source => RunFinderForSource(packageName, source)));
+            var tasks = _sources.Items.Select(s => RunFinderForSource(packageName, s));
+
+            var results = await Task.WhenAll(tasks);
+
             return results
                 .SelectMany(r => r)
                 .Where(p => p?.Identity?.Version != null);

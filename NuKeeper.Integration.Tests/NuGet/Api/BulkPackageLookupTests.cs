@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
@@ -104,10 +105,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             return new PackageUpdateLookupSettings
             {
-                NugetSources = new List<string>
-                {
-                    "https://api.nuget.org/v3/index.json"
-                }
+                NuGetSources = new NuGetSources("https://api.nuget.org/v3/index.json")
             };
         }
 

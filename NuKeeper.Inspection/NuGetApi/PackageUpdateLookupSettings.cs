@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
@@ -6,6 +6,6 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         public VersionChange AllowedChange { get; set; }
 
-        public IReadOnlyCollection<string> NugetSources { get; set; }
+        public NuGetSources NuGetSources { get; set; }
     }
 }

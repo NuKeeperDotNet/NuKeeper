@@ -1,5 +1,3 @@
-
-
 using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.Sources
@@ -8,6 +6,8 @@ namespace NuKeeper.Inspection.Sources
     {
         private readonly NuGetSources _fromSettings;
         private readonly NugetConfigFileReader _reader;
+
+        private const string DefaultFeed = "https://api.nuget.org/v3/index.json";
 
         public NugetSourcesFactory(
             NuGetSources fromSettings,
@@ -31,12 +31,7 @@ namespace NuKeeper.Inspection.Sources
                 return fromConfigFile;
             }
 
-            return DefaultFeed();
-        }
-
-        private NuGetSources DefaultFeed()
-        {
-            return new NuGetSources("https://api.nuget.org/v3/index.json");
+            return new NuGetSources(DefaultFeed);
         }
     }
 }
