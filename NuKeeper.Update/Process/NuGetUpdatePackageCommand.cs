@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process

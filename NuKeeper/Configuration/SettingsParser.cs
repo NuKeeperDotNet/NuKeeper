@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
-using NuKeeper.Update;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Configuration
 {

@@ -1,12 +1,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
+using NUnit.Framework;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.Update;
-using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {

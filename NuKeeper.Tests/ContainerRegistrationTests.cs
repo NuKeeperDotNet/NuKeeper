@@ -1,9 +1,9 @@
 using System;
+using NUnit.Framework;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Local;
-using NuKeeper.Update;
-using NUnit.Framework;
 
 namespace NuKeeper.Tests
 {

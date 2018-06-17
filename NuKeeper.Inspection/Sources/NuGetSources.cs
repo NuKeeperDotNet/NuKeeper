@@ -3,7 +3,7 @@ using NuKeeper.Inspection.Formats;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuKeeper.Update
+namespace NuKeeper.Inspection.Sources
 {
     public class NuGetSources
     {

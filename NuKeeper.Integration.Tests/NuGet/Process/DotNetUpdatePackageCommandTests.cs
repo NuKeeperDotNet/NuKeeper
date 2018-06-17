@@ -2,11 +2,10 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 

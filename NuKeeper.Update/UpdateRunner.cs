@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 
 namespace NuKeeper.Update
