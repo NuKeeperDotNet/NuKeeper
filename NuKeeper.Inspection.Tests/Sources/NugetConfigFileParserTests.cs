@@ -1,6 +1,8 @@
 using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace NuKeeper.Inspection.Tests.Sources
 {
@@ -14,7 +16,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
 
-            var sources = parser.Parse(data);
+            var sources = parser.Parse(ToStream(data));
 
             Assert.That(sources, Is.Null);
         }
@@ -26,7 +28,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
 
-            var sources = parser.Parse(data);
+            var sources = parser.Parse(ToStream(data));
 
             Assert.That(sources, Is.Null);
         }
@@ -44,7 +46,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
 
-            var sources = parser.Parse(data);
+            var sources = parser.Parse(ToStream(data));
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(1));
@@ -65,7 +67,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
 
-            var sources = parser.Parse(data);
+            var sources = parser.Parse(ToStream(data));
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(2));
@@ -85,10 +87,16 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
 
-            var sources = parser.Parse(data);
+            var sources = parser.Parse(ToStream(data));
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(1));
+        }
+
+        private static Stream ToStream(string str, Encoding enc = null)
+        {
+            enc = enc ?? Encoding.UTF8;
+            return new MemoryStream(enc.GetBytes(str ?? ""));
         }
     }
 }

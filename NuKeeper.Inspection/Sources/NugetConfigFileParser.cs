@@ -1,5 +1,6 @@
 using NuKeeper.Inspection.Logging;
 using System;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -14,18 +15,13 @@ namespace NuKeeper.Inspection.Sources
             _logger = logger;
         }
 
-        public NuGetSources Parse(string data)
+        public NuGetSources Parse(Stream fileContents)
         {
-            if (string.IsNullOrWhiteSpace(data))
-            {
-                return null;
-            }
-
             XDocument xml;
 
             try
             {
-                xml = XDocument.Parse(data);
+                xml = XDocument.Load(fileContents);
             }
             catch (Exception ex)
             {
