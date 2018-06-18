@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
@@ -19,14 +20,16 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         public async Task<Dictionary<string, PackageLookupResult>> FindVersionUpdates(
-            IEnumerable<PackageIdentity> packages, VersionChange allowedChange)
+            IEnumerable<PackageIdentity> packages,
+            NuGetSources sources,
+            VersionChange allowedChange)
         {
             var latestOfEach = packages
                 .GroupBy(pi => pi.Id)
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
-                .Select(id => _packageLookup.FindVersionUpdate(id, allowedChange))
+                .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);

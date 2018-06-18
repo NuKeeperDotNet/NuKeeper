@@ -22,6 +22,8 @@ namespace NuKeeper.Inspection.Sources
             Items = items.ToList();
         }
 
+        public static NuGetSources GlobalFeed => new NuGetSources("https://api.nuget.org/v3/index.json");
+
         public IReadOnlyCollection<string> Items { get; }
 
         public string CommandLine(string prefix)

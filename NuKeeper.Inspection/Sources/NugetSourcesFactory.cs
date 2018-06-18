@@ -7,8 +7,6 @@ namespace NuKeeper.Inspection.Sources
         private readonly NuGetSources _fromSettings;
         private readonly NugetConfigFileReader _reader;
 
-        private const string DefaultFeed = "https://api.nuget.org/v3/index.json";
-
         public NugetSourcesFactory(
             NuGetSources fromSettings,
             NugetConfigFileReader reader)
@@ -31,7 +29,7 @@ namespace NuKeeper.Inspection.Sources
                 return fromConfigFile;
             }
 
-            return new NuGetSources(DefaultFeed);
+            return NuGetSources.GlobalFeed;
         }
     }
 }

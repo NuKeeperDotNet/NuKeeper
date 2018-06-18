@@ -15,14 +15,6 @@ namespace NuKeeper
     {
         public static void Register(Container container, SettingsContainer settings)
         {
-            var packageLookupSettings = new PackageUpdateLookupSettings
-            {
-                AllowedChange = settings.UserSettings.AllowedChange,
-                NuGetSources = settings.UserSettings.NuGetSources
-            };
-
-            container.RegisterInstance(packageLookupSettings);
-
             container.RegisterInstance<INuKeeperLogger>(
                 new ConsoleLogger(settings.UserSettings.LogLevel));
 

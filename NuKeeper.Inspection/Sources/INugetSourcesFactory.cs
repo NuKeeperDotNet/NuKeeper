@@ -1,4 +1,4 @@
-﻿using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.Sources
 {

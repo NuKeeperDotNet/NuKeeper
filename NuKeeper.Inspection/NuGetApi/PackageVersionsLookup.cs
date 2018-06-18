@@ -14,23 +14,24 @@ namespace NuKeeper.Inspection.NuGetApi
     public class PackageVersionsLookup : IPackageVersionsLookup
     {
         private readonly ILogger _logger;
-        private readonly NuGetSources _sources;
 
-        public PackageVersionsLookup(ILogger logger, PackageUpdateLookupSettings settings)
+        public PackageVersionsLookup(ILogger logger)
         {
             _logger = logger;
-            _sources = settings.NuGetSources;
         }
 
-        public async Task<IEnumerable<PackageSearchMedatadata>> Lookup(string packageName)
+        public async Task<IReadOnlyCollection<PackageSearchMedatadata>> Lookup(
+            string packageName,
+            NuGetSources sources)
         {
-            var tasks = _sources.Items.Select(s => RunFinderForSource(packageName, s));
+            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, s));
 
             var results = await Task.WhenAll(tasks);
 
             return results
                 .SelectMany(r => r)
-                .Where(p => p?.Identity?.Version != null);
+                .Where(p => p?.Identity?.Version != null)
+                .ToList();
         }
 
         private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, string source)

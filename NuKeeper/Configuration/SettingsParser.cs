@@ -209,6 +209,11 @@ namespace NuKeeper.Configuration
 
         private static NuGetSources ReadNuGetSources(RawConfiguration settings)
         {
+            if (string.IsNullOrWhiteSpace(settings.NuGetSources))
+            {
+                return null;
+            }
+
             var items = ReadMultilineSetting(settings.NuGetSources);
             return new NuGetSources(items);
         }

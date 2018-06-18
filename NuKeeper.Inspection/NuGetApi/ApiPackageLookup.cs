@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
@@ -13,9 +14,11 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         public async Task<PackageLookupResult> FindVersionUpdate(
-            PackageIdentity package, VersionChange allowedChange)
+            PackageIdentity package,
+            NuGetSources sources,
+            VersionChange allowedChange)
         {
-            var foundVersions = await _packageVersionsLookup.Lookup(package.Id);
+            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
     }

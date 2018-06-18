@@ -7,6 +7,6 @@ namespace NuKeeper.Inspection
 {
     public interface IUpdateFinder
     {
-        Task<List<PackageUpdateSet>> FindPackageUpdateSets(IFolder workingFolder);
+        Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(IFolder workingFolder);
     }
 }
