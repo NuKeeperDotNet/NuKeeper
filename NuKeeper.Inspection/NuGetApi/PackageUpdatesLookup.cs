@@ -9,25 +9,23 @@ namespace NuKeeper.Inspection.NuGetApi
     public class PackageUpdatesLookup : IPackageUpdatesLookup
     {
         private readonly IBulkPackageLookup _bulkPackageLookup;
-        private readonly VersionChange _allowedChange;
 
-        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup, PackageUpdateLookupSettings settings)
+        public PackageUpdatesLookup(IBulkPackageLookup bulkPackageLookup)
         {
             _bulkPackageLookup = bulkPackageLookup;
-            _allowedChange = settings.AllowedChange;
         }
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> FindUpdatesForPackages(
             IReadOnlyCollection<PackageInProject> packages,
-            NuGetSources sources
-            )
+            NuGetSources sources,
+            VersionChange allowedChange)
         {
             var packageIds = packages
                 .Select(p => p.Identity)
                 .Distinct();
 
             var latestVersions = await _bulkPackageLookup.FindVersionUpdates(
-                packageIds, sources, _allowedChange);
+                packageIds, sources, allowedChange);
 
             var results = new List<PackageUpdateSet>();
 

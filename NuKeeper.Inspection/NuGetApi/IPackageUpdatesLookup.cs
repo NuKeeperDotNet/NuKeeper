@@ -9,6 +9,7 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> FindUpdatesForPackages(
             IReadOnlyCollection<PackageInProject> packages,
-            NuGetSources sources);
+            NuGetSources sources,
+            VersionChange allowedChange);
     }
 }

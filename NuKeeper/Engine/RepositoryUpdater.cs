@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
         {
             GitInit(git, repository);
 
-            var updates = await _updateFinder.FindPackageUpdateSets(git.WorkingFolder);
+            var updates = await _updateFinder.FindPackageUpdateSets(git.WorkingFolder, _settings.AllowedChange);
 
             _logger.Verbose($"Report mode is {_settings.ReportMode}");
             switch (_settings.ReportMode)
