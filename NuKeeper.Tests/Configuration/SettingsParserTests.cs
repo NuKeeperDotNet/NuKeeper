@@ -85,9 +85,7 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
-            var sources = settings.UserSettings.NuGetSources;
-            Assert.That(sources.Items.Count, Is.EqualTo(1));
-            Assert.That(sources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
+            Assert.That(settings.UserSettings.NuGetSources, Is.Null);
         }
 
         [Test]

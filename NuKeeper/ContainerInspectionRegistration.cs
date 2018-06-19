@@ -8,6 +8,7 @@ using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper
 {
@@ -30,6 +31,7 @@ namespace NuKeeper
             container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<IUpdateFinder, UpdateFinder>();
+            container.Register<INugetSourcesReader, NugetSourcesReader>();
 
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, CsvFileReporter>();
