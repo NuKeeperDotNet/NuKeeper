@@ -31,7 +31,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         [Test]
         public async Task ShouldUpdateDotnetClassicProject()
         {
-            const string packageSource = "https://api.nuget.org/v3/index.json";
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";
             const string expectedPackageString =
@@ -59,12 +58,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var command =
                 new Update.Process.NuGetUpdatePackageCommand(
                     new NullNuKeeperLogger(),
-                    new NuGetSources(packageSource));
+                    NuGetSources.GlobalFeed);
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), packageSource, packageToUpdate);
+            await command.Invoke(new NuGetVersion(newPackageVersion), NuGetSources.GlobalFeedUrl, packageToUpdate);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

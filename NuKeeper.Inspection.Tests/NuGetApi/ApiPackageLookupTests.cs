@@ -21,7 +21,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var updates = await lookup.FindVersionUpdate(
                 CurrentVersion123("TestPackage"),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(updates, Is.Not.Null);
@@ -43,7 +43,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var updates = await lookup.FindVersionUpdate(
                 CurrentVersion123("TestPackage"),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(updates, Is.Not.Null);
@@ -68,7 +68,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var updates = await lookup.FindVersionUpdate(
                 CurrentVersion123("TestPackage"),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
@@ -91,7 +91,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var updates = await lookup.FindVersionUpdate(
                 CurrentVersion123("TestPackage"),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Minor);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
@@ -114,7 +114,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var updates = await lookup.FindVersionUpdate(
                 CurrentVersion123("TestPackage"),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Patch);
 
             AssertPackagesIdentityIs(updates, "TestPackage");

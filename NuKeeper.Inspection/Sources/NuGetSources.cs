@@ -22,7 +22,9 @@ namespace NuKeeper.Inspection.Sources
             Items = items.ToList();
         }
 
-        public static NuGetSources GlobalFeed => new NuGetSources("https://api.nuget.org/v3/index.json");
+        public static string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
+
+        public static NuGetSources GlobalFeed => new NuGetSources(GlobalFeedUrl);
 
         public IReadOnlyCollection<string> Items { get; }
 

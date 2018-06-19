@@ -41,7 +41,7 @@ namespace NuKeeper.Tests
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
             settings.UserSettings = new UserSettings
                 {
-                    NuGetSources = new NuGetSources("a.source")
+                    NuGetSources = NuGetSources.GlobalFeed
                 };
             return settings;
         }

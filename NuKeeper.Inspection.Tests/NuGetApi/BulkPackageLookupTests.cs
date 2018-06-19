@@ -22,7 +22,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var results = await bulkLookup.FindVersionUpdates(
                 Enumerable.Empty<PackageIdentity>(),
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
@@ -47,7 +47,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
 
             var results = await bulkLookup.FindVersionUpdates(queries,
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(results, Is.Not.Null);
@@ -71,7 +71,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
 
             await bulkLookup.FindVersionUpdates(queries,
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             await apiLookup.Received(1).FindVersionUpdate(
@@ -95,7 +95,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
 
             var results = await bulkLookup.FindVersionUpdates(queries,
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(results.Count, Is.EqualTo(2));
@@ -121,7 +121,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
 
             await bulkLookup.FindVersionUpdates(queries,
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             await apiLookup.Received(2).FindVersionUpdate(
@@ -144,7 +144,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
 
             var results = await bulkLookup.FindVersionUpdates(queries,
-                new NuGetSources("aSource"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             await apiLookup.Received(1).FindVersionUpdate(

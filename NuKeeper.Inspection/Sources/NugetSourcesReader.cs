@@ -1,21 +1,25 @@
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Sources
 {
-    public class NugetSourcesFactory : INugetSourcesFactory
+    public class NugetSourcesReader : INugetSourcesReader
     {
         private readonly NuGetSources _fromSettings;
         private readonly NugetConfigFileReader _reader;
+        private readonly INuKeeperLogger _logger;
 
-        public NugetSourcesFactory(
+        public NugetSourcesReader(
             NuGetSources fromSettings,
-            NugetConfigFileReader reader)
+            NugetConfigFileReader reader,
+            INuKeeperLogger logger)
         {
             _fromSettings = fromSettings;
             _reader = reader;
+            _logger = logger;
         }
 
-        public NuGetSources ReadNugetSources(IFolder workingFolder)
+        public NuGetSources Read(IFolder workingFolder)
         {
             if (_fromSettings != null)
             {
@@ -29,6 +33,7 @@ namespace NuKeeper.Inspection.Sources
                 return fromConfigFile;
             }
 
+            _logger.Verbose("Using default global NuGet feed");
             return NuGetSources.GlobalFeed;
         }
     }

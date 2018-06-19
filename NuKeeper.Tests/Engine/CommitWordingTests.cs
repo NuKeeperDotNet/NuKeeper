@@ -4,6 +4,7 @@ using NuGet.Versioning;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
@@ -11,8 +12,6 @@ namespace NuKeeper.Tests.Engine
     [TestFixture]
     public class CommitWordingTests
     {
-        private const string NugetSource = "https://api.nuget.org/v3/index.json";
-
         [Test]
         public void MarkPullRequestTitle_UpdateIsCorrect()
         {
@@ -291,7 +290,7 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, NugetSource, publishedDate, null);
+            var latest = new PackageSearchMedatadata(newPackage, NuGetSources.GlobalFeedUrl, publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -316,10 +315,10 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, NugetSource, publishedAt, null);
+            var latest = new PackageSearchMedatadata(latestId, NuGetSources.GlobalFeedUrl, publishedAt, null);
 
             var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), NugetSource, null, null);
+                NewPackageFooBar123(), NuGetSources.GlobalFeedUrl, null, null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
             return new PackageUpdateSet(updates, packages);

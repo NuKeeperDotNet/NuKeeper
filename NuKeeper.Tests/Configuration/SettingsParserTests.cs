@@ -125,7 +125,7 @@ namespace NuKeeper.Tests.Configuration
             return new RawConfiguration
             {
                 GithubApiEndpoint = new Uri("https://api.github.com"),
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "repository",
                 GithubRepositoryUri = new Uri("https://github.com/NuKeeperDotNet/NuKeeper"),
                 GithubToken = "abc123",
@@ -142,7 +142,7 @@ namespace NuKeeper.Tests.Configuration
             return new RawConfiguration
             {
                 GithubApiEndpoint = new Uri("https://api.github.com"),
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "organisation",
                 GithubOrganisationName = "NuKeeperDotNet",
                 GithubToken = "abc123",
@@ -158,7 +158,7 @@ namespace NuKeeper.Tests.Configuration
         {
             return new RawConfiguration
             {
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "inspect",
                 LogLevel = LogLevel.Info,
                 ReportMode = ReportMode.Off,
@@ -170,7 +170,7 @@ namespace NuKeeper.Tests.Configuration
         {
             return new RawConfiguration
             {
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "update",
                 LogLevel = LogLevel.Info,
                 ReportMode = ReportMode.Off,
