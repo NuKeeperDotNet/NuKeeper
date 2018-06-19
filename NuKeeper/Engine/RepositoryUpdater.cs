@@ -8,12 +8,14 @@ using NuKeeper.Inspection;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 
 namespace NuKeeper.Engine
 {
     public class RepositoryUpdater : IRepositoryUpdater
     {
+        private readonly INugetSourcesReader _nugetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
@@ -23,6 +25,7 @@ namespace NuKeeper.Engine
         private readonly UserSettings _settings;
 
         public RepositoryUpdater(
+            INugetSourcesReader nugetSourcesReader,
             IUpdateFinder updateFinder,
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
@@ -31,6 +34,7 @@ namespace NuKeeper.Engine
             IAvailableUpdatesReporter availableUpdatesReporter,
             UserSettings settings)
         {
+            _nugetSourcesReader = nugetSourcesReader;
             _updateFinder = updateFinder;
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
@@ -44,8 +48,10 @@ namespace NuKeeper.Engine
         {
             GitInit(git, repository);
 
+            var sources = _nugetSourcesReader.Read(git.WorkingFolder, _settings.NuGetSources);
+
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, _settings.AllowedChange, _settings.NuGetSources);
+                git.WorkingFolder, sources, _settings.AllowedChange);
 
             _logger.Verbose($"Report mode is {_settings.ReportMode}");
             switch (_settings.ReportMode)
@@ -82,9 +88,9 @@ namespace NuKeeper.Engine
                 return;
             }
 
-            await _solutionsRestore.Restore(git.WorkingFolder);
+            await _solutionsRestore.Restore(git.WorkingFolder, sources);
 
-            await UpdateAllTargets(git, repository, targetUpdates);
+            await UpdateAllTargets(git, repository, targetUpdates, sources);
 
             _logger.Info($"Done {targetUpdates.Count} Updates");
         }
@@ -98,11 +104,12 @@ namespace NuKeeper.Engine
 
         private async Task UpdateAllTargets(IGitDriver git,
             RepositoryData repository,
-            IEnumerable<PackageUpdateSet> targetUpdates)
+            IEnumerable<PackageUpdateSet> targetUpdates,
+            NuGetSources sources)
         {
             foreach (var updateSet in targetUpdates)
             {
-                await _packageUpdater.MakeUpdatePullRequest(git, updateSet, repository);
+                await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
             }
         }
     }

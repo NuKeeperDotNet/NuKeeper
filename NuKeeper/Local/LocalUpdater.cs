@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
 using NuKeeper.Update.Selection;
 
@@ -25,7 +26,9 @@ namespace NuKeeper.Local
             _logger = logger;
         }
 
-        public async Task ApplyAnUpdate(IReadOnlyCollection<PackageUpdateSet> updates)
+        public async Task ApplyAnUpdate(
+            IReadOnlyCollection<PackageUpdateSet> updates,
+            NuGetSources sources)
         {
             if (!updates.Any())
             {
@@ -46,7 +49,7 @@ namespace NuKeeper.Local
             var reporter = new ConsoleReporter();
             _logger.Terse("Updating " + reporter.Describe(candidate));
 
-            await _updateRunner.Update(candidate);
+            await _updateRunner.Update(candidate, sources);
         }
     }
 }

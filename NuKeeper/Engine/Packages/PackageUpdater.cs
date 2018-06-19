@@ -6,6 +6,7 @@ using NuKeeper.Git;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
 using Octokit;
 
@@ -33,6 +34,7 @@ namespace NuKeeper.Engine.Packages
         public async Task MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
+            NuGetSources sources,
             RepositoryData repository)
         {
             try
@@ -46,7 +48,7 @@ namespace NuKeeper.Engine.Packages
                 _logger.Verbose($"Using branch name: '{branchName}'");
                 git.CheckoutNewBranch(branchName);
 
-                await _updateRunner.Update(updateSet);
+                await _updateRunner.Update(updateSet, sources);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);

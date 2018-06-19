@@ -14,23 +14,21 @@ namespace NuKeeper.Inspection
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly IPackageUpdatesLookup _packageUpdatesLookup;
         private readonly INuKeeperLogger _logger;
-        private readonly INugetSourcesReader _nugetSourcesReader;
 
         public UpdateFinder(
             IRepositoryScanner repositoryScanner,
             IPackageUpdatesLookup packageUpdatesLookup,
-            INugetSourcesReader nugetSourcesReader,
             INuKeeperLogger logger)
         {
             _repositoryScanner = repositoryScanner;
             _packageUpdatesLookup = packageUpdatesLookup;
-            _nugetSourcesReader = nugetSourcesReader;
             _logger = logger;
         }
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
             IFolder workingFolder,
-            VersionChange allowedChange, NuGetSources overrideSources)
+            NuGetSources sources,
+            VersionChange allowedChange)
         {
             // scan for nuget packages
             var packages = _repositoryScanner.FindAllNuGetPackages(workingFolder)
@@ -38,11 +36,9 @@ namespace NuKeeper.Inspection
 
             _logger.Log(PackagesFoundLogger.Log(packages));
 
-            var nugetSources = _nugetSourcesReader.Read(workingFolder, overrideSources);
-
             // look for updates to these packages
             var updates = await _packageUpdatesLookup.FindUpdatesForPackages(
-                packages, nugetSources, allowedChange);
+                packages, sources, allowedChange);
 
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;

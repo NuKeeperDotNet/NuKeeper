@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Git;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -9,6 +10,7 @@ namespace NuKeeper.Engine.Packages
         Task MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
+            NuGetSources sources,
             RepositoryData repository);
     }
 }

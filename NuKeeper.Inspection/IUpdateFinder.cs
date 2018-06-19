@@ -11,6 +11,7 @@ namespace NuKeeper.Inspection
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
             IFolder workingFolder,
-            VersionChange allowedChange, NuGetSources overrideSources);
+            NuGetSources sources,
+            VersionChange allowedChange);
     }
 }
