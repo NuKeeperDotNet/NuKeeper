@@ -1,5 +1,6 @@
 using NuKeeper.Inspection.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -29,12 +30,31 @@ namespace NuKeeper.Inspection.Sources
                 return null;
             }
 
+            var packageSources = PackageSourceElements(xml);
+            if (packageSources == null)
+            {
+                _logger.Verbose("Did not find package sources in nuget.config file");
+                return null;
+            }
+
+            var values = SourceValues(packageSources);
+
+            if (values.Count == 0)
+            {
+                _logger.Verbose("nuget.config file contained no sources");
+                return null;
+            }
+
+            return new NuGetSources(values);
+        }
+
+        private static IEnumerable<XElement> PackageSourceElements(XDocument xml)
+        {
             var config = xml.Element("configuration");
             if (config == null)
             {
                 return null;
             }
-
 
             var sources = config.Element("packageSources");
             if (sources == null)
@@ -42,19 +62,15 @@ namespace NuKeeper.Inspection.Sources
                 return null;
             }
 
-            var adds = sources.Elements("add");
+            return sources.Elements("add");
+        }
 
-            var values = adds
+        private static List<string> SourceValues(IEnumerable<XElement> adds)
+        {
+            return adds
                 .Select(a => a.Attribute("value")?.Value)
-                .Where(v => ! string.IsNullOrWhiteSpace(v))
+                .Where(v => !string.IsNullOrWhiteSpace(v))
                 .ToList();
-
-            if (values.Count == 0)
-            {
-                return null;
-            }
-
-            return new NuGetSources(values);
         }
     }
 }

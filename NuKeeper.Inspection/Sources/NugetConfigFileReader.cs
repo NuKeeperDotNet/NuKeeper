@@ -28,12 +28,18 @@ namespace NuKeeper.Inspection.Sources
                 return null;
             }
 
+            return ReadFromFile(configFile);
+        }
+
+        private NuGetSources ReadFromFile(FileInfo configFile)
+        {
             using (var fileContents = File.OpenRead(configFile.FullName))
             {
+                _logger.Verbose($"Reading nuget.config file {configFile.FullName}");
                 var fromFile = _parser.Parse(fileContents);
-                if (fromFile != null && fromFile.Items.Count > 0)
+                if (fromFile != null)
                 {
-                    _logger.Verbose($"Read {fromFile.Items.Count} NuGet sources from file {configFile.FullName}");
+                    _logger.Verbose($"Read {fromFile.Items.Count} NuGet sources from file");
                     return fromFile;
                 }
             }
