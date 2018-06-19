@@ -14,6 +14,11 @@ namespace NuKeeper.Inspection.Sources
                 throw new ArgumentNullException(nameof(items));
             }
 
+            if (!items.Any())
+            {
+                throw new ArgumentException(nameof(items));
+            }
+
             Items = items.ToList();
         }
 

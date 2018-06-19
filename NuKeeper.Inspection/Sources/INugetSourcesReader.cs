@@ -4,6 +4,6 @@ namespace NuKeeper.Inspection.Sources
 {
     public interface INugetSourcesReader
     {
-        NuGetSources Read(IFolder workingFolder);
+        NuGetSources Read(IFolder workingFolder, NuGetSources overrideValues);
     }
 }

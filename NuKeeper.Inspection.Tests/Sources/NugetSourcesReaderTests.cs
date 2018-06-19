@@ -12,11 +12,11 @@ namespace NuKeeper.Inspection.Tests.Sources
         public void OverrideSourcesAreUsedWhenSupplied()
         {
             var overrrideSources = new NuGetSources("overrideA");
-            var reader = MakeNuGetSourcesReader(overrrideSources);
+            var reader = MakeNuGetSourcesReader();
 
             var ff = new FolderFactory(new NullNuKeeperLogger());
 
-            var result = reader.Read(ff.UniqueTemporaryFolder());
+            var result = reader.Read(ff.UniqueTemporaryFolder(), overrrideSources);
 
             Assert.That(result, Is.EqualTo(overrrideSources));
         }
@@ -24,9 +24,9 @@ namespace NuKeeper.Inspection.Tests.Sources
         [Test]
         public void GlobalFeedIsUsedAsLastResort()
         {
-            var reader = MakeNuGetSourcesReader(null);
+            var reader = MakeNuGetSourcesReader();
 
-            var result = reader.Read(TemporaryFolder());
+            var result = reader.Read(TemporaryFolder(), null);
 
             Assert.That(result.Items.Count, Is.EqualTo(1));
             Assert.That(result.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
@@ -43,13 +43,13 @@ namespace NuKeeper.Inspection.Tests.Sources
         [Test]
         public void ConfigFileIsUsed()
         {
-            var reader = MakeNuGetSourcesReader(null);
+            var reader = MakeNuGetSourcesReader();
 
             var folder = TemporaryFolder();
             var path = Path.Join(folder.FullPath, "nuget.config");
             File.WriteAllText(path, ConfigFileContents);
 
-            var result = reader.Read(folder);
+            var result = reader.Read(folder, null);
 
             Assert.That(result.Items.Count, Is.EqualTo(1));
             Assert.That(result.Items.First(), Is.EqualTo("https://fromFile1.com"));
@@ -59,13 +59,13 @@ namespace NuKeeper.Inspection.Tests.Sources
         [Test]
         public void SettingsOverridesConfigFile()
         {
-            var reader = MakeNuGetSourcesReader(new NuGetSources("https://fromConfigA.com"));
+            var reader = MakeNuGetSourcesReader();
 
             var folder = TemporaryFolder();
             var path = Path.Join(folder.FullPath, "nuget.config");
             File.WriteAllText(path, ConfigFileContents);
 
-            var result = reader.Read(folder);
+            var result = reader.Read(folder, new NuGetSources("https://fromConfigA.com"));
 
             Assert.That(result.Items.Count, Is.EqualTo(1));
             Assert.That(result.Items.First(), Is.EqualTo("https://fromConfigA.com"));
@@ -77,10 +77,10 @@ namespace NuKeeper.Inspection.Tests.Sources
             return ff.UniqueTemporaryFolder();
         }
 
-        private static INugetSourcesReader MakeNuGetSourcesReader(NuGetSources fallbackSources)
+        private static INugetSourcesReader MakeNuGetSourcesReader()
         {
             var logger = new NullNuKeeperLogger();
-            return new NugetSourcesReader(fallbackSources,
+            return new NugetSourcesReader(
                 new NugetConfigFileReader
                     (new NugetConfigFileParser(logger), logger), logger);
         }

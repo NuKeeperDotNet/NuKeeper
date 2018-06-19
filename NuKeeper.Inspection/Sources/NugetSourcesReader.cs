@@ -5,25 +5,22 @@ namespace NuKeeper.Inspection.Sources
 {
     public class NugetSourcesReader : INugetSourcesReader
     {
-        private readonly NuGetSources _fromSettings;
         private readonly NugetConfigFileReader _reader;
         private readonly INuKeeperLogger _logger;
 
         public NugetSourcesReader(
-            NuGetSources fromSettings,
             NugetConfigFileReader reader,
             INuKeeperLogger logger)
         {
-            _fromSettings = fromSettings;
             _reader = reader;
             _logger = logger;
         }
 
-        public NuGetSources Read(IFolder workingFolder)
+        public NuGetSources Read(IFolder workingFolder, NuGetSources overrideValues)
         {
-            if (_fromSettings != null)
+            if (overrideValues != null)
             {
-                return _fromSettings;
+                return overrideValues;
             }
 
             var fromConfigFile = _reader.ReadNugetSources(workingFolder);

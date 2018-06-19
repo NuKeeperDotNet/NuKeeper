@@ -29,7 +29,8 @@ namespace NuKeeper.Inspection
         }
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
-            IFolder workingFolder, VersionChange allowedChange)
+            IFolder workingFolder,
+            VersionChange allowedChange, NuGetSources overrideSources)
         {
             // scan for nuget packages
             var packages = _repositoryScanner.FindAllNuGetPackages(workingFolder)
@@ -37,7 +38,7 @@ namespace NuKeeper.Inspection
 
             _logger.Log(PackagesFoundLogger.Log(packages));
 
-            var nugetSources = _nugetSourcesReader.Read(workingFolder);
+            var nugetSources = _nugetSourcesReader.Read(workingFolder, overrideSources);
 
             // look for updates to these packages
             var updates = await _packageUpdatesLookup.FindUpdatesForPackages(

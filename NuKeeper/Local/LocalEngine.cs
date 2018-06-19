@@ -50,7 +50,8 @@ namespace NuKeeper.Local
         private async Task<IReadOnlyCollection<PackageUpdateSet>> GetSortedUpdates(UserSettings settings)
         {
             var folder = TargetFolder(settings);
-            var updates = await _updateFinder.FindPackageUpdateSets(folder, settings.AllowedChange);
+            var updates = await _updateFinder.FindPackageUpdateSets(
+                folder, settings.AllowedChange, settings.NuGetSources);
 
             return _sorter.Sort(updates)
                 .ToList();
