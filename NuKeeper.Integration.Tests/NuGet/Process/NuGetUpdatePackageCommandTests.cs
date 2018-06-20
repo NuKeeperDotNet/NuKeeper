@@ -55,15 +55,13 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
-            var command =
-                new Update.Process.NuGetUpdatePackageCommand(
-                    new NullNuKeeperLogger(),
-                    NuGetSources.GlobalFeed);
+            var command = new Update.Process.NuGetUpdatePackageCommand(new NullNuKeeperLogger());
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), NuGetSources.GlobalFeedUrl, packageToUpdate);
+            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
+                NuGetSources.GlobalFeedUrl, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

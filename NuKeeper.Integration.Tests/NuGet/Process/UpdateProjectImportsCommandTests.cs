@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 
@@ -39,9 +40,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var subject = new UpdateProjectImportsCommand();
 
-            await subject.Invoke(null, null,
-                new PackageInProject("acme", "1",
-                    new PackagePath(workDirectory, projectName, PackageReferenceType.ProjectFileOldStyle)));
+            var package = new PackageInProject("acme", "1",
+                new PackagePath(workDirectory, projectName, PackageReferenceType.ProjectFileOldStyle));
+
+            await subject.Invoke(package, null, null, NuGetSources.GlobalFeed);
 
             var updatedContents = await File.ReadAllTextAsync(projectPath);
 
@@ -72,9 +74,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var subject = new UpdateProjectImportsCommand();
 
-            await subject.Invoke(null, null,
-                new PackageInProject("acme", "1",
-                    new PackagePath(workDirectory, "RootProject.csproj", PackageReferenceType.ProjectFileOldStyle)));
+            var package = new PackageInProject("acme", "1",
+                new PackagePath(workDirectory, "RootProject.csproj", PackageReferenceType.ProjectFileOldStyle));
+
+            await subject.Invoke(package, null, null, NuGetSources.GlobalFeed);
 
             var updatedContents = await File.ReadAllTextAsync(projectPath);
 

@@ -24,7 +24,7 @@ namespace NuKeeper.Update
                 var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType, sources);
                 foreach (var updateCommand in updateCommands)
                 {
-                    await updateCommand.Invoke(updateSet.SelectedVersion, updateSet.Selected.Source, current);
+                    await updateCommand.Invoke(current, updateSet.SelectedVersion, updateSet.Selected.Source, sources);
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace NuKeeper.Update
                     return new IPackageCommand[]
                     {
                         new NuGetFileRestoreCommand(_logger),
-                        new NuGetUpdatePackageCommand(_logger, sources)
+                        new NuGetUpdatePackageCommand(_logger)
                     };
 
                 case PackageReferenceType.ProjectFileOldStyle:
@@ -47,11 +47,11 @@ namespace NuKeeper.Update
                     {
                         new UpdateProjectImportsCommand(),
                         new NuGetFileRestoreCommand(_logger),
-                        new DotNetUpdatePackageCommand(_logger, sources)
+                        new DotNetUpdatePackageCommand(_logger)
                     };
 
                 case PackageReferenceType.ProjectFile:
-                    return new[] {new DotNetUpdatePackageCommand(_logger, sources) };
+                    return new[] {new DotNetUpdatePackageCommand(_logger) };
 
                 case PackageReferenceType.Nuspec:
                     return new[] { new UpdateNuspecCommand(_logger) };

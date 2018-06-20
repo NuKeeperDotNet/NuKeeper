@@ -57,9 +57,10 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        public async Task Invoke(NuGetVersion selectedVersion, string source, PackageInProject current)
+        public async Task Invoke(PackageInProject currentPackage,
+            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
         {
-            await Invoke(current.Path.Info, new NuGetSources(source));
+            await Invoke(currentPackage.Path.Info, allSources);
         }
     }
 }
