@@ -35,11 +35,12 @@ namespace NuKeeper.Inspection.Sources
         {
             using (var fileContents = File.OpenRead(configFile.FullName))
             {
-                _logger.Verbose($"Reading nuget.config file {configFile.FullName}");
+                _logger.Verbose($"Reading nuget.config file {configFile.FullName} for package sources");
                 var fromFile = _parser.Parse(fileContents);
                 if (fromFile != null)
                 {
-                    _logger.Verbose($"Read {fromFile.Items.Count} NuGet sources from file");
+                    var itemsText = string.Join(',', fromFile.Items);
+                    _logger.Verbose($"Read {fromFile.Items.Count} package sources from file: {itemsText}");
                     return fromFile;
                 }
             }
