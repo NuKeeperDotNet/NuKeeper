@@ -40,7 +40,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-    <add key=""NuGet official"" value=""https://nuget.org/api/v2/"" />
+    <add key=""NuGet official"" value=""https://api.nuget.org/v3/index.json"" />
   </packageSources>
 </configuration>";
 
@@ -50,7 +50,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(1));
-            Assert.That(sources.Items.First(), Is.EqualTo("https://nuget.org/api/v2/"));
+            Assert.That(sources.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-    <add key=""NuGet official"" value=""https://nuget.org/api/v2/"" />
+    <add key=""NuGet official"" value=""https://api.nuget.org/v3/index.json"" />
     <add key=""Custom"" value=""https://some.other.feed"" />
   </packageSources>
 </configuration>";
@@ -71,6 +71,8 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(2));
+            Assert.That(sources.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
+            Assert.That(sources.Items.Last(), Is.EqualTo("https://some.other.feed"));
         }
 
         [Test]
@@ -80,7 +82,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-    <add key=""NuGet official"" value=""https://nuget.org/api/v2/"" />
+    <add key=""NuGet official"" value=""https://api.nuget.org/v3/index.json"" />
     <add key=""Custom"" />
   </packageSources>
 </configuration>";
@@ -91,6 +93,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             Assert.That(sources, Is.Not.Null);
             Assert.That(sources.Items.Count, Is.EqualTo(1));
+            Assert.That(sources.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
         }
 
         private static Stream ToStream(string str, Encoding enc = null)
