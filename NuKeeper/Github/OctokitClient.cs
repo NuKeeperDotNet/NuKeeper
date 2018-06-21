@@ -102,14 +102,26 @@ namespace NuKeeper.Github
 
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)
         {
-            var labelsToApply = labels?.Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
+            var labelsToApply = labels?
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .ToArray();
+
             if (labelsToApply != null && labelsToApply.Any())
             {
                 _logger.Info(
                     $"Adding label(s) '{labelsToApply.JoinWithCommas()}' to issue "
                     + $"'{_apiBase} {target.Owner}/{target.Name} {issueNumber}'");
-                await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, issueNumber,
-                    labelsToApply);
+
+                try
+                {
+                    await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, issueNumber,
+                        labelsToApply);
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("Failed to add labels. Continuing", ex);
+                }
             }
         }
     }
