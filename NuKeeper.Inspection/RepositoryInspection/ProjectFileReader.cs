@@ -27,7 +27,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IEnumerable<string> GetFilePatterns()
         {
-            return new[] {"*.csproj", "*.vbproj"};
+            return new[] {"*.csproj", "*.vbproj", "*.fsproj"};
         }
 
         public IEnumerable<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)

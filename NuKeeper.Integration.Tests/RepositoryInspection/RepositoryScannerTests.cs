@@ -99,6 +99,19 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         }
 
         [Test]
+        public void FindsFsprojFile()
+        {
+            var scanner = MakeScanner();
+            var temporaryPath = GetUniqueTempFolder();
+
+            WriteFile(temporaryPath, "sample.fsproj", Vs2017ProjectFileTemplateWithPackages);
+
+            var results = scanner.FindAllNuGetPackages(temporaryPath);
+
+            Assert.That(results, Has.Count.EqualTo(1));
+        }
+
+        [Test]
         public void FindsNuspec()
         {
             var scanner = MakeScanner();
