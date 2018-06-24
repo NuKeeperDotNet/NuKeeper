@@ -99,7 +99,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
-                new PackageVersionsLookup(new NullNuGetLogger()));
+                new PackageVersionsLookup(new NullNuGetLogger(), new NullNuKeeperLogger()));
         }
 
         private PackageIdentity Current(string packageId)
