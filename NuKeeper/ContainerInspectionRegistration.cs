@@ -8,6 +8,7 @@ using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper
 {
@@ -15,14 +16,6 @@ namespace NuKeeper
     {
         public static void Register(Container container, SettingsContainer settings)
         {
-            var packageLookupSettings = new PackageUpdateLookupSettings
-            {
-                AllowedChange = settings.UserSettings.AllowedChange,
-                NugetSources = settings.UserSettings.NuGetSources.Items
-            };
-
-            container.RegisterInstance(packageLookupSettings);
-
             container.RegisterInstance<INuKeeperLogger>(
                 new ConsoleLogger(settings.UserSettings.LogLevel));
 
@@ -38,6 +31,7 @@ namespace NuKeeper
             container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<IUpdateFinder, UpdateFinder>();
+            container.Register<INugetSourcesReader, NugetSourcesReader>();
 
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, CsvFileReporter>();

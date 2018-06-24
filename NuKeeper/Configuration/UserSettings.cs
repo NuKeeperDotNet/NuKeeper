@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
-using NuKeeper.Update;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Configuration
 {

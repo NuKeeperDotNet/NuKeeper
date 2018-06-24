@@ -11,7 +11,6 @@ namespace NuKeeper
     {
         public static void Register(Container container, SettingsContainer settings)
         {
-            container.Register(() => settings.UserSettings.NuGetSources, Lifestyle.Singleton);
             container.Register(() => MakeFilterSettings(settings.UserSettings), Lifestyle.Singleton);
 
             container.Register<IUpdateSelection, UpdateSelection>();

@@ -85,9 +85,7 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
-            var sources = settings.UserSettings.NuGetSources;
-            Assert.That(sources.Items.Count, Is.EqualTo(1));
-            Assert.That(sources.Items.First(), Is.EqualTo("https://api.nuget.org/v3/index.json"));
+            Assert.That(settings.UserSettings.NuGetSources, Is.Null);
         }
 
         [Test]
@@ -125,7 +123,7 @@ namespace NuKeeper.Tests.Configuration
             return new RawConfiguration
             {
                 GithubApiEndpoint = new Uri("https://api.github.com"),
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "repository",
                 GithubRepositoryUri = new Uri("https://github.com/NuKeeperDotNet/NuKeeper"),
                 GithubToken = "abc123",
@@ -142,7 +140,7 @@ namespace NuKeeper.Tests.Configuration
             return new RawConfiguration
             {
                 GithubApiEndpoint = new Uri("https://api.github.com"),
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "organisation",
                 GithubOrganisationName = "NuKeeperDotNet",
                 GithubToken = "abc123",
@@ -158,7 +156,7 @@ namespace NuKeeper.Tests.Configuration
         {
             return new RawConfiguration
             {
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "inspect",
                 LogLevel = LogLevel.Info,
                 ReportMode = ReportMode.Off,
@@ -170,7 +168,7 @@ namespace NuKeeper.Tests.Configuration
         {
             return new RawConfiguration
             {
-                NuGetSources = "https://api.nuget.org/v3/index.json",
+                NuGetSources = null,
                 Mode = "update",
                 LogLevel = LogLevel.Info,
                 ReportMode = ReportMode.Off,

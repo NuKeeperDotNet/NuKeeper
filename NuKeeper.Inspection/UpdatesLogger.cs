@@ -7,7 +7,7 @@ namespace NuKeeper.Inspection
 {
     public static class UpdatesLogger
     {
-        public static LogData Log(List<PackageUpdateSet> updates)
+        public static LogData Log(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var headline = $"Found {updates.Count} possible updates";
             var details = new StringBuilder();

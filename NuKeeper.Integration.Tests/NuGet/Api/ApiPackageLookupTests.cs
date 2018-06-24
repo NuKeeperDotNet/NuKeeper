@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
@@ -16,7 +16,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.FindVersionUpdate(Current("AWSSDK"), VersionChange.Major);
+            var package = await lookup.FindVersionUpdate(Current("AWSSDK"),
+                NuGetSources.GlobalFeed,
+                VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -34,7 +36,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildPackageLookup();
 
             var package = await lookup.FindVersionUpdate(
-                Current(Guid.NewGuid().ToString()), 
+                Current(Guid.NewGuid().ToString()),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
@@ -48,7 +51,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildPackageLookup();
 
             var package = await lookup.FindVersionUpdate(
-                Current("Newtonsoft.Json"), 
+                Current("Newtonsoft.Json"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             Assert.That(package, Is.Not.Null);
@@ -71,6 +75,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             // and later major versions 9.0.1, 10.0.3 etc
             var package = await lookup.FindVersionUpdate(
                 new PackageIdentity("Newtonsoft.Json", new NuGetVersion(8, 0, 1)),
+                NuGetSources.GlobalFeed,
                 VersionChange.Minor);
 
             Assert.That(package, Is.Not.Null);
@@ -94,23 +99,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
-                new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings()));
+                new PackageVersionsLookup(new NullNuGetLogger()));
         }
 
         private PackageIdentity Current(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1,2,3));
-        }
-
-        private static PackageUpdateLookupSettings BuildDefaultSettings()
-        {
-            return new PackageUpdateLookupSettings
-            {
-                NugetSources = new List<string>
-                {
-                    "https://api.nuget.org/v3/index.json"
-                }
-            };
         }
     }
 }

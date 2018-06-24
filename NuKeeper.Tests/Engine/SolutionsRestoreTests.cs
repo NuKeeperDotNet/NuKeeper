@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 
@@ -18,9 +19,10 @@ namespace NuKeeper.Tests.Engine
 
             var solutionResture = new SolutionsRestore(cmd);
 
-            await solutionResture.Restore(folder);
+            await solutionResture.Restore(folder, NuGetSources.GlobalFeed);
 
-            await cmd.DidNotReceiveWithAnyArgs().Invoke(Arg.Any<FileInfo>());
+            await cmd.DidNotReceiveWithAnyArgs()
+                .Invoke(Arg.Any<FileInfo>(), Arg.Any<NuGetSources>());
         }
 
         [Test]
@@ -34,10 +36,10 @@ namespace NuKeeper.Tests.Engine
 
             var solutionResture = new SolutionsRestore(cmd);
 
-            await solutionResture.Restore(folder);
+            await solutionResture.Restore(folder, NuGetSources.GlobalFeed);
 
-            await cmd.Received(1).Invoke(Arg.Any<FileInfo>());
-            await cmd.Received().Invoke(sln);
+            await cmd.Received(1).Invoke(Arg.Any<FileInfo>(), Arg.Any<NuGetSources>());
+            await cmd.Received().Invoke(sln, Arg.Any<NuGetSources>());
         }
 
         [Test]
@@ -52,11 +54,11 @@ namespace NuKeeper.Tests.Engine
 
             var solutionResture = new SolutionsRestore(cmd);
 
-            await solutionResture.Restore(folder);
+            await solutionResture.Restore(folder, NuGetSources.GlobalFeed);
 
-            await cmd.Received(2).Invoke(Arg.Any<FileInfo>());
-            await cmd.Received().Invoke(sln1);
-            await cmd.Received().Invoke(sln2);
+            await cmd.Received(2).Invoke(Arg.Any<FileInfo>(), Arg.Any<NuGetSources>());
+            await cmd.Received().Invoke(sln1, Arg.Any<NuGetSources>());
+            await cmd.Received().Invoke(sln2, Arg.Any<NuGetSources>());
         }
     }
 }

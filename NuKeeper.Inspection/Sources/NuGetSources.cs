@@ -3,7 +3,7 @@ using NuKeeper.Inspection.Formats;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuKeeper.Update
+namespace NuKeeper.Inspection.Sources
 {
     public class NuGetSources
     {
@@ -14,6 +14,11 @@ namespace NuKeeper.Update
                 throw new ArgumentNullException(nameof(items));
             }
 
+            if (!items.Any())
+            {
+                throw new ArgumentException(nameof(items));
+            }
+
             Items = items.ToList();
         }
 
@@ -21,6 +26,10 @@ namespace NuKeeper.Update
         {
             Items = items.ToList();
         }
+
+        public static string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
+
+        public static NuGetSources GlobalFeed => new NuGetSources(GlobalFeedUrl);
 
         public IReadOnlyCollection<string> Items { get; }
 

@@ -2,11 +2,10 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 
@@ -77,12 +76,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         public async Task ShouldUpdateDuplicateProject()
         {
             const string name = nameof(ShouldUpdateDuplicateProject);
-            var projectPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, name, $"AnotherProject.csproj");
+            var projectPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, name, "AnotherProject.csproj");
             Directory.CreateDirectory(Path.GetDirectoryName(projectPath));
             using (File.Create(projectPath))
             {
                 // close file stream automatically
-            };
+            }
 
             await ExecuteValidUpdateTest(_testDotNetCoreProject);
         }
@@ -95,7 +94,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
         private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
         {
-            const string packageSource = "https://api.nuget.org/v3/index.json";
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";
             const string expectedPackageString =
@@ -113,13 +111,12 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await File.WriteAllTextAsync(projectPath, projectContents);
 
             var command = new DotNetUpdatePackageCommand(
-                    new NullNuKeeperLogger(),
-                    new NuGetSources(packageSource));
+                    new NullNuKeeperLogger());
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.ProjectFile));
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), packageSource, packageToUpdate);
+            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion), NuGetSources.GlobalFeedUrl, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

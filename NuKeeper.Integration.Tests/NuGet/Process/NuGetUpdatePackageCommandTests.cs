@@ -1,12 +1,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
+using NUnit.Framework;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
-using NuKeeper.Update;
-using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
@@ -32,7 +31,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         [Test]
         public async Task ShouldUpdateDotnetClassicProject()
         {
-            const string packageSource = "https://api.nuget.org/v3/index.json";
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";
             const string expectedPackageString =
@@ -57,15 +55,13 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
-            var command =
-                new Update.Process.NuGetUpdatePackageCommand(
-                    new NullNuKeeperLogger(),
-                    new NuGetSources(packageSource));
+            var command = new Update.Process.NuGetUpdatePackageCommand(new NullNuKeeperLogger());
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), packageSource, packageToUpdate);
+            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
+                NuGetSources.GlobalFeedUrl, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
@@ -8,6 +9,7 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         Task<Dictionary<string, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
+            NuGetSources sources,
             VersionChange allowedChange);
     }
 }

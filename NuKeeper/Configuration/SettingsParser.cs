@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using EasyConfig;
 using EasyConfig.Exceptions;
-using NuKeeper.Update;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Configuration
 {
@@ -209,6 +209,11 @@ namespace NuKeeper.Configuration
 
         private static NuGetSources ReadNuGetSources(RawConfiguration settings)
         {
+            if (string.IsNullOrWhiteSpace(settings.NuGetSources))
+            {
+                return null;
+            }
+
             var items = ReadMultilineSetting(settings.NuGetSources);
             return new NuGetSources(items);
         }

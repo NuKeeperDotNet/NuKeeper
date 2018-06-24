@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
 using NUnit.Framework;
 
@@ -15,7 +15,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json");
+            var packages = await lookup.Lookup("Newtonsoft.Json", NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -29,7 +29,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json");
+            var packages = await lookup.Lookup("Newtonsoft.Json", NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -52,7 +52,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Moq");
+            var packages = await lookup.Lookup("Moq", NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -68,18 +68,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
 
         private IPackageVersionsLookup BuildPackageLookup()
         {
-            return new PackageVersionsLookup(new NullNuGetLogger(), BuildDefaultSettings());
-        }
-
-        private static PackageUpdateLookupSettings BuildDefaultSettings()
-        {
-            return new PackageUpdateLookupSettings
-            {
-                NugetSources = new List<string>
-                {
-                    "https://api.nuget.org/v3/index.json"
-                }
-            };
+            return new PackageVersionsLookup(new NullNuGetLogger());
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
@@ -11,19 +12,17 @@ namespace NuKeeper.Update.Process
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
-        private readonly NuGetSources _sources;
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
-            NuGetSources sources,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _sources = sources;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task Invoke(NuGetVersion newVersion, string packageSource, PackageInProject currentPackage)
+        public async Task Invoke(PackageInProject currentPackage,
+            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -40,7 +39,7 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var sources = _sources.CommandLine("-Source");
+            var sources = allSources.CommandLine("-Source");
             var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
             _logger.Verbose(arguments);
 

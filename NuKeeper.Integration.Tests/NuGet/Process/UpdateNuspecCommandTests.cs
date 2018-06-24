@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
@@ -41,9 +42,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var command = new UpdateNuspecCommand(new NullNuKeeperLogger());
 
-            await command.Invoke(new NuGetVersion(newPackageVersion), null,
-                new PackageInProject("foo", oldPackageVersion,
-                    new PackagePath(workDirectory, testNuspec, PackageReferenceType.Nuspec)));
+            var package = new PackageInProject("foo", oldPackageVersion,
+                new PackagePath(workDirectory, testNuspec, PackageReferenceType.Nuspec));
+
+            await command.Invoke(package, new NuGetVersion(newPackageVersion), null, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

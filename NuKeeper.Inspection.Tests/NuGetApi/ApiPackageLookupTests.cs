@@ -5,6 +5,7 @@ using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.NuGetApi
@@ -18,7 +19,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var allVersionsLookup = MockVersionLookup(new List<PackageSearchMedatadata>());
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"), VersionChange.Major);
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage"),
+                NuGetSources.GlobalFeed,
+                VersionChange.Major);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.Major, Is.Null);
@@ -37,7 +41,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"), VersionChange.Major);
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage"),
+                NuGetSources.GlobalFeed,
+                VersionChange.Major);
 
             Assert.That(updates, Is.Not.Null);
 
@@ -59,7 +66,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"), 
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
@@ -80,7 +89,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"),
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Minor);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
@@ -101,7 +112,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(CurrentVersion123("TestPackage"),
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage"),
+                NuGetSources.GlobalFeed,
                 VersionChange.Patch);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
@@ -112,7 +125,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadata> actualResults)
         {
             var allVersions = Substitute.For<IPackageVersionsLookup>();
-            allVersions.Lookup(Arg.Any<string>())
+            allVersions.Lookup(Arg.Any<string>(), Arg.Any<NuGetSources>())
                 .Returns(actualResults);
             return allVersions;
         }

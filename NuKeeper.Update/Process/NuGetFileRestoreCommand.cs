@@ -1,33 +1,28 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {
     public class NuGetFileRestoreCommand : IFileRestoreCommand
     {
-        private readonly NuGetSources _sources;
         private readonly INuKeeperLogger _logger;
         private readonly IExternalProcess _externalProcess;
 
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
-            NuGetSources sources,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _sources = sources;
             _externalProcess = externalProcess ?? new ExternalProcess();
         }
 
-        public async Task Invoke(FileInfo file)
+        public async Task Invoke(FileInfo file, NuGetSources sources)
         {
             _logger.Info($"Nuget restore on {file.DirectoryName} {file.Name}");
 
@@ -45,9 +40,9 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var sources = _sources.CommandLine("-Source");
+            var sourcesCommandLine = sources.CommandLine("-Source");
 
-            var arguments = $"restore {file.Name} {sources}";
+            var arguments = $"restore {file.Name} {sourcesCommandLine}";
             _logger.Verbose($"{nuget} {arguments}");
 
             var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, arguments, ensureSuccess: false);
@@ -62,9 +57,10 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        public async Task Invoke(NuGetVersion selectedVersion, string source, PackageInProject current)
+        public async Task Invoke(PackageInProject currentPackage,
+            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
         {
-            await Invoke(current.Path.Info);
+            await Invoke(currentPackage.Path.Info, allSources);
         }
     }
 }

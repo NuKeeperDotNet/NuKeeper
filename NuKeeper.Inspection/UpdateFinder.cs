@@ -5,6 +5,7 @@ using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection
 {
@@ -24,7 +25,10 @@ namespace NuKeeper.Inspection
             _logger = logger;
         }
 
-        public async Task<List<PackageUpdateSet>> FindPackageUpdateSets(IFolder workingFolder)
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
+            IFolder workingFolder,
+            NuGetSources sources,
+            VersionChange allowedChange)
         {
             // scan for nuget packages
             var packages = _repositoryScanner.FindAllNuGetPackages(workingFolder)
@@ -33,7 +37,9 @@ namespace NuKeeper.Inspection
             _logger.Log(PackagesFoundLogger.Log(packages));
 
             // look for updates to these packages
-            var updates = await _packageUpdatesLookup.FindUpdatesForPackages(packages);
+            var updates = await _packageUpdatesLookup.FindUpdatesForPackages(
+                packages, sources, allowedChange);
+
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;
         }
