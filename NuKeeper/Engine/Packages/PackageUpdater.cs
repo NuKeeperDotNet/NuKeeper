@@ -31,7 +31,7 @@ namespace NuKeeper.Engine.Packages
             _modalSettings = modalSettings;
         }
 
-        public async Task MakeUpdatePullRequest(
+        public async Task<bool> MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
             NuGetSources sources,
@@ -59,10 +59,12 @@ namespace NuKeeper.Engine.Packages
                 await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName);
 
                 git.Checkout(repository.DefaultBranch);
+                return true;
             }
             catch (Exception ex)
             {
                 _logger.Error("Update failed", ex);
+                return false;
             }
         }
 

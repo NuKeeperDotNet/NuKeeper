@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
             _settings = settings;
         }
 
-        public async Task Run(IGitDriver git, RepositoryData repository)
+        public async Task<int> Run(IGitDriver git, RepositoryData repository)
         {
             GitInit(git, repository);
 
@@ -68,7 +68,7 @@ namespace NuKeeper.Engine
                     // report and exit
                     _availableUpdatesReporter.Report(repository.Pull.Name, updates);
                     _logger.Info("Exiting after reports only");
-                    return;
+                    return 0;
 
                 default:
                     throw new Exception($"Unknown report mode: '{_settings.ReportMode}'");
@@ -77,7 +77,7 @@ namespace NuKeeper.Engine
             if (updates.Count == 0)
             {
                 _logger.Terse("No potential updates found. Well done. Exiting.");
-                return;
+                return 0;
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(repository.Push, updates);
@@ -85,14 +85,22 @@ namespace NuKeeper.Engine
             if (updates.Count == 0)
             {
                 _logger.Terse("No updates can be applied. Exiting.");
-                return;
+                return 0;
             }
 
             await _solutionsRestore.Restore(git.WorkingFolder, sources);
 
-            await UpdateAllTargets(git, repository, targetUpdates, sources);
+            var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources);
 
-            _logger.Info($"Done {targetUpdates.Count} Updates");
+            if (updatesDone < targetUpdates.Count)
+            {
+                _logger.Terse($"Attempted {targetUpdates.Count} updates and did {updatesDone}");
+            }
+            else
+            {
+                _logger.Info($"Done {updatesDone} updates");
+            }
+            return updatesDone;
         }
 
         private static void GitInit(IGitDriver git, RepositoryData repository)
@@ -102,15 +110,23 @@ namespace NuKeeper.Engine
             git.AddRemote("nukeeper_push", repository.Push.Uri);
         }
 
-        private async Task UpdateAllTargets(IGitDriver git,
+        private async Task<int> UpdateAllTargets(IGitDriver git,
             RepositoryData repository,
             IEnumerable<PackageUpdateSet> targetUpdates,
             NuGetSources sources)
         {
+            var passes = 0;
+
             foreach (var updateSet in targetUpdates)
             {
-                await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                var pass = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                if (pass)
+                {
+                    passes++;
+                }
             }
+
+            return passes;
         }
     }
 }

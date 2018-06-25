@@ -52,12 +52,22 @@ namespace NuKeeper.Engine
 
             var repositories = await _repositoryDiscovery.GetRepositories();
 
+            int reposUpdated = 0;
+
             foreach (var repository in repositories)
             {
-                await _repositoryEngine.Run(repository, gitCreds, userIdentity);
+                var updatesInThisRepo = await _repositoryEngine.Run(repository, gitCreds, userIdentity);
+                if (updatesInThisRepo > 0)
+                {
+                    reposUpdated++;
+                }
             }
 
-            _logger.Verbose($"{Now()}: Done");
+            if (reposUpdated > 1)
+            {
+                _logger.Verbose($"{reposUpdated} repositories were updated");
+            }
+            _logger.Verbose($"Done at {Now()}");
         }
 
         private Identity GetUserIdentity(Account githubUser)
