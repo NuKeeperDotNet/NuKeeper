@@ -7,17 +7,20 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
     public class PackageVersionsLookup : IPackageVersionsLookup
     {
-        private readonly ILogger _logger;
+        private readonly ILogger _nuGetLogger;
+        private readonly INuKeeperLogger _nuKeeperLogger;
 
-        public PackageVersionsLookup(ILogger logger)
+        public PackageVersionsLookup(ILogger nuGetLogger, INuKeeperLogger nuKeeperLogger)
         {
-            _logger = logger;
+            _nuGetLogger = nuGetLogger;
+            _nuKeeperLogger = nuKeeperLogger;
         }
 
         public async Task<IReadOnlyCollection<PackageSearchMedatadata>> Lookup(
@@ -37,9 +40,17 @@ namespace NuKeeper.Inspection.NuGetApi
         private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, string source)
         {
             var sourceRepository = BuildSourceRepository(source);
-            var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
-            var metadatas = await FindPackage(metadataResource, packageName);
-            return metadatas.Select(m => BuildPackageData(source, m));
+            try
+            {
+                var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
+                var metadatas = await FindPackage(metadataResource, packageName);
+                return metadatas.Select(m => BuildPackageData(source, m));
+            }
+            catch (Exception ex)
+            {
+                _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
+                return Enumerable.Empty<PackageSearchMedatadata>();
+            }
         }
 
         private static SourceRepository BuildSourceRepository(string source)
@@ -56,7 +67,7 @@ namespace NuKeeper.Inspection.NuGetApi
             PackageMetadataResource metadataResource, string packageName)
         {
             return await metadataResource
-                .GetMetadataAsync(packageName, false, false, _logger, CancellationToken.None);
+                .GetMetadataAsync(packageName, false, false, _nuGetLogger, CancellationToken.None);
         }
 
         private static PackageSearchMedatadata BuildPackageData(string source, IPackageSearchMetadata metadata)

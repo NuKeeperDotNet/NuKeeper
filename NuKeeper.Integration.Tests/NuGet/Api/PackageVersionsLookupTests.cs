@@ -68,7 +68,8 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
 
         private IPackageVersionsLookup BuildPackageLookup()
         {
-            return new PackageVersionsLookup(new NullNuGetLogger());
+            return new PackageVersionsLookup(
+                new NullNuGetLogger(), new NullNuKeeperLogger());
         }
     }
 }
