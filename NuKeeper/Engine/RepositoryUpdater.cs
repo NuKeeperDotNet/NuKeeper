@@ -15,7 +15,7 @@ namespace NuKeeper.Engine
 {
     public class RepositoryUpdater : IRepositoryUpdater
     {
-        private readonly INugetSourcesReader _nugetSourcesReader;
+        private readonly INuGetSourcesReader _nugetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
@@ -25,7 +25,7 @@ namespace NuKeeper.Engine
         private readonly UserSettings _settings;
 
         public RepositoryUpdater(
-            INugetSourcesReader nugetSourcesReader,
+            INuGetSourcesReader nugetSourcesReader,
             IUpdateFinder updateFinder,
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,

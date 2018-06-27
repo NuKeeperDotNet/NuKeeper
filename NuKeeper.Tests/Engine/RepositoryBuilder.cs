@@ -3,7 +3,7 @@ using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
-    public class RespositoryBuilder
+    public class RepositoryBuilder
     {
         public const string ParentHtmlUrl = "http://repos.com/org/parent";
         public const string ParentCloneUrl = "http://repos.com/org/parent.git";

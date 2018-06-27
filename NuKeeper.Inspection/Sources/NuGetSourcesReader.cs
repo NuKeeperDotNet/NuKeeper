@@ -3,13 +3,13 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Sources
 {
-    public class NugetSourcesReader : INugetSourcesReader
+    public class NuGetSourcesReader : INuGetSourcesReader
     {
-        private readonly NugetConfigFileReader _reader;
+        private readonly NuGetConfigFileReader _reader;
         private readonly INuKeeperLogger _logger;
 
-        public NugetSourcesReader(
-            NugetConfigFileReader reader,
+        public NuGetSourcesReader(
+            NuGetConfigFileReader reader,
             INuKeeperLogger logger)
         {
             _reader = reader;
