@@ -82,7 +82,15 @@ namespace NuKeeper.Engine
 
             var targetUpdates = await _updateSelection.SelectTargets(repository.Push, updates);
 
-            if (updates.Count == 0)
+            return await DoTargetUpdates(git, repository, targetUpdates, sources);
+        }
+
+        private async Task<int> DoTargetUpdates(
+            IGitDriver git, RepositoryData repository,
+            IReadOnlyCollection<PackageUpdateSet> targetUpdates,
+            NuGetSources sources)
+        {
+            if (targetUpdates.Count == 0)
             {
                 _logger.Terse("No updates can be applied. Exiting.");
                 return 0;
@@ -100,6 +108,7 @@ namespace NuKeeper.Engine
             {
                 _logger.Info($"Done {updatesDone} updates");
             }
+
             return updatesDone;
         }
 

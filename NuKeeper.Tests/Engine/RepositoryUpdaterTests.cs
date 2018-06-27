@@ -23,11 +23,14 @@ namespace NuKeeper.Tests.Engine
     public class RepositoryUpdaterTests
     {
         private IPackageUpdater _packageUpdater;
+        private IPackageUpdateSelection _updateSelection;
 
         [Test]
         public async Task WhenThereAreNoUpdates_CountIsZero()
         {
             _packageUpdater = Substitute.For<IPackageUpdater>();
+            _updateSelection = Substitute.For<IPackageUpdateSelection>();
+            UpdateSelectionAll(_updateSelection);
 
             var repoUpdater = MakeRepositoryUpdater(new List<PackageUpdateSet>());
 
@@ -38,17 +41,15 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(count, Is.EqualTo(0));
 
-            await _packageUpdater.DidNotReceiveWithAnyArgs()
-                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
-                    Arg.Any<PackageUpdateSet>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<RepositoryData>());
+            await AssertReceivedMakeUpdatePullRequest(0);
         }
 
         [Test]
         public async Task WhenThereIsAnUpdate_CountIsOne()
         {
             _packageUpdater = Substitute.For<IPackageUpdater>();
+            _updateSelection = Substitute.For<IPackageUpdateSelection>();
+            UpdateSelectionAll(_updateSelection);
 
             var repoUpdater = MakeRepositoryUpdater(
                 new List<PackageUpdateSet>
@@ -63,17 +64,15 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(count, Is.EqualTo(1));
 
-            await _packageUpdater.Received(1)
-                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
-                    Arg.Any<PackageUpdateSet>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<RepositoryData>());
+            await AssertReceivedMakeUpdatePullRequest(1);
         }
 
         [Test]
         public async Task WhenThereAreTwoUpdates_CountIsTwo()
         {
             _packageUpdater = Substitute.For<IPackageUpdater>();
+            _updateSelection = Substitute.For<IPackageUpdateSelection>();
+            UpdateSelectionAll(_updateSelection);
 
             var repoUpdater = MakeRepositoryUpdater(
                 new List<PackageUpdateSet>
@@ -89,11 +88,64 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(count, Is.EqualTo(2));
 
-            await _packageUpdater.Received(2)
-                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
-                    Arg.Any<PackageUpdateSet>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<RepositoryData>());
+            await AssertReceivedMakeUpdatePullRequest(2);
+        }
+
+        [Test]
+        public async Task WhenUpdatesAreFilteredOut_CountIsZero()
+        {
+            _packageUpdater = Substitute.For<IPackageUpdater>();
+            _updateSelection = Substitute.For<IPackageUpdateSelection>();
+            UpdateSelectionNone(_updateSelection);
+
+            var repoUpdater = MakeRepositoryUpdater(
+                new List<PackageUpdateSet>
+                {
+                    UpdateSet(),
+                    UpdateSet()
+                });
+
+            var git = Substitute.For<IGitDriver>();
+            var repo = MakeRepositoryData();
+
+            var count = await repoUpdater.Run(git, repo);
+
+            Assert.That(count, Is.EqualTo(0));
+
+            await AssertReceivedMakeUpdatePullRequest(0);
+        }
+
+        private async Task AssertReceivedMakeUpdatePullRequest(int count)
+        {
+            if (count == 0)
+            {
+                await _packageUpdater.DidNotReceiveWithAnyArgs()
+                    .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
+                        Arg.Any<PackageUpdateSet>(),
+                        Arg.Any<NuGetSources>(),
+                        Arg.Any<RepositoryData>());
+
+            }
+            else
+            {
+                await _packageUpdater.Received(count)
+                    .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
+                        Arg.Any<PackageUpdateSet>(),
+                        Arg.Any<NuGetSources>(),
+                        Arg.Any<RepositoryData>());
+            }
+        }
+
+        private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
+        {
+            updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
+                .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
+        }
+
+        private void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
+        {
+            updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
+                .Returns(new List<PackageUpdateSet>());
         }
 
         private IRepositoryUpdater MakeRepositoryUpdater(
@@ -101,7 +153,6 @@ namespace NuKeeper.Tests.Engine
         {
             var sources = Substitute.For<INuGetSourcesReader>();
             var updateFinder = Substitute.For<IUpdateFinder>();
-            var updateSelection = Substitute.For<IPackageUpdateSelection>();
             var fileRestore = Substitute.For<IFileRestoreCommand>();
             var reporter = Substitute.For<IAvailableUpdatesReporter>();
 
@@ -111,9 +162,6 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<VersionChange>())
                 .Returns(updates);
 
-            updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
-                .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
-
             _packageUpdater.MakeUpdatePullRequest(
                 Arg.Any<IGitDriver>(),
                 Arg.Any<PackageUpdateSet>(),
@@ -122,7 +170,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(true);
 
             var repoUpdater = new RepositoryUpdater(
-                sources, updateFinder, updateSelection, _packageUpdater,
+                sources, updateFinder, _updateSelection, _packageUpdater,
                 new NullNuKeeperLogger(), new SolutionsRestore(fileRestore),
                 reporter, new UserSettings());
 
