@@ -22,9 +22,13 @@ namespace NuKeeper.Tests.Engine
     [TestFixture]
     public class RepositoryUpdaterTests
     {
+        private IPackageUpdater _packageUpdater;
+
         [Test]
         public async Task WhenThereAreNoUpdates_CountIsZero()
         {
+            _packageUpdater = Substitute.For<IPackageUpdater>();
+
             var repoUpdater = MakeRepositoryUpdater(new List<PackageUpdateSet>());
 
             var git = Substitute.For<IGitDriver>();
@@ -33,11 +37,19 @@ namespace NuKeeper.Tests.Engine
             var count = await repoUpdater.Run(git, repo);
 
             Assert.That(count, Is.EqualTo(0));
+
+            await _packageUpdater.DidNotReceiveWithAnyArgs()
+                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
+                    Arg.Any<PackageUpdateSet>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<RepositoryData>());
         }
 
         [Test]
         public async Task WhenThereIsAnUpdate_CountIsOne()
         {
+            _packageUpdater = Substitute.For<IPackageUpdater>();
+
             var repoUpdater = MakeRepositoryUpdater(
                 new List<PackageUpdateSet>
                 {
@@ -50,15 +62,46 @@ namespace NuKeeper.Tests.Engine
             var count = await repoUpdater.Run(git, repo);
 
             Assert.That(count, Is.EqualTo(1));
+
+            await _packageUpdater.Received(1)
+                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
+                    Arg.Any<PackageUpdateSet>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<RepositoryData>());
         }
 
-        private static IRepositoryUpdater MakeRepositoryUpdater(
+        [Test]
+        public async Task WhenThereAreTwoUpdates_CountIsTwo()
+        {
+            _packageUpdater = Substitute.For<IPackageUpdater>();
+
+            var repoUpdater = MakeRepositoryUpdater(
+                new List<PackageUpdateSet>
+                {
+                    UpdateSet(),
+                    UpdateSet()
+                });
+
+            var git = Substitute.For<IGitDriver>();
+            var repo = MakeRepositoryData();
+
+            var count = await repoUpdater.Run(git, repo);
+
+            Assert.That(count, Is.EqualTo(2));
+
+            await _packageUpdater.Received(2)
+                .MakeUpdatePullRequest(Arg.Any<IGitDriver>(),
+                    Arg.Any<PackageUpdateSet>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<RepositoryData>());
+        }
+
+        private IRepositoryUpdater MakeRepositoryUpdater(
             List<PackageUpdateSet> updates)
         {
             var sources = Substitute.For<INuGetSourcesReader>();
             var updateFinder = Substitute.For<IUpdateFinder>();
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            var packageUpdater = Substitute.For<IPackageUpdater>();
             var fileRestore = Substitute.For<IFileRestoreCommand>();
             var reporter = Substitute.For<IAvailableUpdatesReporter>();
 
@@ -71,7 +114,7 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
 
-            packageUpdater.MakeUpdatePullRequest(
+            _packageUpdater.MakeUpdatePullRequest(
                 Arg.Any<IGitDriver>(),
                 Arg.Any<PackageUpdateSet>(),
                 Arg.Any<NuGetSources>(),
@@ -79,7 +122,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(true);
 
             var repoUpdater = new RepositoryUpdater(
-                sources, updateFinder, updateSelection, packageUpdater,
+                sources, updateFinder, updateSelection, _packageUpdater,
                 new NullNuKeeperLogger(), new SolutionsRestore(fileRestore),
                 reporter, new UserSettings());
 
