@@ -124,18 +124,18 @@ namespace NuKeeper.Engine
             IEnumerable<PackageUpdateSet> targetUpdates,
             NuGetSources sources)
         {
-            var passes = 0;
+            var updatesDone = 0;
 
             foreach (var updateSet in targetUpdates)
             {
-                var pass = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
-                if (pass)
+                var success = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                if (success)
                 {
-                    passes++;
+                    updatesDone++;
                 }
             }
 
-            return passes;
+            return updatesDone;
         }
     }
 }
