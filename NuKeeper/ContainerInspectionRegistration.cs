@@ -31,7 +31,7 @@ namespace NuKeeper
             container.Register<IRepositoryScanner, RepositoryScanner>();
 
             container.Register<IUpdateFinder, UpdateFinder>();
-            container.Register<INugetSourcesReader, NugetSourcesReader>();
+            container.Register<INuGetSourcesReader, NuGetSourcesReader>();
 
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, CsvFileReporter>();

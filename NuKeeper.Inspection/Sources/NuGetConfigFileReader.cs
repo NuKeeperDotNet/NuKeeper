@@ -5,13 +5,13 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Sources
 {
-    public class NugetConfigFileReader
+    public class NuGetConfigFileReader
     {
-        private readonly NugetConfigFileParser _parser;
+        private readonly NuGetConfigFileParser _parser;
         private readonly INuKeeperLogger _logger;
 
-        public NugetConfigFileReader(
-            NugetConfigFileParser parser,
+        public NuGetConfigFileReader(
+            NuGetConfigFileParser parser,
             INuKeeperLogger logger)
         {
             _parser = parser;

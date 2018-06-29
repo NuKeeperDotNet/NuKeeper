@@ -3,7 +3,7 @@ using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
-    public class RespositoryBuilder
+    public class RepositoryBuilder
     {
         public const string ParentHtmlUrl = "http://repos.com/org/parent";
         public const string ParentCloneUrl = "http://repos.com/org/parent.git";
@@ -23,13 +23,7 @@ namespace NuKeeper.Tests.Engine
             bool canPull = true, bool canPush = true)
         {
             const string omniUrl = "http://somewhere.com/fork";
-            var owner = new User(omniUrl, "test user", null, 0, "test inc",
-                DateTimeOffset.Now, DateTimeOffset.Now, 
-                0, null, 0, 0, false, omniUrl, 1, 1,
-                "testville", "testUser", "Testy",
-                1, null, 0, 0,
-                1, omniUrl, null, false, "test", null);
-
+            var owner = MakeUser(omniUrl);
 
             var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
@@ -46,12 +40,7 @@ namespace NuKeeper.Tests.Engine
             string cloneUrl = ParentCloneUrl)
         {
             const string omniUrl = "http://somewhere.com/parent";
-            var owner = new User(omniUrl, "test user", null, 0, "test inc",
-                DateTimeOffset.Now, DateTimeOffset.Now,
-                0, null, 0, 0, false, omniUrl, 1, 1,
-                "testville", "testUser", "Testy",
-                1, null, 0, 0,
-                1, omniUrl, null, false, "test", null);
+            var owner = MakeUser(omniUrl);
 
             var perms = new RepositoryPermissions(false, true, true);
 
@@ -61,6 +50,16 @@ namespace NuKeeper.Tests.Engine
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, null, null, null,
                 false, false, false, false, 2, 122, true, true, true);
+        }
+
+        public static User MakeUser(string omniUrl)
+        {
+            return new User(omniUrl, "test user", null, 0, "test inc",
+                DateTimeOffset.Now, DateTimeOffset.Now,
+                0, null, 0, 0, false, omniUrl, 1, 1,
+                "testville", "testUser", "Testy",
+                1, null, 0, 0,
+                1, omniUrl, null, false, "test", null);
         }
     }
 }

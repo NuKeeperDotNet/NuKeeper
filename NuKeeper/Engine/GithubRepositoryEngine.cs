@@ -28,7 +28,7 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds,
+        public async Task<int> Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds,
             Identity userIdentity)
         {
             try
@@ -36,19 +36,21 @@ namespace NuKeeper.Engine
                 var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
                 {
-                    return;
+                    return 0;
                 }
 
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
 
-                await _repositoryUpdater.Run(git, repo);
+                var updatesDone = await _repositoryUpdater.Run(git, repo);
 
                 tempFolder.TryDelete();
+                return updatesDone;
             }
             catch (Exception ex)
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
+                return 0;
             }
         }
 

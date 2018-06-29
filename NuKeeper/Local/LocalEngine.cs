@@ -16,20 +16,20 @@ namespace NuKeeper.Local
 {
     public class LocalEngine
     {
-        private INugetSourcesReader _nugetSourcesReader;
+        private INuGetSourcesReader _nuGetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
         private readonly ILocalUpdater _updater;
         private readonly INuKeeperLogger _logger;
 
         public LocalEngine(
-            INugetSourcesReader nugetSourcesReader,
+            INuGetSourcesReader nuGetSourcesReader,
             IUpdateFinder updateFinder,
             IPackageUpdateSetSort sorter,
             ILocalUpdater updater,
             INuKeeperLogger logger)
         {
-            _nugetSourcesReader = nugetSourcesReader;
+            _nuGetSourcesReader = nuGetSourcesReader;
             _updateFinder = updateFinder;
             _sorter = sorter;
             _updater = updater;
@@ -40,7 +40,7 @@ namespace NuKeeper.Local
         {
             var folder = TargetFolder(settings.UserSettings);
 
-            var sources = _nugetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
+            var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
 
             var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
 

@@ -52,7 +52,7 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RespositoryBuilder.MakeRepository()
+                RepositoryBuilder.MakeRepository()
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
             
@@ -78,8 +78,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RespositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
-                RespositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
+                RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
+                RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 

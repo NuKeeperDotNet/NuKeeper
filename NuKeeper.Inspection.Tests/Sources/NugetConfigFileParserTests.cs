@@ -14,7 +14,7 @@ namespace NuKeeper.Inspection.Tests.Sources
         {
             var data = string.Empty;
 
-            var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -26,7 +26,7 @@ namespace NuKeeper.Inspection.Tests.Sources
         {
             var data = "not valid markup";
 
-            var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -44,7 +44,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -65,7 +65,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -87,7 +87,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NugetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
 
             var sources = parser.Parse(ToStream(data));
 

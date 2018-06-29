@@ -15,7 +15,7 @@ namespace NuKeeper.Engine
 {
     public class RepositoryUpdater : IRepositoryUpdater
     {
-        private readonly INugetSourcesReader _nugetSourcesReader;
+        private readonly INuGetSourcesReader _nugetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
@@ -25,7 +25,7 @@ namespace NuKeeper.Engine
         private readonly UserSettings _settings;
 
         public RepositoryUpdater(
-            INugetSourcesReader nugetSourcesReader,
+            INuGetSourcesReader nugetSourcesReader,
             IUpdateFinder updateFinder,
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
             _settings = settings;
         }
 
-        public async Task Run(IGitDriver git, RepositoryData repository)
+        public async Task<int> Run(IGitDriver git, RepositoryData repository)
         {
             GitInit(git, repository);
 
@@ -68,7 +68,7 @@ namespace NuKeeper.Engine
                     // report and exit
                     _availableUpdatesReporter.Report(repository.Pull.Name, updates);
                     _logger.Info("Exiting after reports only");
-                    return;
+                    return 0;
 
                 default:
                     throw new Exception($"Unknown report mode: '{_settings.ReportMode}'");
@@ -77,22 +77,39 @@ namespace NuKeeper.Engine
             if (updates.Count == 0)
             {
                 _logger.Terse("No potential updates found. Well done. Exiting.");
-                return;
+                return 0;
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(repository.Push, updates);
 
-            if (updates.Count == 0)
+            return await DoTargetUpdates(git, repository, targetUpdates, sources);
+        }
+
+        private async Task<int> DoTargetUpdates(
+            IGitDriver git, RepositoryData repository,
+            IReadOnlyCollection<PackageUpdateSet> targetUpdates,
+            NuGetSources sources)
+        {
+            if (targetUpdates.Count == 0)
             {
                 _logger.Terse("No updates can be applied. Exiting.");
-                return;
+                return 0;
             }
 
             await _solutionsRestore.Restore(git.WorkingFolder, sources);
 
-            await UpdateAllTargets(git, repository, targetUpdates, sources);
+            var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources);
 
-            _logger.Info($"Done {targetUpdates.Count} Updates");
+            if (updatesDone < targetUpdates.Count)
+            {
+                _logger.Terse($"Attempted {targetUpdates.Count} updates and did {updatesDone}");
+            }
+            else
+            {
+                _logger.Info($"Done {updatesDone} updates");
+            }
+
+            return updatesDone;
         }
 
         private static void GitInit(IGitDriver git, RepositoryData repository)
@@ -102,15 +119,23 @@ namespace NuKeeper.Engine
             git.AddRemote("nukeeper_push", repository.Push.Uri);
         }
 
-        private async Task UpdateAllTargets(IGitDriver git,
+        private async Task<int> UpdateAllTargets(IGitDriver git,
             RepositoryData repository,
             IEnumerable<PackageUpdateSet> targetUpdates,
             NuGetSources sources)
         {
+            var updatesDone = 0;
+
             foreach (var updateSet in targetUpdates)
             {
-                await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                var success = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                if (success)
+                {
+                    updatesDone++;
+                }
             }
+
+            return updatesDone;
         }
     }
 }

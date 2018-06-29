@@ -77,12 +77,12 @@ namespace NuKeeper.Inspection.Tests.Sources
             return ff.UniqueTemporaryFolder();
         }
 
-        private static INugetSourcesReader MakeNuGetSourcesReader()
+        private static INuGetSourcesReader MakeNuGetSourcesReader()
         {
             var logger = new NullNuKeeperLogger();
-            return new NugetSourcesReader(
-                new NugetConfigFileReader
-                    (new NugetConfigFileParser(logger), logger), logger);
+            return new NuGetSourcesReader(
+                new NuGetConfigFileReader
+                    (new NuGetConfigFileParser(logger), logger), logger);
         }
     }
 }

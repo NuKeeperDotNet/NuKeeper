@@ -7,11 +7,11 @@ using System.Xml.Linq;
 
 namespace NuKeeper.Inspection.Sources
 {
-    public class NugetConfigFileParser
+    public class NuGetConfigFileParser
     {
         private readonly INuKeeperLogger _logger;
 
-        public NugetConfigFileParser(INuKeeperLogger logger)
+        public NuGetConfigFileParser(INuKeeperLogger logger)
         {
             _logger = logger;
         }
