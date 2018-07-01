@@ -51,14 +51,31 @@ namespace NuKeeper.Tests.Engine
 
             var count = await engine.Run();
 
-            Assert.That(count, Is.EqualTo(1));
+            Assert.That(count, Is.EqualTo(2));
         }
+
+        [Test]
+        public async Task SuccessCaseWithTwoReposAndTwoPrsPerRepo()
+        {
+            var repos = new List<RepositorySettings>
+            {
+                new RepositorySettings(),
+                new RepositorySettings()
+            };
+            var engine = MakeGithubEngine(2, repos);
+
+            var count = await engine.Run();
+
+            Assert.That(count, Is.EqualTo(2));
+        }
+
 
         [Test]
         public async Task CountIsNotIncrementedWhenRepoEngineFails()
         {
             var repos = new List<RepositorySettings>
             {
+                new RepositorySettings(),
                 new RepositorySettings(),
                 new RepositorySettings()
             };
@@ -69,14 +86,48 @@ namespace NuKeeper.Tests.Engine
             Assert.That(count, Is.EqualTo(0));
         }
 
+        [Test]
+        public async Task WhenThereIsAMaxNumberOfRepos()
+        {
+            var repos = new List<RepositorySettings>
+            {
+                new RepositorySettings(),
+                new RepositorySettings(),
+                new RepositorySettings()
+            };
+
+            var settings = new UserSettings
+            {
+                MaxRepositoriesChanged = 1
+            };
+
+            var engine = MakeGithubEngine(1, settings, repos);
+
+            var count = await engine.Run();
+
+            Assert.That(count, Is.EqualTo(1));
+        }
+
         private static GithubEngine MakeGithubEngine(
             List<RepositorySettings> repos)
         {
-            return MakeGithubEngine(1, repos);
+            return MakeGithubEngine(1,
+                new UserSettings { MaxRepositoriesChanged = int.MaxValue },
+                repos);
         }
 
-            private static GithubEngine MakeGithubEngine(
+        private static GithubEngine MakeGithubEngine(
             int repoEngineResult,
+            List<RepositorySettings> repos)
+        {
+            return MakeGithubEngine(repoEngineResult,
+                new UserSettings { MaxRepositoriesChanged = int.MaxValue },
+                repos);
+        }
+
+        private static GithubEngine MakeGithubEngine(
+            int repoEngineResult,
+            UserSettings userSettings,
             List<RepositorySettings> repos)
         {
             var github = Substitute.For<IGithub>();
@@ -96,10 +147,10 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<Identity>())
                 .Returns(repoEngineResult);
 
-            var setings = new GithubAuthSettings(new Uri("http://foo.com"), "token123");
+            var githubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com"), "token123");
 
             var engine = new GithubEngine(github, repoDiscovery, repoEngine,
-                setings,
+                userSettings, githubAuthSettings,
                 folders, new NullNuKeeperLogger());
             return engine;
         }

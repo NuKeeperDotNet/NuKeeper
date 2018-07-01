@@ -15,6 +15,7 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
         private readonly IGithubRepositoryEngine _repositoryEngine;
+        private readonly UserSettings _userSettings;
         private readonly string _githubToken;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
@@ -23,6 +24,7 @@ namespace NuKeeper.Engine
             IGithub github,
             IGithubRepositoryDiscovery repositoryDiscovery,
             IGithubRepositoryEngine repositoryEngine,
+            UserSettings userSettings,
             GithubAuthSettings settings,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
@@ -30,6 +32,7 @@ namespace NuKeeper.Engine
             _github = github;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
+            _userSettings = userSettings;
             _githubToken = settings.Token;
             _folderFactory = folderFactory;
             _logger = logger;
@@ -56,6 +59,12 @@ namespace NuKeeper.Engine
 
             foreach (var repository in repositories)
             {
+                if (reposUpdated >= _userSettings.MaxRepositoriesChanged)
+                {
+                    _logger.Verbose($"Reached max of {reposUpdated} repositories changed");
+                    break;
+                }
+
                 var updatesInThisRepo = await _repositoryEngine.Run(repository, gitCreds, userIdentity);
                 if (updatesInThisRepo > 0)
                 {
