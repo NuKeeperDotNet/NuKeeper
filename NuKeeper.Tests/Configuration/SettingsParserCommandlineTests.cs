@@ -85,6 +85,7 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(3));
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(10));
             Assert.That(settings.UserSettings.MinimumPackageAge, Is.EqualTo(TimeSpan.FromDays(7)));
         }
 
@@ -122,6 +123,18 @@ namespace NuKeeper.Tests.Configuration
 
             AssertSettingsNotNull(settings);
             Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(42));
+        }
+
+        [Test]
+        public void MaxRepoOverrideIsParsed()
+        {
+            var commandLine = ValidRepoCommandLine()
+                .Append("maxrepo=51");
+
+            var settings = SettingsParser.ReadSettings(commandLine);
+
+            AssertSettingsNotNull(settings);
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(51));
         }
 
         [Test]
