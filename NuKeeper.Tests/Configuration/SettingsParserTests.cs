@@ -33,6 +33,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(10));
         }
 
         [Test]
@@ -48,6 +49,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.LogLevel, Is.EqualTo(LogLevel.Info));
             Assert.That(settings.UserSettings.ForkMode, Is.EqualTo(ForkMode.PreferFork));
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.MaxPullRequestsPerRepository, Is.EqualTo(10));
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(20));
         }
 
         [Test]
@@ -117,7 +120,6 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
         }
 
-
         private static RawConfiguration ValidRepoSettings()
         {
             return new RawConfiguration
@@ -131,7 +133,8 @@ namespace NuKeeper.Tests.Configuration
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
                 ReportMode = ReportMode.Off,
-                Labels = "nukeeper"
+                Labels = "nukeeper",
+                MaxPullRequestsPerRepository = 10
             };
         }
 
@@ -148,7 +151,9 @@ namespace NuKeeper.Tests.Configuration
                 LogLevel = LogLevel.Info,
                 ForkMode = ForkMode.PreferFork,
                 ReportMode = ReportMode.Off,
-                Labels = "nukeeper"
+                Labels = "nukeeper",
+                MaxPullRequestsPerRepository = 10,
+                MaxRepositoriesChanged = 20
             };
         }
 
@@ -175,7 +180,6 @@ namespace NuKeeper.Tests.Configuration
                 Labels = "nukeeper"
             };
         }
-
 
         private static void AssertSettingsNotNull(SettingsContainer settings)
         {

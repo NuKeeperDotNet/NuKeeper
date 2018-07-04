@@ -63,6 +63,7 @@ namespace NuKeeper.Configuration
                 LogLevel = settings.LogLevel,
                 ReportMode = settings.ReportMode,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
+                MaxRepositoriesChanged = settings.MaxRepositoriesChanged,
                 NuGetSources = ReadNuGetSources(settings),
                 PackageIncludes = ParseRegex(settings.Include, nameof(settings.Include)),
                 PackageExcludes = ParseRegex(settings.Exclude, nameof(settings.Exclude)),

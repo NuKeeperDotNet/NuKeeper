@@ -17,6 +17,8 @@ namespace NuKeeper.Configuration
 
         public int MaxPullRequestsPerRepository { get; set; }
 
+        public int MaxRepositoriesChanged { get; set; }
+
         public TimeSpan MinimumPackageAge { get; set; }
 
         public VersionChange AllowedChange { get; set; }

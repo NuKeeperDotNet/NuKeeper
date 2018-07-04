@@ -30,6 +30,10 @@ namespace NuKeeper.Configuration
         [OverriddenBy(ConfigurationSources.CommandLine, "maxpr")]
         public int MaxPullRequestsPerRepository;
 
+        [JsonConfig("max_repositories_changed"), Default(10)]
+        [OverriddenBy(ConfigurationSources.CommandLine, "maxrepo")]
+        public int MaxRepositoriesChanged;
+
         [JsonConfig("log_level"), Default("Info")]
         [OverriddenBy(ConfigurationSources.CommandLine, "log")]
         public LogLevel LogLevel;
