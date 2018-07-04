@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,13 +20,13 @@ namespace NuKeeper.Inspection.NuGetApi
             _lookupReporter = lookupReporter;
         }
 
-        public async Task<Dictionary<string, PackageLookupResult>> FindVersionUpdates(
+        public async Task<IDictionary<string, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
             NuGetSources sources,
             VersionChange allowedChange)
         {
             var latestOfEach = packages
-                .GroupBy(pi => pi.Id)
+                .GroupBy(pi => pi.Id.ToLowerInvariant())
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
@@ -34,7 +35,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
             await Task.WhenAll(lookupTasks);
 
-            var result = new Dictionary<string, PackageLookupResult>();
+            var result = new Dictionary<string, PackageLookupResult>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var lookupTask in lookupTasks)
             {
@@ -45,7 +46,7 @@ namespace NuKeeper.Inspection.NuGetApi
             return result;
         }
 
-        private void ProcessLookupResult(PackageLookupResult packageLookup, Dictionary<string, PackageLookupResult> result)
+        private void ProcessLookupResult(PackageLookupResult packageLookup, IDictionary<string, PackageLookupResult> result)
         {
             var selectedVersion = packageLookup.Selected();
 
