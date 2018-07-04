@@ -64,7 +64,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results, Does.ContainKey("NUnit"));
+            Assert.That(results.ContainsKey("NUnit"), "results.ContainsKey('NUnit')");
+            Assert.That(results.ContainsKey("nunit"), "results.ContainsKey('nunit')");
         }
 
         [Test]
