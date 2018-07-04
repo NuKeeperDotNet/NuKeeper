@@ -49,6 +49,25 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         }
 
         [Test]
+        public async Task FindsSingleUpdateForPackageDifferingOnlyByCase()
+        {
+            var packages = new List<PackageIdentity>
+            {
+                Current("nunit"),
+                Current("NUnit")
+            };
+
+            var lookup = BuildBulkPackageLookup();
+
+            var results = await lookup.FindVersionUpdates(
+                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results, Does.ContainKey("NUnit"));
+        }
+
+        [Test]
         public async Task InvalidPackageIsIgnored()
         {
             var packages = new List<PackageIdentity>

@@ -26,7 +26,7 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange)
         {
             var latestOfEach = packages
-                .GroupBy(pi => pi.Id)
+                .GroupBy(pi => pi.Id.ToLowerInvariant())
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
@@ -35,7 +35,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
             await Task.WhenAll(lookupTasks);
 
-            var result = new Dictionary<string, PackageLookupResult>();
+            var result = new Dictionary<string, PackageLookupResult>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var lookupTask in lookupTasks)
             {
