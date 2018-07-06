@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using NuGet.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -103,8 +104,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(settings.ModalSettings.Mode, Is.EqualTo(RunMode.Inspect));
             var sources = settings.UserSettings.NuGetSources;
             Assert.That(sources.Items.Count, Is.EqualTo(2));
-            Assert.That(sources.Items.First(), Is.EqualTo("https://foo/"));
-            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("file://fish/"));
+            Assert.That(sources.Items.First(), Is.EqualTo(new PackageSource("https://foo")));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo(new PackageSource("file://fish")));
         }
 
         [Test]

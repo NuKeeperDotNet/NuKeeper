@@ -15,7 +15,7 @@ namespace NuKeeper.Inspection.Sources
                 throw new ArgumentException(nameof(sources));
             }
 
-            this.Sources = sources.Select(s => new PackageSource(s)).ToList();
+            this.Items = sources.Select(s => new PackageSource(s)).ToList();
         }
 
         public NuGetSources(IEnumerable<PackageSource> sources)
@@ -32,7 +32,7 @@ namespace NuKeeper.Inspection.Sources
                 throw new ArgumentException(nameof(sources));
             }
 
-            this.Sources = items;
+            this.Items = items;
         }
 
         private const string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
@@ -41,23 +41,18 @@ namespace NuKeeper.Inspection.Sources
 
         public static NuGetSources GlobalFeed => new NuGetSources(GlobalFeedUrl);
 
-        public IReadOnlyCollection<string> Items
-        {
-            get { return Sources.Select(s => s.SourceUri.ToString()).ToList(); }
-        }
-
-        public IReadOnlyCollection<PackageSource> Sources { get; }
+        public IReadOnlyCollection<PackageSource> Items { get; }
 
         public string CommandLine(string prefix)
         {
-            return Items
+            return Items.Select(s => s.SourceUri.ToString())
                 .Select(s => $"{prefix} {s}")
                 .JoinWithSeparator(" ");
         }
 
         public override string ToString()
         {
-            return Items.JoinWithCommas();
+            return Items.Select(s => s.SourceUri.ToString()).JoinWithCommas();
         }
     }
 }

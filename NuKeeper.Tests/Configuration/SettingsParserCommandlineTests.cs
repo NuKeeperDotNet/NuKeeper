@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -160,8 +161,8 @@ namespace NuKeeper.Tests.Configuration
             AssertSettingsNotNull(settings);
             var sources = settings.UserSettings.NuGetSources;
             Assert.That(sources.Items.Count, Is.EqualTo(2));
-            Assert.That(sources.Items.First(), Is.EqualTo("http://foo/"));
-            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("file://blah/"));
+            Assert.That(sources.Items.First(), Is.EqualTo(new PackageSource("http://foo")));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo(new PackageSource("file://blah")));
         }
 
         [Test]

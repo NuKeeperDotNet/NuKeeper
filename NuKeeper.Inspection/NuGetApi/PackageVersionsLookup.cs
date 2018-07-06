@@ -27,7 +27,7 @@ namespace NuKeeper.Inspection.NuGetApi
             string packageName,
             NuGetSources sources)
         {
-            var tasks = sources.Sources.Select(s => RunFinderForSource(packageName, s));
+            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, s));
 
             var results = await Task.WhenAll(tasks);
 
