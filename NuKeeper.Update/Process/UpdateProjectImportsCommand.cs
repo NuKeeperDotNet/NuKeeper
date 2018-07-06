@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
@@ -13,7 +14,7 @@ namespace NuKeeper.Update.Process
     public class UpdateProjectImportsCommand : IPackageCommand
     {
         public async Task Invoke(PackageInProject currentPackage,
-            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
+            NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             var projectsToUpdate = new Stack<string>();
             projectsToUpdate.Push(currentPackage.Path.FullName);

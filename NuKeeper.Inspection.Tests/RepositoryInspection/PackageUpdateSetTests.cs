@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
@@ -12,7 +13,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
     [TestFixture]
     public class PackageUpdateSetTests
     {
-        private const string ASource = "somePackageSource";
+        private readonly PackageSource _source = new PackageSource("http://someSource");
 
         [Test]
         public void NullPackageLookupData_IsNotAllowed()
@@ -65,7 +66,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         public void OneUpdate_IsValid()
         {
             var fooVersionFour = new PackageIdentity("foo", VersionFour());
-            var highest = new PackageSearchMedatadata(fooVersionFour, ASource, DateTimeOffset.Now, null);
+            var highest = new PackageSearchMedatadata(fooVersionFour, _source, DateTimeOffset.Now, null);
 
             var currentPackages = new List<PackageInProject>
             {
@@ -84,7 +85,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(updates.Selected.Identity, Is.EqualTo(fooVersionFour));
             Assert.That(updates.SelectedId, Is.EqualTo("foo"));
             Assert.That(updates.SelectedVersion, Is.EqualTo(highest.Identity.Version));
-            Assert.That(updates.Selected.Source, Is.EqualTo(ASource));
+            Assert.That(updates.Selected.Source, Is.EqualTo(_source));
         }
 
         [Test]
@@ -243,7 +244,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             return new PackageSearchMedatadata(
                 LatestVersionOfPackageFoo(),
-                ASource, DateTimeOffset.Now, null);
+                _source, DateTimeOffset.Now, null);
         }
 
         private NuGetVersion VersionFour()

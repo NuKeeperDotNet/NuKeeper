@@ -1,6 +1,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -58,7 +59,7 @@ namespace NuKeeper.Update.Process
         }
 
         public async Task Invoke(PackageInProject currentPackage,
-            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
+            NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             await Invoke(currentPackage.Path.Info, allSources);
         }

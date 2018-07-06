@@ -1,4 +1,5 @@
 using System;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
@@ -290,7 +291,7 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, NuGetSources.GlobalFeedUrl, publishedDate, null);
+            var latest = new PackageSearchMedatadata(newPackage, NuGetSources.GlobalPackageSource, publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -300,7 +301,7 @@ namespace NuKeeper.Tests.Engine
         {
             var newPackage = NewPackageFooBar123();
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, "http://internalfeed.myco.com/api", publishedDate, null);
+            var latest = new PackageSearchMedatadata(newPackage, new PackageSource("http://internalfeed.myco.com/api"), publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -315,10 +316,10 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, NuGetSources.GlobalFeedUrl, publishedAt, null);
+            var latest = new PackageSearchMedatadata(latestId, NuGetSources.GlobalPackageSource, publishedAt, null);
 
             var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), NuGetSources.GlobalFeedUrl, null, null);
+                NewPackageFooBar123(), NuGetSources.GlobalPackageSource, null, null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
             return new PackageUpdateSet(updates, packages);

@@ -153,15 +153,15 @@ namespace NuKeeper.Tests.Configuration
         public void SourcesOverrideIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("sources=foo;blah");
+                .Append("sources=http://foo;file://blah");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
             var sources = settings.UserSettings.NuGetSources;
             Assert.That(sources.Items.Count, Is.EqualTo(2));
-            Assert.That(sources.Items.First(), Is.EqualTo("foo"));
-            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("blah"));
+            Assert.That(sources.Items.First(), Is.EqualTo("http://foo/"));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("file://blah/"));
         }
 
         [Test]

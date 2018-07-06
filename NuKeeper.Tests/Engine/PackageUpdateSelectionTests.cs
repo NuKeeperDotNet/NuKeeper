@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
@@ -115,7 +116,7 @@ namespace NuKeeper.Tests.Engine
 
             var matchVersion = new NuGetVersion("4.0.0");
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
-                "ASource", pubDate, null);
+                new PackageSource("http://none"), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
@@ -132,7 +133,7 @@ namespace NuKeeper.Tests.Engine
             };
 
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, "ASource", pubDate, null);
+            var match = new PackageSearchMedatadata(matchId, new PackageSource("http://none"), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);

@@ -86,7 +86,7 @@ namespace NuKeeper.Engine
 
             builder.AppendLine();
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
-            if (SourceIsPublicNuget(updates.Selected.Source))
+            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
@@ -152,11 +152,11 @@ namespace NuKeeper.Engine
             return "`" + value + "`";
         }
 
-        private static bool SourceIsPublicNuget(string sourceUrl)
+        private static bool SourceIsPublicNuget(Uri sourceUrl)
         {
             return
-                !string.IsNullOrWhiteSpace(sourceUrl) &&
-                sourceUrl.StartsWith("https://api.nuget.org/");
+                sourceUrl != null &&
+                sourceUrl.ToString().StartsWith("https://api.nuget.org/");
         }
 
         private static string NugetPackageLink(PackageIdentity package)

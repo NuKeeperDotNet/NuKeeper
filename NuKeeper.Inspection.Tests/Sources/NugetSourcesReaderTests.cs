@@ -31,14 +31,14 @@ namespace NuKeeper.Inspection.Tests.Sources
             var result = reader.Read(TemporaryFolder(), null);
 
             Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
-            Assert.That(result.Items, Does.Contain(NuGetSources.GlobalFeedUrl));
+            Assert.That(result.Items, Does.Contain("https://api.nuget.org/v3/index.json"));
         }
 
         private const string ConfigFileContents =
             @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-    <add key=""From A file"" value=""https://fromfile1.com"" />
+    <add key=""From A file"" value=""https://fromFile1.com"" />
   </packageSources>
 </configuration>";
 
@@ -70,7 +70,7 @@ namespace NuKeeper.Inspection.Tests.Sources
             var result = reader.Read(folder, new NuGetSources("https://fromConfigA.com"));
 
             Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo("https://fromConfigA.com"));
+            Assert.That(result.Items.First(), Is.EqualTo("https://fromconfiga.com/"));
         }
 
         private static IFolder TemporaryFolder()
@@ -81,7 +81,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
         private static INuGetSourcesReader MakeNuGetSourcesReader()
         {
-            var logger = new ConsoleLogger(LogLevel.Verbose);
+            var logger = Substitute.For<INuKeeperLogger>();
             return new NuGetSourcesReader(
                 new NuGetConfigFileReader
                     (logger), logger);

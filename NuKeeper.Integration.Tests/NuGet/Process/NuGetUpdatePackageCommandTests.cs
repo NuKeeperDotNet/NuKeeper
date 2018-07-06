@@ -62,7 +62,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
             await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
-                NuGetSources.GlobalFeedUrl, NuGetSources.GlobalFeed);
+                NuGetSources.GlobalPackageSource, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

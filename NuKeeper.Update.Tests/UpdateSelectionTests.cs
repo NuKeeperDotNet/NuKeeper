@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
@@ -238,7 +239,7 @@ namespace NuKeeper.Update.Tests
                 new PackageInProject("foobar", "1.0.1", PathToProjectTwo())
             };
 
-            var latest = new PackageSearchMedatadata(newPackage, "ASource", DateTimeOffset.Now, null);
+            var latest = new PackageSearchMedatadata(newPackage, new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, currentPackages);
@@ -256,7 +257,7 @@ namespace NuKeeper.Update.Tests
 
             var matchVersion = new NuGetVersion("4.0.0");
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
-                "ASource", pubDate, null);
+                new PackageSource("http://none"), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
@@ -273,7 +274,7 @@ namespace NuKeeper.Update.Tests
             };
 
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, "ASource", pubDate, null);
+            var match = new PackageSearchMedatadata(matchId, new PackageSource("http://none"), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);

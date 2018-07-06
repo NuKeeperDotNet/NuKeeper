@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -21,18 +22,18 @@ namespace NuKeeper.Update.Process
         }
 
         public async Task Invoke(PackageInProject currentPackage,
-            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
+            NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             var projectPath = currentPackage.Path.Info.DirectoryName;
             var projectFileName = currentPackage.Path.Info.Name;
-
+            var sourceUrl = packageSource.SourceUri.ToString();
             var sources = allSources.CommandLine("-s");
 
-            _logger.Verbose($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {packageSource}");
+            _logger.Verbose($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
 
             await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
             await _externalProcess.Run(projectPath, "dotnet", $"remove {projectFileName} package {currentPackage.Id}", true);
-            await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {packageSource}", true);
+            await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}", true);
         }
     }
 }

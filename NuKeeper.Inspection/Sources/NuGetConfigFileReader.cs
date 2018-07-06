@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NuGet.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -24,20 +25,17 @@ namespace NuKeeper.Inspection.Sources
                 _logger.Verbose($"Reading file {Path.Combine(file.Root, file.FileName)} for package sources");
             }
 
-            var enabledSources = SettingsUtility.GetEnabledSources(settings);
+            var enabledSources = SettingsUtility.GetEnabledSources(settings).ToList();
 
             return ReadFromFile(enabledSources);
         }
 
-        private NuGetSources ReadFromFile(IEnumerable<PackageSource> enabledSources)
+        private NuGetSources ReadFromFile(IReadOnlyCollection<PackageSource> sources)
         {
-            var sources = new List<string>();
-
-            foreach (var source in enabledSources)
+            foreach (var source in sources)
             {
                 _logger.Verbose(
                     $"Read [{source.Name}] : {source.SourceUri} from file: {Path.Combine(source.Origin.Root, source.Origin.FileName)}");
-                sources.Add(source.SourceUri.ToString());
             }
 
             return new NuGetSources(sources);
