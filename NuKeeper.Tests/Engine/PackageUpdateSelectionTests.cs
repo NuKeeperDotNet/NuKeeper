@@ -7,6 +7,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -154,9 +155,10 @@ namespace NuKeeper.Tests.Engine
                 MaxPullRequests = Int32.MaxValue,
                 MinimumAge = TimeSpan.Zero
             };
-            var updateSelection = new UpdateSelection(settings, new NullNuKeeperLogger());
+            var logger = Substitute.For<INuKeeperLogger>();
+            var updateSelection = new UpdateSelection(settings, logger);
             return new PackageUpdateSelection(filter,
-                MakeSort(), updateSelection, new NullNuKeeperLogger());
+                MakeSort(), updateSelection, logger);
         }
 
         private static ForkData PushFork()
@@ -177,7 +179,7 @@ namespace NuKeeper.Tests.Engine
 
         private static IPackageUpdateSetSort MakeSort()
         {
-            return new PackageUpdateSetSort(new NullNuKeeperLogger());
+            return new PackageUpdateSetSort(Substitute.For<INuKeeperLogger>());
         }
     }
 }

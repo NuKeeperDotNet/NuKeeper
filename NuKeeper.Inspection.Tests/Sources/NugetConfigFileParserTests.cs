@@ -3,6 +3,8 @@ using NUnit.Framework;
 using System.IO;
 using System.Linq;
 using System.Text;
+using NSubstitute;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Tests.Sources
 {
@@ -14,7 +16,7 @@ namespace NuKeeper.Inspection.Tests.Sources
         {
             var data = string.Empty;
 
-            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(Substitute.For<INuKeeperLogger>());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -26,7 +28,7 @@ namespace NuKeeper.Inspection.Tests.Sources
         {
             var data = "not valid markup";
 
-            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(Substitute.For<INuKeeperLogger>());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -44,7 +46,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(Substitute.For<INuKeeperLogger>());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -65,7 +67,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(Substitute.For<INuKeeperLogger>());
 
             var sources = parser.Parse(ToStream(data));
 
@@ -87,7 +89,7 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
-            var parser = new NuGetConfigFileParser(new NullNuKeeperLogger());
+            var parser = new NuGetConfigFileParser(Substitute.For<INuKeeperLogger>());
 
             var sources = parser.Parse(ToStream(data));
 

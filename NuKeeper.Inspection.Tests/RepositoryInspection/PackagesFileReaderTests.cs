@@ -1,7 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using NSubstitute;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
@@ -139,7 +141,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
 
         private PackagesFileReader MakeReader()
         {
-            return new PackagesFileReader(new NullNuKeeperLogger());
+            return new PackagesFileReader(Substitute.For<INuKeeperLogger>());
         }
 
         private Stream StreamFromString(string contents)

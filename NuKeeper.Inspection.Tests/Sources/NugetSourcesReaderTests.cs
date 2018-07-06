@@ -1,6 +1,8 @@
 using System.IO;
 using System.Linq;
+using NSubstitute;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
@@ -14,7 +16,7 @@ namespace NuKeeper.Inspection.Tests.Sources
             var overrrideSources = new NuGetSources("overrideA");
             var reader = MakeNuGetSourcesReader();
 
-            var ff = new FolderFactory(new NullNuKeeperLogger());
+            var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
 
             var result = reader.Read(ff.UniqueTemporaryFolder(), overrrideSources);
 
@@ -73,13 +75,13 @@ namespace NuKeeper.Inspection.Tests.Sources
 
         private static IFolder TemporaryFolder()
         {
-            var ff = new FolderFactory(new NullNuKeeperLogger());
+            var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return ff.UniqueTemporaryFolder();
         }
 
         private static INuGetSourcesReader MakeNuGetSourcesReader()
         {
-            var logger = new NullNuKeeperLogger();
+            var logger = Substitute.For<INuKeeperLogger>();
             return new NuGetSourcesReader(
                 new NuGetConfigFileReader
                     (new NuGetConfigFileParser(logger), logger), logger);

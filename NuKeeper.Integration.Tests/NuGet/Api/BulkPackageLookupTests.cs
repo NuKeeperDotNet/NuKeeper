@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NSubstitute;
+using NuGet.Common;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
@@ -121,9 +124,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
         private static BulkPackageLookup BuildBulkPackageLookup()
         {
-            var nuKeeperLogger = new NullNuKeeperLogger();
+            var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var lookup = new ApiPackageLookup(new PackageVersionsLookup(
-                new NullNuGetLogger(), new NullNuKeeperLogger()));
+                Substitute.For<ILogger>(), nuKeeperLogger));
             return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 

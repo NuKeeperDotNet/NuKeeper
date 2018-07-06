@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -219,7 +221,7 @@ namespace NuKeeper.Tests.Engine.Sort
 
         private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
-            var sorter = new PackageUpdateSetSort(new NullNuKeeperLogger());
+            var sorter = new PackageUpdateSetSort(Substitute.For<INuKeeperLogger>());
             return sorter.Sort(input)
                 .ToList();
         }

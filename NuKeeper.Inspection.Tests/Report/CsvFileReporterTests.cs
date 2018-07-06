@@ -6,6 +6,7 @@ using System.Text;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -91,7 +92,7 @@ namespace NuKeeper.Inspection.Tests.Report
             streamSource.GetStream(Arg.Any<string>())
                 .Returns(writer);
 
-            var reporter = new CsvFileReporter(streamSource, new NullNuKeeperLogger());
+            var reporter = new CsvFileReporter(streamSource, Substitute.For<INuKeeperLogger>());
 
             reporter.Report("test", rows);
 

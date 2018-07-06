@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using NSubstitute;
+using NuGet.Common;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Sources;
-using NuKeeper.Integration.Tests.NuGet.Api;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api
@@ -69,7 +71,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         private IPackageVersionsLookup BuildPackageLookup()
         {
             return new PackageVersionsLookup(
-                new NullNuGetLogger(), new NullNuKeeperLogger());
+                Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>());
         }
     }
 }
