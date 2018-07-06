@@ -7,6 +7,6 @@ namespace NuKeeper.Inspection.Files
     {
         string FullPath { get; }
         void TryDelete();
-        IEnumerable<FileInfo> Find(string pattern);
+        IReadOnlyCollection<FileInfo> Find(string pattern);
     }
 }
