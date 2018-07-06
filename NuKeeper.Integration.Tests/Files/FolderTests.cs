@@ -1,5 +1,6 @@
+using NSubstitute;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Integration.Tests.NuGet.Api;
+using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Files
@@ -28,7 +29,7 @@ namespace NuKeeper.Integration.Tests.Files
 
         private static IFolder MakeTempFolder()
         {
-            var factory = new FolderFactory(new NullNuKeeperLogger());
+            var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return factory.UniqueTemporaryFolder();
         }
     }

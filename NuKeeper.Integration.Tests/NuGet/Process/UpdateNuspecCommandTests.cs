@@ -1,10 +1,11 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using NSubstitute;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
-using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 
@@ -40,7 +41,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var projectPath = Path.Combine(workDirectory, testNuspec);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var command = new UpdateNuspecCommand(new NullNuKeeperLogger());
+            var command = new UpdateNuspecCommand(Substitute.For<INuKeeperLogger>());
 
             var package = new PackageInProject("foo", oldPackageVersion,
                 new PackagePath(workDirectory, testNuspec, PackageReferenceType.Nuspec));

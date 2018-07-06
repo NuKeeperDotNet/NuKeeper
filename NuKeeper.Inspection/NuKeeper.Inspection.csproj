@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
+    <PackageReference Include="NuGet.Protocol" Version="4.7.0" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
@@ -171,8 +172,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
         private static BulkPackageLookup BuildBulkPackageLookup(IApiPackageLookup apiLookup)
         {
-            var logger = new NullNuKeeperLogger();
-            return new BulkPackageLookup(apiLookup, new PackageLookupResultReporter(logger));
+            return new BulkPackageLookup(apiLookup, new PackageLookupResultReporter(Substitute.For<INuKeeperLogger>()));
         }
     }
 }

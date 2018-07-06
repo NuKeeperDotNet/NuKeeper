@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using NSubstitute;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Integration.Tests.NuGet.Api;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.RepositoryInspection
@@ -146,7 +147,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void SelfTest()
         {
             var scanner = MakeScanner();
-            var baseFolder = new Folder(new NullNuKeeperLogger(), GetOwnRootDir());
+            var baseFolder = new Folder(Substitute.For<INuKeeperLogger>(), GetOwnRootDir());
 
             var results = scanner.FindAllNuGetPackages(baseFolder);
 
@@ -171,13 +172,13 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
 
         private IFolder GetUniqueTempFolder()
         {
-            var folderFactory = new FolderFactory(new NullNuKeeperLogger());
+            var folderFactory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return folderFactory.UniqueTemporaryFolder();
         }
 
         private IRepositoryScanner MakeScanner()
         {
-            var logger = new NullNuKeeperLogger();
+            var logger = Substitute.For<INuKeeperLogger>();
             return new RepositoryScanner(
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),

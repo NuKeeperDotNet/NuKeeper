@@ -1,11 +1,12 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using NSubstitute;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
-using NuKeeper.Integration.Tests.NuGet.Api;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 
@@ -110,8 +111,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var command = new DotNetUpdatePackageCommand(
-                    new NullNuKeeperLogger());
+            var command = new DotNetUpdatePackageCommand(Substitute.For<INuKeeperLogger>());
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.ProjectFile));
@@ -127,7 +127,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
         private IFolder UniqueTemporaryFolder()
         {
-            var factory = new FolderFactory(new NullNuKeeperLogger());
+            var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return factory.UniqueTemporaryFolder();
         }
     }

@@ -7,6 +7,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
@@ -151,7 +152,7 @@ namespace NuKeeper.Tests.Engine
 
             var engine = new GithubEngine(github, repoDiscovery, repoEngine,
                 userSettings, githubAuthSettings,
-                folders, new NullNuKeeperLogger());
+                folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }
     }

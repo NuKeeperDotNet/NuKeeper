@@ -66,8 +66,11 @@ namespace NuKeeper.Inspection.NuGetApi
         private async Task<IEnumerable<IPackageSearchMetadata>> FindPackage(
             PackageMetadataResource metadataResource, string packageName)
         {
-            return await metadataResource
-                .GetMetadataAsync(packageName, false, false, _nuGetLogger, CancellationToken.None);
+            using (var cacheContext = new SourceCacheContext())
+            {
+                return await metadataResource
+                    .GetMetadataAsync(packageName, false, false, cacheContext, _nuGetLogger, CancellationToken.None);
+            }
         }
 
         private static PackageSearchMedatadata BuildPackageData(string source, IPackageSearchMetadata metadata)

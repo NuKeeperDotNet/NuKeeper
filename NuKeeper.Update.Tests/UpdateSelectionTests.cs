@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
@@ -73,7 +75,7 @@ namespace NuKeeper.Update.Tests
                 Includes = new Regex("bar")
             };
 
-            var target = new UpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
 
             var results = await target.Filter(updateSets, Pass);
 
@@ -96,7 +98,7 @@ namespace NuKeeper.Update.Tests
                 Excludes = new Regex("bar")
             };
 
-            var target = new UpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
 
             var results = await target.Filter(updateSets, Pass);
 
@@ -121,7 +123,7 @@ namespace NuKeeper.Update.Tests
                 Includes = new Regex("foo")
             };
 
-            var target = new UpdateSelection(settings, new NullNuKeeperLogger());
+            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
 
             var results = await target.Filter(updateSets, Pass);
 
@@ -301,7 +303,7 @@ namespace NuKeeper.Update.Tests
                 MaxPullRequests = maxPullRequests,
                 MinimumAge = TimeSpan.Zero
             };
-            return new UpdateSelection(settings, new NullNuKeeperLogger());
+            return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
         }
 
         private static IUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
@@ -313,7 +315,7 @@ namespace NuKeeper.Update.Tests
                 MaxPullRequests = maxPullRequests,
                 MinimumAge = minAge
             };
-            return new UpdateSelection(settings, new NullNuKeeperLogger());
+            return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
         }
 
         private static Task<bool> Pass(PackageUpdateSet s) => Task.FromResult(true);

@@ -5,6 +5,7 @@ using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Github;
+using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
 
@@ -102,7 +103,7 @@ namespace NuKeeper.Tests.Engine
 
         private static IGithubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGithub github, ModalSettings settings)
         {
-            return new GithubRepositoryDiscovery(github, settings, new NullNuKeeperLogger());
+            return new GithubRepositoryDiscovery(github, settings, Substitute.For<INuKeeperLogger>());
         }
 
         private static ModalSettings OrgModeSettings()

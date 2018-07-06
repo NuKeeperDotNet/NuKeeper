@@ -10,6 +10,7 @@ using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -210,7 +211,7 @@ namespace NuKeeper.Tests.Engine
 
             var repoUpdater = new RepositoryUpdater(
                 sources, updateFinder, updateSelection, packageUpdater,
-                new NullNuKeeperLogger(), new SolutionsRestore(fileRestore),
+                Substitute.For<INuKeeperLogger>(), new SolutionsRestore(fileRestore),
                 reporter, settings);
 
             return repoUpdater;
