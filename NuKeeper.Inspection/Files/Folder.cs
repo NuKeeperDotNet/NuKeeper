@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Files
@@ -18,9 +19,20 @@ namespace NuKeeper.Inspection.Files
 
         public string FullPath => _root.FullName;
 
-        public IEnumerable<FileInfo> Find(string pattern)
+        public IReadOnlyCollection<FileInfo> Find(string pattern)
         {
-            return _root.EnumerateFiles(pattern, SearchOption.AllDirectories);
+            try
+            {
+                return _root
+                    .EnumerateFiles(pattern, SearchOption.AllDirectories)
+                    .ToList();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Terse(ex.Message);
+                return new List<FileInfo>();
+            }
         }
 
         public void TryDelete()
