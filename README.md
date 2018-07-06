@@ -4,7 +4,8 @@
 [![Build Status](https://travis-ci.org/NuKeeperDotNet/NuKeeper.svg?branch=master)](https://travis-ci.org/NuKeeperDotNet/NuKeeper/)
 [![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
 
-[On NuGet](https://www.nuget.org/packages/NuKeeper/).
+
+[![NuGet](https://img.shields.io/nuget/v/NuKeeper.svg?maxAge=2592000)](https://www.nuget.org/packages/NuKeeper/) 
 `dotnet tool install --global NuKeeper`
 
 
