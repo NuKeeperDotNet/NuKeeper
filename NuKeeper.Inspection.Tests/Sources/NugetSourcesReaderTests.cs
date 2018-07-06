@@ -30,15 +30,15 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = reader.Read(TemporaryFolder(), null);
 
-            Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
+            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(result.Items, Does.Contain(NuGetSources.GlobalFeedUrl));
         }
 
         private const string ConfigFileContents =
             @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-    <add key=""From A file"" value=""https://fromFile1.com"" />
+    <add key=""From A file"" value=""https://fromfile1.com"" />
   </packageSources>
 </configuration>";
 
@@ -53,8 +53,8 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = reader.Read(folder, null);
 
-            Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo("https://fromFile1.com"));
+            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(result.Items.First(), Is.EqualTo("https://fromfile1.com/"));
         }
 
 
@@ -81,10 +81,10 @@ namespace NuKeeper.Inspection.Tests.Sources
 
         private static INuGetSourcesReader MakeNuGetSourcesReader()
         {
-            var logger = Substitute.For<INuKeeperLogger>();
+            var logger = new ConsoleLogger(LogLevel.Verbose);
             return new NuGetSourcesReader(
                 new NuGetConfigFileReader
-                    (new NuGetConfigFileParser(logger), logger), logger);
+                    (logger), logger);
         }
     }
 }

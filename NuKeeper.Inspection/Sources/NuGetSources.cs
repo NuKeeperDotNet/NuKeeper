@@ -27,7 +27,7 @@ namespace NuKeeper.Inspection.Sources
             Items = items.ToList();
         }
 
-        public static string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
+        public static readonly string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
 
         public static NuGetSources GlobalFeed => new NuGetSources(GlobalFeedUrl);
 

@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using NuGet.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 
@@ -7,45 +8,39 @@ namespace NuKeeper.Inspection.Sources
 {
     public class NuGetConfigFileReader
     {
-        private readonly NuGetConfigFileParser _parser;
         private readonly INuKeeperLogger _logger;
 
-        public NuGetConfigFileReader(
-            NuGetConfigFileParser parser,
-            INuKeeperLogger logger)
+        public NuGetConfigFileReader(INuKeeperLogger logger)
         {
-            _parser = parser;
             _logger = logger;
         }
 
         public NuGetSources ReadNugetSources(IFolder workingFolder)
         {
-            var configFile = workingFolder.Find("nuget.config")
-                .FirstOrDefault();
+            var settings = Settings.LoadDefaultSettings(workingFolder.FullPath);
 
-            if (configFile == null)
+            foreach (var file in settings.Priority)
             {
-                return null;
+                _logger.Verbose($"Reading file {Path.Combine(file.Root, file.FileName)} for package sources");
             }
 
-            return ReadFromFile(configFile);
+            var enabledSources = SettingsUtility.GetEnabledSources(settings);
+
+            return ReadFromFile(enabledSources);
         }
 
-        private NuGetSources ReadFromFile(FileInfo configFile)
+        private NuGetSources ReadFromFile(IEnumerable<PackageSource> enabledSources)
         {
-            using (var fileContents = File.OpenRead(configFile.FullName))
+            var sources = new List<string>();
+
+            foreach (var source in enabledSources)
             {
-                _logger.Verbose($"Reading nuget.config file {configFile.FullName} for package sources");
-                var fromFile = _parser.Parse(fileContents);
-                if (fromFile != null)
-                {
-                    var itemsText = string.Join(',', fromFile.Items);
-                    _logger.Verbose($"Read {fromFile.Items.Count} package sources from file: {itemsText}");
-                    return fromFile;
-                }
+                _logger.Verbose(
+                    $"Read [{source.Name}] : {source.SourceUri} from file: {Path.Combine(source.Origin.Root, source.Origin.FileName)}");
+                sources.Add(source.SourceUri.ToString());
             }
 
-            return null;
+            return new NuGetSources(sources);
         }
     }
 }
