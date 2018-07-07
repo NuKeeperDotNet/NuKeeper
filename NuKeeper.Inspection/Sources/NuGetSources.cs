@@ -15,7 +15,9 @@ namespace NuKeeper.Inspection.Sources
                 throw new ArgumentException(nameof(sources));
             }
 
-            this.Items = sources.Select(s => new PackageSource(s)).ToList();
+            Items = sources
+                .Select(s => new PackageSource(s))
+                .ToList();
         }
 
         public NuGetSources(IEnumerable<PackageSource> sources)
@@ -32,7 +34,7 @@ namespace NuKeeper.Inspection.Sources
                 throw new ArgumentException(nameof(sources));
             }
 
-            this.Items = items;
+            Items = items;
         }
 
         private const string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";

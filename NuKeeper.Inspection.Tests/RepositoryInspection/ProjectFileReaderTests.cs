@@ -254,6 +254,23 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages, Is.Empty);
         }
 
+        [Test]
+        public void PackageWithWildCardVersionShouldBeSkipped()
+        {
+            const string noVersion =
+                @"<PackageReference Include=""AWSSDK.Core"" Version=""3.3.*"" />";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages, Is.Empty);
+        }
+
+
         private ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());

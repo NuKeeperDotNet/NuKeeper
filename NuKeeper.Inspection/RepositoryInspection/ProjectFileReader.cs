@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
@@ -73,7 +75,14 @@ namespace NuKeeper.Inspection.RepositoryInspection
                     return null;
                 }
 
-                return new PackageInProject(id, version, path);
+                var versionParseSuccess = NuGetVersion.TryParse(version, out var nugetVersion);
+                if (!versionParseSuccess)
+                {
+                    _logger.Info($"Skipping package '{id}' with version '{version}' that could not be parsed.");
+                    return null;
+                }
+
+                return new PackageInProject(new PackageIdentity(id, nugetVersion), path);
             }
             catch (Exception ex)
             {
