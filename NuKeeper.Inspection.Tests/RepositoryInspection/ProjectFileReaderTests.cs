@@ -238,6 +238,22 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
+        [Test]
+        public void PackageWithoutVersionShouldBeSkipped()
+        {
+            const string noVersion =
+                @"<PackageReference Include=""Microsoft.AspNetCore.App"" />";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages, Is.Empty);
+        }
+
         private ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());

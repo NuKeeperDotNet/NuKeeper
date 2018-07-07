@@ -67,6 +67,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 var id = el.Attribute("Include")?.Value;
                 var version = el.Attribute("Version")?.Value ?? el.Value;
 
+                if (string.IsNullOrWhiteSpace(version))
+                {
+                    _logger.Info($"Skipping package '{id}' with no version specified.");
+                    return null;
+                }
+
                 return new PackageInProject(id, version, path);
             }
             catch (Exception ex)
