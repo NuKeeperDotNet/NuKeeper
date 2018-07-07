@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -20,7 +21,7 @@ namespace NuKeeper.Update.Process
         }
 
         public async Task Invoke(PackageInProject currentPackage,
-            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
+            NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             using (var nuspecContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
             {

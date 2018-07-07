@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.NuGetApi
                 .ToList();
         }
 
-        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, string source)
+        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, PackageSource source)
         {
             var sourceRepository = BuildSourceRepository(source);
             try
@@ -53,10 +53,8 @@ namespace NuKeeper.Inspection.NuGetApi
             }
         }
 
-        private static SourceRepository BuildSourceRepository(string source)
+        private static SourceRepository BuildSourceRepository(PackageSource packageSource)
         {
-            var packageSource = new PackageSource(source);
-
             var providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
@@ -73,7 +71,7 @@ namespace NuKeeper.Inspection.NuGetApi
             }
         }
 
-        private static PackageSearchMedatadata BuildPackageData(string source, IPackageSearchMetadata metadata)
+        private static PackageSearchMedatadata BuildPackageData(PackageSource source, IPackageSearchMetadata metadata)
         {
             var deps = metadata.DependencySets
                 .SelectMany(set => set.Packages)

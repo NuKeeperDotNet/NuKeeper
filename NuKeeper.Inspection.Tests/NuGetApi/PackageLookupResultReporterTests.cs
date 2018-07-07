@@ -1,5 +1,6 @@
 using System;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
@@ -36,7 +37,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var fooMetadata = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
-                "someSource", DateTimeOffset.Now, null);
+                new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata, fooMetadata);
 
@@ -57,7 +58,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var fooMetadata = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
-                "someSource", DateTimeOffset.Now, null);
+                new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata, fooMetadata);
 
@@ -79,10 +80,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var fooMajor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
-                "someSource", DateTimeOffset.Now, null);
+                new PackageSource("http://none"), DateTimeOffset.Now, null);
             var fooMinor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
-                "someSource", DateTimeOffset.Now, null);
+                new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor, null);
 
@@ -103,7 +104,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var fooMajor = new PackageSearchMedatadata(
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
-                "someSource", DateTimeOffset.Now, null);
+                new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null, null);
 

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -22,7 +23,7 @@ namespace NuKeeper.Update.Process
         }
 
         public async Task Invoke(PackageInProject currentPackage,
-            NuGetVersion newVersion, string packageSource, NuGetSources allSources)
+            NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

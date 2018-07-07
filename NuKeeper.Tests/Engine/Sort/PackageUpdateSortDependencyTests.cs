@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
@@ -213,7 +214,7 @@ namespace NuKeeper.Tests.Engine.Sort
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published,
             List<PackageInProject> packages, List<PackageDependency> deps)
         {
-            var latest = new PackageSearchMedatadata(package, "someSource", published, deps);
+            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, deps);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);

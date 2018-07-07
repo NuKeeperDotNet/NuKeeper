@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using NSubstitute;
+using NuGet.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sources;
@@ -30,8 +31,8 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = reader.Read(TemporaryFolder(), null);
 
-            Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo(NuGetSources.GlobalFeedUrl));
+            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(result.Items, Does.Contain(new PackageSource("https://api.nuget.org/v3/index.json", "nuget.org")));
         }
 
         private const string ConfigFileContents =
@@ -53,8 +54,8 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = reader.Read(folder, null);
 
-            Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo("https://fromFile1.com"));
+            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(result.Items.First(), Is.EqualTo(new PackageSource("https://fromFile1.com", "From A file")));
         }
 
 
@@ -70,7 +71,7 @@ namespace NuKeeper.Inspection.Tests.Sources
             var result = reader.Read(folder, new NuGetSources("https://fromConfigA.com"));
 
             Assert.That(result.Items.Count, Is.EqualTo(1));
-            Assert.That(result.Items.First(), Is.EqualTo("https://fromConfigA.com"));
+            Assert.That(result.Items.First(), Is.EqualTo(new PackageSource("https://fromConfigA.com")));
         }
 
         private static IFolder TemporaryFolder()
@@ -84,7 +85,7 @@ namespace NuKeeper.Inspection.Tests.Sources
             var logger = Substitute.For<INuKeeperLogger>();
             return new NuGetSourcesReader(
                 new NuGetConfigFileReader
-                    (new NuGetConfigFileParser(logger), logger), logger);
+                    (logger), logger);
         }
     }
 }

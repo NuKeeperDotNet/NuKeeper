@@ -116,7 +116,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.ProjectFile));
 
-            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion), NuGetSources.GlobalFeedUrl, NuGetSources.GlobalFeed);
+            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion), NuGetSources.GlobalPackageSource, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));

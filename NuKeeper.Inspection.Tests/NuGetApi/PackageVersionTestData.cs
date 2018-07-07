@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
@@ -85,7 +86,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         {
             var version = new NuGetVersion(major, minor, patch);
             var metadata = new PackageIdentity("TestPackage", version);
-            return new PackageSearchMedatadata(metadata, "someSource", DateTimeOffset.Now, null);
+            return new PackageSearchMedatadata(metadata, new PackageSource("http://none"), DateTimeOffset.Now, null);
         }
     }
 }

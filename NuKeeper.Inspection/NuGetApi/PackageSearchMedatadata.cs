@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuKeeper.Inspection.Formats;
 
@@ -10,29 +11,18 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         public PackageSearchMedatadata(
             PackageIdentity identity,
-            string source,
+            PackageSource source,
             DateTimeOffset? published,
             IEnumerable<PackageDependency> dependencies)
         {
-            if (identity == null)
-            {
-                throw new ArgumentNullException(nameof(identity));
-            }
-
-            if (string.IsNullOrWhiteSpace(source))
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            Identity = identity;
-            Source = source;
+            Identity = identity ?? throw new ArgumentNullException(nameof(identity));
+            Source = source ?? throw new ArgumentNullException(nameof(source));
             Published = published;
-
             Dependencies = dependencies?.ToList() ?? new List<PackageDependency>();
         }
 
         public PackageIdentity Identity { get; }
-        public string Source { get; }
+        public PackageSource Source { get; }
         public DateTimeOffset? Published { get; }
 
         public IReadOnlyCollection<PackageDependency> Dependencies { get; }

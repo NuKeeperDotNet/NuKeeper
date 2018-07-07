@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuGet.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -153,15 +154,15 @@ namespace NuKeeper.Tests.Configuration
         public void SourcesOverrideIsParsed()
         {
             var commandLine = ValidRepoCommandLine()
-                .Append("sources=foo;blah");
+                .Append("sources=http://foo;file://blah");
 
             var settings = SettingsParser.ReadSettings(commandLine);
 
             AssertSettingsNotNull(settings);
             var sources = settings.UserSettings.NuGetSources;
             Assert.That(sources.Items.Count, Is.EqualTo(2));
-            Assert.That(sources.Items.First(), Is.EqualTo("foo"));
-            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo("blah"));
+            Assert.That(sources.Items.First(), Is.EqualTo(new PackageSource("http://foo")));
+            Assert.That(sources.Items.Skip(1).First(), Is.EqualTo(new PackageSource("file://blah")));
         }
 
         [Test]

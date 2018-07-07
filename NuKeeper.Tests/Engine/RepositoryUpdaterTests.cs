@@ -233,7 +233,7 @@ namespace NuKeeper.Tests.Engine
             };
 
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(fooPackage, NuGetSources.GlobalFeedUrl, publishedDate, null);
+            var latest = new PackageSearchMedatadata(fooPackage, NuGetSources.GlobalPackageSource, publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
