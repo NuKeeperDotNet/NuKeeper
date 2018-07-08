@@ -288,6 +288,23 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages.First().IsPrerelease, Is.True);
         }
 
+        [Test]
+        public void PackageWithMetadataShouldBeRead()
+        {
+            const string noVersion =
+                @"<PackageReference Include=""NuGet.Protocol"" Version=""4.7.0+9245481f357ae542f92e6bc5e504fc898cfe5fc0"" />";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(1));
+            Assert.That(packages.First().IsPrerelease, Is.False);
+        }
+
         private ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());
