@@ -135,6 +135,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             var package = packages.FirstOrDefault();
 
             PackageAssert.IsPopulated(package);
+            Assert.That(packages.First().IsPrerelease, Is.False);
         }
 
         [Test]
@@ -270,6 +271,22 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages, Is.Empty);
         }
 
+        [Test]
+        public void PackageWithBetaVersionShouldBeRead()
+        {
+            const string noVersion =
+                @"<PackageReference Include=""foo"" Version=""2.0.0-beta01"" />";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(1));
+            Assert.That(packages.First().IsPrerelease, Is.True);
+        }
 
         private ProjectFileReader MakeReader()
         {

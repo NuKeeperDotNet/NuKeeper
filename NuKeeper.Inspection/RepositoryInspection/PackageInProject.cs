@@ -21,5 +21,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public string Id => Identity.Id;
         public NuGetVersion Version => Identity.Version;
+
+        public bool IsPrerelease => Identity.Version.IsPrerelease;
     }
 }
