@@ -50,7 +50,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
 
             return packageRefs
-                .Select(el => XmlToPackage(el, path))
+                .Select(el => XmlToPackage(el, path, ns))
                 .Where(el => el != null)
                 .ToList();
         }
@@ -62,12 +62,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 : new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFile);
         }
 
-        private PackageInProject XmlToPackage(XElement el, PackagePath path)
+        private PackageInProject XmlToPackage(XElement el, PackagePath path, XNamespace ns)
         {
             try
             {
                 var id = el.Attribute("Include")?.Value;
-                var version = el.Attribute("Version")?.Value ?? el.Value;
+                var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
 
                 if (string.IsNullOrWhiteSpace(version))
                 {
