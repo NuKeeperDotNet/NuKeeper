@@ -100,6 +100,11 @@ namespace NuKeeper.Github
             return createdPullRequest;
         }
 
+        public async Task<SearchCodeResult> Search(SearchCodeRequest search)
+        {
+            return await _client.Search.SearchCode(search);
+        }
+
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)
         {
             var labelsToApply = labels?
