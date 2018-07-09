@@ -37,11 +37,7 @@ namespace NuKeeper.Inspection.Sources
             Items = items;
         }
 
-        private const string GlobalFeedUrl = "https://api.nuget.org/v3/index.json";
-
-        public static readonly PackageSource GlobalPackageSource = new PackageSource(GlobalFeedUrl);
-
-        public static NuGetSources GlobalFeed => new NuGetSources(GlobalFeedUrl);
+        public static NuGetSources GlobalFeed => new NuGetSources(NuGetConstants.V3FeedUrl);
 
         public IReadOnlyCollection<PackageSource> Items { get; }
 

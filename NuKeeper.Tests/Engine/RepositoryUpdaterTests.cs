@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -233,7 +234,7 @@ namespace NuKeeper.Tests.Engine
             };
 
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(fooPackage, NuGetSources.GlobalPackageSource, publishedDate, null);
+            var latest = new PackageSearchMedatadata(fooPackage, new PackageSource("https://somewhere"), publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);

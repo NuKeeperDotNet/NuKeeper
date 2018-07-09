@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuGet.Configuration;
 using NuGet.Versioning;
 using NUnit.Framework;
 using NuKeeper.Inspection.Files;
@@ -62,7 +63,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
             await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
-                NuGetSources.GlobalPackageSource, NuGetSources.GlobalFeed);
+                new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
