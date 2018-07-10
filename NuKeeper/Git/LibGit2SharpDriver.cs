@@ -3,6 +3,7 @@ using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
+using GitCommands = LibGit2Sharp.Commands;
 
 namespace NuKeeper.Git
 {
@@ -71,7 +72,7 @@ namespace NuKeeper.Git
             _logger.Verbose($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
-                Commands.Checkout(repo, repo.Branches[branchName]);
+                GitCommands.Checkout(repo, repo.Branches[branchName]);
             }
         }
 
@@ -87,7 +88,7 @@ namespace NuKeeper.Git
             using (var repo = MakeRepo())
             {
                 var branch = repo.CreateBranch(branchName);
-                Commands.Checkout(repo, branch);
+                GitCommands.Checkout(repo, branch);
             }
         }
 
@@ -107,7 +108,7 @@ namespace NuKeeper.Git
             using (var repo = MakeRepo())
             {
                 var signature = GetSignature(repo);
-                Commands.Stage(repo, "*");
+                GitCommands.Stage(repo, "*");
                 repo.Commit(message, signature, signature);
             }
         }

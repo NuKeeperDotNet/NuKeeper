@@ -1,14 +1,16 @@
 using System;
-using System.Threading.Tasks;
+using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Commands;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.Local;
 
 namespace NuKeeper
 {
-    [Subcommand("inspect", typeof(LocalNuKeeperCommand))]
-    [Subcommand("repository", typeof(GithubNuKeeperCommand))]
+    [Command(
+        Name = "NuKeeper",
+        FullName = "Automagically update NuGet packages in .NET projects.")]
+    [VersionOptionFromMember(MemberName = nameof(GetVersion))]
+    [Subcommand("inspect", typeof(InspectCommand))]
     public class Program
     {
         public static int Main(string[] args)
@@ -29,50 +31,17 @@ namespace NuKeeper
             return app.Execute(args);
         }
 
+        // ReSharper disable once UnusedMember.Global
         protected int OnExecute(CommandLineApplication app)
         {
             // this shows help even if the --help option isn't specified
             app.ShowHelp();
             return 1;
         }
-    }
 
-    internal class GithubNuKeeperCommand : CommandBase
-    {
-        private readonly GithubEngine _engine;
-
-        public GithubNuKeeperCommand(GithubEngine engine)
-        {
-            _engine = engine;
-        }
-
-        public async Task<int> OnExecute(CommandLineApplication app, IConsole console)
-        {
-            await _engine.Run();
-            return 0;
-        }
-    }
-
-    internal class LocalNuKeeperCommand : CommandBase
-    {
-        private readonly SettingsContainer _settings;
-        private readonly LocalEngine _engine;
-
-        public LocalNuKeeperCommand(SettingsContainer settings, LocalEngine engine)
-        {
-            _settings = settings;
-            _engine = engine;
-        }
-
-        public async Task<int> OnExecute(CommandLineApplication app, IConsole console)
-        {
-            await _engine.Run(_settings);
-            return 0;
-        }
-    }
-
-    [HelpOption]
-    internal abstract class CommandBase
-    {
+        private static string GetVersion() => typeof(Program)
+            .Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
     }
 }

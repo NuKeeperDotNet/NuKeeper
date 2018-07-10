@@ -16,7 +16,7 @@ namespace NuKeeper.Local
 {
     public class LocalEngine
     {
-        private INuGetSourcesReader _nuGetSourcesReader;
+        private readonly INuGetSourcesReader _nuGetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
         private readonly ILocalUpdater _updater;
