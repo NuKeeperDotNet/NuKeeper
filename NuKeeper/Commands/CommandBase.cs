@@ -8,7 +8,7 @@ namespace NuKeeper.Commands
     internal abstract class CommandBase
     {
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
-            Description = "Allowed version change: None, Patch, Minor, Major. Defaults to Major.")]
+            Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
         protected VersionChange AllowedChange { get; } = VersionChange.Major;
 
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",
