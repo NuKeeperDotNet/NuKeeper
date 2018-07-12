@@ -17,13 +17,13 @@ namespace NuKeeper.Integration.Tests.Engine
         {
             IRepositoryFilter subject = MakeRepositoryFilter();
 
-            var shouldSkip =
-                await subject.ShouldSkip(new RepositorySettings
+            var result =
+                await subject.ContainsDotNetProjects(new RepositorySettings
                 {
                     RepositoryName = "jquery",
                     RepositoryOwner = "jquery"
                 });
-            Assert.True(shouldSkip);
+            Assert.False(result);
         }
 
         [Test]
@@ -31,9 +31,9 @@ namespace NuKeeper.Integration.Tests.Engine
         {
             IRepositoryFilter subject = MakeRepositoryFilter();
 
-            var shouldSkip =
-                await subject.ShouldSkip(new RepositorySettings {RepositoryName = "cli", RepositoryOwner = "dotnet"});
-            Assert.False(shouldSkip);
+            var result =
+                await subject.ContainsDotNetProjects(new RepositorySettings {RepositoryName = "cli", RepositoryOwner = "dotnet"});
+            Assert.True(result);
         }
 
         private static RepositoryFilter MakeRepositoryFilter()

@@ -5,6 +5,6 @@ namespace NuKeeper.Engine
 {
     public interface IRepositoryFilter
     {
-        Task<bool> ShouldSkip(RepositorySettings repository);
+        Task<bool> ContainsDotNetProjects(RepositorySettings repository);
     }
 }

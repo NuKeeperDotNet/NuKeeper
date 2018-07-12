@@ -42,7 +42,7 @@ namespace NuKeeper.Engine
                     return 0;
                 }
 
-                if (await _repositoryFilter.ShouldSkip(repository))
+                if (!await _repositoryFilter.ContainsDotNetProjects(repository))
                 {
                     return 0;
                 }

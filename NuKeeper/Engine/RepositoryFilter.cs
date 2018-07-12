@@ -18,7 +18,7 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<bool> ShouldSkip(RepositorySettings repository)
+        public async Task<bool> ContainsDotNetProjects(RepositorySettings repository)
         {
             var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
@@ -33,7 +33,7 @@ namespace NuKeeper.Engine
                 {
                     _logger.Verbose(
                         $"Repository {repository.RepositoryOwner}/{repository.RepositoryName} contains no .NET code on the default branch, skipping.");
-                    return true;
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -41,7 +41,7 @@ namespace NuKeeper.Engine
                 _logger.Error("GitHub Repository search failed.", ex);
             }
 
-            return false;
+            return true;
         }
     }
 }

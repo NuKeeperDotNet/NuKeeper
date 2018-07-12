@@ -22,9 +22,9 @@ namespace NuKeeper.Tests.Engine
 
             IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
-            var result = await subject.ShouldSkip(MakeSampleRepository());
+            var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
-            Assert.True(result);
+            Assert.False(result);
         }
 
         [Test]
@@ -35,9 +35,9 @@ namespace NuKeeper.Tests.Engine
 
             IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
-            var result = await subject.ShouldSkip(MakeSampleRepository());
+            var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Test]
@@ -48,9 +48,9 @@ namespace NuKeeper.Tests.Engine
 
             IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
-            var result = await subject.ShouldSkip(MakeSampleRepository());
+            var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         private static RepositorySettings MakeSampleRepository()
