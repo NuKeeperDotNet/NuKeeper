@@ -30,6 +30,7 @@ namespace NuKeeper
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
             container.Register<IExistingBranchFilter, ExistingBranchFilter>();
+            container.Register<IRepositoryFilter, RepositoryFilter>();
 
             container.Register<GithubEngine>();
             container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();

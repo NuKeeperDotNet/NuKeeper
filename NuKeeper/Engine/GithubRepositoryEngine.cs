@@ -14,18 +14,21 @@ namespace NuKeeper.Engine
         private readonly IForkFinder _forkFinder;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
+        private readonly IRepositoryFilter _repositoryFilter;
 
         public GithubRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
             IForkFinder forkFinder,
             IFolderFactory folderFactory,
-            INuKeeperLogger logger
+            INuKeeperLogger logger,
+            IRepositoryFilter repositoryFilter
             )
         {
             _repositoryUpdater = repositoryUpdater;
             _forkFinder = forkFinder;
             _folderFactory = folderFactory;
             _logger = logger;
+            _repositoryFilter = repositoryFilter;
         }
 
         public async Task<int> Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds,
@@ -35,6 +38,11 @@ namespace NuKeeper.Engine
             {
                 var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
+                {
+                    return 0;
+                }
+
+                if (!await _repositoryFilter.ContainsDotNetProjects(repository))
                 {
                     return 0;
                 }
