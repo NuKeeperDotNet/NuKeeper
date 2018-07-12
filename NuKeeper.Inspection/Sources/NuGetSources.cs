@@ -43,14 +43,19 @@ namespace NuKeeper.Inspection.Sources
 
         public string CommandLine(string prefix)
         {
-            return Items.Select(s => s.SourceUri.ToString())
-                .Select(s => $"{prefix} {s}")
+            return Items
+                .Select(s => $"{prefix} {EscapePathIfLocal(s)}")
                 .JoinWithSeparator(" ");
         }
 
         public override string ToString()
         {
             return Items.Select(s => s.SourceUri.ToString()).JoinWithCommas();
+        }
+
+        private static string EscapePathIfLocal(PackageSource source)
+        {
+            return source.IsLocal ? $"\"{source.Source}\"" : source.Source;
         }
     }
 }
