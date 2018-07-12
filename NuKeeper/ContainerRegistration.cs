@@ -14,7 +14,7 @@ namespace NuKeeper
             var container = new Container();
 
             Register(container, settings);
-            ContainerInspectionRegistration.Register(container, settings);
+            ContainerInspectionRegistration.Register(container);
             ContainerUpdateRegistration.Register(container, settings);
 
             return container;
@@ -39,6 +39,7 @@ namespace NuKeeper
             container.Register<ILocalUpdater, LocalUpdater>();
             container.Register<IPackageUpdater, PackageUpdater>();
             container.Register<IForkFinder, ForkFinder>();
+            
         }
     }
 }

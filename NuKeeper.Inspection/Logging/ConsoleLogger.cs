@@ -2,14 +2,9 @@ using System;
 
 namespace NuKeeper.Inspection.Logging
 {
-    public class ConsoleLogger : INuKeeperLogger
+    public class ConsoleLogger : INuKeeperLogger, IReconfigurableLogger
     {
-        private readonly LogLevel _logLevel;
-
-        public ConsoleLogger(LogLevel logLevel)
-        {
-            _logLevel = logLevel;
-        }
+        private LogLevel _logLevel = LogLevel.Normal;
 
         public void Error(string message, Exception ex = null)
         {
@@ -48,6 +43,11 @@ namespace NuKeeper.Inspection.Logging
             {
                 Console.WriteLine(message);
             }
+        }
+
+        void IReconfigurableLogger.SetLogLevel(LogLevel logLevel)
+        {
+            _logLevel = logLevel;
         }
     }
 }

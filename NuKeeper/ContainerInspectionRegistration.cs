@@ -1,6 +1,5 @@
 using NuGet.Common;
 using SimpleInjector;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -14,11 +13,11 @@ namespace NuKeeper
 {
     public static class ContainerInspectionRegistration
     {
-        public static void Register(Container container, SettingsContainer settings)
+        public static void Register(Container container)
         {
-            container.RegisterInstance<INuKeeperLogger>(
-                new ConsoleLogger(settings.UserSettings.LogLevel));
-
+            var logger = new ConsoleLogger();
+            container.RegisterInstance<INuKeeperLogger>(logger);
+            container.RegisterInstance<IReconfigurableLogger>(logger);
             container.Register<ILogger, NuGetLogger>();
 
             container.Register<IFolder, Folder>();
