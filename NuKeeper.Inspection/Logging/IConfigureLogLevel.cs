@@ -1,6 +1,6 @@
 namespace NuKeeper.Inspection.Logging
 {
-    public interface IReconfigurableLogger
+    public interface IConfigureLogLevel
     {
         void SetLogLevel(LogLevel logLevel);
     }

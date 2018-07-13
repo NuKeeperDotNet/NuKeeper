@@ -7,8 +7,12 @@ namespace NuKeeper.Inspection.Logging
         Info = 2,
         Verbose = 3,
         Quiet = Silent,
+        Q = Quiet,
         Minimal = Terse,
+        M = Minimal,
         Normal = Info,
-        Detailed = Verbose
+        N = Normal,
+        Detailed = Verbose,
+        D = Detailed
     }
 }

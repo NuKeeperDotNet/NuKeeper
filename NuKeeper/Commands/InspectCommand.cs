@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
         private readonly SettingsContainer _settings;
         private readonly LocalEngine _engine;
 
-        public InspectCommand(SettingsContainer settings, LocalEngine engine, IReconfigurableLogger logger) :
+        public InspectCommand(SettingsContainer settings, LocalEngine engine, IConfigureLogLevel logger) :
             base(logger)
         {
             _settings = settings;

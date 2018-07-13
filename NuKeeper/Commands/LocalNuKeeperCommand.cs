@@ -10,7 +10,7 @@ namespace NuKeeper.Commands
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         protected string Path { get; }
 
-        protected LocalNuKeeperCommand(IReconfigurableLogger logger) : base(logger)
+        protected LocalNuKeeperCommand(IConfigureLogLevel logger) : base(logger)
         {
         }
     }

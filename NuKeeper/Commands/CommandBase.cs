@@ -9,7 +9,7 @@ namespace NuKeeper.Commands
     [HelpOption]
     internal abstract class CommandBase
     {
-        private readonly IReconfigurableLogger _logger;
+        private readonly IConfigureLogLevel _logger;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
@@ -24,11 +24,11 @@ namespace NuKeeper.Commands
 
         protected NuGetSources NuGetSources => Source == null?  null : new NuGetSources(Source);
 
-        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are quiet, minimal, normal, detailed.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected LogLevel Verbosity { get; } = LogLevel.Normal;
 
-        protected CommandBase(IReconfigurableLogger logger)
+        protected CommandBase(IConfigureLogLevel logger)
         {
             _logger = logger;
         }

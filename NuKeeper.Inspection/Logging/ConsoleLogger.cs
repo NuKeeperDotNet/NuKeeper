@@ -2,7 +2,7 @@ using System;
 
 namespace NuKeeper.Inspection.Logging
 {
-    public class ConsoleLogger : INuKeeperLogger, IReconfigurableLogger
+    public class ConsoleLogger : INuKeeperLogger, IConfigureLogLevel
     {
         private LogLevel _logLevel = LogLevel.Normal;
 
@@ -45,7 +45,7 @@ namespace NuKeeper.Inspection.Logging
             }
         }
 
-        void IReconfigurableLogger.SetLogLevel(LogLevel logLevel)
+        void IConfigureLogLevel.SetLogLevel(LogLevel logLevel)
         {
             _logLevel = logLevel;
         }
