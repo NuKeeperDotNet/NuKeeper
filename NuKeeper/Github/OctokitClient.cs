@@ -35,6 +35,13 @@ namespace NuKeeper.Github
             return user;
         }
 
+        public async Task<IReadOnlyList<Organization>> GetOrganizations()
+        {
+            var orgs = await _client.Organization.GetAll();
+            _logger.Info($"Read {orgs.Count} organisations");
+            return orgs;
+        }
+
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
         {
             var repos = await _client.Repository.GetAllForOrg(organisationName);
