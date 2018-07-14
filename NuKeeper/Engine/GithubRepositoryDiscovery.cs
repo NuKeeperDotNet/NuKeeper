@@ -27,6 +27,9 @@ namespace NuKeeper.Engine
         {
             switch (_settings.Mode)
             {
+                case RunMode.Global:
+                    return await ForAllOrgs();
+
                 case RunMode.Organisation:
                     return await FromOrganisation(_settings.OrganisationName);
 
@@ -38,7 +41,22 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task<IEnumerable<RepositorySettings>> FromOrganisation(string organisationName)
+        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs()
+        {
+            var allOrgs = await _github.GetOrganizations();
+
+            var allRepos = new List<RepositorySettings>();
+
+            foreach (var org in allOrgs)
+            {
+                var repos = await FromOrganisation(org.Name ?? org.Login);
+                allRepos.AddRange(repos);
+            }
+
+            return allRepos;
+        }
+
+        private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(string organisationName)
         {
             var allOrgRepos = await _github.GetRepositoriesForOrganisation(organisationName);
 
@@ -51,7 +69,9 @@ namespace NuKeeper.Engine
                 _logger.Verbose($"Can pull from {usableRepos.Count} repos out of {allOrgRepos.Count}");
             }
 
-            return usableRepos.Select(r => new RepositorySettings(r));
+            return usableRepos
+                .Select(r => new RepositorySettings(r))
+                .ToList();
         }
     }
 }
