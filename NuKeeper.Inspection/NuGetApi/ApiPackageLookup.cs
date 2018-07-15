@@ -18,7 +18,7 @@ namespace NuKeeper.Inspection.NuGetApi
             NuGetSources sources,
             VersionChange allowedChange)
         {
-            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, sources);
+            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, false, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
     }

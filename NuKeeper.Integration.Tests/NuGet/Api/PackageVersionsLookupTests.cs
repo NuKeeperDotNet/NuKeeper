@@ -17,7 +17,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json", NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -31,7 +31,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json", NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -54,7 +54,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Moq", NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Moq", false, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
