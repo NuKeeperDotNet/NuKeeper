@@ -47,6 +47,34 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(latest.Identity.Id, Is.EqualTo("Newtonsoft.Json"));
             Assert.That(latest.Identity.Version.Major, Is.GreaterThan(1));
             Assert.That(latest.Published.HasValue, Is.True);
+            Assert.That(latest.Identity.Version.IsPrerelease, Is.False);
+        }
+
+        [Test]
+        public async Task CanGetPreReleases()
+        {
+            var lookup = BuildPackageLookup();
+
+            var packages = await lookup.Lookup("Moq", true, NuGetSources.GlobalFeed);
+
+            Assert.That(packages, Is.Not.Null);
+
+            var betas = packages
+                .Where(p => p.Identity.Version.IsPrerelease)
+                .OrderByDescending(p => p.Identity.Version)
+                .ToList();
+
+            Assert.That(betas, Is.Not.Null);
+            Assert.That(betas, Is.Not.Empty);
+
+            var beta = betas.FirstOrDefault();
+
+            Assert.That(beta, Is.Not.Null);
+            Assert.That(beta.Identity, Is.Not.Null);
+            Assert.That(beta.Identity.Version, Is.Not.Null);
+
+            Assert.That(beta.Identity.Id, Is.EqualTo("Moq"));
+            Assert.That(beta.Identity.Version.IsPrerelease, Is.True);
         }
 
         [Test]
