@@ -24,10 +24,10 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         public async Task<IReadOnlyCollection<PackageSearchMedatadata>> Lookup(
-            string packageName,
+            string packageName, bool includePrerelease,
             NuGetSources sources)
         {
-            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, s));
+            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
 
             var results = await Task.WhenAll(tasks);
 
@@ -37,13 +37,14 @@ namespace NuKeeper.Inspection.NuGetApi
                 .ToList();
         }
 
-        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(string packageName, PackageSource source)
+        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(
+            string packageName, bool includePrerelease, PackageSource source)
         {
             var sourceRepository = BuildSourceRepository(source);
             try
             {
                 var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
-                var metadatas = await FindPackage(metadataResource, packageName);
+                var metadatas = await FindPackage(metadataResource, packageName, includePrerelease);
                 return metadatas.Select(m => BuildPackageData(source, m));
             }
             catch (Exception ex)
@@ -62,12 +63,13 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         private async Task<IEnumerable<IPackageSearchMetadata>> FindPackage(
-            PackageMetadataResource metadataResource, string packageName)
+            PackageMetadataResource metadataResource, string packageName, bool includePrerelease)
         {
             using (var cacheContext = new SourceCacheContext())
             {
                 return await metadataResource
-                    .GetMetadataAsync(packageName, false, false, cacheContext, _nuGetLogger, CancellationToken.None);
+                    .GetMetadataAsync(packageName, includePrerelease, false,
+                        cacheContext, _nuGetLogger, CancellationToken.None);
             }
         }
 
