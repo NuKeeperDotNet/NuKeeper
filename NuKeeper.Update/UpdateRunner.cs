@@ -21,7 +21,7 @@ namespace NuKeeper.Update
         {
             foreach (var current in updateSet.CurrentPackages)
             {
-                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType, sources);
+                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType);
                 foreach (var updateCommand in updateCommands)
                 {
                     await updateCommand.Invoke(current, updateSet.SelectedVersion, updateSet.Selected.Source, sources);
@@ -30,8 +30,7 @@ namespace NuKeeper.Update
         }
 
         private IReadOnlyCollection<IPackageCommand> GetUpdateCommands(
-            PackageReferenceType packageReferenceType,
-            NuGetSources sources)
+            PackageReferenceType packageReferenceType)
         {
             switch (packageReferenceType)
             {

@@ -32,7 +32,13 @@ namespace NuKeeper.Update.Process
             _logger.Verbose($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
 
             await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
-            await _externalProcess.Run(projectPath, "dotnet", $"remove {projectFileName} package {currentPackage.Id}", true);
+
+            if (currentPackage.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle)
+            {
+                await _externalProcess.Run(projectPath, "dotnet",
+                    $"remove {projectFileName} package {currentPackage.Id}", true);
+            }
+
             await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}", true);
         }
     }
