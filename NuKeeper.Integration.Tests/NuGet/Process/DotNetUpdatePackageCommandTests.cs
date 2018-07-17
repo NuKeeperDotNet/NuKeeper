@@ -62,39 +62,44 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
   <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
 </Project>";
 
+        private readonly IFolder _tempFolder = UniqueTemporaryFolder();
+
         [Test]
         public async Task ShouldNotThrowOnWebProjectMixedStyleUpdates()
         {
-            await ExecuteValidUpdateTest(_testWebApiProject);
+            await ExecuteValidUpdateTest(_testWebApiProject, PackageReferenceType.ProjectFileOldStyle);
         }
 
         [Test]
         public async Task ShouldUpdateDotnetCoreProject()
         {
-            await ExecuteValidUpdateTest(_testDotNetCoreProject);
+            await ExecuteValidUpdateTest(_testDotNetCoreProject, PackageReferenceType.ProjectFile);
         }
 
         [Test]
         public async Task ShouldUpdateDuplicateProject()
         {
             const string name = nameof(ShouldUpdateDuplicateProject);
-            var projectPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, name, "AnotherProject.csproj");
+            var projectPath = Path.Combine(_tempFolder.FullPath, name, "AnotherProject.csproj");
             Directory.CreateDirectory(Path.GetDirectoryName(projectPath));
             using (File.Create(projectPath))
             {
                 // close file stream automatically
             }
 
-            await ExecuteValidUpdateTest(_testDotNetCoreProject);
+            await ExecuteValidUpdateTest(_testDotNetCoreProject, PackageReferenceType.ProjectFile);
         }
 
         [Test]
         public async Task ShouldUpdateDotnetClassicWithPackageReference()
         {
-            await ExecuteValidUpdateTest(_testDotNetClassicProject);
+            await ExecuteValidUpdateTest(_testDotNetClassicProject, PackageReferenceType.ProjectFileOldStyle);
         }
 
-        private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
+        private async Task ExecuteValidUpdateTest(
+            string testProjectContents,
+            PackageReferenceType packageReferenceType,
+            [CallerMemberName] string memberName = "")
         {
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";
@@ -103,9 +108,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var testFolder = memberName;
             var testProject = $"{memberName}.csproj";
-            var tempFolder = UniqueTemporaryFolder();
 
-            var workDirectory = Path.Combine(tempFolder.FullPath, testFolder);
+            var workDirectory = Path.Combine(_tempFolder.FullPath, testFolder);
             Directory.CreateDirectory(workDirectory);
 
             var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion);
@@ -115,18 +119,20 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var command = new DotNetUpdatePackageCommand(Substitute.For<INuKeeperLogger>());
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
-                    new PackagePath(workDirectory, testProject, PackageReferenceType.ProjectFile));
+                new PackagePath(workDirectory, testProject, packageReferenceType));
 
-            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion), new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
+            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
+                new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
-            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
+            Assert.That(contents,
+                Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
 
-            tempFolder.TryDelete();
+            _tempFolder.TryDelete();
         }
 
-        private IFolder UniqueTemporaryFolder()
+        private static IFolder UniqueTemporaryFolder()
         {
             var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return factory.UniqueTemporaryFolder();
