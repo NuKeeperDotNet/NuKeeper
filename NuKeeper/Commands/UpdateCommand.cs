@@ -6,13 +6,12 @@ using NuKeeper.Local;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Checks projects existing locally for possible updates.")]
-    internal class InspectCommand : LocalNuKeeperCommand
-    {
+    [Command(Description = "Applies first relevant update to a local project.")]
+    internal class UpdateCommand : LocalNuKeeperCommand {
         private readonly LocalEngine _engine;
 
-        public InspectCommand(LocalEngine engine, IConfigureLogLevel logger) :
-            base(logger)
+        public UpdateCommand(LocalEngine engine, IConfigureLogLevel logger)
+            : base(logger)
         {
             _engine = engine;
         }
@@ -20,7 +19,7 @@ namespace NuKeeper.Commands
         protected override async Task<int> Run(SettingsContainer settings)
         {
             await base.Run(settings);
-            settings.ModalSettings.Mode = RunMode.Inspect;
+            settings.ModalSettings.Mode = RunMode.Update;
 
             await _engine.Run(settings);
             return 0;

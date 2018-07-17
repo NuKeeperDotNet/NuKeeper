@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Sources;
@@ -37,9 +38,20 @@ namespace NuKeeper.Commands
         public async Task<int> OnExecute()
         {
             _logger.SetLogLevel(Verbosity);
-            return await Run();
+
+            var settings = new SettingsContainer
+            {
+                ModalSettings = new ModalSettings(),
+                UserSettings = new UserSettings
+                {
+                    AllowedChange = AllowedChange,
+                    NuGetSources = NuGetSources
+                }
+            };
+
+            return await Run(settings);
         }
 
-        protected abstract Task<int> Run();
+        protected abstract Task<int> Run(SettingsContainer settings);
     }
 }

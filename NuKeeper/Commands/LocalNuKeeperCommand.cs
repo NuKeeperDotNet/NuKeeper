@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
@@ -12,6 +14,12 @@ namespace NuKeeper.Commands
 
         protected LocalNuKeeperCommand(IConfigureLogLevel logger) : base(logger)
         {
+        }
+
+        protected override Task<int> Run(SettingsContainer settings)
+        {
+            settings.UserSettings.Directory = Path;
+            return Task.FromResult(0);
         }
     }
 }
