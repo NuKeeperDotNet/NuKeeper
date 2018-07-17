@@ -15,8 +15,6 @@ namespace NuKeeper.Engine
         private readonly IGithub _github;
         private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
         private readonly IGithubRepositoryEngine _repositoryEngine;
-        private readonly UserSettings _userSettings;
-        private readonly string _githubToken;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
@@ -24,21 +22,17 @@ namespace NuKeeper.Engine
             IGithub github,
             IGithubRepositoryDiscovery repositoryDiscovery,
             IGithubRepositoryEngine repositoryEngine,
-            UserSettings userSettings,
-            GithubAuthSettings settings,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _github = github;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
-            _userSettings = userSettings;
-            _githubToken = settings.Token;
             _folderFactory = folderFactory;
             _logger = logger;
         }
 
-        public async Task<int> Run()
+        public async Task<int> Run(SettingsContainer settings)
         {
             _logger.Verbose($"{Now()}: Started");
 
@@ -48,7 +42,7 @@ namespace NuKeeper.Engine
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = _githubToken
+                Password = settings.GithubAuthSettings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);
@@ -59,7 +53,7 @@ namespace NuKeeper.Engine
 
             foreach (var repository in repositories)
             {
-                if (reposUpdated >= _userSettings.MaxRepositoriesChanged)
+                if (reposUpdated >= settings.UserSettings.MaxRepositoriesChanged)
                 {
                     _logger.Verbose($"Reached max of {reposUpdated} repositories changed");
                     break;
