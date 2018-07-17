@@ -12,20 +12,20 @@ namespace NuKeeper.Engine
 {
     public class GithubEngine
     {
-        private readonly IGithub _github;
+        private readonly ICreate<IGithub> _githubCreator;
         private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
         private readonly IGithubRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GithubEngine(
-            IGithub github,
+            ICreate<IGithub> githubCreator,
             IGithubRepositoryDiscovery repositoryDiscovery,
             IGithubRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
-            _github = github;
+            _githubCreator = githubCreator;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
@@ -34,11 +34,13 @@ namespace NuKeeper.Engine
 
         public async Task<int> Run(SettingsContainer settings)
         {
+            var github = _githubCreator.Create(settings);
+
             _logger.Verbose($"{Now()}: Started");
 
             _folderFactory.DeleteExistingTempDirs();
 
-            var githubUser = await _github.GetCurrentUser();
+            var githubUser = await github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,

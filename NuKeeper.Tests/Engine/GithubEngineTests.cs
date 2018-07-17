@@ -125,9 +125,12 @@ namespace NuKeeper.Tests.Engine
             var repoDiscovery = Substitute.For<IGithubRepositoryDiscovery>();
             var repoEngine = Substitute.For<IGithubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
+            var githubCreator = Substitute.For<ICreate<IGithub>>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
+
+            githubCreator.Create(null).ReturnsForAnyArgs(github);
 
             repoDiscovery.GetRepositories()
                 .Returns(repos);
@@ -138,7 +141,7 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<Identity>())
                 .Returns(repoEngineResult);
 
-            var engine = new GithubEngine(github, repoDiscovery, repoEngine,
+            var engine = new GithubEngine(githubCreator, repoDiscovery, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

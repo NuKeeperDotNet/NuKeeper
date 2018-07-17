@@ -16,6 +16,7 @@ namespace NuKeeper
             Register(container, settings);
             ContainerInspectionRegistration.Register(container);
             ContainerUpdateRegistration.Register(container, settings);
+            CreatorRegistrations.Initialize(container);
 
             return container;
         }
@@ -26,7 +27,6 @@ namespace NuKeeper
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
 
-            container.Register<IGithub, OctokitClient>();
             container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
             container.Register<IExistingBranchFilter, ExistingBranchFilter>();
