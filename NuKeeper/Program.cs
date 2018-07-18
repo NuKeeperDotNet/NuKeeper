@@ -1,8 +1,6 @@
-using System;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 
 namespace NuKeeper
 {
@@ -16,15 +14,7 @@ namespace NuKeeper
     {
         public static int Main(string[] args)
         {
-            var settings = SettingsParser.ReadSettings(args);
-
-            if(settings == null)
-            {
-                Console.WriteLine("Exiting early...");
-                return 1;
-            }
-
-            var container = ContainerRegistration.Init(settings);
+            var container = ContainerRegistration.Init();
 
             var app = new CommandLineApplication<Program> {ThrowOnUnexpectedArgument = false};
             app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
