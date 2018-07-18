@@ -1,8 +1,8 @@
-﻿using NuKeeper.Configuration;
+using NuKeeper.Configuration;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper
+namespace NuKeeper.Creators
 {
     public class OctokitClientCreator : ICreate<IGithub>
     {

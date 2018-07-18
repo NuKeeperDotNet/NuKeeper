@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LibGit2Sharp;
 using NSubstitute;
 using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
@@ -126,6 +127,8 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGithubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
             var githubCreator = Substitute.For<ICreate<IGithub>>();
+            var repositoryDiscoveryCreator = Substitute.For<ICreate<IGithubRepositoryDiscovery>>();
+            var repoEngineCreator = Substitute.For<ICreate<IGithubRepositoryEngine>>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
@@ -135,13 +138,13 @@ namespace NuKeeper.Tests.Engine
             repoDiscovery.GetRepositories()
                 .Returns(repos);
 
-            repoEngine.Run(
-                    Arg.Any<RepositorySettings>(),
-                    Arg.Any<UsernamePasswordCredentials>(),
-                    Arg.Any<Identity>())
-                .Returns(repoEngineResult);
+            repositoryDiscoveryCreator.Create(null).ReturnsForAnyArgs(repoDiscovery);
 
-            var engine = new GithubEngine(githubCreator, repoDiscovery, repoEngine,
+            repoEngine.Run(null, null, null).ReturnsForAnyArgs(repoEngineResult);
+
+            repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
+
+            var engine = new GithubEngine(githubCreator, repositoryDiscoveryCreator, repoEngineCreator,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

@@ -1,3 +1,6 @@
+using NuKeeper.Creators;
+using NuKeeper.Engine;
+using NuKeeper.Engine.Packages;
 using NuKeeper.Github;
 using SimpleInjector;
 
@@ -8,6 +11,14 @@ namespace NuKeeper
         public static void Initialize(Container container)
         {
             container.Register<ICreate<IGithub>, OctokitClientCreator>();
+            container.Register<ICreate<IGithubRepositoryDiscovery>, GitHubRepositoryDiscoveryCreator>();
+            container.Register<ICreate<IExistingBranchFilter>, ExistingBranchFilterCreator>();
+            container.Register<ICreate<IPackageUpdateSelection>, PackageUpdateSelectionCreator>();
+            container.Register<ICreate<IRepositoryUpdater>, RepositoryUpdaterCreator>();
+            container.Register<ICreate<IGithubRepositoryEngine>, GithubRepositoryEngineCreator>();
+            container.Register<ICreate<IRepositoryFilter>, RepositoryFilterCreator>();
+            container.Register<ICreate<IForkFinder>, ForkFinderCreator>();
+            container.Register<ICreate<IPackageUpdater>, PackageUpdaterCreator>();
         }
     }
 }

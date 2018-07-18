@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
@@ -13,21 +14,21 @@ namespace NuKeeper.Engine
     public class GithubEngine
     {
         private readonly ICreate<IGithub> _githubCreator;
-        private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
-        private readonly IGithubRepositoryEngine _repositoryEngine;
+        private readonly ICreate<IGithubRepositoryDiscovery> _repositoryDiscoveryCreator;
+        private readonly ICreate<IGithubRepositoryEngine> _repositoryEngineCreator;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GithubEngine(
             ICreate<IGithub> githubCreator,
-            IGithubRepositoryDiscovery repositoryDiscovery,
-            IGithubRepositoryEngine repositoryEngine,
+            ICreate<IGithubRepositoryDiscovery> repositoryDiscoveryCreator,
+            ICreate<IGithubRepositoryEngine> repositoryEngineCreator,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _githubCreator = githubCreator;
-            _repositoryDiscovery = repositoryDiscovery;
-            _repositoryEngine = repositoryEngine;
+            _repositoryDiscoveryCreator = repositoryDiscoveryCreator;
+            _repositoryEngineCreator = repositoryEngineCreator;
             _folderFactory = folderFactory;
             _logger = logger;
         }
@@ -35,6 +36,8 @@ namespace NuKeeper.Engine
         public async Task<int> Run(SettingsContainer settings)
         {
             var github = _githubCreator.Create(settings);
+            var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);
+            var repositoryEngine = _repositoryEngineCreator.Create(settings);
 
             _logger.Verbose($"{Now()}: Started");
 
@@ -49,7 +52,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories();
+            var repositories = await repositoryDiscovery.GetRepositories();
 
             var reposUpdated = 0;
 
@@ -61,7 +64,7 @@ namespace NuKeeper.Engine
                     break;
                 }
 
-                var updatesInThisRepo = await _repositoryEngine.Run(repository, gitCreds, userIdentity);
+                var updatesInThisRepo = await repositoryEngine.Run(repository, gitCreds, userIdentity);
                 if (updatesInThisRepo > 0)
                 {
                     reposUpdated++;

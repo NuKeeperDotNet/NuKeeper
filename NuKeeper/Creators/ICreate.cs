@@ -1,8 +1,8 @@
-﻿using NuKeeper.Configuration;
+using NuKeeper.Configuration;
 
-namespace NuKeeper
+namespace NuKeeper.Creators
 {
-    public interface ICreate<T>
+    public interface ICreate<out T>
     {
         T Create(SettingsContainer settings);
     }

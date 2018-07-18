@@ -1,7 +1,6 @@
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Github;
 using NuKeeper.Local;
 using SimpleInjector;
 
@@ -27,19 +26,9 @@ namespace NuKeeper
             container.Register(() => settings.GithubAuthSettings, Lifestyle.Singleton);
             container.Register(() => settings.UserSettings, Lifestyle.Singleton);
 
-            container.Register<IGithubRepositoryDiscovery, GithubRepositoryDiscovery>();
-            container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
-            container.Register<IExistingBranchFilter, ExistingBranchFilter>();
-            container.Register<IRepositoryFilter, RepositoryFilter>();
-
             container.Register<GithubEngine>();
-            container.Register<IGithubRepositoryEngine, GithubRepositoryEngine>();
-            container.Register<IRepositoryUpdater, RepositoryUpdater>();
 
             container.Register<ILocalUpdater, LocalUpdater>();
-            container.Register<IPackageUpdater, PackageUpdater>();
-            container.Register<IForkFinder, ForkFinder>();
-            
         }
     }
 }
