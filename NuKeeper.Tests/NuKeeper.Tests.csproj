@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Include="EasyConfig.Net.Core" Version="4.0.97" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="NUnit" Version="3.10.1">
     </PackageReference>
