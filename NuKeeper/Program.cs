@@ -1,6 +1,9 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Commands;
+
+[assembly:InternalsVisibleTo("NuKeeper.Tests")]
 
 namespace NuKeeper
 {
@@ -10,6 +13,8 @@ namespace NuKeeper
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     [Subcommand("inspect", typeof(InspectCommand))]
     [Subcommand("update", typeof(UpdateCommand))]
+    [Subcommand("repository", typeof(RepositoryCommand))]
+    [Subcommand("organisation", typeof(OrganisationCommand))]
     public class Program
     {
         public static int Main(string[] args)

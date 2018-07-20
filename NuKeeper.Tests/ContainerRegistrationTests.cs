@@ -1,3 +1,5 @@
+using System;
+using NuKeeper.Commands;
 using NUnit.Framework;
 using NuKeeper.Engine;
 using NuKeeper.Local;
@@ -25,6 +27,19 @@ namespace NuKeeper.Tests
             var inspector = container.GetInstance<LocalEngine>();
 
             Assert.That(inspector, Is.Not.Null);
+        }
+
+        [TestCase(typeof(InspectCommand))]
+        [TestCase(typeof(UpdateCommand))]
+        [TestCase(typeof(RepositoryCommand))]
+        [TestCase(typeof(OrganisationCommand))]
+        public void CommandsCanBeResolved(Type commandType)
+        {
+            var container = ContainerRegistration.Init();
+
+            var command = container.GetInstance(commandType);
+
+            Assert.That(command, Is.Not.Null);
         }
     }
 }
