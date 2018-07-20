@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -26,30 +25,10 @@ namespace NuKeeper
         {
             await base.Run(settings);
             settings.ModalSettings.Mode = RunMode.Repository;
-            settings.ModalSettings.Repository = ReadRepositorySettings(GitHubRepositoryUri);
+            settings.ModalSettings.Repository = SettingsParser.ReadRepositorySettings(GitHubRepositoryUri);
 
             await _engine.Run(settings);
             return 0;
-        }
-
-        private static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
-        {
-            // general pattern is https://github.com/owner/reponame.git
-            // from this we extract owner and repo name
-            var path = gitHubRepositoryUri.AbsolutePath;
-            var pathParts = path.Split('/')
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToList();
-
-            var repoOwner = pathParts[0];
-            var repoName = pathParts[1].Replace(".git", string.Empty);
-
-            return new RepositorySettings
-            {
-                GithubUri = gitHubRepositoryUri,
-                RepositoryName = repoName,
-                RepositoryOwner = repoOwner
-            };
         }
     }
 }

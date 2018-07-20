@@ -107,7 +107,7 @@ namespace NuKeeper.Configuration
                     return new ModalSettings
                     {
                         Mode = RunMode.Repository,
-                        Repository = ReadRepositorySettings(settings),
+                        Repository = ReadRepositorySettings(settings.GithubRepositoryUri),
                         Labels = ReadMultilineSetting(settings.Labels)
                     };
 
@@ -188,11 +188,11 @@ namespace NuKeeper.Configuration
             }
         }
 
-        private static RepositorySettings ReadRepositorySettings(RawConfiguration settings)
+        internal static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
         {
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
-            var path = settings.GithubRepositoryUri.AbsolutePath;
+            var path = gitHubRepositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
@@ -202,7 +202,7 @@ namespace NuKeeper.Configuration
 
             return new RepositorySettings
                 {
-                    GithubUri = settings.GithubRepositoryUri,
+                    GithubUri = gitHubRepositoryUri,
                     RepositoryName = repoName,
                     RepositoryOwner = repoOwner
             };

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -29,6 +30,12 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected LogLevel Verbosity { get; } = LogLevel.Normal;
 
+        [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
+            Description =
+                "In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected string MinimumPackageAge { get; } = "7d";
+
         protected CommandBase(IConfigureLogLevel logger)
         {
             _logger = logger;
@@ -39,13 +46,21 @@ namespace NuKeeper.Commands
         {
             _logger.SetLogLevel(Verbosity);
 
+            var minPackageAge = DurationParser.Parse(MinimumPackageAge);
+            if (!minPackageAge.HasValue)
+            {
+                minPackageAge = TimeSpan.Zero;
+                Console.WriteLine($"Min package age '{MinimumPackageAge}' could not be parsed");
+            }
+
             var settings = new SettingsContainer
             {
                 ModalSettings = new ModalSettings(),
                 UserSettings = new UserSettings
                 {
                     AllowedChange = AllowedChange,
-                    NuGetSources = NuGetSources
+                    NuGetSources = NuGetSources,
+                    MinimumPackageAge = minPackageAge.Value
                 }
             };
 

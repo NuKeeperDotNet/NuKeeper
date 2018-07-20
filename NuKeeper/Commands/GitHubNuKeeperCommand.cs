@@ -23,6 +23,10 @@ namespace NuKeeper
             Description = "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
+        [Option(CommandOptionType.SingleValue, ShortName = "mp", LongName = "maxpr",
+            Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
+        protected int MaxPullRequestsPerRepository { get; } = 3;
+
         protected GitHubNuKeeperCommand(IConfigureLogLevel logger) : base(logger)
         {
         }
@@ -31,6 +35,7 @@ namespace NuKeeper
         {
             settings.GithubAuthSettings = new GithubAuthSettings(new Uri("https://api.github.com"), GitHubToken);
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
+            settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             return Task.FromResult(0);
         }
