@@ -36,6 +36,16 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string MinimumPackageAge { get; } = "7d";
 
+        [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected string Include { get; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        protected string Exclude { get; }
+
         protected CommandBase(IConfigureLogLevel logger)
         {
             _logger = logger;
@@ -60,7 +70,9 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = AllowedChange,
                     NuGetSources = NuGetSources,
-                    MinimumPackageAge = minPackageAge.Value
+                    MinimumPackageAge = minPackageAge.Value,
+                    PackageIncludes = SettingsParser.ParseRegex(Include, nameof(Include)),
+                    PackageExcludes = SettingsParser.ParseRegex(Exclude, nameof(Exclude)),
                 }
             };
 

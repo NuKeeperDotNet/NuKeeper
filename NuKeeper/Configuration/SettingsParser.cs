@@ -170,7 +170,7 @@ namespace NuKeeper.Configuration
             }
         }
 
-        private static Regex ParseRegex(string regex, string optionName)
+        internal static Regex ParseRegex(string regex, string optionName)
         {
             if (string.IsNullOrWhiteSpace(regex))
             {
