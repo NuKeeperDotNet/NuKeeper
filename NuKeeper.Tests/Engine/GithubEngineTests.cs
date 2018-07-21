@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LibGit2Sharp;
 using NSubstitute;
 using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
@@ -21,7 +22,7 @@ namespace NuKeeper.Tests.Engine
             var engine = MakeGithubEngine(
                 new List<RepositorySettings>());
 
-            var count = await engine.Run();
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -35,7 +36,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(oneRepo);
 
-            var count = await engine.Run();
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
         }
@@ -50,7 +51,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(repos);
 
-            var count = await engine.Run();
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -65,7 +66,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(2, repos);
 
-            var count = await engine.Run();
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -82,7 +83,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(0, repos);
 
-            var count = await engine.Run();
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -97,14 +98,16 @@ namespace NuKeeper.Tests.Engine
                 new RepositorySettings()
             };
 
-            var settings = new UserSettings
+            var engine = MakeGithubEngine(1, repos);
+
+            var count = await engine.Run(new SettingsContainer
             {
-                MaxRepositoriesChanged = 1
-            };
-
-            var engine = MakeGithubEngine(1, settings, repos);
-
-            var count = await engine.Run();
+                GithubAuthSettings = MakeGitHubAuthSettings(),
+                UserSettings = new UserSettings
+                {
+                    MaxRepositoriesChanged = 1
+                }
+            });
 
             Assert.That(count, Is.EqualTo(1));
         }
@@ -112,48 +115,57 @@ namespace NuKeeper.Tests.Engine
         private static GithubEngine MakeGithubEngine(
             List<RepositorySettings> repos)
         {
-            return MakeGithubEngine(1,
-                new UserSettings { MaxRepositoriesChanged = int.MaxValue },
-                repos);
+            return MakeGithubEngine(1, repos);
         }
 
         private static GithubEngine MakeGithubEngine(
             int repoEngineResult,
-            List<RepositorySettings> repos)
-        {
-            return MakeGithubEngine(repoEngineResult,
-                new UserSettings { MaxRepositoriesChanged = int.MaxValue },
-                repos);
-        }
-
-        private static GithubEngine MakeGithubEngine(
-            int repoEngineResult,
-            UserSettings userSettings,
             List<RepositorySettings> repos)
         {
             var github = Substitute.For<IGithub>();
             var repoDiscovery = Substitute.For<IGithubRepositoryDiscovery>();
             var repoEngine = Substitute.For<IGithubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
+            var githubCreator = Substitute.For<ICreate<IGithub>>();
+            var repositoryDiscoveryCreator = Substitute.For<ICreate<IGithubRepositoryDiscovery>>();
+            var repoEngineCreator = Substitute.For<ICreate<IGithubRepositoryEngine>>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
 
+            githubCreator.Create(null).ReturnsForAnyArgs(github);
+
             repoDiscovery.GetRepositories()
                 .Returns(repos);
 
-            repoEngine.Run(
-                    Arg.Any<RepositorySettings>(),
-                    Arg.Any<UsernamePasswordCredentials>(),
-                    Arg.Any<Identity>())
-                .Returns(repoEngineResult);
+            repositoryDiscoveryCreator.Create(null).ReturnsForAnyArgs(repoDiscovery);
 
-            var githubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com"), "token123");
+            repoEngine.Run(null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            var engine = new GithubEngine(github, repoDiscovery, repoEngine,
-                userSettings, githubAuthSettings,
+            repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
+
+            var engine = new GithubEngine(githubCreator, repositoryDiscoveryCreator, repoEngineCreator,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
+        }
+
+        private static SettingsContainer MakeSettings()
+        {
+            return new SettingsContainer
+            {
+                GithubAuthSettings = MakeGitHubAuthSettings(),
+                UserSettings = MakeUserSettings()
+            };
+        }
+
+        private static UserSettings MakeUserSettings()
+        {
+            return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
+        }
+
+        private static GithubAuthSettings MakeGitHubAuthSettings()
+        {
+            return new GithubAuthSettings(new Uri("http://foo.com"), "token123");
         }
     }
 }

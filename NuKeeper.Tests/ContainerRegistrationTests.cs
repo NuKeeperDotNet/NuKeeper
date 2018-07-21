@@ -1,8 +1,7 @@
 using System;
+using NuKeeper.Commands;
 using NUnit.Framework;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
-using NuKeeper.Inspection.Sources;
 using NuKeeper.Local;
 
 namespace NuKeeper.Tests
@@ -13,7 +12,7 @@ namespace NuKeeper.Tests
         [Test]
         public void RootCanBeResolved()
         {
-            var container = ContainerRegistration.Init(MakeValidSettings());
+            var container = ContainerRegistration.Init();
 
             var engine = container.GetInstance<GithubEngine>();
 
@@ -23,27 +22,24 @@ namespace NuKeeper.Tests
         [Test]
         public void InspectorCanBeResolved()
         {
-            var container = ContainerRegistration.Init(MakeValidSettings());
+            var container = ContainerRegistration.Init();
 
             var inspector = container.GetInstance<LocalEngine>();
 
             Assert.That(inspector, Is.Not.Null);
         }
 
-        private static SettingsContainer MakeValidSettings()
+        [TestCase(typeof(InspectCommand))]
+        [TestCase(typeof(UpdateCommand))]
+        [TestCase(typeof(RepositoryCommand))]
+        [TestCase(typeof(OrganisationCommand))]
+        public void CommandsCanBeResolved(Type commandType)
         {
-            var settings = new SettingsContainer();
-            settings.ModalSettings = new ModalSettings
-                {
-                    Mode = RunMode.Organisation,
-                    OrganisationName = "test1"
-                };
-            settings.GithubAuthSettings = new GithubAuthSettings(new Uri("http://foo.com/bar"), "abc123");
-            settings.UserSettings = new UserSettings
-                {
-                    NuGetSources = NuGetSources.GlobalFeed
-                };
-            return settings;
+            var container = ContainerRegistration.Init();
+
+            var command = container.GetInstance(commandType);
+
+            Assert.That(command, Is.Not.Null);
         }
     }
 }

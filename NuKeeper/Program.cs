@@ -1,44 +1,43 @@
-using System;
-using System.Threading.Tasks;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.Local;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Commands;
+
+[assembly:InternalsVisibleTo("NuKeeper.Tests")]
 
 namespace NuKeeper
 {
+    [Command(
+        Name = "NuKeeper",
+        FullName = "Automagically update NuGet packages in .NET projects.")]
+    [VersionOptionFromMember(MemberName = nameof(GetVersion))]
+    [Subcommand("inspect", typeof(InspectCommand))]
+    [Subcommand("update", typeof(UpdateCommand))]
+    [Subcommand("repository", typeof(RepositoryCommand))]
+    [Subcommand("organisation", typeof(OrganisationCommand))]
     public class Program
     {
-        public static async Task<int> Main(string[] args)
+        public static int Main(string[] args)
         {
-            var settings = SettingsParser.ReadSettings(args);
+            var container = ContainerRegistration.Init();
 
-            if(settings == null)
-            {
-                Console.WriteLine("Exiting early...");
-                return 1;
-            }
+            var app = new CommandLineApplication<Program> {ThrowOnUnexpectedArgument = false};
+            app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
 
-            var container = ContainerRegistration.Init(settings);
-
-            switch (settings.ModalSettings.Mode)
-            {
-                case RunMode.Inspect:
-                case RunMode.Update:
-                    var inpector = container.GetInstance<LocalEngine>();
-                    await inpector.Run(settings);
-                    break;
-
-                case RunMode.Repository:
-                case RunMode.Organisation:
-                    var engine = container.GetInstance<GithubEngine>();
-                    await engine.Run();
-                    break;
-
-                default:
-                    throw new Exception($"Run mode '{settings.ModalSettings.Mode}' was not handled.");
-            }
-
-            return 0;
+            return app.Execute(args);
         }
+
+        // ReSharper disable once UnusedMember.Global
+        protected int OnExecute(CommandLineApplication app)
+        {
+            // this shows help even if the --help option isn't specified
+            app.ShowHelp();
+            return 1;
+        }
+
+        private static string GetVersion() => typeof(Program)
+            .Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            .InformationalVersion;
     }
 }

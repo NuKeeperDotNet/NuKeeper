@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
@@ -12,60 +13,58 @@ namespace NuKeeper.Engine
 {
     public class GithubEngine
     {
-        private readonly IGithub _github;
-        private readonly IGithubRepositoryDiscovery _repositoryDiscovery;
-        private readonly IGithubRepositoryEngine _repositoryEngine;
-        private readonly UserSettings _userSettings;
-        private readonly string _githubToken;
+        private readonly ICreate<IGithub> _githubCreator;
+        private readonly ICreate<IGithubRepositoryDiscovery> _repositoryDiscoveryCreator;
+        private readonly ICreate<IGithubRepositoryEngine> _repositoryEngineCreator;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GithubEngine(
-            IGithub github,
-            IGithubRepositoryDiscovery repositoryDiscovery,
-            IGithubRepositoryEngine repositoryEngine,
-            UserSettings userSettings,
-            GithubAuthSettings settings,
+            ICreate<IGithub> githubCreator,
+            ICreate<IGithubRepositoryDiscovery> repositoryDiscoveryCreator,
+            ICreate<IGithubRepositoryEngine> repositoryEngineCreator,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
-            _github = github;
-            _repositoryDiscovery = repositoryDiscovery;
-            _repositoryEngine = repositoryEngine;
-            _userSettings = userSettings;
-            _githubToken = settings.Token;
+            _githubCreator = githubCreator;
+            _repositoryDiscoveryCreator = repositoryDiscoveryCreator;
+            _repositoryEngineCreator = repositoryEngineCreator;
             _folderFactory = folderFactory;
             _logger = logger;
         }
 
-        public async Task<int> Run()
+        public async Task<int> Run(SettingsContainer settings)
         {
+            var github = _githubCreator.Create(settings);
+            var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);
+            var repositoryEngine = _repositoryEngineCreator.Create(settings);
+
             _logger.Verbose($"{Now()}: Started");
 
             _folderFactory.DeleteExistingTempDirs();
 
-            var githubUser = await _github.GetCurrentUser();
+            var githubUser = await github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = _githubToken
+                Password = settings.GithubAuthSettings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories();
+            var repositories = await repositoryDiscovery.GetRepositories();
 
             var reposUpdated = 0;
 
             foreach (var repository in repositories)
             {
-                if (reposUpdated >= _userSettings.MaxRepositoriesChanged)
+                if (reposUpdated >= settings.UserSettings.MaxRepositoriesChanged)
                 {
                     _logger.Verbose($"Reached max of {reposUpdated} repositories changed");
                     break;
                 }
 
-                var updatesInThisRepo = await _repositoryEngine.Run(repository, gitCreds, userIdentity);
+                var updatesInThisRepo = await repositoryEngine.Run(repository, gitCreds, userIdentity);
                 if (updatesInThisRepo > 0)
                 {
                     reposUpdated++;
