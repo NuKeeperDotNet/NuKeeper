@@ -190,6 +190,11 @@ namespace NuKeeper.Configuration
 
         internal static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
         {
+            if (gitHubRepositoryUri == null)
+            {
+                return null;
+            }
+
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
             var path = gitHubRepositoryUri.AbsolutePath;
