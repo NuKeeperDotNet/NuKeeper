@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -21,8 +22,24 @@ namespace NuKeeper.Commands
             await base.Run(settings);
             settings.ModalSettings.Mode = RunMode.Global;
 
+            ValidateGlobalMode(settings);
+
             await _engine.Run(settings);
             return 0;
+        }
+
+        private void ValidateGlobalMode(SettingsContainer settings)
+        {
+            if (settings.UserSettings.PackageIncludes == null)
+            {
+                throw new ArgumentException("Global mode must have an include regex");
+            }
+
+            var apiHost = settings.GithubAuthSettings.ApiBase.Host;
+            if (apiHost.EndsWith("github.com"))
+            {
+                throw new ArgumentException("Global mode must not use public github");
+            }
         }
     }
 }
