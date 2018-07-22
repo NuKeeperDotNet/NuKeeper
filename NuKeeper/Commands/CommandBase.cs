@@ -11,7 +11,7 @@ namespace NuKeeper.Commands
     [HelpOption]
     internal abstract class CommandBase
     {
-        private readonly IConfigureLogLevel _logger;
+        private readonly IConfigureLogLevel _configureLogger;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
@@ -48,20 +48,21 @@ namespace NuKeeper.Commands
 
         protected CommandBase(IConfigureLogLevel logger)
         {
-            _logger = logger;
+            _configureLogger = logger;
         }
 
 
         // ReSharper disable once UnusedMember.Global
         public async Task<int> OnExecute()
         {
-            _logger.SetLogLevel(Verbosity);
+            _configureLogger.SetLogLevel(Verbosity);
             var settings = MakeSettings();
 
             var validationResult = ValidateSettings(settings);
             if (!validationResult.IsSuccess)
             {
-                Console.WriteLine(validationResult.ErrorMessage);
+                var logger = _configureLogger as INuKeeperLogger;
+                logger?.Error(validationResult.ErrorMessage);
                 return -1;
             }
 
