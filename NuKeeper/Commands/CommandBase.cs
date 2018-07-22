@@ -51,11 +51,20 @@ namespace NuKeeper.Commands
             _logger = logger;
         }
 
+
         // ReSharper disable once UnusedMember.Global
         public async Task<int> OnExecute()
         {
             _logger.SetLogLevel(Verbosity);
             var settings = MakeSettings();
+
+            var validationResult = ValidateSettings(settings);
+            if (!validationResult.IsSuccess)
+            {
+                Console.WriteLine(validationResult.ErrorMessage);
+                return -1;
+            }
+
             return await Run(settings);
         }
 
@@ -82,12 +91,16 @@ namespace NuKeeper.Commands
             };
 
             PopulateSettings(settings);
-
             return settings;
         }
 
         protected virtual void PopulateSettings(SettingsContainer settings)
         {
+        }
+
+        protected virtual ValidationResult ValidateSettings(SettingsContainer settings)
+        {
+            return ValidationResult.Success;
         }
 
         protected abstract Task<int> Run(SettingsContainer settings);
