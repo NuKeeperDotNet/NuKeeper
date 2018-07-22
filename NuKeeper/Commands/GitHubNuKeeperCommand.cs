@@ -1,11 +1,9 @@
 using System;
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Commands;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper
+namespace NuKeeper.Commands
 {
     internal abstract class GitHubNuKeeperCommand : CommandBase
     {
@@ -42,14 +40,16 @@ namespace NuKeeper
         {
         }
 
-        protected override Task<int> Run(SettingsContainer settings)
+        protected override void PopulateSettings(SettingsContainer settings)
         {
-            settings.GithubAuthSettings = new GithubAuthSettings(new Uri("https://api.github.com"), GitHubToken);
+            settings.GithubAuthSettings = new GithubAuthSettings(
+                new Uri("https://api.github.com"),
+                GitHubToken);
+
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.ModalSettings.Labels = Label;
-            return Task.FromResult(0);
         }
     }
 }

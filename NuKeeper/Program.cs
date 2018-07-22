@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using McMaster.Extensions.CommandLineUtils;
@@ -25,7 +26,16 @@ namespace NuKeeper
             var app = new CommandLineApplication<Program> {ThrowOnUnexpectedArgument = false};
             app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
 
-            return app.Execute(args);
+            try
+            {
+                return app.Execute(args);
+
+            }
+            catch (CommandParsingException cpe)
+            {
+                Console.WriteLine(cpe.Message);
+                return -1;
+            }
         }
 
         // ReSharper disable once UnusedMember.Global

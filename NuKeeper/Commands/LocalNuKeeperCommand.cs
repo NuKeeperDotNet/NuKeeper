@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
@@ -17,10 +16,9 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override Task<int> Run(SettingsContainer settings)
+        protected override void PopulateSettings(SettingsContainer settings)
         {
             settings.UserSettings.Directory = Path;
-            return Task.FromResult(0);
         }
     }
 }
