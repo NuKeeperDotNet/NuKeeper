@@ -21,7 +21,22 @@ namespace NuKeeper.Commands
         {
             base.PopulateSettings(settings);
             settings.ModalSettings.Mode = RunMode.Global;
-            ValidateGlobalMode(settings);
+        }
+
+        protected override ValidationResult ValidateSettings(SettingsContainer settings)
+        {
+            if (settings.UserSettings.PackageIncludes == null)
+            {
+                return ValidationResult.Failure("Global mode must have an include regex");
+            }
+
+            var apiHost = settings.GithubAuthSettings.ApiBase.Host;
+            if (apiHost.EndsWith("github.com"))
+            {
+                return ValidationResult.Failure("Global mode must not use public github");
+            }
+
+            return base.ValidateSettings(settings);
         }
 
         protected override async Task<int> Run(SettingsContainer settings)
@@ -30,18 +45,5 @@ namespace NuKeeper.Commands
             return 0;
         }
 
-        private void ValidateGlobalMode(SettingsContainer settings)
-        {
-            if (settings.UserSettings.PackageIncludes == null)
-            {
-                throw new ArgumentException("Global mode must have an include regex");
-            }
-
-            var apiHost = settings.GithubAuthSettings.ApiBase.Host;
-            if (apiHost.EndsWith("github.com"))
-            {
-                throw new ArgumentException("Global mode must not use public github");
-            }
-        }
     }
 }

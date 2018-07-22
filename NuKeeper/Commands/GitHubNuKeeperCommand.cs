@@ -34,7 +34,7 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = {"nukeeper"};
+        protected string[] Label { get; } = { "nukeeper" };
 
         protected GitHubNuKeeperCommand(IConfigureLogLevel logger) : base(logger)
         {
@@ -50,6 +50,16 @@ namespace NuKeeper.Commands
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.ModalSettings.Labels = Label;
+        }
+
+        protected override ValidationResult ValidateSettings(SettingsContainer settings)
+        {
+            if (string.IsNullOrWhiteSpace(GitHubToken))
+            {
+                return ValidationResult.Failure("The required GitHub access token was not found");
+            }
+
+            return base.ValidateSettings(settings);
         }
     }
 }
