@@ -6,7 +6,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
+    [Command(Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
     internal class OrganisationCommand : GitHubNuKeeperCommand
     {
         private readonly GithubEngine _engine;
