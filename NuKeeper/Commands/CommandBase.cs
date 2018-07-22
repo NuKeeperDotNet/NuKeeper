@@ -55,7 +55,12 @@ namespace NuKeeper.Commands
         public async Task<int> OnExecute()
         {
             _logger.SetLogLevel(Verbosity);
+            var settings = MakeSettings();
+            return await Run(settings);
+        }
 
+        private SettingsContainer MakeSettings()
+        {
             var minPackageAge = DurationParser.Parse(MinimumPackageAge);
             if (!minPackageAge.HasValue)
             {
@@ -76,7 +81,13 @@ namespace NuKeeper.Commands
                 }
             };
 
-            return await Run(settings);
+            PopulateSettings(settings);
+
+            return settings;
+        }
+
+        protected virtual void PopulateSettings(SettingsContainer settings)
+        {
         }
 
         protected abstract Task<int> Run(SettingsContainer settings);

@@ -17,13 +17,15 @@ namespace NuKeeper.Commands
             _engine = engine;
         }
 
+        protected override void PopulateSettings(SettingsContainer settings)
+        {
+            base.PopulateSettings(settings);
+            settings.ModalSettings.Mode = RunMode.Global;
+            ValidateGlobalMode(settings);
+        }
+
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await base.Run(settings);
-            settings.ModalSettings.Mode = RunMode.Global;
-
-            ValidateGlobalMode(settings);
-
             await _engine.Run(settings);
             return 0;
         }

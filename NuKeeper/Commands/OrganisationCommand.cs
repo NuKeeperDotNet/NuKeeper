@@ -21,12 +21,15 @@ namespace NuKeeper.Commands
             _engine = engine;
         }
 
-        protected override async Task<int> Run(SettingsContainer settings)
+        protected override void PopulateSettings(SettingsContainer settings)
         {
-            await base.Run(settings);
+            base.PopulateSettings(settings);
             settings.ModalSettings.Mode = RunMode.Organisation;
             settings.ModalSettings.OrganisationName = GithubOrganisationName;
+        }
 
+        protected override async Task<int> Run(SettingsContainer settings)
+        {
             await _engine.Run(settings);
             return 0;
         }

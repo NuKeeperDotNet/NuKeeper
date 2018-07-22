@@ -7,7 +7,8 @@ using NuKeeper.Local;
 namespace NuKeeper.Commands
 {
     [Command(Description = "Applies first relevant update to a local project.")]
-    internal class UpdateCommand : LocalNuKeeperCommand {
+    internal class UpdateCommand : LocalNuKeeperCommand
+    {
         private readonly LocalEngine _engine;
 
         public UpdateCommand(LocalEngine engine, IConfigureLogLevel logger)
@@ -16,11 +17,14 @@ namespace NuKeeper.Commands
             _engine = engine;
         }
 
+        protected override void PopulateSettings(SettingsContainer settings)
+        {
+            base.PopulateSettings(settings);
+            settings.ModalSettings.Mode = RunMode.Update;
+        }
+
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await base.Run(settings);
-            settings.ModalSettings.Mode = RunMode.Update;
-
             await _engine.Run(settings);
             return 0;
         }
