@@ -15,7 +15,9 @@ namespace NuKeeper
     [Subcommand("inspect", typeof(InspectCommand))]
     [Subcommand("update", typeof(UpdateCommand))]
     [Subcommand("repository", typeof(RepositoryCommand))]
+    [Subcommand("repo", typeof(RepositoryCommand))]
     [Subcommand("organisation", typeof(OrganisationCommand))]
+    [Subcommand("org", typeof(OrganisationCommand))]
     [Subcommand("global", typeof(GlobalCommand))]
     public class Program
     {
