@@ -60,7 +60,6 @@ namespace NuKeeper.Configuration
             {
                 AllowedChange = settings.AllowedChange,
                 ForkMode = settings.ForkMode,
-                LogLevel = settings.LogLevel,
                 ReportMode = settings.ReportMode,
                 MaxPullRequestsPerRepository = settings.MaxPullRequestsPerRepository,
                 MaxRepositoriesChanged = settings.MaxRepositoriesChanged,
@@ -229,7 +228,7 @@ namespace NuKeeper.Configuration
             return settingValue.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private static Uri EnsureTrailingSlash(Uri uri)
+        internal static Uri EnsureTrailingSlash(Uri uri)
         {
             if (uri == null)
             {
