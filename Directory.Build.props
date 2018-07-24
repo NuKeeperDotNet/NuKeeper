@@ -3,7 +3,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.5.0</PackageVersion>
+    <VersionPrefix>0.5.0</VersionPrefix>
+    <PackageVersion>$(VersionPrefix)</PackageVersion>
     <Copyright>Copyright (c) NuKeeper 2017-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
