@@ -22,11 +22,18 @@ namespace NuKeeper.Commands
             _engine = engine;
         }
 
-        protected override void PopulateSettings(SettingsContainer settings)
+        protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            base.PopulateSettings(settings);
+            var baseResult = base.PopulateSettings(settings);
+            if (!baseResult.IsSuccess)
+            {
+                return baseResult;
+            }
+
             settings.ModalSettings.Mode = RunMode.Repository;
             settings.ModalSettings.Repository = SettingsParser.ReadRepositorySettings(GitHubRepositoryUri);
+
+            return ValidationResult.Success;
         }
 
         protected override async Task<int> Run(SettingsContainer settings)

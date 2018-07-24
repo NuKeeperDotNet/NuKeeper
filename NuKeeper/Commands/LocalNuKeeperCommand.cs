@@ -16,9 +16,16 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override void PopulateSettings(SettingsContainer settings)
+        protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            var baseResult = base.PopulateSettings(settings);
+            if (!baseResult.IsSuccess)
+            {
+                return baseResult;
+            }
+
             settings.UserSettings.Directory = Path;
+            return ValidationResult.Success;
         }
     }
 }

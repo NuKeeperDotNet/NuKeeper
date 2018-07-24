@@ -58,7 +58,7 @@ namespace NuKeeper.Commands
             _configureLogger.SetLogLevel(Verbosity);
             var settings = MakeSettings();
 
-            var validationResult = ValidateSettings(settings);
+            var validationResult = PopulateSettings(settings);
             if (!validationResult.IsSuccess)
             {
                 var logger = _configureLogger as INuKeeperLogger;
@@ -91,15 +91,10 @@ namespace NuKeeper.Commands
                 }
             };
 
-            PopulateSettings(settings);
             return settings;
         }
 
-        protected virtual void PopulateSettings(SettingsContainer settings)
-        {
-        }
-
-        protected virtual ValidationResult ValidateSettings(SettingsContainer settings)
+        protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
         {
             return ValidationResult.Success;
         }

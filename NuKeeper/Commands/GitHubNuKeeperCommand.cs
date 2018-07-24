@@ -21,7 +21,8 @@ namespace NuKeeper.Commands
         protected int AllowedMaxRepositoriesChangedChange { get; } = 10;
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
-            Description = "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
+            Description =
+                "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
@@ -35,13 +36,13 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = { "nukeeper" };
+        protected string[] Label { get; } = {"nukeeper"};
 
         [Option(CommandOptionType.SingleValue, LongName = "api",
             Description =
                 "If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         // ReSharper disable once MemberCanBePrivate.Global
-        protected Uri GithubApiEndpoint { get; } = new Uri("https://api.github.com/");
+        protected string GithubApiEndpoint { get; } = "https://api.github.com/";
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
@@ -52,19 +53,42 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override void PopulateSettings(SettingsContainer settings)
+        protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            var baseResult = base.PopulateSettings(settings);
+            if (!baseResult.IsSuccess)
+            {
+                return baseResult;
+            }
+
             var token = ReadToken();
 
-            settings.GithubAuthSettings = new GithubAuthSettings(
-                SettingsParser.EnsureTrailingSlash(GithubApiEndpoint),
-                token);
+            Uri githubUri;
+            if (!Uri.TryCreate(GithubApiEndpoint, UriKind.Absolute, out githubUri))
+            {
+                return ValidationResult.Failure($"Bad GitHub Uri '{GithubApiEndpoint}'");
+            }
+
+            var githubUrl = SettingsParser.EnsureTrailingSlash(githubUri);
+
+            settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
             settings.ModalSettings.Labels = Label;
+            if (string.IsNullOrWhiteSpace(settings.GithubAuthSettings.Token))
+            {
+                return ValidationResult.Failure("The required GitHub access token was not found");
+            }
+
+            if (settings.GithubAuthSettings.ApiBase == null)
+            {
+                return ValidationResult.Failure("No GitHub Api base found");
+            }
+
+            return ValidationResult.Success;
         }
 
         private string ReadToken()
@@ -81,16 +105,6 @@ namespace NuKeeper.Commands
             }
 
             return string.Empty;
-        }
-
-        protected override ValidationResult ValidateSettings(SettingsContainer settings)
-        {
-            if (string.IsNullOrWhiteSpace(settings.GithubAuthSettings.Token))
-            {
-                return ValidationResult.Failure("The required GitHub access token was not found");
-            }
-
-            return base.ValidateSettings(settings);
         }
     }
 }
