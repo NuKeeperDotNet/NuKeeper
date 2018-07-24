@@ -54,9 +54,11 @@ namespace NuKeeper.Commands
 
         protected override void PopulateSettings(SettingsContainer settings)
         {
+            var token = ReadToken();
+
             settings.GithubAuthSettings = new GithubAuthSettings(
                 SettingsParser.EnsureTrailingSlash(GithubApiEndpoint),
-                GitHubToken);
+                token);
 
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
@@ -65,9 +67,25 @@ namespace NuKeeper.Commands
             settings.ModalSettings.Labels = Label;
         }
 
+        private string ReadToken()
+        {
+            if (!string.IsNullOrWhiteSpace(GitHubToken))
+            {
+                return GitHubToken;
+            }
+
+            var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
+            if (!string.IsNullOrWhiteSpace(envToken))
+            {
+                return envToken;
+            }
+
+            return string.Empty;
+        }
+
         protected override ValidationResult ValidateSettings(SettingsContainer settings)
         {
-            if (string.IsNullOrWhiteSpace(GitHubToken))
+            if (string.IsNullOrWhiteSpace(settings.GithubAuthSettings.Token))
             {
                 return ValidationResult.Failure("The required GitHub access token was not found");
             }
