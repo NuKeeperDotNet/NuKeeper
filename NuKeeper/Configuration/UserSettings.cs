@@ -25,8 +25,6 @@ namespace NuKeeper.Configuration
 
         public ForkMode ForkMode { get; set; }
 
-        public LogLevel LogLevel { get; set; }
-
         public ReportMode ReportMode { get; set; }
 
         public string Directory { get; set; }
