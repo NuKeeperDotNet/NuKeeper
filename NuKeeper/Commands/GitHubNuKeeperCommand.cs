@@ -61,12 +61,22 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            var token = ReadToken();
+            if (string.IsNullOrWhiteSpace(GithubApiEndpoint))
+            {
+                return ValidationResult.Failure("No GitHub Api base found");
+            }
+
 
             Uri githubUri;
             if (!Uri.TryCreate(GithubApiEndpoint, UriKind.Absolute, out githubUri))
             {
-                return ValidationResult.Failure($"Bad GitHub Uri '{GithubApiEndpoint}'");
+                return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
+            }
+
+            var token = ReadToken();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return ValidationResult.Failure("The required GitHub access token was not found");
             }
 
             var githubUrl = SettingsParser.EnsureTrailingSlash(githubUri);
@@ -77,16 +87,8 @@ namespace NuKeeper.Commands
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
-            settings.ModalSettings.Labels = Label;
-            if (string.IsNullOrWhiteSpace(settings.GithubAuthSettings.Token))
-            {
-                return ValidationResult.Failure("The required GitHub access token was not found");
-            }
 
-            if (settings.GithubAuthSettings.ApiBase == null)
-            {
-                return ValidationResult.Failure("No GitHub Api base found");
-            }
+            settings.ModalSettings.Labels = Label;
 
             return ValidationResult.Success;
         }
