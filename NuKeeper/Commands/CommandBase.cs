@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -85,9 +86,7 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = AllowedChange,
                     NuGetSources = NuGetSources,
-                    MinimumPackageAge = minPackageAge.Value,
-                    PackageIncludes = SettingsParser.ParseRegex(Include, nameof(Include)),
-                    PackageExcludes = SettingsParser.ParseRegex(Exclude, nameof(Exclude)),
+                    MinimumPackageAge = minPackageAge.Value
                 }
             };
 
@@ -96,6 +95,40 @@ namespace NuKeeper.Commands
 
         protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            if (string.IsNullOrWhiteSpace(Include))
+            {
+                settings.UserSettings.PackageIncludes = null;
+            }
+            else
+            {
+                try
+                {
+                    settings.UserSettings.PackageIncludes = new Regex(Include);
+                }
+                catch (Exception ex)
+                {
+                    return ValidationResult.Failure(
+                        $"Unable to parse regex '{Include}' for Include: {ex.Message}");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(Exclude))
+            {
+                settings.UserSettings.PackageExcludes = null;
+            }
+            else
+            {
+                try
+                {
+                    settings.UserSettings.PackageExcludes = new Regex(Exclude);
+                }
+                catch (Exception ex)
+                {
+                    return ValidationResult.Failure(
+                        $"Unable to parse regex '{Exclude}' for Exclude: {ex.Message}");
+                }
+            }
+
             return ValidationResult.Success;
         }
 
