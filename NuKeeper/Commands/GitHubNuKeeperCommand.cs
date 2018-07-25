@@ -21,7 +21,8 @@ namespace NuKeeper.Commands
         protected int AllowedMaxRepositoriesChangedChange { get; } = 10;
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
-            Description = "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
+            Description =
+                "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
@@ -35,13 +36,13 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = { "nukeeper" };
+        protected string[] Label { get; } = {"nukeeper"};
 
         [Option(CommandOptionType.SingleValue, LongName = "api",
             Description =
                 "If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         // ReSharper disable once MemberCanBePrivate.Global
-        protected Uri GithubApiEndpoint { get; } = new Uri("https://api.github.com/");
+        protected string GithubApiEndpoint { get; } = "https://api.github.com/";
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
@@ -52,27 +53,60 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override void PopulateSettings(SettingsContainer settings)
+        protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            settings.GithubAuthSettings = new GithubAuthSettings(
-                SettingsParser.EnsureTrailingSlash(GithubApiEndpoint),
-                GitHubToken);
+            var baseResult = base.PopulateSettings(settings);
+            if (!baseResult.IsSuccess)
+            {
+                return baseResult;
+            }
+
+            if (string.IsNullOrWhiteSpace(GithubApiEndpoint))
+            {
+                return ValidationResult.Failure("No GitHub Api base found");
+            }
+
+
+            Uri githubUri;
+            if (!Uri.TryCreate(GithubApiEndpoint, UriKind.Absolute, out githubUri))
+            {
+                return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
+            }
+
+            var token = ReadToken();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return ValidationResult.Failure("The required GitHub access token was not found");
+            }
+
+            var githubUrl = SettingsParser.EnsureTrailingSlash(githubUri);
+
+            settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
             settings.UserSettings.MaxPullRequestsPerRepository = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
+
             settings.ModalSettings.Labels = Label;
+
+            return ValidationResult.Success;
         }
 
-        protected override ValidationResult ValidateSettings(SettingsContainer settings)
+        private string ReadToken()
         {
-            if (string.IsNullOrWhiteSpace(GitHubToken))
+            if (!string.IsNullOrWhiteSpace(GitHubToken))
             {
-                return ValidationResult.Failure("The required GitHub access token was not found");
+                return GitHubToken;
             }
 
-            return base.ValidateSettings(settings);
+            var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
+            if (!string.IsNullOrWhiteSpace(envToken))
+            {
+                return envToken;
+            }
+
+            return string.Empty;
         }
     }
 }
