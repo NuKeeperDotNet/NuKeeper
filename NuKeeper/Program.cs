@@ -14,8 +14,8 @@ namespace NuKeeper
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     [Subcommand("inspect", typeof(InspectCommand))]
     [Subcommand("update", typeof(UpdateCommand))]
-    [Subcommand("repository", typeof(RepositoryCommand))]
-    [Subcommand("organisation", typeof(OrganisationCommand))]
+    [Subcommand("repo", typeof(RepositoryCommand))]
+    [Subcommand("org", typeof(OrganisationCommand))]
     [Subcommand("global", typeof(GlobalCommand))]
     public class Program
     {
