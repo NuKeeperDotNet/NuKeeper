@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -71,23 +72,13 @@ namespace NuKeeper.Commands
 
         private SettingsContainer MakeSettings()
         {
-            var minPackageAge = DurationParser.Parse(MinimumPackageAge);
-            if (!minPackageAge.HasValue)
-            {
-                minPackageAge = TimeSpan.Zero;
-                Console.WriteLine($"Min package age '{MinimumPackageAge}' could not be parsed");
-            }
-
             var settings = new SettingsContainer
             {
                 ModalSettings = new ModalSettings(),
                 UserSettings = new UserSettings
                 {
                     AllowedChange = AllowedChange,
-                    NuGetSources = NuGetSources,
-                    MinimumPackageAge = minPackageAge.Value,
-                    PackageIncludes = SettingsParser.ParseRegex(Include, nameof(Include)),
-                    PackageExcludes = SettingsParser.ParseRegex(Exclude, nameof(Exclude)),
+                    NuGetSources = NuGetSources
                 }
             };
 
@@ -96,6 +87,74 @@ namespace NuKeeper.Commands
 
         protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            var minPackageAge = DurationParser.Parse(MinimumPackageAge);
+            if (!minPackageAge.HasValue)
+            {
+                return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
+            }
+
+            settings.UserSettings.MinimumPackageAge = minPackageAge.Value;
+
+            var regexIncludeValid = PopulatePackageIncludes(settings, Include);
+            if (!regexIncludeValid.IsSuccess)
+            {
+                return regexIncludeValid;
+            }
+
+            var regexExcludeValid = PopulatePackageExcludes(settings, Exclude);
+            if (!regexExcludeValid.IsSuccess)
+            {
+                return regexExcludeValid;
+            }
+
+            return ValidationResult.Success;
+        }
+
+        private static ValidationResult PopulatePackageIncludes(
+            SettingsContainer settings, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                settings.UserSettings.PackageIncludes = null;
+                return ValidationResult.Success;
+            }
+
+            try
+            {
+                settings.UserSettings.PackageIncludes = new Regex(value);
+            }
+            catch (Exception ex)
+            {
+                {
+                    return ValidationResult.Failure(
+                        $"Unable to parse regex '{value}' for Include: {ex.Message}");
+                }
+            }
+
+            return ValidationResult.Success;
+        }
+
+        private static ValidationResult PopulatePackageExcludes(
+            SettingsContainer settings, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                settings.UserSettings.PackageExcludes = null;
+                return ValidationResult.Success;
+            }
+
+            try
+            {
+                settings.UserSettings.PackageExcludes = new Regex(value);
+            }
+            catch (Exception ex)
+            {
+                {
+                    return ValidationResult.Failure(
+                        $"Unable to parse regex '{value}' for Exclude: {ex.Message}");
+                }
+            }
+
             return ValidationResult.Success;
         }
 
