@@ -46,7 +46,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
-                "This setting controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
+                "Controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
         protected ReportMode ReportMode { get; } = ReportMode.Off;
 
         protected GitHubNuKeeperCommand(IConfigureLogLevel logger) : base(logger)

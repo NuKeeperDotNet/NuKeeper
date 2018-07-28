@@ -33,7 +33,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
-                "In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
+                "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected string MinimumPackageAge { get; } = "7d";
 
