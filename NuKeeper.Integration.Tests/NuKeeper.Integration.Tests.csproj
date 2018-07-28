@@ -4,7 +4,7 @@
     <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="NUnit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
-    <PackageReference Include="Octokit" Version="0.30.0" />
+    <PackageReference Include="Octokit" Version="0.31.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
