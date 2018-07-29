@@ -1,6 +1,5 @@
 using System;
 using System.Text.RegularExpressions;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Sources;

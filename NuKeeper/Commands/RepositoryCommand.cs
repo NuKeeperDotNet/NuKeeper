@@ -7,12 +7,12 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Performs version checks and generates pull requests for a single repository.")]
+    [Command(Description = "Performs version checks and generates pull requests for a single repository on GitHub.")]
     internal class RepositoryCommand : GitHubNuKeeperCommand
     {
         private readonly GithubEngine _engine;
 
-        [Argument(0, Name = "GitHub repository uri", Description = "The repository to scan.")]
+        [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
         protected Uri GitHubRepositoryUri { get; }
