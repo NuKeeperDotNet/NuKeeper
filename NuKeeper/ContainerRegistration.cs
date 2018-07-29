@@ -1,5 +1,4 @@
 using NuKeeper.Engine;
-using NuKeeper.Local;
 using SimpleInjector;
 
 namespace NuKeeper

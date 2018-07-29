@@ -42,11 +42,11 @@ namespace NuKeeper.GitHub
             return orgs;
         }
 
-        public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
+        public async Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName)
         {
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Info($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos;
+            return repos.Select(r => new OctokitRepository(r)).ToList();
         }
 
         public async Task<IRepository> GetUserRepository(string userName, string repositoryName)

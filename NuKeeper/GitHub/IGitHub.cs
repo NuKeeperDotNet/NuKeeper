@@ -13,7 +13,7 @@ namespace NuKeeper.GitHub
 
         Task<IReadOnlyList<Organization>> GetOrganizations();
 
-        Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName);
+        Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName);
 
         Task<IRepository> GetUserRepository(string userName, string repositoryName);
 
@@ -34,11 +34,6 @@ namespace NuKeeper.GitHub
         IGitHubAccount Owner { get; }
         IGitHubRepositoryPermissions Permissions { get; }
         IRepository Parent { get; }
-    }
-
-    public interface IGitHubRepositoryPermissions
-    {
-        bool Push { get; }
     }
 
     internal class OctokitRepository : Repository, IRepository
@@ -73,13 +68,26 @@ namespace NuKeeper.GitHub
         public new IRepository Parent { get; }
     }
 
+    public interface IGitHubRepositoryPermissions
+    {
+        bool Push { get; }
+        bool Pull { get; }
+    }
+
     internal class OctokitGitHubRepositoryPermissions : RepositoryPermissions, IGitHubRepositoryPermissions
     {
-        public OctokitGitHubRepositoryPermissions(RepositoryPermissions repositoryPermissions)
+        internal OctokitGitHubRepositoryPermissions(bool admin, bool push, bool pull)
         {
-            Admin = repositoryPermissions?.Admin ?? false;
-            Pull = repositoryPermissions?.Pull ?? false;
-            Push = repositoryPermissions?.Push ?? false;
+            Admin = admin;
+            Pull = pull;
+            Push = push;
+        }
+
+        internal OctokitGitHubRepositoryPermissions(RepositoryPermissions repositoryPermissions)
+        : this(repositoryPermissions?.Admin ?? false,
+            repositoryPermissions?.Pull ?? false,
+            repositoryPermissions?.Push ?? false)
+        {
         }
     }
 
