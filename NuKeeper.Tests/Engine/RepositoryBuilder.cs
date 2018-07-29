@@ -13,11 +13,6 @@ namespace NuKeeper.Tests.Engine
         public const string ForkCloneUrl = "http://repos.com/org/repo.git";
         public const string NoMatchUrl = "http://repos.com/org/nomatch";
 
-        public static Repository MakeRepository(bool canPull, bool canPush)
-        {
-            return MakeRepository(ForkHtmlUrl, ForkCloneUrl, canPull, canPush);
-        }
-
         public static Repository MakeRepository(
             string forkHtmlUrl = ForkHtmlUrl, 
             string forkCloneUrl = ForkCloneUrl, 
@@ -27,7 +22,7 @@ namespace NuKeeper.Tests.Engine
             var owner = MakeUser(omniUrl);
 
             var perms = new RepositoryPermissions(false, canPush, canPull);
-            var parent = MakeParentRepo();
+            var parent = MakeParentRepo(ParentHtmlUrl, ParentCloneUrl);
 
             return new Repository(omniUrl, forkHtmlUrl, forkCloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
@@ -39,6 +34,29 @@ namespace NuKeeper.Tests.Engine
                 perms, parent, null, null,
                 false, false, false, false,
                 2, 122, true, true, true, false);
+        }
+
+        public static IRepository MakeRepositoryNew(bool canPull, bool canPush)
+        {
+            return MakeRepositoryNew(ForkHtmlUrl, ForkCloneUrl, canPull, canPush);
+        }
+
+        public static IRepository MakeRepositoryNew(
+            string forkHtmlUrl = ForkHtmlUrl,
+            string forkCloneUrl = ForkCloneUrl,
+            bool canPull = true,
+            bool canPush = true)
+        {
+            return new OctokitRepository(forkCloneUrl, "repoName", true, forkHtmlUrl,
+                MakeUser(),
+                new OctokitGitHubRepositoryPermissions(new RepositoryPermissions(false, canPush, canPull)),
+                MakeParentRepo());
+        }
+
+        private static IRepository MakeParentRepo()
+        {
+            return new OctokitRepository(ParentCloneUrl, "repoName", true, ParentHtmlUrl, MakeUser(),
+                new OctokitGitHubRepositoryPermissions(new RepositoryPermissions(false, true, true)), null);
         }
 
         private static Repository MakeParentRepo(
