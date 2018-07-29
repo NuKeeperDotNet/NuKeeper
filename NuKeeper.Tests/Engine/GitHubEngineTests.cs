@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Creators;
 using NuKeeper.Engine;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
@@ -14,7 +13,7 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class GithubEngineTests
+    public class GitHubEngineTests
     {
         [Test]
         public async Task SuccessCaseWithNoRepos()
@@ -112,23 +111,23 @@ namespace NuKeeper.Tests.Engine
             Assert.That(count, Is.EqualTo(1));
         }
 
-        private static GithubEngine MakeGithubEngine(
+        private static GitHubEngine MakeGithubEngine(
             List<RepositorySettings> repos)
         {
             return MakeGithubEngine(1, repos);
         }
 
-        private static GithubEngine MakeGithubEngine(
+        private static GitHubEngine MakeGithubEngine(
             int repoEngineResult,
             List<RepositorySettings> repos)
         {
-            var github = Substitute.For<IGithub>();
-            var repoDiscovery = Substitute.For<IGithubRepositoryDiscovery>();
-            var repoEngine = Substitute.For<IGithubRepositoryEngine>();
+            var github = Substitute.For<IGitHub>();
+            var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
+            var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
-            var githubCreator = Substitute.For<ICreate<IGithub>>();
-            var repositoryDiscoveryCreator = Substitute.For<ICreate<IGithubRepositoryDiscovery>>();
-            var repoEngineCreator = Substitute.For<ICreate<IGithubRepositoryEngine>>();
+            var githubCreator = Substitute.For<ICreate<IGitHub>>();
+            var repositoryDiscoveryCreator = Substitute.For<ICreate<IGitHubRepositoryDiscovery>>();
+            var repoEngineCreator = Substitute.For<ICreate<IGitHubRepositoryEngine>>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
@@ -144,7 +143,7 @@ namespace NuKeeper.Tests.Engine
 
             repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
 
-            var engine = new GithubEngine(githubCreator, repositoryDiscoveryCreator, repoEngineCreator,
+            var engine = new GitHubEngine(githubCreator, repositoryDiscoveryCreator, repoEngineCreator,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

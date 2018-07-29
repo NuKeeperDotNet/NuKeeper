@@ -9,9 +9,9 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : GitHubNuKeeperCommand
     {
-        private readonly GithubEngine _engine;
+        private readonly GitHubEngine _engine;
 
-        public GlobalCommand(GithubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
         {
             _engine = engine;
         }

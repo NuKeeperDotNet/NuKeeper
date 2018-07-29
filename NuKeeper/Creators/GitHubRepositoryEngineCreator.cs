@@ -5,7 +5,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Creators
 {
-    public class GithubRepositoryEngineCreator : ICreate<IGithubRepositoryEngine>
+    public class GitHubRepositoryEngineCreator : ICreate<IGitHubRepositoryEngine>
     {
         private readonly INuKeeperLogger _logger;
         private readonly IFolderFactory _folderFactory;
@@ -13,7 +13,7 @@ namespace NuKeeper.Creators
         private readonly ICreate<IRepositoryUpdater> _repositoryUpdaterCreator;
         private readonly ICreate<IRepositoryFilter> _repositoryFilterCreator;
 
-        public GithubRepositoryEngineCreator(INuKeeperLogger logger,
+        public GitHubRepositoryEngineCreator(INuKeeperLogger logger,
             IFolderFactory folderFactory, ICreate<IForkFinder> forkFinderCreator, ICreate<IRepositoryUpdater> repositoryUpdaterCreator, ICreate<IRepositoryFilter> repositoryFilterCreator)
         {
             _logger = logger;
@@ -23,9 +23,9 @@ namespace NuKeeper.Creators
             _repositoryFilterCreator = repositoryFilterCreator;
         }
 
-        public IGithubRepositoryEngine Create(SettingsContainer settings)
+        public IGitHubRepositoryEngine Create(SettingsContainer settings)
         {
-            return new GithubRepositoryEngine(_repositoryUpdaterCreator.Create(settings), _forkFinderCreator.Create(settings), _folderFactory, _logger,
+            return new GitHubRepositoryEngine(_repositoryUpdaterCreator.Create(settings), _forkFinderCreator.Create(settings), _folderFactory, _logger,
                 _repositoryFilterCreator.Create(settings));
         }
     }

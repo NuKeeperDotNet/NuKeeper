@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
@@ -12,12 +12,12 @@ using Octokit;
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class GithubRepositoryDiscoveryTests
+    public class GitHubRepositoryDiscoveryTests
     {
         [Test]
         public async Task SuccessInRepoMode()
         {
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             var settings = new ModalSettings
             {
                 Mode = RunMode.Repository,
@@ -38,7 +38,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task SuccessInOrgMode()
         {
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
@@ -57,7 +57,7 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
             
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -84,7 +84,7 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -101,9 +101,9 @@ namespace NuKeeper.Tests.Engine
             Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
-        private static IGithubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGithub github, ModalSettings settings)
+        private static IGitHubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGitHub gitHub, ModalSettings settings)
         {
-            return new GithubRepositoryDiscovery(github, settings, Substitute.For<INuKeeperLogger>());
+            return new GitHubRepositoryDiscovery(gitHub, settings, Substitute.For<INuKeeperLogger>());
         }
 
         private static ModalSettings OrgModeSettings()

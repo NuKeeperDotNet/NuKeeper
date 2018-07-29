@@ -10,14 +10,14 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for a single repository on GitHub.")]
     internal class RepositoryCommand : GitHubNuKeeperCommand
     {
-        private readonly GithubEngine _engine;
+        private readonly GitHubEngine _engine;
 
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GitHubRepositoryUri { get; }
 
-        public RepositoryCommand(GithubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public RepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
         {
             _engine = engine;
         }

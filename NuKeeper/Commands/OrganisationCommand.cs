@@ -9,14 +9,14 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
     internal class OrganisationCommand : GitHubNuKeeperCommand
     {
-        private readonly GithubEngine _engine;
+        private readonly GitHubEngine _engine;
 
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GithubOrganisationName { get; }
 
-        public OrganisationCommand(GithubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
         {
             _engine = engine;
         }

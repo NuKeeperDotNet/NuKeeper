@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
@@ -8,12 +8,12 @@ namespace NuKeeper.Engine.Packages
 {
     public class ExistingBranchFilter : IExistingBranchFilter
     {
-        private readonly IGithub _github;
+        private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
 
-        public ExistingBranchFilter(IGithub github, INuKeeperLogger logger)
+        public ExistingBranchFilter(IGitHub gitHub, INuKeeperLogger logger)
         {
-            _github = github;
+            _gitHub = gitHub;
             _logger = logger;
         }
 
@@ -23,7 +23,7 @@ namespace NuKeeper.Engine.Packages
             try
             {
                 var branchName = BranchNamer.MakeName(packageUpdateSet);
-                var githubBranch = await _github.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName);
+                var githubBranch = await _gitHub.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName);
                 return (githubBranch == null);
             }
             catch(Exception ex)

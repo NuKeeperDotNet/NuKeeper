@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var forkFinder = new ForkFinder(Substitute.For<IGithub>(),
+            var forkFinder = new ForkFinder(Substitute.For<IGitHub>(),
                 MakePreferForkSettings(), Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
@@ -32,7 +32,7 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
             var fallbackRepoData = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(fallbackRepoData);
 
@@ -51,7 +51,7 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
             var fallbackRepoData = RepositoryBuilder.MakeRepository(true, false);
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(fallbackRepoData);
 
@@ -70,7 +70,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -90,7 +90,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -110,7 +110,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -129,7 +129,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns((Repository)null);
             github.MakeUserFork(Arg.Any<string>(), Arg.Any<string>())
@@ -153,7 +153,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -170,7 +170,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
 
             var defaultRepo = RepositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
@@ -197,7 +197,7 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = RepositoryBuilder.MakeRepository();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -215,7 +215,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var github = Substitute.For<IGithub>();
+            var github = Substitute.For<IGitHub>();
 
             var defaultRepo = RepositoryBuilder.MakeRepository(true, false);
             github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
@@ -13,18 +13,18 @@ namespace NuKeeper.Engine.Packages
 {
     public class PackageUpdater : IPackageUpdater
     {
-        private readonly IGithub _github;
+        private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
         private readonly ModalSettings _modalSettings;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
-            IGithub github,
+            IGitHub gitHub,
             IUpdateRunner localUpdater,
             INuKeeperLogger logger,
             ModalSettings modalSettings)
         {
-            _github = github;
+            _gitHub = gitHub;
             _updateRunner = localUpdater;
             _logger = logger;
             _modalSettings = modalSettings;
@@ -87,7 +87,7 @@ namespace NuKeeper.Engine.Packages
                 Body = CommitWording.MakeCommitDetails(updates)
             };
 
-            await _github.OpenPullRequest(repository.Pull, pr, _modalSettings.Labels);
+            await _gitHub.OpenPullRequest(repository.Pull, pr, _modalSettings.Labels);
         }
     }
 }

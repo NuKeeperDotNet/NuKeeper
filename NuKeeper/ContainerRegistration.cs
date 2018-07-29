@@ -20,7 +20,7 @@ namespace NuKeeper
 
         private static void Register(Container container)
         {
-            container.Register<GithubEngine>();
+            container.Register<GitHubEngine>();
         }
     }
 }

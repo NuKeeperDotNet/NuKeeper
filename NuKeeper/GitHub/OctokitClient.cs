@@ -8,9 +8,9 @@ using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
-namespace NuKeeper.Github
+namespace NuKeeper.GitHub
 {
-    public class OctokitClient : IGithub
+    public class OctokitClient : IGitHub
     {
         private readonly INuKeeperLogger _logger;
         private readonly IGitHubClient _client;

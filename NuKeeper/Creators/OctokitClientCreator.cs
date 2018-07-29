@@ -1,10 +1,10 @@
 using NuKeeper.Configuration;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Creators
 {
-    public class OctokitClientCreator : ICreate<IGithub>
+    public class OctokitClientCreator : ICreate<IGitHub>
     {
         private readonly INuKeeperLogger _logger;
 
@@ -13,7 +13,7 @@ namespace NuKeeper.Creators
             _logger = logger;
         }
 
-        public IGithub Create(SettingsContainer settings)
+        public IGitHub Create(SettingsContainer settings)
         {
             return new OctokitClient(settings.GithubAuthSettings, _logger);
         }

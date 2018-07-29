@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
@@ -9,12 +9,12 @@ namespace NuKeeper.Engine
 {
     public class RepositoryFilter : IRepositoryFilter
     {
-        private readonly IGithub _githubClient;
+        private readonly IGitHub _gitHubClient;
         private readonly INuKeeperLogger _logger;
 
-        public RepositoryFilter(IGithub githubClient, INuKeeperLogger logger)
+        public RepositoryFilter(IGitHub gitHubClient, INuKeeperLogger logger)
         {
-            _githubClient = githubClient;
+            _gitHubClient = gitHubClient;
             _logger = logger;
         }
 
@@ -28,7 +28,7 @@ namespace NuKeeper.Engine
             };
             try
             {
-                var result = await _githubClient.Search(request);
+                var result = await _gitHubClient.Search(request);
                 if (result.TotalCount <= 0)
                 {
                     _logger.Verbose(
