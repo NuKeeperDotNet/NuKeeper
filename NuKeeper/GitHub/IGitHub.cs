@@ -30,6 +30,7 @@ namespace NuKeeper.GitHub
         string Name { get; }
         bool Fork { get; }
         string HtmlUrl { get; }
+        bool Archived { get; }
 
         IGitHubAccount Owner { get; }
         IGitHubRepositoryPermissions Permissions { get; }
@@ -39,6 +40,7 @@ namespace NuKeeper.GitHub
     internal class OctokitRepository : Repository, IRepository
     {
         public OctokitRepository(string cloneUrl, string name, bool isFork, string htmlUrl,
+            bool archived,
             IGitHubAccount owner,
             IGitHubRepositoryPermissions permissions, IRepository parent)
         {
@@ -46,6 +48,7 @@ namespace NuKeeper.GitHub
             Name = name;
             Fork = isFork;
             HtmlUrl = htmlUrl;
+            Archived = archived;
             Owner = owner;
             Permissions = permissions;
             Parent = parent;
@@ -57,6 +60,7 @@ namespace NuKeeper.GitHub
                 repository?.Name,
                 repository?.Fork ?? false,
                 repository?.HtmlUrl,
+                repository?.Archived ?? false,
                 new OctokitGitHubUser(repository?.Owner),
                 new OctokitGitHubRepositoryPermissions(repository?.Permissions),
                 repository?.Parent != null ? new OctokitRepository(repository.Parent) : null)

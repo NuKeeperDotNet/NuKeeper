@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 
 namespace NuKeeper.Configuration
 {

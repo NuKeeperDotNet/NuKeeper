@@ -1,4 +1,4 @@
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.Engine
             bool canPull = true,
             bool canPush = true)
         {
-            return new OctokitRepository(forkCloneUrl, "repoName", true, forkHtmlUrl,
+            return new OctokitRepository(forkCloneUrl, "repoName", true, forkHtmlUrl, false,
                 MakeUser(),
                 new OctokitGitHubRepositoryPermissions(false, canPush, canPull),
                 MakeParentRepo());
@@ -30,8 +30,10 @@ namespace NuKeeper.Tests.Engine
 
         private static IRepository MakeParentRepo()
         {
-            return new OctokitRepository(ParentCloneUrl, "repoName", true, ParentHtmlUrl, MakeUser(),
-                new OctokitGitHubRepositoryPermissions(false, true, true), null);
+            return new OctokitRepository(ParentCloneUrl, "repoName", true, ParentHtmlUrl, false,
+                MakeUser(),
+                new OctokitGitHubRepositoryPermissions(false, true, true),
+                null);
         }
 
         public static IGitHubAccount MakeUser()
