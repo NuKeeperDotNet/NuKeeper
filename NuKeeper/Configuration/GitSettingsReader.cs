@@ -19,6 +19,11 @@ namespace NuKeeper.Configuration
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
+            if (pathParts.Count < 2)
+            {
+                return null;
+            }
+
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 

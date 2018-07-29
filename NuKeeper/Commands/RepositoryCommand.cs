@@ -15,7 +15,7 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected Uri GitHubRepositoryUri { get; }
+        protected string GitHubRepositoryUri { get; }
 
         public RepositoryCommand(GithubEngine engine, IConfigureLogLevel logger) : base(logger)
         {
@@ -30,8 +30,19 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
+            Uri repoUri;
+            if (!Uri.TryCreate(GitHubRepositoryUri, UriKind.Absolute, out repoUri))
+            {
+                return ValidationResult.Failure($"Bad GitHub repository URI: '{GitHubRepositoryUri}'");
+            }
+
             settings.ModalSettings.Mode = RunMode.Repository;
-            settings.ModalSettings.Repository = GitSettingsReader.ReadRepositorySettings(GitHubRepositoryUri);
+            settings.ModalSettings.Repository = GitSettingsReader.ReadRepositorySettings(repoUri);
+
+            if (settings.ModalSettings.Repository == null)
+            {
+                return ValidationResult.Failure($"Cound not read GitHub repository URI: '{GitHubRepositoryUri}'");
+            }
 
             return ValidationResult.Success;
         }
