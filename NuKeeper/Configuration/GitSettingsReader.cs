@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace NuKeeper.Configuration
 {
-    public static class SettingsParser
+    public static class GitSettingsReader
     {
         internal static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
         {
