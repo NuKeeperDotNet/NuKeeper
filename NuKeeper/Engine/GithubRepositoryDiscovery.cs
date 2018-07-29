@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Github;
 using NuKeeper.Inspection.Logging;
+using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -61,7 +62,7 @@ namespace NuKeeper.Engine
             var allOrgRepos = await _github.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
-                .Where(r => r.Permissions.Pull)
+                .Where(RepoIsModifiable)
                 .ToList();
 
             if (allOrgRepos.Count > usableRepos.Count)
@@ -72,6 +73,13 @@ namespace NuKeeper.Engine
             return usableRepos
                 .Select(r => new RepositorySettings(r))
                 .ToList();
+        }
+
+        private static bool RepoIsModifiable(Repository repo)
+        {
+            return
+                ! repo.Archived &&
+                repo.Permissions.Pull;
         }
     }
 }
