@@ -8,7 +8,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Engine
 {
-    public class GithubRepositoryEngine: IGithubRepositoryEngine
+    public class GitHubRepositoryEngine: IGitHubRepositoryEngine
     {
         private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly IForkFinder _forkFinder;
@@ -16,7 +16,7 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
 
-        public GithubRepositoryEngine(
+        public GitHubRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
             IForkFinder forkFinder,
             IFolderFactory folderFactory,

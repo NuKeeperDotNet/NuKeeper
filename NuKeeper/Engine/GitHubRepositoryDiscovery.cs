@@ -2,24 +2,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
 namespace NuKeeper.Engine
 {
-    public class GithubRepositoryDiscovery : IGithubRepositoryDiscovery
+    public class GitHubRepositoryDiscovery : IGitHubRepositoryDiscovery
     {
-        private readonly IGithub _github;
+        private readonly IGitHub _gitHub;
         private readonly ModalSettings _settings;
         private readonly INuKeeperLogger _logger;
 
-        public GithubRepositoryDiscovery(
-            IGithub github, 
+        public GitHubRepositoryDiscovery(
+            IGitHub gitHub, 
             ModalSettings settings,
             INuKeeperLogger logger)
         {
-            _github = github;
+            _gitHub = gitHub;
             _settings = settings;
             _logger = logger;
         }
@@ -44,7 +44,7 @@ namespace NuKeeper.Engine
 
         private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs()
         {
-            var allOrgs = await _github.GetOrganizations();
+            var allOrgs = await _gitHub.GetOrganizations();
 
             var allRepos = new List<RepositorySettings>();
 
@@ -59,7 +59,7 @@ namespace NuKeeper.Engine
 
         private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(string organisationName)
         {
-            var allOrgRepos = await _github.GetRepositoriesForOrganisation(organisationName);
+            var allOrgRepos = await _gitHub.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
                 .Where(RepoIsModifiable)

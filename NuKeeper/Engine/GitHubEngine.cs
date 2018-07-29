@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
 using NuKeeper.Creators;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
@@ -11,18 +11,18 @@ using Octokit;
 
 namespace NuKeeper.Engine
 {
-    public class GithubEngine
+    public class GitHubEngine
     {
-        private readonly ICreate<IGithub> _githubCreator;
-        private readonly ICreate<IGithubRepositoryDiscovery> _repositoryDiscoveryCreator;
-        private readonly ICreate<IGithubRepositoryEngine> _repositoryEngineCreator;
+        private readonly ICreate<IGitHub> _githubCreator;
+        private readonly ICreate<IGitHubRepositoryDiscovery> _repositoryDiscoveryCreator;
+        private readonly ICreate<IGitHubRepositoryEngine> _repositoryEngineCreator;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
-        public GithubEngine(
-            ICreate<IGithub> githubCreator,
-            ICreate<IGithubRepositoryDiscovery> repositoryDiscoveryCreator,
-            ICreate<IGithubRepositoryEngine> repositoryEngineCreator,
+        public GitHubEngine(
+            ICreate<IGitHub> githubCreator,
+            ICreate<IGitHubRepositoryDiscovery> repositoryDiscoveryCreator,
+            ICreate<IGitHubRepositoryEngine> repositoryEngineCreator,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {

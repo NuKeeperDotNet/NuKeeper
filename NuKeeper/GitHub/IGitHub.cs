@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using NuKeeper.Engine;
 using Octokit;
 
-namespace NuKeeper.Github
+namespace NuKeeper.GitHub
 {
-    public interface IGithub
+    public interface IGitHub
     {
         Task<Account> GetCurrentUser();
 

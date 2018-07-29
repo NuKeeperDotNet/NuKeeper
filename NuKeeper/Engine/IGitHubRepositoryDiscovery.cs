@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 
 namespace NuKeeper.Engine
 {
-    public interface IGithubRepositoryDiscovery
+    public interface IGitHubRepositoryDiscovery
     {
         Task<IEnumerable<RepositorySettings>> GetRepositories();
     }

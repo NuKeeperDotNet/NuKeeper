@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Github;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using Octokit;
 
@@ -9,13 +9,13 @@ namespace NuKeeper.Engine
 {
     public class ForkFinder: IForkFinder
     {
-        private readonly IGithub _github;
+        private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
         private readonly ForkMode _forkMode;
 
-        public ForkFinder(IGithub github, UserSettings settings, INuKeeperLogger logger)
+        public ForkFinder(IGitHub gitHub, UserSettings settings, INuKeeperLogger logger)
         {
-            _github = github;
+            _gitHub = gitHub;
             _forkMode = settings.ForkMode;
             _logger = logger;
         }
@@ -102,13 +102,13 @@ namespace NuKeeper.Engine
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
         {
-            var originRepo = await _github.GetUserRepository(originFork.Owner, originFork.Name);
+            var originRepo = await _gitHub.GetUserRepository(originFork.Owner, originFork.Name);
             return originRepo != null && originRepo.Permissions.Push;
         }
 
         private async Task<ForkData> TryFindUserFork(string userName, ForkData originFork)
         {
-            var userFork = await _github.GetUserRepository(userName, originFork.Name);
+            var userFork = await _gitHub.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
                 if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.Permissions.Push)
@@ -124,7 +124,7 @@ namespace NuKeeper.Engine
             }
 
             // no user fork exists, try and create it as a fork of the main repo
-            var newFork = await _github.MakeUserFork(originFork.Owner, originFork.Name);
+            var newFork = await _gitHub.MakeUserFork(originFork.Owner, originFork.Name);
             if (newFork != null)
             {
                 return RepositoryToForkData(newFork);

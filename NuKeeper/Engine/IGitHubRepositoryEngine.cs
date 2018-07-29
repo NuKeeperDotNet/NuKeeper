@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {
-    public interface IGithubRepositoryEngine
+    public interface IGitHubRepositoryEngine
     {
         Task<int> Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds, Identity userIdentity);
     }
