@@ -36,7 +36,7 @@ namespace NuKeeper.Tests.Engine
                 null);
         }
 
-        public static IGitHubAccount MakeUser()
+        private static IGitHubAccount MakeUser()
         {
             return new OctokitUser("testUser", "test user", "testuser@test.com");
         }

@@ -52,10 +52,10 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<IRepository>
             {
-                RepositoryBuilder.MakeRepository()
+                MakeRepository(true, true)
             };
             IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
-            
+
             var github = Substitute.For<IGitHub>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
@@ -78,8 +78,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<IRepository>
             {
-                RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
-                RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
+                MakeRepository(false, true),
+                MakeRepository(true, true)
             };
             IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
@@ -112,6 +112,15 @@ namespace NuKeeper.Tests.Engine
                 Mode = RunMode.Organisation,
                 OrganisationName = "testOrg"
             };
+        }
+
+        private static IRepository MakeRepository(bool canPull, bool canPush)
+        {
+            var result = Substitute.For<IRepository>();
+            result.HtmlUrl.Returns("http://sample/");
+            result.Permissions.Pull.Returns(canPull);
+            result.Permissions.Push.Returns(canPush);
+            return result;
         }
     }
 }
