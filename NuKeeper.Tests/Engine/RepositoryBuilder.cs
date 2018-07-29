@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Github;
 using Octokit;
 
 namespace NuKeeper.Tests.Engine
@@ -59,7 +60,12 @@ namespace NuKeeper.Tests.Engine
                 false, false, false, false, 2, 122, true, true, true, false);
         }
 
-        public static User MakeUser(string omniUrl)
+        public static IGitHubAccount MakeUser()
+        {
+            return new OctokitGitHubUser("testUser", "test user", "testuser@test.com");
+        }
+
+        private static User MakeUser(string omniUrl)
         {
             return new User(omniUrl, "test user", null, 0, "test inc",
                 DateTimeOffset.Now, DateTimeOffset.Now,
