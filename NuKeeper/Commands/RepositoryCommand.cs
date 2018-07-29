@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
             }
 
             settings.ModalSettings.Mode = RunMode.Repository;
-            settings.ModalSettings.Repository = SettingsParser.ReadRepositorySettings(GitHubRepositoryUri);
+            settings.ModalSettings.Repository = GitSettingsReader.ReadRepositorySettings(GitHubRepositoryUri);
 
             return ValidationResult.Success;
         }

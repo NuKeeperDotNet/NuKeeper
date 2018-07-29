@@ -79,7 +79,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("The required GitHub access token was not found");
             }
 
-            var githubUrl = SettingsParser.EnsureTrailingSlash(githubUri);
+            var githubUrl = GitSettingsReader.EnsureTrailingSlash(githubUri);
 
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
