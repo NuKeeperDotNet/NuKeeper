@@ -6,7 +6,6 @@ using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -131,7 +130,7 @@ namespace NuKeeper.Tests.Engine
 
             var github = Substitute.For<IGitHub>();
             github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
-                .Returns((Repository)null);
+                .Returns((IRepository)null);
             github.MakeUserFork(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
@@ -268,7 +267,7 @@ namespace NuKeeper.Tests.Engine
             };
         }
 
-        private static void AssertForkMatchesRepo(ForkData fork, Repository repo)
+        private static void AssertForkMatchesRepo(ForkData fork, IRepository repo)
         {
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork.Name, Is.EqualTo(repo.Name));

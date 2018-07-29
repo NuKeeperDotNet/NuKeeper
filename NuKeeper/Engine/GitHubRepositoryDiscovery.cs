@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -75,7 +74,7 @@ namespace NuKeeper.Engine
                 .ToList();
         }
 
-        private static bool RepoIsModifiable(Repository repo)
+        private static bool RepoIsModifiable(IRepository repo)
         {
             return
                 ! repo.Archived &&

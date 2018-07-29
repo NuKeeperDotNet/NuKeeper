@@ -7,7 +7,6 @@ using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -80,7 +79,7 @@ namespace NuKeeper.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(Account githubUser)
+        private Identity GetUserIdentity(IGitHubAccount githubUser)
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {

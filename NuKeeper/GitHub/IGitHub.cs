@@ -7,17 +7,17 @@ namespace NuKeeper.GitHub
 {
     public interface IGitHub
     {
-        Task<Account> GetCurrentUser();
+        Task<IGitHubAccount> GetCurrentUser();
 
         Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels);
 
         Task<IReadOnlyList<Organization>> GetOrganizations();
 
-        Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName);
+        Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName);
 
-        Task<Repository> GetUserRepository(string userName, string repositoryName);
+        Task<IRepository> GetUserRepository(string userName, string repositoryName);
 
-        Task<Repository> MakeUserFork(string owner, string repositoryName);
+        Task<IRepository> MakeUserFork(string owner, string repositoryName);
 
         Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName);
 

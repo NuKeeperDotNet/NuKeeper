@@ -129,9 +129,6 @@ namespace NuKeeper.Tests.Engine
             var repositoryDiscoveryCreator = Substitute.For<ICreate<IGitHubRepositoryDiscovery>>();
             var repoEngineCreator = Substitute.For<ICreate<IGitHubRepositoryEngine>>();
 
-            github.GetCurrentUser().Returns(
-                RepositoryBuilder.MakeUser("http://test.user.com"));
-
             githubCreator.Create(null).ReturnsForAnyArgs(github);
 
             repoDiscovery.GetRepositories()

@@ -27,12 +27,12 @@ namespace NuKeeper.GitHub
             };
         }
 
-        public async Task<Account> GetCurrentUser()
+        public async Task<IGitHubAccount> GetCurrentUser()
         {
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Verbose($"Read github user '{userLogin}'");
-            return user;
+            return new OctokitUser(user);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -42,21 +42,21 @@ namespace NuKeeper.GitHub
             return orgs;
         }
 
-        public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
+        public async Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName)
         {
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Info($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos;
+            return repos.Select(r => new OctokitRepository(r)).ToList();
         }
 
-        public async Task<Repository> GetUserRepository(string userName, string repositoryName)
+        public async Task<IRepository> GetUserRepository(string userName, string repositoryName)
         {
             _logger.Verbose($"Looking for user fork for {userName}/{repositoryName}");
             try
             {
                 var result = await _client.Repository.Get(userName, repositoryName);
                 _logger.Info($"User fork found at {result.GitUrl} for {result.Owner.Login}");
-                return result;
+                return new OctokitRepository(result);
             }
             catch (NotFoundException)
             {
@@ -65,14 +65,14 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<Repository> MakeUserFork(string owner, string repositoryName)
+        public async Task<IRepository> MakeUserFork(string owner, string repositoryName)
         {
             _logger.Verbose($"Making user fork for {repositoryName}");
             try
             {
                 var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
                 _logger.Info($"User fork created at {result.GitUrl} for {result.Owner.Login}");
-                return result;
+                return new OctokitRepository(result);
             }
             catch (Exception ex)
             {

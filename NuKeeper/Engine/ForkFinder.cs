@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -133,7 +132,7 @@ namespace NuKeeper.Engine
             return null;
         }
 
-        private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
+        private static bool RepoIsForkOf(IRepository userRepo, string parentUrl)
         {
             if (! userRepo.Fork)
             {
@@ -150,7 +149,7 @@ namespace NuKeeper.Engine
                 string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static ForkData RepositoryToForkData(Repository repo)
+        private static ForkData RepositoryToForkData(IRepository repo)
         {
             return new ForkData(new Uri(repo.CloneUrl), repo.Owner.Login, repo.Name);
         }

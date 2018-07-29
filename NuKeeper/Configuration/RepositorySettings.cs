@@ -1,5 +1,5 @@
-﻿using System;
-using Octokit;
+using System;
+using NuKeeper.GitHub;
 
 namespace NuKeeper.Configuration
 {
@@ -9,7 +9,7 @@ namespace NuKeeper.Configuration
         {
         }
 
-        public RepositorySettings(Repository repository)
+        public RepositorySettings(IRepository repository)
         {
             GithubUri = new Uri(repository.HtmlUrl);
             RepositoryOwner = repository.Owner.Login;
