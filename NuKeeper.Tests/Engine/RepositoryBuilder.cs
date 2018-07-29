@@ -24,7 +24,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new OctokitRepository(forkCloneUrl, "repoName", true, forkHtmlUrl, false,
                 MakeUser(),
-                new OctokitGitHubRepositoryPermissions(false, canPush, canPull),
+                new OctokitRepositoryPermissions(false, canPush, canPull),
                 MakeParentRepo());
         }
 
@@ -32,13 +32,13 @@ namespace NuKeeper.Tests.Engine
         {
             return new OctokitRepository(ParentCloneUrl, "repoName", true, ParentHtmlUrl, false,
                 MakeUser(),
-                new OctokitGitHubRepositoryPermissions(false, true, true),
+                new OctokitRepositoryPermissions(false, true, true),
                 null);
         }
 
         public static IGitHubAccount MakeUser()
         {
-            return new OctokitGitHubUser("testUser", "test user", "testuser@test.com");
+            return new OctokitUser("testUser", "test user", "testuser@test.com");
         }
     }
 }

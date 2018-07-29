@@ -32,7 +32,7 @@ namespace NuKeeper.GitHub
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Verbose($"Read github user '{userLogin}'");
-            return new OctokitGitHubUser(user);
+            return new OctokitUser(user);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
