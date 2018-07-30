@@ -52,6 +52,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [SetUp]
         public void SetUp()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             _sampleDirectory = OsSpecifics.GenerateBaseDirectory();
             _sampleFile = Path.Combine("src", "packages.config");
         }
@@ -76,6 +77,21 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string NoProject =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project>
+</Project>";
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(NoProject), _sampleDirectory, _sampleFile);
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Empty);
+        }
+
+        [Test]
+        public void UnusualEncodingProjectCanBeRead()
+        {
+            const string NoProject =
+                @"<?xml version=""1.0"" encoding=""Windows-1252""?>
 <Project>
 </Project>";
 

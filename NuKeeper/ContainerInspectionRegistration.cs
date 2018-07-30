@@ -1,3 +1,4 @@
+using System.Text;
 using NuGet.Common;
 using SimpleInjector;
 using NuKeeper.Inspection;
@@ -35,6 +36,8 @@ namespace NuKeeper
             container.Register<IReportStreamSource, ReportStreamSource>();
             container.Register<IAvailableUpdatesReporter, CsvFileReporter>();
             container.Register<IPackageUpdateSetSort, PackageUpdateSetSort>();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
     }
 }

@@ -21,9 +21,17 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
-            using (var fileContents = File.OpenRead(Path.Combine(baseDirectory, relativePath)))
+            var filePath = Path.Combine(baseDirectory, relativePath);
+            try
             {
-                return Read(fileContents, baseDirectory, relativePath);
+                using (var fileContents = File.OpenRead(filePath))
+                {
+                    return Read(fileContents, baseDirectory, relativePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Unable to parse file {filePath}", ex);
             }
         }
 
