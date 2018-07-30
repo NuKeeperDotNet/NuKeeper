@@ -52,6 +52,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [SetUp]
         public void SetUp()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             _sampleDirectory = OsSpecifics.GenerateBaseDirectory();
             _sampleFile = Path.Combine("src", "packages.config");
         }
