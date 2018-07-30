@@ -1,6 +1,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
+using System.IO;
 
 namespace NuKeeper.Commands
 {
@@ -22,6 +23,11 @@ namespace NuKeeper.Commands
             if (!baseResult.IsSuccess)
             {
                 return baseResult;
+            }
+
+            if (! string.IsNullOrWhiteSpace(Path) && ! Directory.Exists(Path))
+            {
+                return ValidationResult.Failure($"Path '{Path}' was not found");
             }
 
             settings.UserSettings.Directory = Path;
