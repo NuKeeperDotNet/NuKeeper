@@ -2,17 +2,16 @@ namespace NuKeeper.Inspection.Logging
 {
     public enum LogLevel
     {
-        Silent = 0,
-        Terse = 1,
-        Info = 2,
-        Verbose = 3,
-        Quiet = Silent,
+        Quiet = 0,
         Q = Quiet,
-        Minimal = Terse,
+
+        Minimal = 1,
         M = Minimal,
-        Normal = Info,
+
+        Normal = 2,
         N = Normal,
-        Detailed = Verbose,
+
+        Detailed = 3,
         D = Detailed
     }
 }

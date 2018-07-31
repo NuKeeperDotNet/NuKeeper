@@ -15,7 +15,7 @@ namespace NuKeeper.Inspection.Logging
             else
             {
                 Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
-                if (_logLevel == LogLevel.Verbose)
+                if (_logLevel == LogLevel.Detailed)
                 {
                     Console.Error.WriteLine(ex.StackTrace);
                 }
@@ -24,17 +24,17 @@ namespace NuKeeper.Inspection.Logging
 
         public void Terse(string message)
         {
-            LogWithLevel(message, LogLevel.Terse);
+            LogWithLevel(message, LogLevel.Minimal);
         }
 
         public void Info(string message)
         {
-            LogWithLevel(message, LogLevel.Info);
+            LogWithLevel(message, LogLevel.Normal);
         }
 
         public void Verbose(string message)
         {
-            LogWithLevel(message, LogLevel.Verbose);
+            LogWithLevel(message, LogLevel.Detailed);
         }
 
         private void LogWithLevel(string message, LogLevel level)
