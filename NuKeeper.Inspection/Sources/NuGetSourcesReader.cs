@@ -30,7 +30,7 @@ namespace NuKeeper.Inspection.Sources
                 return fromConfigFile;
             }
 
-            _logger.Verbose("Using default global NuGet feed");
+            _logger.Detailed("Using default global NuGet feed");
             return NuGetSources.GlobalFeed;
         }
     }

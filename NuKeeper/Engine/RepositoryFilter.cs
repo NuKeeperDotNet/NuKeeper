@@ -31,7 +31,7 @@ namespace NuKeeper.Engine
                 var result = await _gitHubClient.Search(request);
                 if (result.TotalCount <= 0)
                 {
-                    _logger.Verbose(
+                    _logger.Detailed(
                         $"Repository {repository.RepositoryOwner}/{repository.RepositoryName} contains no .NET code on the default branch, skipping.");
                     return false;
                 }

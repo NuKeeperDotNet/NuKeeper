@@ -27,7 +27,7 @@ namespace NuKeeper.Update.Process
         {
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _logger.Info("Cannot run NuGet.exe package update as OS Platform is not Windows");
+                _logger.Normal("Cannot run NuGet.exe package update as OS Platform is not Windows");
                 return;
             }
 
@@ -36,13 +36,13 @@ namespace NuKeeper.Update.Process
             var nuget = NuGetPath.FindExecutable();
             if (string.IsNullOrWhiteSpace(nuget))
             {
-                _logger.Info("Cannot find NuGet exe for package update");
+                _logger.Normal("Cannot find NuGet exe for package update");
                 return;
             }
 
             var sources = allSources.CommandLine("-Source");
             var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
-            _logger.Verbose(arguments);
+            _logger.Detailed(arguments);
 
             await _externalProcess.Run(dirName, nuget, arguments, true);
         }

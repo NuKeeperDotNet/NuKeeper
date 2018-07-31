@@ -38,13 +38,13 @@ namespace NuKeeper.Engine.Packages
         {
             try
             {
-                _logger.Terse(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
+                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
 
                 git.Checkout(repository.DefaultBranch);
 
                 // branch
                 var branchName = BranchNamer.MakeName(updateSet);
-                _logger.Verbose($"Using branch name: '{branchName}'");
+                _logger.Detailed($"Using branch name: '{branchName}'");
                 git.CheckoutNewBranch(branchName);
 
                 await _updateRunner.Update(updateSet, sources);

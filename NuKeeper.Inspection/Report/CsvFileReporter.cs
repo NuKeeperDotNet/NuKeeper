@@ -24,7 +24,7 @@ namespace NuKeeper.Inspection.Report
         {
             using (var writer = _reportStreamSource.GetStream(name))
             {
-                _logger.Verbose($"writing {updates.Count} lines to report");
+                _logger.Detailed($"writing {updates.Count} lines to report");
                 WriteHeading(writer);
 
                 foreach (var update in updates)
@@ -33,7 +33,7 @@ namespace NuKeeper.Inspection.Report
                 }
 
                 writer.Close();
-                _logger.Verbose("Report written");
+                _logger.Detailed("Report written");
             }
         }
 

@@ -22,7 +22,7 @@ namespace NuKeeper.Inspection.Sources
 
             foreach (var file in settings.Priority)
             {
-                _logger.Verbose($"Reading file {Path.Combine(file.Root, file.FileName)} for package sources");
+                _logger.Detailed($"Reading file {Path.Combine(file.Root, file.FileName)} for package sources");
             }
 
             var enabledSources = SettingsUtility.GetEnabledSources(settings).ToList();
@@ -34,7 +34,7 @@ namespace NuKeeper.Inspection.Sources
         {
             foreach (var source in sources)
             {
-                _logger.Verbose(
+                _logger.Detailed(
                     $"Read [{source.Name}] : {source.SourceUri} from file: {Path.Combine(source.Origin.Root, source.Origin.FileName)}");
             }
 

@@ -22,17 +22,17 @@ namespace NuKeeper.Inspection.Logging
             }
         }
 
-        public void Terse(string message)
+        public void Minimal(string message)
         {
             LogWithLevel(message, LogLevel.Minimal);
         }
 
-        public void Info(string message)
+        public void Normal(string message)
         {
             LogWithLevel(message, LogLevel.Normal);
         }
 
-        public void Verbose(string message)
+        public void Detailed(string message)
         {
             LogWithLevel(message, LogLevel.Detailed);
         }

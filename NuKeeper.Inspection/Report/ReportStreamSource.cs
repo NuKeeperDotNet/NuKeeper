@@ -16,7 +16,7 @@ namespace NuKeeper.Inspection.Report
         {
             var fileName = namePrefix + "_nukeeeper_report.csv";
 
-            _logger.Verbose($"writing report to file at '{fileName}'");
+            _logger.Detailed($"writing report to file at '{fileName}'");
 
             var output = new FileStream(fileName, FileMode.Create);
             return new StreamWriter(output);

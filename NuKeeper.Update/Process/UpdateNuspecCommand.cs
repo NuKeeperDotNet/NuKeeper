@@ -46,7 +46,7 @@ namespace NuKeeper.Update.Process
 
             foreach (var dependencyToUpdate in packageNodeList)
             {
-                _logger.Verbose($"Updating nuspec depenencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
+                _logger.Detailed($"Updating nuspec depenencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
                 dependencyToUpdate.Attribute("version").Value = newVersion.ToString();
             }
 

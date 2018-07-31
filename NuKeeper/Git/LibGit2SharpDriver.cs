@@ -36,7 +36,7 @@ namespace NuKeeper.Git
         }
         public void Clone(Uri pullEndpoint)
         {
-            _logger.Info($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
+            _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
 
             Repository.Clone(pullEndpoint.ToString(), WorkingFolder.FullPath,
                 new CloneOptions
@@ -45,14 +45,14 @@ namespace NuKeeper.Git
                     OnTransferProgress = OnTransferProgress
                 });
 
-            _logger.Verbose("Git clone complete");
+            _logger.Detailed("Git clone complete");
         }
 
         private bool OnTransferProgress(TransferProgress progress)
         {
             if (progress.ReceivedObjects % (progress.TotalObjects / 10) == 0 && !_fetchFinished)
             {
-                _logger.Verbose($"{progress.ReceivedObjects} / {progress.TotalObjects}");
+                _logger.Detailed($"{progress.ReceivedObjects} / {progress.TotalObjects}");
                 _fetchFinished = progress.ReceivedObjects == progress.TotalObjects;
             }
 
@@ -69,7 +69,7 @@ namespace NuKeeper.Git
 
         public void Checkout(string branchName)
         {
-            _logger.Verbose($"Git checkout '{branchName}'");
+            _logger.Detailed($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
                 GitCommands.Checkout(repo, repo.Branches[branchName]);
@@ -84,7 +84,7 @@ namespace NuKeeper.Git
                 throw new Exception($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
             }
 
-            _logger.Verbose($"Git checkout new branch '{branchName}'");
+            _logger.Detailed($"Git checkout new branch '{branchName}'");
             using (var repo = MakeRepo())
             {
                 var branch = repo.CreateBranch(branchName);
@@ -104,7 +104,7 @@ namespace NuKeeper.Git
 
         public void Commit(string message)
         {
-            _logger.Verbose($"Git commit with message '{message}'");
+            _logger.Detailed($"Git commit with message '{message}'");
             using (var repo = MakeRepo())
             {
                 var signature = GetSignature(repo);
@@ -133,7 +133,7 @@ namespace NuKeeper.Git
 
         public void Push(string remoteName, string branchName)
         {
-            _logger.Verbose($"Git push to {remoteName}/{branchName}");
+            _logger.Detailed($"Git push to {remoteName}/{branchName}");
 
             using (var repo = MakeRepo())
             {

@@ -23,9 +23,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             reporter.Report(data);
 
             logger.DidNotReceive().Error(Arg.Any<string>());
-            logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Info(Arg.Any<string>());
-            logger.DidNotReceive().Verbose(Arg.Any<string>());
+            logger.DidNotReceive().Minimal(Arg.Any<string>());
+            logger.DidNotReceive().Normal(Arg.Any<string>());
+            logger.DidNotReceive().Detailed(Arg.Any<string>());
         }
 
 
@@ -44,10 +44,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             reporter.Report(data);
 
             logger.Received()
-                .Verbose("Selected update of package foo to highest version, 2.3.4.");
+                .Detailed("Selected update of package foo to highest version, 2.3.4.");
             logger.DidNotReceive().Error(Arg.Any<string>());
-            logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Info(Arg.Any<string>());
+            logger.DidNotReceive().Minimal(Arg.Any<string>());
+            logger.DidNotReceive().Normal(Arg.Any<string>());
         }
 
         [Test]
@@ -65,11 +65,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             reporter.Report(data);
 
             logger.Received()
-                .Verbose("Selected update of package foo to highest version, 2.3.4. Allowing Minor version updates.");
+                .Detailed("Selected update of package foo to highest version, 2.3.4. Allowing Minor version updates.");
 
             logger.DidNotReceive().Error(Arg.Any<string>());
-            logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Info(Arg.Any<string>());
+            logger.DidNotReceive().Minimal(Arg.Any<string>());
+            logger.DidNotReceive().Normal(Arg.Any<string>());
         }
 
         [Test]
@@ -90,10 +90,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             reporter.Report(data);
 
             logger.Received()
-                .Info("Selected update of package foo to version 2.3.4, but version 3.0.0 is also available. Allowing Minor version updates.");
+                .Normal("Selected update of package foo to version 2.3.4, but version 3.0.0 is also available. Allowing Minor version updates.");
             logger.DidNotReceive().Error(Arg.Any<string>());
-            logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Verbose(Arg.Any<string>());
+            logger.DidNotReceive().Minimal(Arg.Any<string>());
+            logger.DidNotReceive().Detailed(Arg.Any<string>());
         }
 
         [Test]
@@ -111,10 +111,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             reporter.Report(data);
 
             logger.Received()
-                .Info("Package foo version 3.0.0 is available but is not allowed. Allowing Minor version updates.");
+                .Normal("Package foo version 3.0.0 is available but is not allowed. Allowing Minor version updates.");
             logger.DidNotReceive().Error(Arg.Any<string>());
-            logger.DidNotReceive().Terse(Arg.Any<string>());
-            logger.DidNotReceive().Verbose(Arg.Any<string>());
+            logger.DidNotReceive().Minimal(Arg.Any<string>());
+            logger.DidNotReceive().Detailed(Arg.Any<string>());
         }
     }
 }

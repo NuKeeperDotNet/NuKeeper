@@ -40,7 +40,7 @@ namespace NuKeeper.Engine.Packages
 
             foreach (var updateSet in filtered)
             {
-                _logger.Info($"Selected package update of {updateSet.SelectedId} to {updateSet.SelectedVersion}");
+                _logger.Normal($"Selected package update of {updateSet.SelectedId} to {updateSet.SelectedVersion}");
             }
 
             return filtered;

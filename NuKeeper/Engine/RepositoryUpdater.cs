@@ -53,7 +53,7 @@ namespace NuKeeper.Engine
             var updates = await _updateFinder.FindPackageUpdateSets(
                 git.WorkingFolder, sources, _settings.AllowedChange);
 
-            _logger.Verbose($"Report mode is {_settings.ReportMode}");
+            _logger.Detailed($"Report mode is {_settings.ReportMode}");
             switch (_settings.ReportMode)
             {
                 case ReportMode.Off:
@@ -67,7 +67,7 @@ namespace NuKeeper.Engine
                 case ReportMode.ReportOnly:
                     // report and exit
                     _availableUpdatesReporter.Report(repository.Pull.Name, updates);
-                    _logger.Info("Exiting after reports only");
+                    _logger.Normal("Exiting after reports only");
                     return 0;
 
                 default:
@@ -76,7 +76,7 @@ namespace NuKeeper.Engine
 
             if (updates.Count == 0)
             {
-                _logger.Terse("No potential updates found. Well done. Exiting.");
+                _logger.Minimal("No potential updates found. Well done. Exiting.");
                 return 0;
             }
 
@@ -92,7 +92,7 @@ namespace NuKeeper.Engine
         {
             if (targetUpdates.Count == 0)
             {
-                _logger.Terse("No updates can be applied. Exiting.");
+                _logger.Minimal("No updates can be applied. Exiting.");
                 return 0;
             }
 
@@ -102,11 +102,11 @@ namespace NuKeeper.Engine
 
             if (updatesDone < targetUpdates.Count)
             {
-                _logger.Terse($"Attempted {targetUpdates.Count} updates and did {updatesDone}");
+                _logger.Minimal($"Attempted {targetUpdates.Count} updates and did {updatesDone}");
             }
             else
             {
-                _logger.Info($"Done {updatesDone} updates");
+                _logger.Normal($"Done {updatesDone} updates");
             }
 
             return updatesDone;
