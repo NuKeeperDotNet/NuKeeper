@@ -38,9 +38,9 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string[] Label { get; } = {"nukeeper"};
 
-        [Option(CommandOptionType.SingleValue, LongName = "api",
+        [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
-                "If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
+                "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GithubApiEndpoint { get; } = "https://api.github.com/";
 
