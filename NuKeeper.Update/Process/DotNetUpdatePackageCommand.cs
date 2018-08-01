@@ -29,7 +29,7 @@ namespace NuKeeper.Update.Process
             var sourceUrl = packageSource.SourceUri.ToString();
             var sources = allSources.CommandLine("-s");
 
-            _logger.Verbose($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
+            _logger.Detailed($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
 
             await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
 

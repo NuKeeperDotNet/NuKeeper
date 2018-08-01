@@ -79,14 +79,14 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
                 if (string.IsNullOrWhiteSpace(version))
                 {
-                    _logger.Info($"Skipping package '{id}' with no version specified.");
+                    _logger.Normal($"Skipping package '{id}' with no version specified.");
                     return null;
                 }
 
                 var versionParseSuccess = NuGetVersion.TryParse(version, out var nugetVersion);
                 if (!versionParseSuccess)
                 {
-                    _logger.Info($"Skipping package '{id}' with version '{version}' that could not be parsed.");
+                    _logger.Normal($"Skipping package '{id}' with version '{version}' that could not be parsed.");
                     return null;
                 }
 

@@ -22,7 +22,7 @@ namespace NuKeeper.Engine
 
         public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
-            _logger.Verbose($"FindPushFork. Fork Mode is {_forkMode}");
+            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
 
             switch (_forkMode)
             {
@@ -52,7 +52,7 @@ namespace NuKeeper.Engine
             var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Info($"No fork for user {userName}. Using upstream fork for user {pullFork.Owner} at {pullFork.Uri}");
+                _logger.Normal($"No fork for user {userName}. Using upstream fork for user {pullFork.Owner} at {pullFork.Uri}");
                 return pullFork;
             }
 
@@ -66,7 +66,7 @@ namespace NuKeeper.Engine
             var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Info($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
+                _logger.Normal($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
                 return pullFork;
             }
 
@@ -87,7 +87,7 @@ namespace NuKeeper.Engine
             var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Info($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
+                _logger.Normal($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
                 return pullFork;
             }
 
@@ -119,7 +119,7 @@ namespace NuKeeper.Engine
 
                 // the user has a repo of that name, but it can't be used. 
                 // Don't try to create it
-                _logger.Info($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable.");
+                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable.");
                 return null;
             }
 

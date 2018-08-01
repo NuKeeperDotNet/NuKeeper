@@ -12,12 +12,12 @@ namespace NuKeeper.Inspection.Logging
         {
             if (!string.IsNullOrWhiteSpace(data.Terse))
             {
-                logger.Terse(data.Terse);
+                logger.Minimal(data.Terse);
             }
 
             if (!string.IsNullOrWhiteSpace(data.Info))
             {
-                logger.Info(data.Info);
+                logger.Normal(data.Info);
             }
         }
     }

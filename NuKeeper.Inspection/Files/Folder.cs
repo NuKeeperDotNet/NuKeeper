@@ -30,23 +30,23 @@ namespace NuKeeper.Inspection.Files
             }
             catch (Exception ex)
             {
-                _logger.Terse(ex.Message);
+                _logger.Minimal(ex.Message);
                 return new List<FileInfo>();
             }
         }
 
         public void TryDelete()
         {
-            _logger.Verbose($"Attempting delete of folder {_root.FullName}");
+            _logger.Detailed($"Attempting delete of folder {_root.FullName}");
 
             try
             {
                 DeleteDirectoryInternal(_root.FullName);
-                _logger.Verbose($"Deleted folder {_root.FullName}");
+                _logger.Detailed($"Deleted folder {_root.FullName}");
             }
             catch (Exception ex)
             {
-                _logger.Verbose($"Folder delete failed: {ex.GetType().Name} {ex.Message}");
+                _logger.Detailed($"Folder delete failed: {ex.GetType().Name} {ex.Message}");
             }
         }
 

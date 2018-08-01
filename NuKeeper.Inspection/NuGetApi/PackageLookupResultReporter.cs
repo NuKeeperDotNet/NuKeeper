@@ -29,17 +29,17 @@ namespace NuKeeper.Inspection.NuGetApi
 
             if (highestMatchVersion == null)
             {
-                _logger.Info($"Package {packageId} version {highestVersion} is available but is not allowed.{allowing}");
+                _logger.Normal($"Package {packageId} version {highestVersion} is available but is not allowed.{allowing}");
                 return;
             }
 
             if (highestVersion > highestMatchVersion)
             {
-                _logger.Info($"Selected update of package {packageId} to version {highestMatchVersion}, but version {highestVersion} is also available.{allowing}");
+                _logger.Normal($"Selected update of package {packageId} to version {highestMatchVersion}, but version {highestVersion} is also available.{allowing}");
             }
             else
             {
-                _logger.Verbose($"Selected update of package {packageId} to highest version, {highestMatchVersion}.{allowing}");
+                _logger.Detailed($"Selected update of package {packageId} to highest version, {highestMatchVersion}.{allowing}");
             }
         }
     }

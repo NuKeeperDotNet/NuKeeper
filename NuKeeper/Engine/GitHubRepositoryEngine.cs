@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
 
             if (pushFork == null)
             {
-                _logger.Info($"No pushable fork found for {repository.GithubUri}");
+                _logger.Normal($"No pushable fork found for {repository.GithubUri}");
                 return null;
             }
 

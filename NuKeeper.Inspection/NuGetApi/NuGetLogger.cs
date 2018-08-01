@@ -19,15 +19,15 @@ namespace NuKeeper.Inspection.NuGetApi
         {
             switch (message.Level)
             {
-                case LogLevel.Verbose: _logger.Verbose(message.Message);
+                case LogLevel.Verbose: _logger.Detailed(message.Message);
                     break;
-                case LogLevel.Debug: _logger.Verbose(message.Message);
+                case LogLevel.Debug: _logger.Detailed(message.Message);
                     break;
-                case LogLevel.Information: _logger.Verbose(message.Message);
+                case LogLevel.Information: _logger.Detailed(message.Message);
                     break;
-                case LogLevel.Minimal: _logger.Info(message.Message);
+                case LogLevel.Minimal: _logger.Normal(message.Message);
                     break;
-                case LogLevel.Warning: _logger.Info(message.Message);
+                case LogLevel.Warning: _logger.Normal(message.Message);
                     break;
                 case LogLevel.Error:
                     _logger.Error(message.Message);

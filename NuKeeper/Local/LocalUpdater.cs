@@ -40,14 +40,14 @@ namespace NuKeeper.Local
 
             if (!filtered.Any())
             {
-                _logger.Verbose("All updates were filtered out");
+                _logger.Detailed("All updates were filtered out");
                 return;
             }
 
             var candidate = filtered.First();
 
             var reporter = new ConsoleReporter();
-            _logger.Terse("Updating " + reporter.Describe(candidate));
+            _logger.Minimal("Updating " + reporter.Describe(candidate));
 
             await _updateRunner.Update(candidate, sources);
         }

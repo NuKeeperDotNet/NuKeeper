@@ -49,14 +49,14 @@ namespace NuKeeper.Update.Selection
 
             if (filteredLocally.Count < all.Count)
             {
-                _logger.Verbose($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
+                _logger.Detailed($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
 
             if (remoteFiltered.Count < filteredLocally.Count)
             {
-                _logger.Verbose($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
+                _logger.Detailed($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
             }
 
             return remoteFiltered;
@@ -85,7 +85,7 @@ namespace NuKeeper.Update.Selection
                 message +=  $", capped at {capped}";
             }
 
-            _logger.Terse(message);
+            _logger.Minimal(message);
         }
 
         private bool MatchesIncludeExclude(PackageUpdateSet packageUpdateSet)

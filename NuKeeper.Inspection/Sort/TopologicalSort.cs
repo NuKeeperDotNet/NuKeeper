@@ -33,7 +33,7 @@ namespace NuKeeper.Inspection.Sort
 
             if (!_data.Any(i => i.Dependencies.Any()))
             {
-                _logger.Verbose("No dependencies between packages being updated, no need to sort on this");
+                _logger.Detailed("No dependencies between packages being updated, no need to sort on this");
                 return input;
             }
 
@@ -68,7 +68,7 @@ namespace NuKeeper.Inspection.Sort
 
             if (item.Mark == Mark.Temporary)
             {
-                _logger.Terse($"Cannot sort packages by dependencies, cycle found at package {item.PackageId}");
+                _logger.Minimal($"Cannot sort packages by dependencies, cycle found at package {item.PackageId}");
                 _cycleFound = true;
                 return;
             }
@@ -106,14 +106,14 @@ namespace NuKeeper.Inspection.Sort
                     hasChange = true;
                     var firstChange = output[i];
                     var originalIndex = input.IndexOf(firstChange);
-                    _logger.Verbose($"Resorted packages by dependencies, first change is {firstChange.SelectedId} moved to position {i} from {originalIndex}.");
+                    _logger.Detailed($"Resorted packages by dependencies, first change is {firstChange.SelectedId} moved to position {i} from {originalIndex}.");
                     break;
                 }
             }
 
             if (!hasChange)
             {
-                _logger.Verbose("Sorted packages by dependencies but no change made");
+                _logger.Detailed("Sorted packages by dependencies but no change made");
             }
         }
     }

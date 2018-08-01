@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
             var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);
             var repositoryEngine = _repositoryEngineCreator.Create(settings);
 
-            _logger.Verbose($"{Now()}: Started");
+            _logger.Detailed($"{Now()}: Started");
 
             _folderFactory.DeleteExistingTempDirs();
 
@@ -60,7 +60,7 @@ namespace NuKeeper.Engine
             {
                 if (reposUpdated >= settings.UserSettings.MaxRepositoriesChanged)
                 {
-                    _logger.Verbose($"Reached max of {reposUpdated} repositories changed");
+                    _logger.Detailed($"Reached max of {reposUpdated} repositories changed");
                     break;
                 }
 
@@ -73,10 +73,10 @@ namespace NuKeeper.Engine
 
             if (reposUpdated > 1)
             {
-                _logger.Verbose($"{reposUpdated} repositories were updated");
+                _logger.Detailed($"{reposUpdated} repositories were updated");
             }
 
-            _logger.Verbose($"Done at {Now()}");
+            _logger.Detailed($"Done at {Now()}");
             return reposUpdated;
         }
 
@@ -84,12 +84,12 @@ namespace NuKeeper.Engine
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {
-                _logger.Terse("GitHub user name missing from profile, falling back to .gitconfig");
+                _logger.Minimal("GitHub user name missing from profile, falling back to .gitconfig");
                 return null;
             }
             if (string.IsNullOrWhiteSpace(githubUser?.Email))
             {
-                _logger.Terse("GitHub public email missing from profile, falling back to .gitconfig");
+                _logger.Minimal("GitHub public email missing from profile, falling back to .gitconfig");
                 return null;
             }
 
