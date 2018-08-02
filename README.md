@@ -1,4 +1,4 @@
-# NuKeeper
+<p align="center"><img src="./Logo/NuKeeperTopBar.jpg"></p>
 
 
 [![Build Status](https://travis-ci.org/NuKeeperDotNet/NuKeeper.svg?branch=master)](https://travis-ci.org/NuKeeperDotNet/NuKeeper/)
@@ -13,3 +13,5 @@ Automagically update NuGet packages in .NET projects.
 
 
 [Documentation is on the wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki)
+
+<p align="center"><img src="./Logo/NuKeeperBottomBar.jpg"></p>
