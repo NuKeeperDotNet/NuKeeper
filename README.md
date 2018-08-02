@@ -15,4 +15,4 @@ Automagically update NuGet packages in .NET projects.
 
 <p align="center"><img src="./Logo/NuKeeperBottomBar.jpg"></p>
 
-Logos by @area55git, licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+Logos by [area55](https://github.com/area55git), licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
