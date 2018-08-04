@@ -9,6 +9,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageProjectUrl>https://github.com/NuKeeperDotNet/NuKeeper/</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/NuKeeperDotNet/NuKeeper/master/assets/icon.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>NuGet;Package;Update</PackageTags>
     <RepositoryType>git</RepositoryType>
