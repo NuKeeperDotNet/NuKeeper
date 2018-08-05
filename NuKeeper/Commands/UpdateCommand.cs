@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -26,6 +27,8 @@ namespace NuKeeper.Commands
             }
 
             settings.ModalSettings.Mode = RunMode.Update;
+            settings.UserSettings.MaxPullRequestsPerRepository = 1;
+
             return ValidationResult.Success;
         }
 
