@@ -16,6 +16,7 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         private readonly ILogger _nuGetLogger;
         private readonly INuKeeperLogger _nuKeeperLogger;
+        private Dictionary<PackageSource, SourceRepository> _sourceRepositories;
 
         public PackageVersionsLookup(ILogger nuGetLogger, INuKeeperLogger nuKeeperLogger)
         {
@@ -27,6 +28,9 @@ namespace NuKeeper.Inspection.NuGetApi
             string packageName, bool includePrerelease,
             NuGetSources sources)
         {
+            _sourceRepositories = sources.Items.Distinct()
+                .ToDictionary(s => s, BuildSourceRepository);
+
             var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
 
             var results = await Task.WhenAll(tasks);
@@ -40,7 +44,7 @@ namespace NuKeeper.Inspection.NuGetApi
         private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(
             string packageName, bool includePrerelease, PackageSource source)
         {
-            var sourceRepository = BuildSourceRepository(source);
+            var sourceRepository = _sourceRepositories[source];
             try
             {
                 var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
@@ -56,10 +60,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
         private static SourceRepository BuildSourceRepository(PackageSource packageSource)
         {
-            var providers = new List<Lazy<INuGetResourceProvider>>();
-            providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
-
-            return new SourceRepository(packageSource, providers);
+            return new SourceRepository(packageSource, Repository.Provider.GetCoreV3());
         }
 
         private async Task<IEnumerable<IPackageSearchMetadata>> FindPackage(
