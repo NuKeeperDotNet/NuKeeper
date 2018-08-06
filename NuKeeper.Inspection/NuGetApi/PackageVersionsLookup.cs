@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,7 +17,8 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         private readonly ILogger _nuGetLogger;
         private readonly INuKeeperLogger _nuKeeperLogger;
-        private Dictionary<PackageSource, SourceRepository> _sourceRepositories;
+        private readonly ConcurrentDictionary<PackageSource, SourceRepository> _packageSources
+            = new ConcurrentDictionary<PackageSource, SourceRepository>();
 
         public PackageVersionsLookup(ILogger nuGetLogger, INuKeeperLogger nuKeeperLogger)
         {
@@ -28,9 +30,6 @@ namespace NuKeeper.Inspection.NuGetApi
             string packageName, bool includePrerelease,
             NuGetSources sources)
         {
-            _sourceRepositories = sources.Items.Distinct()
-                .ToDictionary(s => s, BuildSourceRepository);
-
             var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
 
             var results = await Task.WhenAll(tasks);
@@ -44,7 +43,7 @@ namespace NuKeeper.Inspection.NuGetApi
         private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(
             string packageName, bool includePrerelease, PackageSource source)
         {
-            var sourceRepository = _sourceRepositories[source];
+            var sourceRepository = GetSourceRepository(source);
             try
             {
                 var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
@@ -56,6 +55,11 @@ namespace NuKeeper.Inspection.NuGetApi
                 _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
+        }
+
+        private SourceRepository GetSourceRepository(PackageSource source)
+        {
+            return _packageSources.GetOrAdd(source, BuildSourceRepository);
         }
 
         private static SourceRepository BuildSourceRepository(PackageSource packageSource)
