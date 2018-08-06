@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Configuration;
-using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sources;
@@ -17,8 +15,8 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         private readonly ILogger _nuGetLogger;
         private readonly INuKeeperLogger _nuKeeperLogger;
-        private readonly ConcurrentDictionary<PackageSource, SourceRepository> _packageSources
-            = new ConcurrentDictionary<PackageSource, SourceRepository>();
+        private readonly ConcurrentSourceRepositoryCache _packageSources
+            = new ConcurrentSourceRepositoryCache();
 
         public PackageVersionsLookup(ILogger nuGetLogger, INuKeeperLogger nuKeeperLogger)
         {
@@ -43,7 +41,7 @@ namespace NuKeeper.Inspection.NuGetApi
         private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(
             string packageName, bool includePrerelease, PackageSource source)
         {
-            var sourceRepository = GetSourceRepository(source);
+            var sourceRepository = _packageSources.Get(source);
             try
             {
                 var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
@@ -55,16 +53,6 @@ namespace NuKeeper.Inspection.NuGetApi
                 _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
-        }
-
-        private SourceRepository GetSourceRepository(PackageSource source)
-        {
-            return _packageSources.GetOrAdd(source, BuildSourceRepository);
-        }
-
-        private static SourceRepository BuildSourceRepository(PackageSource packageSource)
-        {
-            return new SourceRepository(packageSource, Repository.Provider.GetCoreV3());
         }
 
         private async Task<IEnumerable<IPackageSearchMetadata>> FindPackage(
