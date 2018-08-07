@@ -101,13 +101,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         }
 
         [Test]
-        public async Task BetaVersion_ShouldNotReturnBetas()
+        public async Task BetaVersion_ShouldReturnBetas()
         {
             var lookup = BuildPackageLookup();
 
-            // when we ask for updates for newtonsoft 8.0.1
-            // we know that there is a later patch (8.0.3)
-            // and later major versions 9.0.1, 10.0.3 etc
+            // libgit2sharp is known for staying in preview for ages
             var package = await lookup.FindVersionUpdate(
                 new PackageIdentity("libgit2sharp", new NuGetVersion(0, 26, 0, "preview-0017")),
                 NuGetSources.GlobalFeed,
