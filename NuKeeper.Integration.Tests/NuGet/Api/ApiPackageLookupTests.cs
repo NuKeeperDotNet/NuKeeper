@@ -99,6 +99,27 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(package.Minor.Identity.Version.Major, Is.EqualTo(8));
             Assert.That(package.Major.Identity.Version.Major, Is.GreaterThan(8));
         }
+
+        [Test]
+        public async Task BetaVersion_ShouldNotReturnBetas()
+        {
+            var lookup = BuildPackageLookup();
+
+            // when we ask for updates for newtonsoft 8.0.1
+            // we know that there is a later patch (8.0.3)
+            // and later major versions 9.0.1, 10.0.3 etc
+            var package = await lookup.FindVersionUpdate(
+                new PackageIdentity("libgit2sharp", new NuGetVersion(0, 26, 0, "preview-0017")),
+                NuGetSources.GlobalFeed,
+                VersionChange.Minor);
+
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Selected(), Is.Not.Null);
+
+            var isBeta = package.Patch.Identity.Version.IsPrerelease;
+            Assert.That(isBeta, Is.True);
+        }
+
         private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
