@@ -96,6 +96,17 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(latest.Dependencies, Is.Not.Empty);
         }
 
+        [Test]
+        public async Task CanBeCalledTwice()
+        {
+            var lookup = BuildPackageLookup();
+            var packages1 = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+            Assert.That(packages1, Is.Not.Null);
+
+            var packages2 = await lookup.Lookup("Moq", false, NuGetSources.GlobalFeed);
+            Assert.That(packages2, Is.Not.Null);
+        }
+
         private IPackageVersionsLookup BuildPackageLookup()
         {
             return new PackageVersionsLookup(
