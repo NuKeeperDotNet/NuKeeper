@@ -43,10 +43,10 @@ namespace NuKeeper.Update.Process
 
             var sourcesCommandLine = sources.CommandLine("-Source");
 
-            var arguments = $"restore {file.Name} {sourcesCommandLine}";
-            _logger.Detailed($"{nuget} {arguments}");
+            var restoreCommand = $"restore {file.Name} {sourcesCommandLine}";
+            _logger.Detailed($"In path {file.DirectoryName}, {nuget} {restoreCommand}");
 
-            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, arguments, ensureSuccess: false);
+            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, restoreCommand, ensureSuccess: false);
 
             if (processOutput.Success)
             {
