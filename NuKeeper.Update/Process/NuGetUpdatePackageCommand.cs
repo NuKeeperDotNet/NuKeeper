@@ -19,7 +19,7 @@ namespace NuKeeper.Update.Process
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new ExternalProcess(logger);
         }
 
         public async Task Invoke(PackageInProject currentPackage,
@@ -31,7 +31,7 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var dirName = currentPackage.Path.Info.DirectoryName;
+            var projectPath = currentPackage.Path.Info.DirectoryName;
 
             var nuget = NuGetPath.FindExecutable();
             if (string.IsNullOrWhiteSpace(nuget))
@@ -41,10 +41,8 @@ namespace NuKeeper.Update.Process
             }
 
             var sources = allSources.CommandLine("-Source");
-            var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
-            _logger.Detailed(arguments);
-
-            await _externalProcess.Run(dirName, nuget, arguments, true);
+            var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
+            await _externalProcess.Run(projectPath, nuget, updateCommand, true);
         }
     }
 }

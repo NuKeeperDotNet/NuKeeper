@@ -20,7 +20,7 @@ namespace NuKeeper.Update.Process
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new ExternalProcess(logger);
         }
 
         public async Task Invoke(FileInfo file, NuGetSources sources)
@@ -43,10 +43,9 @@ namespace NuKeeper.Update.Process
 
             var sourcesCommandLine = sources.CommandLine("-Source");
 
-            var arguments = $"restore {file.Name} {sourcesCommandLine}";
-            _logger.Detailed($"{nuget} {arguments}");
+            var restoreCommand = $"restore {file.Name} {sourcesCommandLine}";
 
-            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, arguments, ensureSuccess: false);
+            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, restoreCommand, ensureSuccess: false);
 
             if (processOutput.Success)
             {

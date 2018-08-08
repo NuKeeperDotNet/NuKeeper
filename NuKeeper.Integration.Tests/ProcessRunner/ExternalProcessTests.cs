@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using NSubstitute;
+using NuKeeper.Inspection.Logging;
 using NuKeeper.Update.ProcessRunner;
 using NUnit.Framework;
 
@@ -48,7 +50,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
         {
-            IExternalProcess process = new ExternalProcess();
+            IExternalProcess process = new ExternalProcess(Substitute.For<INuKeeperLogger>());
             return await process.Run(".", command, args, ensureSuccess);
         }
 

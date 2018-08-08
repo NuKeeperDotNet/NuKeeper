@@ -18,7 +18,7 @@ namespace NuKeeper.Update.Process
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new ExternalProcess(logger);
         }
 
         public async Task Invoke(PackageInProject currentPackage,
@@ -29,17 +29,17 @@ namespace NuKeeper.Update.Process
             var sourceUrl = packageSource.SourceUri.ToString();
             var sources = allSources.CommandLine("-s");
 
-            _logger.Detailed($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
-
-            await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
+            var restoreCommand = $"restore {projectFileName} {sources}";
+            await _externalProcess.Run(projectPath, "dotnet", restoreCommand, true);
 
             if (currentPackage.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle)
             {
-                await _externalProcess.Run(projectPath, "dotnet",
-                    $"remove {projectFileName} package {currentPackage.Id}", true);
+                var removeCommand = $"remove {projectFileName} package {currentPackage.Id}";
+                await _externalProcess.Run(projectPath, "dotnet", removeCommand, true);
             }
 
-            await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}", true);
+            var addCommand = $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
+            await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
         }
     }
 }
