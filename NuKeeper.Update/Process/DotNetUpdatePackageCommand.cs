@@ -26,6 +26,7 @@ namespace NuKeeper.Update.Process
         {
             var projectPath = currentPackage.Path.Info.DirectoryName;
             var projectFileName = currentPackage.Path.Info.Name;
+            var sourceUrl = packageSource.SourceUri.ToString();
             var sources = allSources.CommandLine("-s");
 
             var restoreCommand = $"restore {projectFileName} {sources}";
@@ -39,7 +40,7 @@ namespace NuKeeper.Update.Process
                 await _externalProcess.Run(projectPath, "dotnet", removeCommand, true);
             }
 
-            var addCommand = "add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
+            var addCommand = $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
             _logger.Detailed($"In path {projectPath}, dotnet {addCommand}");
             await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
         }
