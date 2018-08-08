@@ -1,13 +1,23 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Update.ProcessRunner
 {
     public class ExternalProcess : IExternalProcess
     {
+        private readonly INuKeeperLogger _logger;
+
+        public ExternalProcess(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
+            _logger.Detailed($"In path {workingDirectory},running command: {command} {arguments}");
+
             System.Diagnostics.Process process;
 
             try
@@ -17,6 +27,8 @@ namespace NuKeeper.Update.ProcessRunner
             }
             catch (Exception ex)
             {
+                _logger.Error($"External command failed:{command} {arguments}", ex);
+
                 if (ensureSuccess)
                 {
                     throw;
@@ -38,9 +50,15 @@ namespace NuKeeper.Update.ProcessRunner
 
             var exitCode = process.ExitCode;
 
-            if (ensureSuccess && exitCode != 0)
+            if (exitCode != 0)
             {
-                throw new Exception($"Exit code: {exitCode}\n\n{textOut}\n\n{errorOut}");
+                var message = $"Command {command} failed with exit code: {exitCode}\n\n{textOut}\n\n{errorOut}";
+                _logger.Detailed(message);
+
+                if (ensureSuccess)
+                {
+                    throw new Exception(message);
+                }
             }
 
             return new ProcessOutput(textOut, errorOut, exitCode);

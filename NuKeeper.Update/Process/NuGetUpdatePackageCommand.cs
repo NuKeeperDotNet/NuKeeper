@@ -19,7 +19,7 @@ namespace NuKeeper.Update.Process
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess();
+            _externalProcess = externalProcess ?? new ExternalProcess(logger);
         }
 
         public async Task Invoke(PackageInProject currentPackage,
@@ -42,8 +42,6 @@ namespace NuKeeper.Update.Process
 
             var sources = allSources.CommandLine("-Source");
             var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
-            _logger.Detailed($"In path {projectPath}, {nuget} {updateCommand}");
-
             await _externalProcess.Run(projectPath, nuget, updateCommand, true);
         }
     }
