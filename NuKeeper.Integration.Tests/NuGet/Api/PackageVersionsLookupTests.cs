@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -94,6 +95,38 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             Assert.That(latest, Is.Not.Null);
             Assert.That(latest.Dependencies, Is.Not.Null);
             Assert.That(latest.Dependencies, Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task CanBeCalledTwice()
+        {
+            var lookup = BuildPackageLookup();
+            var packages1 = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+            Assert.That(packages1, Is.Not.Null);
+
+            var packages2 = await lookup.Lookup("Moq", false, NuGetSources.GlobalFeed);
+            Assert.That(packages2, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task CanBeCalledInParallel()
+        {
+            var lookup = BuildPackageLookup();
+
+            var tasks = new List<Task<IReadOnlyCollection<PackageSearchMedatadata>>>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var task = lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+                tasks.Add(task);
+            }
+
+            await Task.WhenAll(tasks);
+
+            foreach (var task in tasks)
+            {
+                Assert.That(task.IsCompletedSuccessfully);
+            }
         }
 
         private IPackageVersionsLookup BuildPackageLookup()
