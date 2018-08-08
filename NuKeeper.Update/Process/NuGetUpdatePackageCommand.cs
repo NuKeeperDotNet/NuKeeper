@@ -31,7 +31,7 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var dirName = currentPackage.Path.Info.DirectoryName;
+            var projectPath = currentPackage.Path.Info.DirectoryName;
 
             var nuget = NuGetPath.FindExecutable();
             if (string.IsNullOrWhiteSpace(nuget))
@@ -41,10 +41,10 @@ namespace NuKeeper.Update.Process
             }
 
             var sources = allSources.CommandLine("-Source");
-            var arguments = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
-            _logger.Detailed(arguments);
+            var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
+            _logger.Detailed($"In path {projectPath}, nuget {updateCommand}");
 
-            await _externalProcess.Run(dirName, nuget, arguments, true);
+            await _externalProcess.Run(projectPath, nuget, updateCommand, true);
         }
     }
 }
