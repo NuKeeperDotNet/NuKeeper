@@ -29,17 +29,21 @@ namespace NuKeeper.Update.Process
             var sourceUrl = packageSource.SourceUri.ToString();
             var sources = allSources.CommandLine("-s");
 
-            _logger.Detailed($"dotnet update package {currentPackage.Id} in path {projectPath} {projectFileName} from source {sourceUrl}");
+            var restoreCommand = $"restore {projectFileName} {sources}";
+            _logger.Detailed($"dotnet {restoreCommand} in path {projectPath}");
 
-            await _externalProcess.Run(projectPath, "dotnet", $"restore {projectFileName} {sources}", true);
+            await _externalProcess.Run(projectPath, "dotnet", restoreCommand, true);
 
             if (currentPackage.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle)
             {
-                await _externalProcess.Run(projectPath, "dotnet",
-                    $"remove {projectFileName} package {currentPackage.Id}", true);
+                var removeCommand = $"remove {projectFileName} package {currentPackage.Id}";
+                _logger.Detailed($"dotnet {removeCommand} in path {projectPath}");
+                await _externalProcess.Run(projectPath, "dotnet", removeCommand, true);
             }
 
-            await _externalProcess.Run(projectPath, "dotnet", $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}", true);
+            var addCommand = "add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
+            _logger.Detailed($"dotnet {addCommand} in path {projectPath}");
+            await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
         }
     }
 }
