@@ -16,7 +16,7 @@ namespace NuKeeper.Update.ProcessRunner
 
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            _logger.Detailed($"In path {workingDirectory},running command: {command} {arguments}");
+            _logger.Detailed($"In path {workingDirectory}, running command: {command} {arguments}");
 
             System.Diagnostics.Process process;
 
