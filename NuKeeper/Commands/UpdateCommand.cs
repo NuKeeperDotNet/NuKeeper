@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -10,6 +9,11 @@ namespace NuKeeper.Commands
     [Command(Description = "Applies first relevant update to a local project.")]
     internal class UpdateCommand : LocalNuKeeperCommand
     {
+        [Option(CommandOptionType.SingleValue, LongName = "changes",
+            Description =
+                "Maximum number of changes to make. Defaults to 1.")]
+        protected int Changes { get; } = 1
+            ;
         private readonly LocalEngine _engine;
 
         public UpdateCommand(LocalEngine engine, IConfigureLogLevel logger)
@@ -27,7 +31,7 @@ namespace NuKeeper.Commands
             }
 
             settings.ModalSettings.Mode = RunMode.Update;
-            settings.UserSettings.MaxPullRequestsPerRepository = 1;
+            settings.UserSettings.MaxPullRequestsPerRepository = Changes;
 
             return ValidationResult.Success;
         }
