@@ -24,7 +24,7 @@ namespace NuKeeper.Creators
             {
                 Excludes = settings.PackageExcludes,
                 Includes = settings.PackageIncludes,
-                MaxPullRequests = settings.MaxPullRequestsPerRepository,
+                MaxUpdates = settings.MaxPullRequestsPerRepository,
                 MinimumAge = settings.MinimumPackageAge
             };
         }

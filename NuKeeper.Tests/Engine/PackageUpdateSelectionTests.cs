@@ -153,7 +153,7 @@ namespace NuKeeper.Tests.Engine
         {
             var settings = new FilterSettings
             {
-                MaxPullRequests = Int32.MaxValue,
+                MaxUpdates = Int32.MaxValue,
                 MinimumAge = TimeSpan.Zero
             };
             var logger = Substitute.For<INuKeeperLogger>();

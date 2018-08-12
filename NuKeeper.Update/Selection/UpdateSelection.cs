@@ -30,7 +30,7 @@ namespace NuKeeper.Update.Selection
             var filtered = await ApplyFilters(candidates, remoteCheck);
 
             var capped = filtered
-                .Take(_settings.MaxPullRequests)
+                .Take(_settings.MaxUpdates)
                 .ToList();
 
             LogPackageCounts(candidates.Count, filtered.Count, capped.Count);
