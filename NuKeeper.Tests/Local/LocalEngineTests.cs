@@ -21,8 +21,9 @@ namespace NuKeeper.Tests.Local
         [Test]
         public async Task CanRunInspect()
         {
+            var finder = Substitute.For<IUpdateFinder>();
             var updater = Substitute.For<ILocalUpdater>();
-            var engine = MakeLocalEngine(updater);
+            var engine = MakeLocalEngine(finder, updater);
 
             var settings = new SettingsContainer
             {
@@ -35,8 +36,12 @@ namespace NuKeeper.Tests.Local
 
             await engine.Run(settings);
 
-            await updater
-                .Received(0)
+            await finder.Received()
+                .FindPackageUpdateSets(Arg.Any<IFolder>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<VersionChange>());
+
+            await updater.Received(0)
                 .ApplyUpdates(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                     Arg.Any<NuGetSources>());
@@ -45,8 +50,9 @@ namespace NuKeeper.Tests.Local
         [Test]
         public async Task CanRunUpdate()
         {
+            var finder = Substitute.For<IUpdateFinder>();
             var updater = Substitute.For<ILocalUpdater>();
-            var engine = MakeLocalEngine(updater);
+            var engine = MakeLocalEngine(finder, updater);
 
             var settings = new SettingsContainer
             {
@@ -59,6 +65,11 @@ namespace NuKeeper.Tests.Local
 
             await engine.Run(settings);
 
+            await finder.Received()
+                .FindPackageUpdateSets(Arg.Any<IFolder>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<VersionChange>());
+
             await updater
                 .Received(1)
                 .ApplyUpdates(
@@ -66,10 +77,9 @@ namespace NuKeeper.Tests.Local
                     Arg.Any<NuGetSources>());
         }
 
-        private static LocalEngine MakeLocalEngine(ILocalUpdater updater)
+        private static LocalEngine MakeLocalEngine(IUpdateFinder finder, ILocalUpdater updater)
         {
             var reader = Substitute.For<INuGetSourcesReader>();
-            var finder = Substitute.For<IUpdateFinder>();
             finder.FindPackageUpdateSets(
                     Arg.Any<IFolder>(), Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>())
