@@ -72,7 +72,7 @@ namespace NuKeeper.Update.Tests
 
             var settings = new FilterSettings
             {
-                MaxUpdates = 10,
+                MaxPackageUpdates = 10,
                 Includes = new Regex("bar")
             };
 
@@ -95,7 +95,7 @@ namespace NuKeeper.Update.Tests
 
             var settings = new FilterSettings
             {
-                MaxUpdates = 10,
+                MaxPackageUpdates = 10,
                 Excludes = new Regex("bar")
             };
 
@@ -119,7 +119,7 @@ namespace NuKeeper.Update.Tests
 
             var settings = new FilterSettings 
             {
-                MaxUpdates = 10,
+                MaxPackageUpdates = 10,
                 Excludes = new Regex("bar"),
                 Includes = new Regex("foo")
             };
@@ -301,7 +301,7 @@ namespace NuKeeper.Update.Tests
 
             var settings = new FilterSettings
             {
-                MaxUpdates = maxPullRequests,
+                MaxPackageUpdates = maxPullRequests,
                 MinimumAge = TimeSpan.Zero
             };
             return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
@@ -313,7 +313,7 @@ namespace NuKeeper.Update.Tests
 
             var settings = new FilterSettings
             {
-                MaxUpdates = maxPullRequests,
+                MaxPackageUpdates = maxPullRequests,
                 MinimumAge = minAge
             };
             return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());

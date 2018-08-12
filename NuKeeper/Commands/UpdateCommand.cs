@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
             }
 
             settings.ModalSettings.Mode = RunMode.Update;
-            settings.UserSettings.MaxPullRequestsPerRepository = Changes;
+            settings.UserSettings.MaxPackageUpdates = Changes;
 
             return ValidationResult.Success;
         }
