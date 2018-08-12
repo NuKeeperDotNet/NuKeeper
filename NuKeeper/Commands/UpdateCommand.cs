@@ -9,10 +9,10 @@ namespace NuKeeper.Commands
     [Command(Description = "Applies first relevant update to a local project.")]
     internal class UpdateCommand : LocalNuKeeperCommand
     {
-        [Option(CommandOptionType.SingleValue, LongName = "changes",
+        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "max-updates",
             Description =
-                "Maximum number of changes to make. Defaults to 1.")]
-        protected int Changes { get; } = 1
+                "Maximum number of package updates to make. Defaults to 1.")]
+        protected int MaxPackageUpdates { get; } = 1
             ;
         private readonly LocalEngine _engine;
 
@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
             }
 
             settings.ModalSettings.Mode = RunMode.Update;
-            settings.UserSettings.MaxPackageUpdates = Changes;
+            settings.UserSettings.MaxPackageUpdates = MaxPackageUpdates;
 
             return ValidationResult.Success;
         }
