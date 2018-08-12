@@ -7,7 +7,7 @@ namespace NuKeeper.Local
 {
     public interface ILocalUpdater
     {
-        Task ApplyAnUpdate(
+        Task ApplyUpdates(
             IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources);
     }

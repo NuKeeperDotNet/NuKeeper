@@ -53,7 +53,7 @@ namespace NuKeeper.Local
                     break;
 
                 case RunMode.Update:
-                    await updater.ApplyAnUpdate(sortedUpdates, sources);
+                    await updater.ApplyUpdates(sortedUpdates, sources);
                     break;
             }
         }

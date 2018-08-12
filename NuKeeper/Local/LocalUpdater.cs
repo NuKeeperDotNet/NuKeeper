@@ -26,7 +26,7 @@ namespace NuKeeper.Local
             _logger = logger;
         }
 
-        public async Task ApplyAnUpdate(
+        public async Task ApplyUpdates(
             IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources)
         {
@@ -44,12 +44,13 @@ namespace NuKeeper.Local
                 return;
             }
 
-            var candidate = filtered.First();
+            foreach (var update in filtered)
+            {
+                var reporter = new ConsoleReporter();
+                _logger.Minimal("Updating " + reporter.Describe(update));
 
-            var reporter = new ConsoleReporter();
-            _logger.Minimal("Updating " + reporter.Describe(candidate));
-
-            await _updateRunner.Update(candidate, sources);
+                await _updateRunner.Update(update, sources);
+            }
         }
     }
 }
