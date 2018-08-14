@@ -38,6 +38,7 @@ namespace NuKeeper.Engine
                     return new[] { _settings.Repository };
 
                 default:
+                    _logger.Error($"Unknown GithubScope {scope}");
                     return Enumerable.Empty<RepositorySettings>();
             }
         }
