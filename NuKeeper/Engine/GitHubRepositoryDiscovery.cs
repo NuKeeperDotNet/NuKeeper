@@ -24,17 +24,17 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<IEnumerable<RepositorySettings>> GetRepositories()
+        public async Task<IEnumerable<RepositorySettings>> GetRepositories(GithubScope scope)
         {
-            switch (_settings.Mode)
+            switch (scope)
             {
-                case RunMode.Global:
+                case GithubScope.Global:
                     return await ForAllOrgs();
 
-                case RunMode.Organisation:
+                case GithubScope.Organisation:
                     return await FromOrganisation(_settings.OrganisationName);
 
-                case RunMode.Repository:
+                case GithubScope.Repository:
                     return new[] { _settings.Repository };
 
                 default:

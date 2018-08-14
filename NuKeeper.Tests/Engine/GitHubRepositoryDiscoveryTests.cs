@@ -20,13 +20,12 @@ namespace NuKeeper.Tests.Engine
             var github = Substitute.For<IGitHub>();
             var settings = new ModalSettings
             {
-                Mode = RunMode.Repository,
                 Repository = new RepositorySettings()
             };
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories();
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(GithubScope.Repository);
 
             var repos = reposResponse.ToList();
 
@@ -42,7 +41,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories();
+            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Empty);
@@ -63,7 +62,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories();
+            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -90,7 +89,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories();
+            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -110,7 +109,6 @@ namespace NuKeeper.Tests.Engine
         {
             return new ModalSettings
             {
-                Mode = RunMode.Organisation,
                 OrganisationName = "testOrg"
             };
         }

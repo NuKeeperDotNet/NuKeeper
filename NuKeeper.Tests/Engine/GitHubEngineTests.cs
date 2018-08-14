@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Engine
             var engine = MakeGithubEngine(
                 new List<RepositorySettings>());
 
-            var count = await engine.Run(MakeSettings());
+            var count = await engine.Run(GithubScope.Repository, MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -35,7 +35,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(oneRepo);
 
-            var count = await engine.Run(MakeSettings());
+            var count = await engine.Run(GithubScope.Repository, MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
         }
@@ -50,7 +50,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(repos);
 
-            var count = await engine.Run(MakeSettings());
+            var count = await engine.Run(GithubScope.Repository, MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(2, repos);
 
-            var count = await engine.Run(MakeSettings());
+            var count = await engine.Run(GithubScope.Repository, MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -82,7 +82,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(0, repos);
 
-            var count = await engine.Run(MakeSettings());
+            var count = await engine.Run(GithubScope.Repository, MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -99,7 +99,7 @@ namespace NuKeeper.Tests.Engine
 
             var engine = MakeGithubEngine(1, repos);
 
-            var count = await engine.Run(new SettingsContainer
+            var count = await engine.Run(GithubScope.Repository, new SettingsContainer
             {
                 GithubAuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
@@ -134,7 +134,7 @@ namespace NuKeeper.Tests.Engine
 
             githubCreator.Create(null).ReturnsForAnyArgs(github);
 
-            repoDiscovery.GetRepositories()
+            repoDiscovery.GetRepositories(Arg.Any<GithubScope>())
                 .Returns(repos);
 
             repositoryDiscoveryCreator.Create(null).ReturnsForAnyArgs(repoDiscovery);
