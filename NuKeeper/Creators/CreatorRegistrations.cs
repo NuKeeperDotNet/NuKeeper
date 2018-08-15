@@ -1,12 +1,9 @@
-using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.GitHub;
-using NuKeeper.Local;
-using NuKeeper.Update.Selection;
 using SimpleInjector;
 
-namespace NuKeeper
+namespace NuKeeper.Creators
 {
     public static class CreatorRegistrations
     {
@@ -21,8 +18,6 @@ namespace NuKeeper
             container.Register<ICreate<IRepositoryFilter>, RepositoryFilterCreator>();
             container.Register<ICreate<IForkFinder>, ForkFinderCreator>();
             container.Register<ICreate<IPackageUpdater>, PackageUpdaterCreator>();
-            container.Register<ICreate<IUpdateSelection>, UpdateSelectionCreator>();
-            container.Register<ICreate<ILocalUpdater>, LocalUpdaterCreator>();
         }
     }
 }

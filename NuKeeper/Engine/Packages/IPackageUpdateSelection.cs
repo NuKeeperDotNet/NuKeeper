@@ -1,6 +1,7 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -8,6 +9,7 @@ namespace NuKeeper.Engine.Packages
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
-            IReadOnlyCollection<PackageUpdateSet> potentialUpdates);
+            IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
+            UserSettings settings);
     }
 }

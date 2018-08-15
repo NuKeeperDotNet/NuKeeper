@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -30,12 +32,16 @@ namespace NuKeeper.Engine.Packages
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
-            IReadOnlyCollection<PackageUpdateSet> potentialUpdates)
+            IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
+            UserSettings settings)
         {
             var sorted = _sort.Sort(potentialUpdates)
                 .ToList();
 
-            var filtered = await _updateSelection.Filter(sorted,
+            var filterSettings = FilterSettingsCreator.MakeFilterSettings(settings);
+
+            var filtered = await _updateSelection.Filter(
+                sorted, filterSettings,
                 p => _existingBranchFilter.CanMakeBranchFor(p, pushFork));
 
             foreach (var updateSet in filtered)

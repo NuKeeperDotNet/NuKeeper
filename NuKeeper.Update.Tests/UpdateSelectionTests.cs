@@ -23,9 +23,9 @@ namespace NuKeeper.Update.Tests
         {
             var updateSets = new List<PackageUpdateSet>();
 
-            var target = OneTargetSelection();
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -36,9 +36,9 @@ namespace NuKeeper.Update.Tests
         {
             var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
 
-            var target = OneTargetSelection();
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -53,9 +53,9 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions()
             };
 
-            var target = OneTargetSelection();
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
@@ -76,9 +76,9 @@ namespace NuKeeper.Update.Tests
                 Includes = new Regex("bar")
             };
 
-            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
@@ -99,9 +99,9 @@ namespace NuKeeper.Update.Tests
                 Excludes = new Regex("bar")
             };
 
-            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
@@ -124,9 +124,9 @@ namespace NuKeeper.Update.Tests
                 Includes = new Regex("foo")
             };
 
-            var target = new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
@@ -141,9 +141,9 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions()
             };
 
-            var target = OneTargetSelection();
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, Fail);
+            var results = await target.Filter(updateSets, OneTargetSelection(), Fail);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -157,9 +157,9 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions()
             };
 
-            var target = OneTargetSelection();
+            var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, FilterToId("bar"));
+            var results = await target.Filter(updateSets, OneTargetSelection(),FilterToId("bar"));
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
@@ -173,9 +173,10 @@ namespace NuKeeper.Update.Tests
                 UpdateFooFromOneVersion()
             };
 
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -189,9 +190,10 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
             };
 
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(7));
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
@@ -206,9 +208,10 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
             };
 
-            var target = MinAgeTargetSelection(TimeSpan.FromHours(12));
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromHours(12));
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(2));
         }
@@ -222,9 +225,10 @@ namespace NuKeeper.Update.Tests
                 UpdateBarFromTwoVersions(TimeSpan.FromDays(8))
             };
 
-            var target = MinAgeTargetSelection(TimeSpan.FromDays(10));
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromDays(10));
 
-            var results = await target.Filter(updateSets, Pass);
+            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -295,28 +299,31 @@ namespace NuKeeper.Update.Tests
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private static IUpdateSelection OneTargetSelection()
+        private static IUpdateSelection CreateUpdateSelection()
+        {
+            return new UpdateSelection(Substitute.For<INuKeeperLogger>());
+        }
+
+        private static FilterSettings OneTargetSelection()
         {
             const int maxPullRequests = 1;
 
-            var settings = new FilterSettings
+            return new FilterSettings
             {
                 MaxPackageUpdates = maxPullRequests,
                 MinimumAge = TimeSpan.Zero
             };
-            return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
         }
 
-        private static IUpdateSelection MinAgeTargetSelection(TimeSpan minAge)
+        private static FilterSettings MinAgeTargetSelection(TimeSpan minAge)
         {
             const int maxPullRequests = 1000;
 
-            var settings = new FilterSettings
+            return new FilterSettings
             {
                 MaxPackageUpdates = maxPullRequests,
                 MinimumAge = minAge
             };
-            return new UpdateSelection(settings, Substitute.For<INuKeeperLogger>());
         }
 
         private static Task<bool> Pass(PackageUpdateSet s) => Task.FromResult(true);

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
-using NuKeeper.Creators;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -44,7 +43,8 @@ namespace NuKeeper.Tests.Local
             await updater.Received(0)
                 .ApplyUpdates(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<NuGetSources>());
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<SettingsContainer>());
         }
 
         [Test]
@@ -74,7 +74,8 @@ namespace NuKeeper.Tests.Local
                 .Received(1)
                 .ApplyUpdates(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<NuGetSources>());
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<SettingsContainer>());
         }
 
         private static LocalEngine MakeLocalEngine(IUpdateFinder finder, ILocalUpdater updater)
@@ -91,11 +92,7 @@ namespace NuKeeper.Tests.Local
 
             var logger = Substitute.For<INuKeeperLogger>();
 
-            var updaterCreator = Substitute.For<ICreate<ILocalUpdater>>();
-            updaterCreator.Create(Arg.Any<SettingsContainer>())
-                .Returns(updater);
-
-            var engine = new LocalEngine(reader, finder, sorter, updaterCreator, logger);
+            var engine = new LocalEngine(reader, finder, sorter, updater, logger);
             Assert.That(engine, Is.Not.Null);
             return engine;
         }

@@ -6,6 +6,7 @@ using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -29,7 +30,8 @@ namespace NuKeeper.Tests.Local
 
             var updater = new LocalUpdater(selection, runner, logger);
 
-            await updater.ApplyUpdates(new List<PackageUpdateSet>(), NuGetSources.GlobalFeed);
+            await updater.ApplyUpdates(new List<PackageUpdateSet>(),
+                NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(0)
                 .Update(Arg.Any<PackageUpdateSet>(), Arg.Any<NuGetSources>());
@@ -53,7 +55,7 @@ namespace NuKeeper.Tests.Local
 
             var updater = new LocalUpdater(selection, runner, logger);
 
-            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed);
+            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(1)
                 .Update(Arg.Any<PackageUpdateSet>(), Arg.Any<NuGetSources>());
@@ -78,7 +80,7 @@ namespace NuKeeper.Tests.Local
 
             var updater = new LocalUpdater(selection, runner, logger);
 
-            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed);
+            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(2)
                 .Update(Arg.Any<PackageUpdateSet>(), Arg.Any<NuGetSources>());
@@ -88,7 +90,10 @@ namespace NuKeeper.Tests.Local
         private static void FilterIsPassThrough(IUpdateSelection selection)
         {
             selection
-                .Filter(Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(), Arg.Any<Func<PackageUpdateSet, Task<bool>>>())
+                .Filter(
+                    Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<FilterSettings>(),
+                    Arg.Any<Func<PackageUpdateSet, Task<bool>>>())
                 .Returns(x => x.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(0));
         }
 
@@ -102,6 +107,14 @@ namespace NuKeeper.Tests.Local
             var pip = new PackageInProject(fooPackage, new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile));
 
             return new PackageUpdateSet(packages, new List<PackageInProject> {pip});
+        }
+
+        private static SettingsContainer Settings()
+        {
+            return new SettingsContainer
+            {
+                UserSettings = new UserSettings()
+            };
         }
     }
 }
