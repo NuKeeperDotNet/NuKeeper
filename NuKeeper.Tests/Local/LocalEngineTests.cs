@@ -27,14 +27,10 @@ namespace NuKeeper.Tests.Local
 
             var settings = new SettingsContainer
             {
-                ModalSettings = new ModalSettings
-                {
-                    Mode = RunMode.Inspect
-                },
                 UserSettings = new UserSettings()
             };
 
-            await engine.Run(settings);
+            await engine.Run(settings, false);
 
             await finder.Received()
                 .FindPackageUpdateSets(Arg.Any<IFolder>(),
@@ -56,14 +52,10 @@ namespace NuKeeper.Tests.Local
 
             var settings = new SettingsContainer
             {
-                ModalSettings = new ModalSettings
-                {
-                    Mode = RunMode.Update
-                },
                 UserSettings = new UserSettings()
             };
 
-            await engine.Run(settings);
+            await engine.Run(settings, true);
 
             await finder.Received()
                 .FindPackageUpdateSets(Arg.Any<IFolder>(),

@@ -29,7 +29,6 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.ModalSettings.Mode = RunMode.Update;
             settings.UserSettings.MaxPackageUpdates = MaxPackageUpdates;
 
             return ValidationResult.Success;
@@ -37,7 +36,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(settings);
+            await _engine.Run(settings, true);
             return 0;
         }
     }
