@@ -37,7 +37,7 @@ namespace NuKeeper.Local
             _logger = logger;
         }
 
-        public async Task Run(SettingsContainer settings)
+        public async Task Run(SettingsContainer settings, bool write)
         {
             var updater = _updaterCreator.Create(settings);
             var folder = TargetFolder(settings.UserSettings);
@@ -46,15 +46,13 @@ namespace NuKeeper.Local
 
             var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
 
-            switch (settings.ModalSettings.Mode)
+            if (write)
             {
-                case RunMode.Inspect:
-                    Report(sortedUpdates);
-                    break;
-
-                case RunMode.Update:
-                    await updater.ApplyUpdates(sortedUpdates, sources);
-                    break;
+                await updater.ApplyUpdates(sortedUpdates, sources);
+            }
+            else
+            {
+                Report(sortedUpdates);
             }
         }
 
