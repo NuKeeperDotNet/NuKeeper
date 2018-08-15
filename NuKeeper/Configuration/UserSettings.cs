@@ -14,7 +14,7 @@ namespace NuKeeper.Configuration
 
         public Regex PackageExcludes { get; set; }
 
-        public int MaxPullRequestsPerRepository { get; set; }
+        public int MaxPackageUpdates { get; set; }
 
         public int MaxRepositoriesChanged { get; set; }
 
