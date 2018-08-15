@@ -33,7 +33,7 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<int> Run(SettingsContainer settings)
+        public async Task<int> Run(GithubScope scope, SettingsContainer settings)
         {
             var github = _githubCreator.Create(settings);
             var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);
@@ -52,7 +52,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await repositoryDiscovery.GetRepositories();
+            var repositories = await repositoryDiscovery.GetRepositories(scope);
 
             var reposUpdated = 0;
 

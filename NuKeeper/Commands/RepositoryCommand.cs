@@ -36,7 +36,6 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
-            settings.ModalSettings.Mode = RunMode.Repository;
             settings.ModalSettings.Repository = GitSettingsReader.ReadRepositorySettings(repoUri);
 
             if (settings.ModalSettings.Repository == null)
@@ -49,7 +48,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(settings);
+            await _engine.Run(GithubScope.Repository, settings);
             return 0;
         }
     }
