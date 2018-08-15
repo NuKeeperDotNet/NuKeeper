@@ -9,7 +9,7 @@ namespace NuKeeper.Commands
     [Command(Description = "Applies relevant updates to a local project.")]
     internal class UpdateCommand : LocalNuKeeperCommand
     {
-        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdates",
+        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",
             Description = "Maximum number of package updates to make. Defaults to 1.")]
         protected int MaxPackageUpdates { get; } = 1;
 
