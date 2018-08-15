@@ -24,8 +24,6 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.ModalSettings.Mode = RunMode.Global;
-
             if (settings.UserSettings.PackageIncludes == null)
             {
                 return ValidationResult.Failure("Global mode must have an include regex");
@@ -42,7 +40,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(settings);
+            await _engine.Run(GithubScope.Global, settings);
             return 0;
         }
 
