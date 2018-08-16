@@ -11,26 +11,26 @@ namespace NuKeeper.Update.Selection
     public class UpdateSelection : IUpdateSelection
     {
         private readonly INuKeeperLogger _logger;
+        private FilterSettings _settings;
+        private DateTime _maxPublishedDate;
 
-        private readonly FilterSettings _settings;
-        private readonly DateTime _maxPublishedDate;
-
-        public UpdateSelection(FilterSettings settings,
-            INuKeeperLogger logger)
+        public UpdateSelection(INuKeeperLogger logger)
         {
             _logger = logger;
-            _settings = settings;
-            _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
         }
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(
             IReadOnlyCollection<PackageUpdateSet> candidates,
+            FilterSettings settings,
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
+            _settings = settings;
+            _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
+
             var filtered = await ApplyFilters(candidates, remoteCheck);
 
             var capped = filtered
-                .Take(_settings.MaxPackageUpdates)
+                .Take(settings.MaxPackageUpdates)
                 .ToList();
 
             LogPackageCounts(candidates.Count, filtered.Count, capped.Count);

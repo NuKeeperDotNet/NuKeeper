@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
+using NuKeeper.Creators;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -28,15 +30,18 @@ namespace NuKeeper.Local
 
         public async Task ApplyUpdates(
             IReadOnlyCollection<PackageUpdateSet> updates,
-            NuGetSources sources)
+            NuGetSources sources,
+            SettingsContainer settings)
         {
             if (!updates.Any())
             {
                 return;
             }
 
+            var filterSettings = FilterSettingsCreator.MakeFilterSettings(settings.UserSettings);
+
             var filtered = await _selection
-                .Filter(updates, p => Task.FromResult(true));
+                .Filter(updates, filterSettings, p => Task.FromResult(true));
 
             if (!filtered.Any())
             {

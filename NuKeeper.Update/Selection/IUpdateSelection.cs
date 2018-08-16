@@ -9,6 +9,7 @@ namespace NuKeeper.Update.Selection
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> Filter(
             IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
+            FilterSettings settings,
             Func<PackageUpdateSet, Task<bool>> remoteCheck);
     }
 }

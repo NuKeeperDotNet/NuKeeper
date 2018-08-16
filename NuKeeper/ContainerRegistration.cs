@@ -1,5 +1,7 @@
+using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.Local;
+using NuKeeper.Update.Selection;
 using SimpleInjector;
 
 namespace NuKeeper
@@ -21,6 +23,8 @@ namespace NuKeeper
         private static void Register(Container container)
         {
             container.Register<GitHubEngine>();
+            container.Register<ILocalUpdater, LocalUpdater>();
+            container.Register<IUpdateSelection, UpdateSelection>();
         }
     }
 }

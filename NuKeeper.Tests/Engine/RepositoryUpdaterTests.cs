@@ -171,13 +171,19 @@ namespace NuKeeper.Tests.Engine
 
         private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
         {
-            updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
+            updateSelection.SelectTargets(
+                    Arg.Any<ForkData>(),
+                    Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<UserSettings>())
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
         private void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
         {
-            updateSelection.SelectTargets(Arg.Any<ForkData>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>())
+            updateSelection.SelectTargets(
+                    Arg.Any<ForkData>(),
+                    Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<UserSettings>())
                 .Returns(new List<PackageUpdateSet>());
         }
 

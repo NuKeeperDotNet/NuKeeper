@@ -10,23 +10,25 @@ namespace NuKeeper.Creators
     {
         private readonly ICreate<IExistingBranchFilter> _existingBranchFilterCreator;
         private readonly IPackageUpdateSetSort _packageUpdateSetSort;
-        private readonly ICreate<IUpdateSelection> _updateSelectionCreator;
+        private readonly IUpdateSelection _updateSelection;
         private readonly INuKeeperLogger _logger;
 
-        public PackageUpdateSelectionCreator(ICreate<IExistingBranchFilter> existingBranchFilterCreator,
-            IPackageUpdateSetSort packageUpdateSetSort, ICreate<IUpdateSelection> updateSelectionCreator,
+        public PackageUpdateSelectionCreator(
+            ICreate<IExistingBranchFilter> existingBranchFilterCreator,
+            IPackageUpdateSetSort packageUpdateSetSort,
+            IUpdateSelection updateSelection,
             INuKeeperLogger logger)
         {
             _existingBranchFilterCreator = existingBranchFilterCreator;
             _packageUpdateSetSort = packageUpdateSetSort;
-            _updateSelectionCreator = updateSelectionCreator;
+            _updateSelection = updateSelection;
             _logger = logger;
         }
 
         public IPackageUpdateSelection Create(SettingsContainer settings)
         {
             return new PackageUpdateSelection(_existingBranchFilterCreator.Create(settings),
-                _packageUpdateSetSort, _updateSelectionCreator.Create(settings), _logger);
+                _packageUpdateSetSort, _updateSelection, _logger);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
-using NuKeeper.Creators;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -20,26 +19,25 @@ namespace NuKeeper.Local
         private readonly INuGetSourcesReader _nuGetSourcesReader;
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
-        private readonly ICreate<ILocalUpdater> _updaterCreator;
+        private readonly ILocalUpdater _updater;
         private readonly INuKeeperLogger _logger;
 
         public LocalEngine(
             INuGetSourcesReader nuGetSourcesReader,
             IUpdateFinder updateFinder,
             IPackageUpdateSetSort sorter,
-            ICreate<ILocalUpdater> updaterCreator,
+            ILocalUpdater updater,
             INuKeeperLogger logger)
         {
             _nuGetSourcesReader = nuGetSourcesReader;
             _updateFinder = updateFinder;
             _sorter = sorter;
-            _updaterCreator = updaterCreator;
+            _updater = updater;
             _logger = logger;
         }
 
         public async Task Run(SettingsContainer settings, bool write)
         {
-            var updater = _updaterCreator.Create(settings);
             var folder = TargetFolder(settings.UserSettings);
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
@@ -48,7 +46,7 @@ namespace NuKeeper.Local
 
             if (write)
             {
-                await updater.ApplyUpdates(sortedUpdates, sources);
+                await _updater.ApplyUpdates(sortedUpdates, sources, settings);
             }
             else
             {

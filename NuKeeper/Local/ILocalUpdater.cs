@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 
@@ -9,6 +10,7 @@ namespace NuKeeper.Local
     {
         Task ApplyUpdates(
             IReadOnlyCollection<PackageUpdateSet> updates,
-            NuGetSources sources);
+            NuGetSources sources,
+            SettingsContainer settings);
     }
 }
