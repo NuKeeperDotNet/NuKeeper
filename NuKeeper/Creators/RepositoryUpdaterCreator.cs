@@ -36,7 +36,7 @@ namespace NuKeeper.Creators
         {
             return new RepositoryUpdater(_sourcesReader, _updateFinder, _packageUpdateSelectionCreator.Create(settings),
                 _packageUpdaterCreator.Create(settings), _logger,
-                _solutionRestore, _reporter, settings.UserSettings);
+                _solutionRestore, _reporter, settings);
         }
     }
 }

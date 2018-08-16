@@ -22,7 +22,7 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
         private readonly IAvailableUpdatesReporter _availableUpdatesReporter;
-        private readonly UserSettings _settings;
+        private readonly SettingsContainer _settings;
 
         public RepositoryUpdater(
             INuGetSourcesReader nugetSourcesReader,
@@ -32,7 +32,7 @@ namespace NuKeeper.Engine
             INuKeeperLogger logger,
             SolutionsRestore solutionsRestore,
             IAvailableUpdatesReporter availableUpdatesReporter,
-            UserSettings settings)
+            SettingsContainer settings)
         {
             _nugetSourcesReader = nugetSourcesReader;
             _updateFinder = updateFinder;
@@ -48,13 +48,13 @@ namespace NuKeeper.Engine
         {
             GitInit(git, repository);
 
-            var sources = _nugetSourcesReader.Read(git.WorkingFolder, _settings.NuGetSources);
+            var sources = _nugetSourcesReader.Read(git.WorkingFolder, _settings.UserSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, sources, _settings.AllowedChange);
+                git.WorkingFolder, sources, _settings.UserSettings.AllowedChange);
 
-            _logger.Detailed($"Report mode is {_settings.ReportMode}");
-            switch (_settings.ReportMode)
+            _logger.Detailed($"Report mode is {_settings.UserSettings.ReportMode}");
+            switch (_settings.UserSettings.ReportMode)
             {
                 case ReportMode.Off:
                     break;
@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
                     return 0;
 
                 default:
-                    throw new Exception($"Unknown report mode: '{_settings.ReportMode}'");
+                    throw new Exception($"Unknown report mode: '{_settings.UserSettings.ReportMode}'");
             }
 
             if (updates.Count == 0)
@@ -81,7 +81,7 @@ namespace NuKeeper.Engine
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(
-                repository.Push, updates, _settings);
+                repository.Push, updates, _settings.PackageFilters);
 
             return await DoTargetUpdates(git, repository, targetUpdates, sources);
         }

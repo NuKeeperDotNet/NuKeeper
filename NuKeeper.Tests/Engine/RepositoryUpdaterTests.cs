@@ -17,6 +17,7 @@ using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
+using NuKeeper.Update.Selection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
@@ -174,7 +175,7 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<UserSettings>())
+                    Arg.Any<FilterSettings>())
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
@@ -183,7 +184,7 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<UserSettings>())
+                    Arg.Any<FilterSettings>())
                 .Returns(new List<PackageUpdateSet>());
         }
 
@@ -211,9 +212,12 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<RepositoryData>())
                 .Returns(true);
 
-            var settings = new UserSettings
+            var settings = new SettingsContainer
             {
-                ReportMode = reportMode
+                UserSettings = new UserSettings
+                {
+                    ReportMode = reportMode
+                }
             };
 
             var repoUpdater = new RepositoryUpdater(

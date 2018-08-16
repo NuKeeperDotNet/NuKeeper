@@ -6,6 +6,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Sources;
+using NuKeeper.Update.Selection;
 
 namespace NuKeeper.Commands
 {
@@ -75,6 +76,7 @@ namespace NuKeeper.Commands
             var settings = new SettingsContainer
             {
                 ModalSettings = new ModalSettings(),
+                PackageFilters = new FilterSettings(),
                 UserSettings = new UserSettings
                 {
                     AllowedChange = AllowedChange,
@@ -93,7 +95,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
             }
 
-            settings.UserSettings.MinimumPackageAge = minPackageAge.Value;
+            settings.PackageFilters.MinimumAge = minPackageAge.Value;
 
             var regexIncludeValid = PopulatePackageIncludes(settings, Include);
             if (!regexIncludeValid.IsSuccess)
@@ -115,13 +117,13 @@ namespace NuKeeper.Commands
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                settings.UserSettings.PackageIncludes = null;
+                settings.PackageFilters.Includes = null;
                 return ValidationResult.Success;
             }
 
             try
             {
-                settings.UserSettings.PackageIncludes = new Regex(value);
+                settings.PackageFilters.Includes = new Regex(value);
             }
             catch (Exception ex)
             {
@@ -139,13 +141,13 @@ namespace NuKeeper.Commands
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                settings.UserSettings.PackageExcludes = null;
+                settings.PackageFilters.Excludes = null;
                 return ValidationResult.Success;
             }
 
             try
             {
-                settings.UserSettings.PackageExcludes = new Regex(value);
+                settings.PackageFilters.Excludes = new Regex(value);
             }
             catch (Exception ex)
             {

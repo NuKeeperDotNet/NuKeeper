@@ -84,7 +84,7 @@ namespace NuKeeper.Commands
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
-            settings.UserSettings.MaxPackageUpdates = MaxPullRequestsPerRepository;
+            settings.PackageFilters.MaxPackageUpdates = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
 

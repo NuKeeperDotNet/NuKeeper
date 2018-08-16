@@ -24,7 +24,7 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            if (settings.UserSettings.PackageIncludes == null)
+            if (settings.PackageFilters.Includes == null)
             {
                 return ValidationResult.Failure("Global mode must have an include regex");
             }
