@@ -10,15 +10,7 @@ namespace NuKeeper.Configuration
     {
         public NuGetSources NuGetSources { get; set; }
 
-        public Regex PackageIncludes { get; set; }
-
-        public Regex PackageExcludes { get; set; }
-
-        public int MaxPackageUpdates { get; set; }
-
         public int MaxRepositoriesChanged { get; set; }
-
-        public TimeSpan MinimumPackageAge { get; set; }
 
         public VersionChange AllowedChange { get; set; }
 

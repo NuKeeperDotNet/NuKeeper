@@ -38,10 +38,8 @@ namespace NuKeeper.Local
                 return;
             }
 
-            var filterSettings = FilterSettingsCreator.MakeFilterSettings(settings.UserSettings);
-
             var filtered = await _selection
-                .Filter(updates, filterSettings, p => Task.FromResult(true));
+                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
 
             if (!filtered.Any())
             {

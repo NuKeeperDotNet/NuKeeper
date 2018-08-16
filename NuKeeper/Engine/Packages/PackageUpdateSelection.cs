@@ -33,15 +33,13 @@ namespace NuKeeper.Engine.Packages
         public async Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
             IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
-            UserSettings settings)
+            FilterSettings settings)
         {
             var sorted = _sort.Sort(potentialUpdates)
                 .ToList();
 
-            var filterSettings = FilterSettingsCreator.MakeFilterSettings(settings);
-
             var filtered = await _updateSelection.Filter(
-                sorted, filterSettings,
+                sorted, settings,
                 p => _existingBranchFilter.CanMakeBranchFor(p, pushFork));
 
             foreach (var updateSet in filtered)

@@ -158,12 +158,12 @@ namespace NuKeeper.Tests.Engine
                 MakeSort(), updateSelection, logger);
         }
 
-        private UserSettings NoFilter()
+        private FilterSettings NoFilter()
         {
-            return new UserSettings
+            return new FilterSettings
             {
                 MaxPackageUpdates = Int32.MaxValue,
-                MinimumPackageAge = TimeSpan.Zero
+                MinimumAge = TimeSpan.Zero
             };
         }
 

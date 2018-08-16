@@ -29,7 +29,7 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.UserSettings.MaxPackageUpdates = MaxPackageUpdates;
+            settings.PackageFilters.MaxPackageUpdates = MaxPackageUpdates;
 
             return ValidationResult.Success;
         }
