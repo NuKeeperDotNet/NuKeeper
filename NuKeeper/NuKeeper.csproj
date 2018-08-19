@@ -12,7 +12,10 @@
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NuGet.CommandLine" Version="4.7.0" />
+    <PackageReference Include="NuGet.CommandLine" Version="4.7.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Octokit" Version="0.31.0" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
   </ItemGroup>
