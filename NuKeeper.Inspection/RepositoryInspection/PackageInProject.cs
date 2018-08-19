@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
@@ -5,14 +7,17 @@ namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class PackageInProject
     {
-        public PackageInProject(PackageIdentity identity, PackagePath path)
+        public PackageInProject(PackageIdentity identity,
+            PackagePath path,
+            IEnumerable<string> projectReferences)
         {
             Identity = identity;
             Path = path;
+            ProjectReferences = projectReferences?.ToList() ?? new List<string>();
         }
 
         public PackageInProject(string id, string version, PackagePath path) :
-            this(new PackageIdentity(id, new NuGetVersion(version)), path)
+            this(new PackageIdentity(id, new NuGetVersion(version)), path, null)
         {
         }
 
@@ -23,5 +28,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
         public NuGetVersion Version => Identity.Version;
 
         public bool IsPrerelease => Identity.Version.IsPrerelease;
+
+        public IReadOnlyCollection<string> ProjectReferences { get; }
     }
 }
