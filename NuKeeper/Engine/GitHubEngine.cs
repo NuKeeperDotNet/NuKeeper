@@ -64,7 +64,9 @@ namespace NuKeeper.Engine
                     break;
                 }
 
-                var updatesInThisRepo = await repositoryEngine.Run(repository, gitCreds, userIdentity);
+                var updatesInThisRepo = await repositoryEngine.Run(repository,
+                    gitCreds, userIdentity, settings);
+
                 if (updatesInThisRepo > 0)
                 {
                     reposUpdated++;

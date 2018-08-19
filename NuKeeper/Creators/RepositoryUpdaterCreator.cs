@@ -21,7 +21,8 @@ namespace NuKeeper.Creators
 
         public RepositoryUpdaterCreator(INuKeeperLogger logger, INuGetSourcesReader sourcesReader,
             IUpdateFinder updateFinder, ICreate<IPackageUpdater> packageUpdaterCreator,
-            SolutionsRestore solutionRestore, IAvailableUpdatesReporter reporter, ICreate<IPackageUpdateSelection> packageUpdateSelectionCreator)
+            SolutionsRestore solutionRestore, IAvailableUpdatesReporter reporter,
+            ICreate<IPackageUpdateSelection> packageUpdateSelectionCreator)
         {
             _logger = logger;
             _sourcesReader = sourcesReader;
@@ -34,9 +35,10 @@ namespace NuKeeper.Creators
 
         public IRepositoryUpdater Create(SettingsContainer settings)
         {
-            return new RepositoryUpdater(_sourcesReader, _updateFinder, _packageUpdateSelectionCreator.Create(settings),
+            return new RepositoryUpdater(_sourcesReader, _updateFinder,
+                _packageUpdateSelectionCreator.Create(settings),
                 _packageUpdaterCreator.Create(settings), _logger,
-                _solutionRestore, _reporter, settings);
+                _solutionRestore, _reporter);
         }
     }
 }

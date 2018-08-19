@@ -21,8 +21,7 @@ namespace NuKeeper.Engine
             IForkFinder forkFinder,
             IFolderFactory folderFactory,
             INuKeeperLogger logger,
-            IRepositoryFilter repositoryFilter
-            )
+            IRepositoryFilter repositoryFilter)
         {
             _repositoryUpdater = repositoryUpdater;
             _forkFinder = forkFinder;
@@ -31,8 +30,10 @@ namespace NuKeeper.Engine
             _repositoryFilter = repositoryFilter;
         }
 
-        public async Task<int> Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds,
-            Identity userIdentity)
+        public async Task<int> Run(RepositorySettings repository,
+            UsernamePasswordCredentials gitCreds,
+            Identity userIdentity,
+            SettingsContainer settings)
         {
             try
             {
@@ -50,7 +51,7 @@ namespace NuKeeper.Engine
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
 
-                var updatesDone = await _repositoryUpdater.Run(git, repo);
+                var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 
                 tempFolder.TryDelete();
                 return updatesDone;
