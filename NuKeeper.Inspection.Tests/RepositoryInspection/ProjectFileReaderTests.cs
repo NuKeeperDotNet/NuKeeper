@@ -169,7 +169,8 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             var package = packages.FirstOrDefault();
 
             Assert.That(package.ProjectReferences.Count, Is.EqualTo(1));
-            Assert.That(package.ProjectReferences.First(), Is.EqualTo("c:\\temp\\somewhere\\src\\other.csproj"));
+
+            StringAssert.EndsWith("other.csproj", package.ProjectReferences.First());
         }
 
         [Test]
