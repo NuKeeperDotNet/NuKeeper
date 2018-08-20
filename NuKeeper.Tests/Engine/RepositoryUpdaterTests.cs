@@ -237,10 +237,11 @@ namespace NuKeeper.Tests.Engine
 
         private static PackageUpdateSet UpdateSet()
         {
-            PackageIdentity fooPackage = new PackageIdentity("foo", new NuGetVersion(1,2,3));
+            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1,2,3));
+            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.PackagesConfig);
             var packages = new[]
             {
-                new PackageInProject(fooPackage, new PackagePath("c:\\foo", "bar", PackageReferenceType.PackagesConfig))
+                new PackageInProject(fooPackage, path, null)
             };
 
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);

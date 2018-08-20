@@ -50,5 +50,10 @@ namespace NuKeeper.Inspection.RepositoryInspection
         /// directory and file name
         /// </summary>
         public string FullName => Info.FullName;
+
+        public override string ToString()
+        {
+            return $"{PackageReferenceType} {RelativePath} in {BaseDirectory}";
+        }
     }
 }

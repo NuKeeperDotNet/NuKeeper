@@ -151,7 +151,26 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             var package = packages.FirstOrDefault();
 
             PackageAssert.IsPopulated(package);
-            Assert.That(packages.First().IsPrerelease, Is.False);
+            Assert.That(package.IsPrerelease, Is.False);
+            Assert.That(package.ProjectReferences, Is.Not.Null);
+            Assert.That(package.ProjectReferences.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ProjectReferencesIsPopulated()
+        {
+            const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
+
+            var package = packages.FirstOrDefault();
+
+            Assert.That(package.ProjectReferences.Count, Is.EqualTo(1));
+
+            StringAssert.EndsWith("other.csproj", package.ProjectReferences.First());
         }
 
         [Test]
@@ -304,7 +323,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages.First().IsPrerelease, Is.True);
         }
 
-                [Test]
+        [Test]
         public void PackageWithMetadataShouldBeRead()
         {
             const string noVersion =
@@ -337,8 +356,6 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages.Count, Is.EqualTo(1));
             PackageAssert.IsPopulated(packages[0]);
         }
-
-
 
         private ProjectFileReader MakeReader()
         {

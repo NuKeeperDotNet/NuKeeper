@@ -54,13 +54,30 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Enumerable.Empty<PackageInProject>();
             }
 
-            var itemGroups = project.Elements(ns + "ItemGroup");
+            var itemGroups = project
+                .Elements(ns + "ItemGroup")
+                .ToList();
+
+            var projectRefs = itemGroups
+                .SelectMany(ig => ig.Elements(ns + "ProjectReference"))
+                .Select(el => MakeProjectPath(el, path.FullName))
+                .ToList();
+
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
 
             return packageRefs
-                .Select(el => XmlToPackage(el, path, ns))
+                .Select(el => XmlToPackage(ns, el, path, projectRefs))
                 .Where(el => el != null)
                 .ToList();
+        }
+
+        private string MakeProjectPath(XElement el, string currentPath)
+        {
+            var relativePath = el.Attribute("Include")?.Value;
+
+            var currentDir = Path.GetDirectoryName(currentPath);
+            var fullPath = Path.Combine(currentDir, relativePath);
+            return fullPath;
         }
 
         private static PackagePath CreatePackagePath(XNamespace xmlNamespace, string baseDirectory, string relativePath)
@@ -70,7 +87,8 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 : new PackagePath(baseDirectory, relativePath, PackageReferenceType.ProjectFile);
         }
 
-        private PackageInProject XmlToPackage(XElement el, PackagePath path, XNamespace ns)
+        private PackageInProject XmlToPackage(XNamespace ns, XElement el,
+            PackagePath path, IEnumerable<string> projectReferences)
         {
             try
             {
@@ -90,7 +108,8 @@ namespace NuKeeper.Inspection.RepositoryInspection
                     return null;
                 }
 
-                return new PackageInProject(new PackageIdentity(id, nugetVersion), path);
+                return new PackageInProject(new PackageIdentity(id, nugetVersion),
+                    path, projectReferences);
             }
             catch (Exception ex)
             {
