@@ -1,6 +1,6 @@
 namespace NuKeeper.Configuration
 {
-    public class ModalSettings
+    public class SourceControlServerSettings
     {
         public string OrganisationName { get; set; }
         public RepositorySettings Repository { get; set; }

@@ -33,7 +33,7 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<int> Run(GithubScope scope, SettingsContainer settings)
+        public async Task<int> Run(ServerScope scope, SettingsContainer settings)
         {
             var github = _githubCreator.Create(settings);
             var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);

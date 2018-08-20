@@ -11,12 +11,12 @@ namespace NuKeeper.Engine
     public class GitHubRepositoryDiscovery : IGitHubRepositoryDiscovery
     {
         private readonly IGitHub _gitHub;
-        private readonly ModalSettings _settings;
+        private readonly SourceControlServerSettings _settings;
         private readonly INuKeeperLogger _logger;
 
         public GitHubRepositoryDiscovery(
             IGitHub gitHub, 
-            ModalSettings settings,
+            SourceControlServerSettings settings,
             INuKeeperLogger logger)
         {
             _gitHub = gitHub;
@@ -24,17 +24,17 @@ namespace NuKeeper.Engine
             _logger = logger;
         }
 
-        public async Task<IEnumerable<RepositorySettings>> GetRepositories(GithubScope scope)
+        public async Task<IEnumerable<RepositorySettings>> GetRepositories(ServerScope scope)
         {
             switch (scope)
             {
-                case GithubScope.Global:
+                case ServerScope.Global:
                     return await ForAllOrgs();
 
-                case GithubScope.Organisation:
+                case ServerScope.Organisation:
                     return await FromOrganisation(_settings.OrganisationName);
 
-                case GithubScope.Repository:
+                case ServerScope.Repository:
                     return new[] { _settings.Repository };
 
                 default:

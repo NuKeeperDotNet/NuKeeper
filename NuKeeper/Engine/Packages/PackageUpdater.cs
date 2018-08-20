@@ -15,19 +15,19 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
-        private readonly ModalSettings _modalSettings;
+        private readonly SourceControlServerSettings _serverSettings;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
             IGitHub gitHub,
             IUpdateRunner localUpdater,
             INuKeeperLogger logger,
-            ModalSettings modalSettings)
+            SourceControlServerSettings serverSettings)
         {
             _gitHub = gitHub;
             _updateRunner = localUpdater;
             _logger = logger;
-            _modalSettings = modalSettings;
+            _serverSettings = serverSettings;
         }
 
         public async Task<bool> MakeUpdatePullRequest(
@@ -87,7 +87,7 @@ namespace NuKeeper.Engine.Packages
                 Body = CommitWording.MakeCommitDetails(updates)
             };
 
-            await _gitHub.OpenPullRequest(repository.Pull, pr, _modalSettings.Labels);
+            await _gitHub.OpenPullRequest(repository.Pull, pr, _serverSettings.Labels);
         }
     }
 }

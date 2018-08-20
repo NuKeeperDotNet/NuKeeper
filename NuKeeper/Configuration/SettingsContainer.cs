@@ -4,7 +4,7 @@ namespace NuKeeper.Configuration
 {
     public class SettingsContainer
     {
-        public ModalSettings ModalSettings { get; set; }
+        public SourceControlServerSettings SourceControlServerSettings { get; set; }
 
         public GithubAuthSettings GithubAuthSettings { get; set; }
 

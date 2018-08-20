@@ -1,6 +1,6 @@
 namespace NuKeeper.Configuration
 {
-    public enum GithubScope
+    public enum ServerScope
     {
         Repository,
         Organisation,

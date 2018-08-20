@@ -40,7 +40,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(GithubScope.Global, settings);
+            await _engine.Run(ServerScope.Global, settings);
             return 0;
         }
 

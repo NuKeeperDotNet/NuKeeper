@@ -18,7 +18,7 @@ namespace NuKeeper.Creators
 
         public IGitHubRepositoryDiscovery Create(SettingsContainer settings)
         {
-            return new GitHubRepositoryDiscovery(_githubCreator.Create(settings), settings.ModalSettings, _logger);
+            return new GitHubRepositoryDiscovery(_githubCreator.Create(settings), settings.SourceControlServerSettings, _logger);
         }
     }
 }
