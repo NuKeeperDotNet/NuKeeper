@@ -75,7 +75,7 @@ namespace NuKeeper.Commands
         {
             var settings = new SettingsContainer
             {
-                ModalSettings = new ModalSettings(),
+                SourceControlServerSettings = new SourceControlServerSettings(),
                 PackageFilters = new FilterSettings(),
                 UserSettings = new UserSettings
                 {

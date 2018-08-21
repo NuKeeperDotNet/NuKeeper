@@ -21,7 +21,7 @@ namespace NuKeeper.Creators
 
         public IPackageUpdater Create(SettingsContainer settings)
         {
-            return new PackageUpdater(_githubCreator.Create(settings), _updateRunner, _logger, settings.ModalSettings);
+            return new PackageUpdater(_githubCreator.Create(settings), _updateRunner, _logger, settings.SourceControlServerSettings);
         }
     }
 }

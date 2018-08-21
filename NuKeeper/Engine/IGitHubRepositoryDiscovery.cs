@@ -6,6 +6,6 @@ namespace NuKeeper.Engine
 {
     public interface IGitHubRepositoryDiscovery
     {
-        Task<IEnumerable<RepositorySettings>> GetRepositories(GithubScope scope);
+        Task<IEnumerable<RepositorySettings>> GetRepositories(ServerScope scope);
     }
 }

@@ -29,13 +29,13 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.ModalSettings.OrganisationName = GithubOrganisationName;
+            settings.SourceControlServerSettings.OrganisationName = GithubOrganisationName;
             return ValidationResult.Success;
         }
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(GithubScope.Organisation, settings);
+            await _engine.Run(ServerScope.Organisation, settings);
             return 0;
         }
     }
