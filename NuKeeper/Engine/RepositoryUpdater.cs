@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine.Packages;
@@ -97,7 +98,11 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            await _solutionsRestore.Restore(git.WorkingFolder, sources);
+            if (targetUpdates.SelectMany(u => u.CurrentPackages)
+                .Any(p => p.Path.PackageReferenceType != PackageReferenceType.ProjectFile))
+            {
+                await _solutionsRestore.Restore(git.WorkingFolder, sources);
+            }
 
             var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources);
 
