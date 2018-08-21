@@ -23,7 +23,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = subject.CommandLine("-s");
 
-            Assert.AreEqual("-s \"file://one\" -s \"C:/Program Files (x86)/Microsoft SDKs/NuGetPackages/\" -s http://two", result);
+            Assert.AreEqual("-s file://one -s \"C:/Program Files (x86)/Microsoft SDKs/NuGetPackages/\" -s http://two", result);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using NuKeeper.Inspection.Formats;
 using System.Collections.Generic;
 using System.Linq;
+using McMaster.Extensions.CommandLineUtils;
 using NuGet.Configuration;
 
 namespace NuKeeper.Inspection.Sources
@@ -55,7 +56,7 @@ namespace NuKeeper.Inspection.Sources
 
         private static string EscapePathIfLocal(PackageSource source)
         {
-            return source.IsLocal ? $"\"{source.Source}\"" : source.Source;
+            return source.IsLocal ? ArgumentEscaper.EscapeAndConcatenate(new[] {source.Source}) : source.Source;
         }
     }
 }
