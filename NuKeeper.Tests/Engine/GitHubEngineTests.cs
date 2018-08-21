@@ -139,7 +139,7 @@ namespace NuKeeper.Tests.Engine
 
             repositoryDiscoveryCreator.Create(null).ReturnsForAnyArgs(repoDiscovery);
 
-            repoEngine.Run(null, null, null).ReturnsForAnyArgs(repoEngineResult);
+            repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
             repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
 

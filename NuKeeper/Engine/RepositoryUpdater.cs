@@ -22,7 +22,6 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
         private readonly SolutionsRestore _solutionsRestore;
         private readonly IAvailableUpdatesReporter _availableUpdatesReporter;
-        private readonly SettingsContainer _settings;
 
         public RepositoryUpdater(
             INuGetSourcesReader nugetSourcesReader,
@@ -31,8 +30,7 @@ namespace NuKeeper.Engine
             IPackageUpdater packageUpdater,
             INuKeeperLogger logger,
             SolutionsRestore solutionsRestore,
-            IAvailableUpdatesReporter availableUpdatesReporter,
-            SettingsContainer settings)
+            IAvailableUpdatesReporter availableUpdatesReporter)
         {
             _nugetSourcesReader = nugetSourcesReader;
             _updateFinder = updateFinder;
@@ -41,20 +39,22 @@ namespace NuKeeper.Engine
             _logger = logger;
             _solutionsRestore = solutionsRestore;
             _availableUpdatesReporter = availableUpdatesReporter;
-            _settings = settings;
         }
 
-        public async Task<int> Run(IGitDriver git, RepositoryData repository)
+        public async Task<int> Run(
+            IGitDriver git,
+            RepositoryData repository,
+            SettingsContainer settings)
         {
             GitInit(git, repository);
 
-            var sources = _nugetSourcesReader.Read(git.WorkingFolder, _settings.UserSettings.NuGetSources);
+            var sources = _nugetSourcesReader.Read(git.WorkingFolder, settings.UserSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, sources, _settings.UserSettings.AllowedChange);
+                git.WorkingFolder, sources, settings.UserSettings.AllowedChange);
 
-            _logger.Detailed($"Report mode is {_settings.UserSettings.ReportMode}");
-            switch (_settings.UserSettings.ReportMode)
+            _logger.Detailed($"Report mode is {settings.UserSettings.ReportMode}");
+            switch (settings.UserSettings.ReportMode)
             {
                 case ReportMode.Off:
                     break;
@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
                     return 0;
 
                 default:
-                    throw new Exception($"Unknown report mode: '{_settings.UserSettings.ReportMode}'");
+                    throw new Exception($"Unknown report mode: '{settings.UserSettings.ReportMode}'");
             }
 
             if (updates.Count == 0)
@@ -81,7 +81,7 @@ namespace NuKeeper.Engine
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(
-                repository.Push, updates, _settings.PackageFilters);
+                repository.Push, updates, settings.PackageFilters);
 
             return await DoTargetUpdates(git, repository, targetUpdates, sources);
         }

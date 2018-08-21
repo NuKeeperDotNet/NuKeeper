@@ -6,6 +6,8 @@ namespace NuKeeper.Engine
 {
     public interface IGitHubRepositoryEngine
     {
-        Task<int> Run(RepositorySettings repository, UsernamePasswordCredentials gitCreds, Identity userIdentity);
+        Task<int> Run(RepositorySettings repository,
+            UsernamePasswordCredentials gitCreds, Identity userIdentity,
+            SettingsContainer settings);
     }
 }

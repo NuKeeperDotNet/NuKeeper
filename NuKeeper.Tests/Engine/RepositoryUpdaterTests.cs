@@ -39,7 +39,7 @@ namespace NuKeeper.Tests.Engine
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo);
+            var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
@@ -62,7 +62,7 @@ namespace NuKeeper.Tests.Engine
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo);
+            var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
             await AssertReceivedMakeUpdate(packageUpdater,1);
@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Engine
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo);
+            var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
             await AssertReceivedMakeUpdate(packageUpdater, 2);
@@ -114,7 +114,7 @@ namespace NuKeeper.Tests.Engine
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo);
+            var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
@@ -135,13 +135,12 @@ namespace NuKeeper.Tests.Engine
 
             var repoUpdater = MakeRepositoryUpdater(
                 packageUpdater, updateSelection,
-                twoUpdates,
-                ReportMode.ReportOnly);
+                twoUpdates);
 
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo);
+            var count = await repoUpdater.Run(git, repo, MakeSettings(ReportMode.ReportOnly));
 
             Assert.That(count, Is.EqualTo(0));
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
@@ -188,11 +187,23 @@ namespace NuKeeper.Tests.Engine
                 .Returns(new List<PackageUpdateSet>());
         }
 
+        private SettingsContainer MakeSettings(ReportMode reportMode = ReportMode.Off)
+        {
+            return new SettingsContainer
+            {
+                UserSettings = new UserSettings
+                {
+                    ReportMode = reportMode
+                }
+            };
+
+
+        }
+
         private IRepositoryUpdater MakeRepositoryUpdater(
             IPackageUpdater packageUpdater,
             IPackageUpdateSelection updateSelection,
-            List<PackageUpdateSet> updates,
-            ReportMode reportMode = ReportMode.Off)
+            List<PackageUpdateSet> updates)
         {
             var sources = Substitute.For<INuGetSourcesReader>();
             var updateFinder = Substitute.For<IUpdateFinder>();
@@ -212,18 +223,10 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<RepositoryData>())
                 .Returns(true);
 
-            var settings = new SettingsContainer
-            {
-                UserSettings = new UserSettings
-                {
-                    ReportMode = reportMode
-                }
-            };
-
             var repoUpdater = new RepositoryUpdater(
                 sources, updateFinder, updateSelection, packageUpdater,
                 Substitute.For<INuKeeperLogger>(), new SolutionsRestore(fileRestore),
-                reporter, settings);
+                reporter);
 
             return repoUpdater;
         }
