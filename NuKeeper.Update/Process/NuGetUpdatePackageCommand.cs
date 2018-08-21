@@ -13,12 +13,15 @@ namespace NuKeeper.Update.Process
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
+        private readonly NuGetPath _nuGetPath;
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
+            NuGetPath nuGetPath = null,
             IExternalProcess externalProcess = null)
         {
             _logger = logger;
+            _nuGetPath = nuGetPath ?? new NuGetPath(logger);
             _externalProcess = externalProcess ?? new ExternalProcess(logger);
         }
 
@@ -33,7 +36,7 @@ namespace NuKeeper.Update.Process
 
             var projectPath = currentPackage.Path.Info.DirectoryName;
 
-            var nuget = NuGetPath.FindExecutable();
+            var nuget = _nuGetPath.FindExecutable();
             if (string.IsNullOrWhiteSpace(nuget))
             {
                 _logger.Normal("Cannot find NuGet exe for package update");

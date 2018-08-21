@@ -1,12 +1,20 @@
 using System;
 using System.IO;
 using System.Linq;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Update.Process
 {
-    public static class NuGetPath
+    public class NuGetPath
     {
-        public static string FindExecutable()
+        private readonly INuKeeperLogger _logger;
+
+        public NuGetPath(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
+        public string FindExecutable()
         {
             var localNugetPath = FindLocalNuget();
 
@@ -31,20 +39,22 @@ namespace NuKeeper.Update.Process
             return string.Empty;
         }
 
-        private static string FindNugetInPackagesUnderProfile()
+        private string FindNugetInPackagesUnderProfile()
         {
             var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
             if (string.IsNullOrWhiteSpace(profile))
             {
-                throw new Exception("Could not find user profile path");
+                _logger.Error("Could not find user profile path");
+                return String.Empty;
             }
 
             var commandlinePackageDir = Path.Combine(profile, ".nuget", "packages", "nuget.commandline");
 
             if (!Directory.Exists(commandlinePackageDir))
             {
-                throw new Exception("Could not find nuget commandline path: " + commandlinePackageDir);
+                _logger.Error("Could not find nuget commandline path: " + commandlinePackageDir);
+                return String.Empty;
             }
 
             var highestVersion = Directory.GetDirectories(commandlinePackageDir)
@@ -53,7 +63,8 @@ namespace NuKeeper.Update.Process
 
             if (string.IsNullOrWhiteSpace(highestVersion))
             {
-                throw new Exception("Could not find a version of nuget.commandline");
+                _logger.Error("Could not find a version of nuget.commandline");
+                return String.Empty;
             }
 
             var nugetProgramPath = Path.Combine(highestVersion, "tools", "NuGet.exe");
