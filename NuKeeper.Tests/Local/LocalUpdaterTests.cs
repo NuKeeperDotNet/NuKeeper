@@ -104,7 +104,8 @@ namespace NuKeeper.Tests.Local
                 Enumerable.Empty<PackageDependency>());
             var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
 
-            var pip = new PackageInProject(fooPackage, new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile));
+            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile);
+            var pip = new PackageInProject(fooPackage, path, null);
 
             return new PackageUpdateSet(packages, new List<PackageInProject> {pip});
         }

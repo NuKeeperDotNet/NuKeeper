@@ -88,7 +88,7 @@ namespace NuKeeper.Commands
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
 
-            settings.ModalSettings.Labels = Label;
+            settings.SourceControlServerSettings.Labels = Label;
 
             return ValidationResult.Success;
         }

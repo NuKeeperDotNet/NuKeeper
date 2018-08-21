@@ -18,14 +18,14 @@ namespace NuKeeper.Tests.Engine
         public async Task SuccessInRepoMode()
         {
             var github = Substitute.For<IGitHub>();
-            var settings = new ModalSettings
+            var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings()
             };
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, settings);
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories(GithubScope.Repository);
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(ServerScope.Repository);
 
             var repos = reposResponse.ToList();
 
@@ -41,7 +41,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
+            var repos = await githubRepositoryDiscovery.GetRepositories(ServerScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Empty);
@@ -62,7 +62,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
+            var repos = await githubRepositoryDiscovery.GetRepositories(ServerScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -89,7 +89,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(github, OrgModeSettings());
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(GithubScope.Organisation);
+            var repos = await githubRepositoryDiscovery.GetRepositories(ServerScope.Organisation);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -100,14 +100,14 @@ namespace NuKeeper.Tests.Engine
             Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
-        private static IGitHubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGitHub gitHub, ModalSettings settings)
+        private static IGitHubRepositoryDiscovery MakeGithubRepositoryDiscovery(IGitHub gitHub, SourceControlServerSettings settings)
         {
             return new GitHubRepositoryDiscovery(gitHub, settings, Substitute.For<INuKeeperLogger>());
         }
 
-        private static ModalSettings OrgModeSettings()
+        private static SourceControlServerSettings OrgModeSettings()
         {
-            return new ModalSettings
+            return new SourceControlServerSettings
             {
                 OrganisationName = "testOrg"
             };

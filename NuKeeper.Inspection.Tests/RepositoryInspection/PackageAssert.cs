@@ -13,6 +13,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
 
             Assert.That(package.Id, Is.Not.Empty);
             Assert.That(package.Version.ToString(), Is.Not.Empty);
+            Assert.That(package.ProjectReferences, Is.Not.Null);
         }
     }
 }
