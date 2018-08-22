@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 
@@ -19,7 +20,9 @@ namespace NuKeeper.Update
 
         public async Task Update(PackageUpdateSet updateSet, NuGetSources sources)
         {
-            foreach (var current in updateSet.CurrentPackages)
+            var sortedUpdates = Sort(updateSet.CurrentPackages);
+
+            foreach (var current in sortedUpdates)
             {
                 var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType);
                 foreach (var updateCommand in updateCommands)
@@ -27,6 +30,12 @@ namespace NuKeeper.Update
                     await updateCommand.Invoke(current, updateSet.SelectedVersion, updateSet.Selected.Source, sources);
                 }
             }
+        }
+
+        private IEnumerable<PackageInProject> Sort(IReadOnlyCollection<PackageInProject> packages)
+        {
+            var sorter = new PackageInProjectTopologicalSort(_logger);
+            return sorter.Sort(packages);
         }
 
         private IReadOnlyCollection<IPackageCommand> GetUpdateCommands(
