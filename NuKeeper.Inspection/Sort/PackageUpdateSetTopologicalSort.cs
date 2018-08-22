@@ -5,9 +5,6 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Sort
 {
-    /// <summary>
-    /// https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
-    /// </summary>
     public class PackageUpdateSetTopologicalSort : IPackageUpdateSetSort
     {
         private readonly INuKeeperLogger _logger;
@@ -19,7 +16,7 @@ namespace NuKeeper.Inspection.Sort
 
         public IEnumerable<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
-            var topo = new TopologicalSort<PackageUpdateSet>(_logger);
+            var topo = new TopologicalSort<PackageUpdateSet>(_logger, Match);
 
             var inputMap = input.Select(p =>
                 new SortItemData<PackageUpdateSet>(p, PackageDeps(p, input)))
@@ -30,6 +27,11 @@ namespace NuKeeper.Inspection.Sort
 
             ReportSort(input.ToList(), sorted);
             return sorted;
+        }
+
+        private bool Match(PackageUpdateSet a, PackageUpdateSet b)
+        {
+            return a.SelectedId == b.SelectedId;
         }
 
         private IReadOnlyCollection<PackageUpdateSet> PackageDeps(PackageUpdateSet set, IReadOnlyCollection<PackageUpdateSet> all)
@@ -49,14 +51,14 @@ namespace NuKeeper.Inspection.Sort
                     hasChange = true;
                     var firstChange = output[i];
                     var originalIndex = input.IndexOf(firstChange);
-                    _logger.Detailed($"Resorted packages by dependencies, first change is {firstChange.SelectedId} moved to position {i} from {originalIndex}.");
+                    _logger.Detailed($"Resorted {output.Count} packages by dependencies, first change is {firstChange.SelectedId} moved to position {i} from {originalIndex}.");
                     break;
                 }
             }
 
             if (!hasChange)
             {
-                _logger.Detailed("Sorted packages by dependencies but no change made");
+                _logger.Detailed($"Sorted {output.Count} packages by dependencies but no change made");
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Inspection.Logging;
@@ -10,14 +11,16 @@ namespace NuKeeper.Inspection.Sort
     public class TopologicalSort<T>
     {
         private readonly INuKeeperLogger _logger;
+        private readonly Func<T, T, bool> _match;
 
         private readonly List<T> _sortedList = new List<T>();
         private List<SortItemData<T>> _data;
         private bool _cycleFound;
 
-        public TopologicalSort(INuKeeperLogger logger)
+        public TopologicalSort(INuKeeperLogger logger, Func<T, T, bool> match)
         {
             _logger = logger;
+            _match = match;
         }
 
         public IEnumerable<T> Sort(
@@ -39,7 +42,6 @@ namespace NuKeeper.Inspection.Sort
             }
 
             _data = inputMap.ToList();
-
 
             return DoSortVisits(inputItems);
         }
@@ -95,7 +97,7 @@ namespace NuKeeper.Inspection.Sort
         private IEnumerable<SortItemData<T>> NodesDependedOn(SortItemData<T> item)
         {
             return item.Dependencies
-                .Select(dep => _data.FirstOrDefault(i => i.Item.Equals(dep)))
+                .Select(dep => _data.FirstOrDefault(i => _match(i.Item, dep)))
                 .Where(dep => dep != null);
         }
     }
