@@ -11,10 +11,7 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NuGet.CommandLine" Version="4.7.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="NuGet.CommandLine" Version="4.7.1" />
     <PackageReference Include="Octokit" Version="0.31.0" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
   </ItemGroup>
@@ -26,5 +23,11 @@
     <None Update="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)\nuget.commandline\4.7.1\tools\NuGet.exe">
+      <Pack>true</Pack>
+      <PackagePath>tools\netcoreapp2.1\any\NuGet.exe</PackagePath>
+    </Content>
   </ItemGroup>
 </Project>
