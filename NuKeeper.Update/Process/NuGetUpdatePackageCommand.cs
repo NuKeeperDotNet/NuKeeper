@@ -9,20 +9,20 @@ using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {
-    public class NuGetUpdatePackageCommand : IPackageCommand
+    public class NuGetUpdatePackageCommand : INuGetUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
-        private readonly NuGetPath _nuGetPath;
+        private readonly INuGetPath _nuGetPath;
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
-            NuGetPath nuGetPath = null,
-            IExternalProcess externalProcess = null)
+            INuGetPath nuGetPath,
+            IExternalProcess externalProcess)
         {
             _logger = logger;
-            _nuGetPath = nuGetPath ?? new NuGetPath(logger);
-            _externalProcess = externalProcess ?? new ExternalProcess(logger);
+            _nuGetPath = nuGetPath;
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(PackageInProject currentPackage,

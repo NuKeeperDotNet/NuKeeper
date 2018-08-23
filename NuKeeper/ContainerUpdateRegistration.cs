@@ -10,6 +10,7 @@ namespace NuKeeper
         public static void Register(Container container)
         {
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
+            container.Register<INuGetUpdatePackageCommand, NuGetUpdatePackageCommand>();
             container.Register<IExternalProcess, ExternalProcess>();
             container.Register<IUpdateRunner, UpdateRunner>();
             container.Register<INuGetPath, NuGetPath>();

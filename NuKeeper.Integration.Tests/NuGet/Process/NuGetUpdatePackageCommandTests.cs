@@ -8,6 +8,8 @@ using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
+using NuKeeper.Update.Process;
+using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
@@ -57,7 +59,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
-            var command = new Update.Process.NuGetUpdatePackageCommand(Substitute.For<INuKeeperLogger>());
+            var logger = Substitute.For<INuKeeperLogger>();
+            var command = new NuGetUpdatePackageCommand(logger, new NuGetPath(logger), new ExternalProcess(logger));
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
