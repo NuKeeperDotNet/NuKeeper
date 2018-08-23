@@ -36,7 +36,7 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var nuget = _nuGetPath.FindExecutable();
+            var nuget = _nuGetPath.Executable;
 
             if (string.IsNullOrWhiteSpace(nuget))
             {

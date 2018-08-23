@@ -36,7 +36,7 @@ namespace NuKeeper.Update.Process
 
             var projectPath = currentPackage.Path.Info.DirectoryName;
 
-            var nuget = _nuGetPath.FindExecutable();
+            var nuget = _nuGetPath.Executable;
             if (string.IsNullOrWhiteSpace(nuget))
             {
                 _logger.Normal("Cannot find NuGet exe for package update");

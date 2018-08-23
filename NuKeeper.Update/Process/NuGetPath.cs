@@ -12,9 +12,12 @@ namespace NuKeeper.Update.Process
         public NuGetPath(INuKeeperLogger logger)
         {
             _logger = logger;
+            this.Executable = FindExecutable();
         }
 
-        public string FindExecutable()
+        public string Executable { get; }
+
+        private string FindExecutable()
         {
             var localNugetPath = FindLocalNuget();
 
