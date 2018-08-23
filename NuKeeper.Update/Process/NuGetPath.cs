@@ -5,7 +5,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Update.Process
 {
-    public class NuGetPath
+    public class NuGetPath : INuGetPath
     {
         private readonly INuKeeperLogger _logger;
 
