@@ -15,19 +15,22 @@ namespace NuKeeper.Update
         private readonly INuGetUpdatePackageCommand _nuGetUpdatePackageCommand;
         private readonly IDotNetUpdatePackageCommand _dotNetUpdatePackageCommand;
         private readonly IUpdateProjectImportsCommand _updateProjectImportsCommand;
+        private readonly IUpdateNuspecCommand _updateNuspecCommand;
 
         public UpdateRunner(
             INuKeeperLogger logger,
             IFileRestoreCommand fileRestoreCommand,
             INuGetUpdatePackageCommand nuGetUpdatePackageCommand,
             IDotNetUpdatePackageCommand dotNetUpdatePackageCommand,
-            IUpdateProjectImportsCommand updateProjectImportsCommand)
+            IUpdateProjectImportsCommand updateProjectImportsCommand,
+            IUpdateNuspecCommand updateNuspecCommand)
         {
             _logger = logger;
             _fileRestoreCommand = fileRestoreCommand;
             _nuGetUpdatePackageCommand = nuGetUpdatePackageCommand;
             _dotNetUpdatePackageCommand = dotNetUpdatePackageCommand;
             _updateProjectImportsCommand = updateProjectImportsCommand;
+            _updateNuspecCommand = updateNuspecCommand;
         }
 
         public async Task Update(PackageUpdateSet updateSet, NuGetSources sources)
@@ -66,7 +69,7 @@ namespace NuKeeper.Update
                     return new[] { _dotNetUpdatePackageCommand };
 
                 case PackageReferenceType.Nuspec:
-                    return new[] { new UpdateNuspecCommand(_logger) };
+                    return new[] { _updateNuspecCommand };
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(packageReferenceType));
