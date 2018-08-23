@@ -23,16 +23,16 @@ namespace NuKeeper.Update.Process
                 return localNugetPath;
             }
 
-
             return FindNugetInPackagesUnderProfile();
         }
 
-        private static string FindLocalNuget()
+        private string FindLocalNuget()
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var fullPath = Path.Combine(appDir, "NuGet.exe");
             if (File.Exists(fullPath))
             {
+                _logger.Detailed("Found NuGet.exe: " + fullPath);
                 return fullPath;
             }
 
@@ -46,15 +46,16 @@ namespace NuKeeper.Update.Process
             if (string.IsNullOrWhiteSpace(profile))
             {
                 _logger.Error("Could not find user profile path");
-                return String.Empty;
+                return string.Empty;
             }
 
             var commandlinePackageDir = Path.Combine(profile, ".nuget", "packages", "nuget.commandline");
+            _logger.Detailed("Checking for NuGet.exe in packages directory: " + commandlinePackageDir);
 
             if (!Directory.Exists(commandlinePackageDir))
             {
                 _logger.Error("Could not find nuget commandline path: " + commandlinePackageDir);
-                return String.Empty;
+                return string.Empty;
             }
 
             var highestVersion = Directory.GetDirectories(commandlinePackageDir)
@@ -64,11 +65,14 @@ namespace NuKeeper.Update.Process
             if (string.IsNullOrWhiteSpace(highestVersion))
             {
                 _logger.Error("Could not find a version of nuget.commandline");
-                return String.Empty;
+                return string.Empty;
             }
 
             var nugetProgramPath = Path.Combine(highestVersion, "tools", "NuGet.exe");
-            return Path.GetFullPath(nugetProgramPath);
+            var fullPath = Path.GetFullPath(nugetProgramPath);
+            _logger.Detailed("Found NuGet.exe: " + fullPath);
+
+            return fullPath;
         }
     }
 }
