@@ -11,7 +11,7 @@ using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Update.Process
 {
-    public class UpdateProjectImportsCommand : IPackageCommand
+    public class UpdateProjectImportsCommand : IUpdateProjectImportsCommand
     {
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
