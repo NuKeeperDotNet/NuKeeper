@@ -8,14 +8,15 @@ namespace NuKeeper.Update.Process
     public class NuGetPath : INuGetPath
     {
         private readonly INuKeeperLogger _logger;
+        private readonly Lazy<string> _executablePath;
 
         public NuGetPath(INuKeeperLogger logger)
         {
             _logger = logger;
-            this.Executable = FindExecutable();
+            this._executablePath = new Lazy<string>(FindExecutable);
         }
 
-        public string Executable { get; }
+        public string Executable => _executablePath.Value;
 
         private string FindExecutable()
         {
