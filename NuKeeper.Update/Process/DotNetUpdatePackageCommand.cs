@@ -1,24 +1,19 @@
 using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {
-    public class DotNetUpdatePackageCommand : IPackageCommand
+    public class DotNetUpdatePackageCommand : IDotNetUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
-        private readonly INuKeeperLogger _logger;
 
-        public DotNetUpdatePackageCommand(
-            INuKeeperLogger logger,
-            IExternalProcess externalProcess = null)
+        public DotNetUpdatePackageCommand(IExternalProcess externalProcess)
         {
-            _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess(logger);
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(PackageInProject currentPackage,

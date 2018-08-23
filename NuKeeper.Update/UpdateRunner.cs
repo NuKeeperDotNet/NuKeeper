@@ -13,15 +13,18 @@ namespace NuKeeper.Update
         private readonly INuKeeperLogger _logger;
         private readonly IFileRestoreCommand _fileRestoreCommand;
         private readonly INuGetUpdatePackageCommand _nuGetUpdatePackageCommand;
+        private readonly IDotNetUpdatePackageCommand _dotNetUpdatePackageCommand;
 
         public UpdateRunner(
             INuKeeperLogger logger,
             IFileRestoreCommand fileRestoreCommand,
-            INuGetUpdatePackageCommand nuGetUpdatePackageCommand)
+            INuGetUpdatePackageCommand nuGetUpdatePackageCommand,
+            IDotNetUpdatePackageCommand dotNetUpdatePackageCommand)
         {
             _logger = logger;
             _fileRestoreCommand = fileRestoreCommand;
             _nuGetUpdatePackageCommand = nuGetUpdatePackageCommand;
+            _dotNetUpdatePackageCommand = dotNetUpdatePackageCommand;
         }
 
         public async Task Update(PackageUpdateSet updateSet, NuGetSources sources)
@@ -53,11 +56,11 @@ namespace NuKeeper.Update
                     {
                         new UpdateProjectImportsCommand(),
                         _fileRestoreCommand,
-                        new DotNetUpdatePackageCommand(_logger)
+                        _dotNetUpdatePackageCommand
                     };
 
                 case PackageReferenceType.ProjectFile:
-                    return new[] {new DotNetUpdatePackageCommand(_logger) };
+                    return new[] { _dotNetUpdatePackageCommand };
 
                 case PackageReferenceType.Nuspec:
                     return new[] { new UpdateNuspecCommand(_logger) };
