@@ -98,8 +98,7 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            if (targetUpdates.SelectMany(u => u.CurrentPackages)
-                .Any(p => p.Path.PackageReferenceType != PackageReferenceType.ProjectFile))
+            if (AnyProjectRequiresNuGetRestore(targetUpdates))
             {
                 await _solutionsRestore.Restore(git.WorkingFolder, sources);
             }
@@ -116,6 +115,12 @@ namespace NuKeeper.Engine
             }
 
             return updatesDone;
+        }
+
+        private static bool AnyProjectRequiresNuGetRestore(IEnumerable<PackageUpdateSet> targetUpdates)
+        {
+            return targetUpdates.SelectMany(u => u.CurrentPackages)
+                .Any(p => p.Path.PackageReferenceType != PackageReferenceType.ProjectFile);
         }
 
         private static void GitInit(IGitDriver git, RepositoryData repository)
