@@ -11,7 +11,7 @@ using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Update.Process
 {
-    public class UpdateNuspecCommand : IPackageCommand
+    public class UpdateNuspecCommand : IUpdateNuspecCommand
     {
         private readonly INuKeeperLogger _logger;
 

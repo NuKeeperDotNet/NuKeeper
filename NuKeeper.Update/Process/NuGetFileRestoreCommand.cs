@@ -13,14 +13,17 @@ namespace NuKeeper.Update.Process
     public class NuGetFileRestoreCommand : IFileRestoreCommand
     {
         private readonly INuKeeperLogger _logger;
+        private readonly INuGetPath _nuGetPath;
         private readonly IExternalProcess _externalProcess;
 
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
-            IExternalProcess externalProcess = null)
+            INuGetPath nuGetPath,
+            IExternalProcess externalProcess)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess(logger);
+            _nuGetPath = nuGetPath;
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(FileInfo file, NuGetSources sources)
@@ -33,7 +36,7 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var nuget = NuGetPath.FindExecutable();
+            var nuget = _nuGetPath.Executable;
 
             if (string.IsNullOrWhiteSpace(nuget))
             {

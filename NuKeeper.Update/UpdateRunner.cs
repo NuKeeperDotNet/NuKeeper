@@ -11,10 +11,26 @@ namespace NuKeeper.Update
     public class UpdateRunner : IUpdateRunner
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IFileRestoreCommand _fileRestoreCommand;
+        private readonly INuGetUpdatePackageCommand _nuGetUpdatePackageCommand;
+        private readonly IDotNetUpdatePackageCommand _dotNetUpdatePackageCommand;
+        private readonly IUpdateProjectImportsCommand _updateProjectImportsCommand;
+        private readonly IUpdateNuspecCommand _updateNuspecCommand;
 
-        public UpdateRunner(INuKeeperLogger logger)
+        public UpdateRunner(
+            INuKeeperLogger logger,
+            IFileRestoreCommand fileRestoreCommand,
+            INuGetUpdatePackageCommand nuGetUpdatePackageCommand,
+            IDotNetUpdatePackageCommand dotNetUpdatePackageCommand,
+            IUpdateProjectImportsCommand updateProjectImportsCommand,
+            IUpdateNuspecCommand updateNuspecCommand)
         {
             _logger = logger;
+            _fileRestoreCommand = fileRestoreCommand;
+            _nuGetUpdatePackageCommand = nuGetUpdatePackageCommand;
+            _dotNetUpdatePackageCommand = dotNetUpdatePackageCommand;
+            _updateProjectImportsCommand = updateProjectImportsCommand;
+            _updateNuspecCommand = updateNuspecCommand;
         }
 
         public async Task Update(PackageUpdateSet updateSet, NuGetSources sources)
@@ -37,23 +53,23 @@ namespace NuKeeper.Update
                 case PackageReferenceType.PackagesConfig:
                     return new IPackageCommand[]
                     {
-                        new NuGetFileRestoreCommand(_logger),
-                        new NuGetUpdatePackageCommand(_logger)
+                        _fileRestoreCommand,
+                        _nuGetUpdatePackageCommand
                     };
 
                 case PackageReferenceType.ProjectFileOldStyle:
                     return new IPackageCommand[]
                     {
-                        new UpdateProjectImportsCommand(),
-                        new NuGetFileRestoreCommand(_logger),
-                        new DotNetUpdatePackageCommand(_logger)
+                        _updateProjectImportsCommand,
+                        _fileRestoreCommand,
+                        _dotNetUpdatePackageCommand
                     };
 
                 case PackageReferenceType.ProjectFile:
-                    return new[] {new DotNetUpdatePackageCommand(_logger) };
+                    return new[] { _dotNetUpdatePackageCommand };
 
                 case PackageReferenceType.Nuspec:
-                    return new[] { new UpdateNuspecCommand(_logger) };
+                    return new[] { _updateNuspecCommand };
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(packageReferenceType));

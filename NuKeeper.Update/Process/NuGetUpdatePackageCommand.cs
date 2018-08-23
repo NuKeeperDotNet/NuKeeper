@@ -9,17 +9,20 @@ using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {
-    public class NuGetUpdatePackageCommand : IPackageCommand
+    public class NuGetUpdatePackageCommand : INuGetUpdatePackageCommand
     {
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
+        private readonly INuGetPath _nuGetPath;
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
-            IExternalProcess externalProcess = null)
+            INuGetPath nuGetPath,
+            IExternalProcess externalProcess)
         {
             _logger = logger;
-            _externalProcess = externalProcess ?? new ExternalProcess(logger);
+            _nuGetPath = nuGetPath;
+            _externalProcess = externalProcess;
         }
 
         public async Task Invoke(PackageInProject currentPackage,
@@ -33,7 +36,7 @@ namespace NuKeeper.Update.Process
 
             var projectPath = currentPackage.Path.Info.DirectoryName;
 
-            var nuget = NuGetPath.FindExecutable();
+            var nuget = _nuGetPath.Executable;
             if (string.IsNullOrWhiteSpace(nuget))
             {
                 _logger.Normal("Cannot find NuGet exe for package update");
