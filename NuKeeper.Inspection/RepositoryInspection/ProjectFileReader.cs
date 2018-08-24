@@ -77,6 +77,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
             var currentDir = Path.GetDirectoryName(currentPath);
             var combinedPath = Path.Combine(currentDir, relativePath);
+
             // combined path can still have "\..\" parts to it, need to canonicalise
             return Path.GetFullPath(combinedPath);
         }

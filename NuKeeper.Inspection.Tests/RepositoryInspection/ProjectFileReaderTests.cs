@@ -174,6 +174,29 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
+        public void RelativeProjectReferencesIsPopulated()
+        {
+            const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+
+            var relativePath = $"..{Path.DirectorySeparatorChar}other{Path.DirectorySeparatorChar}other.csproj";
+            projectFile = projectFile.Replace("other.csproj", relativePath);
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
+
+            var package = packages.FirstOrDefault();
+
+            Assert.That(package.ProjectReferences.Count, Is.EqualTo(1));
+
+            var path = package.ProjectReferences.First();
+
+            StringAssert.EndsWith($"other{Path.DirectorySeparatorChar}other.csproj", path);
+            StringAssert.DoesNotContain("..", path);
+        }
+
+        [Test]
         public void SinglePackageIsCorectlyRead()
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
