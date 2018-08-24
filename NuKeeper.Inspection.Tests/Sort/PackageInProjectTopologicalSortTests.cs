@@ -93,6 +93,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             Assert.That(sorted[0], Is.EqualTo(items[0]));
             Assert.That(sorted[1], Is.EqualTo(items[1]));
 
+            logger.DidNotReceive().Detailed("No dependencies between items, no need to sort on dependencies");
             logger.Received(1).Detailed("Sorted 2 projects by dependencies but no change made");
         }
 
