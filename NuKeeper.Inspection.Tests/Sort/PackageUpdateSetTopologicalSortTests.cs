@@ -57,7 +57,9 @@ namespace NuKeeper.Inspection.Tests.Sort
                 MakeUpdateSet("bar", "2.3.4")
             };
 
-            var sorter = new PackageUpdateSetTopologicalSort(Substitute.For<INuKeeperLogger>());
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageUpdateSetTopologicalSort(logger);
 
             var sorted = sorter.Sort(items)
                 .ToList();
@@ -66,6 +68,9 @@ namespace NuKeeper.Inspection.Tests.Sort
             Assert.That(sorted, Is.Not.Empty);
             Assert.That(sorted[0], Is.EqualTo(items[0]));
             Assert.That(sorted[1], Is.EqualTo(items[1]));
+
+            logger.Received(1).Detailed("No dependencies between items, no need to sort on dependencies");
+            logger.Received(1).Detailed("Sorted 2 packages by dependencies but no change made");
         }
 
         private PackageUpdateSet MakeUpdateSet(string packageId, string packageVersion)

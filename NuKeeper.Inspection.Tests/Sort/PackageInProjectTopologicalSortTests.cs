@@ -58,15 +58,20 @@ namespace NuKeeper.Inspection.Tests.Sort
                 PackageFor("bar", "2.3.4", "\\project2\\p2.csproj")
             };
 
-            var sorter = new PackageInProjectTopologicalSort(Substitute.For<INuKeeperLogger>());
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageInProjectTopologicalSort(logger);
 
             var sorted = sorter.Sort(items)
                 .ToList();
 
             Assert.That(sorted, Is.Not.Null);
             Assert.That(sorted, Is.Not.Empty);
-            Assert.That(sorted[0], Is.EqualTo(items[1]));
-            Assert.That(sorted[1], Is.EqualTo(items[0]));
+            Assert.That(sorted[0], Is.EqualTo(items[0]));
+            Assert.That(sorted[1], Is.EqualTo(items[1]));
+
+            logger.Received(1).Detailed("No dependencies between items, no need to sort on dependencies");
+            logger.Received(1).Detailed("Sorted 2 projects by dependencies but no change made");
         }
 
         private PackageInProject PackageFor(string packageId, string packageVersion,
