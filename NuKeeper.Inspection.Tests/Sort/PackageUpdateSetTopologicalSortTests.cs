@@ -43,8 +43,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
+            AssertIsASortOf(sorted, items);
             Assert.That(sorted[0], Is.EqualTo(items[0]));
         }
 
@@ -64,8 +63,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
+            AssertIsASortOf(sorted, items);
             Assert.That(sorted[0], Is.EqualTo(items[0]));
             Assert.That(sorted[1], Is.EqualTo(items[1]));
 
@@ -73,7 +71,100 @@ namespace NuKeeper.Inspection.Tests.Sort
             logger.Received(1).Detailed("Sorted 2 packages by dependencies but no change made");
         }
 
-        private PackageUpdateSet MakeUpdateSet(string packageId, string packageVersion)
+        [Test]
+        public void CanSortTwoRelatedItemsInCorrectOrder()
+        {
+            var fishPackage = MakeUpdateSet("fish", "1.2.3");
+
+            var items = new List<PackageUpdateSet>
+            {
+                fishPackage,
+                MakeUpdateSet("bar", "2.3.4", DependencyOn(fishPackage))
+            };
+
+
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageUpdateSetTopologicalSort(logger);
+
+            var sorted = sorter.Sort(items)
+                .ToList();
+
+            AssertIsASortOf(sorted, items);
+            Assert.That(sorted[0], Is.EqualTo(items[0]));
+            Assert.That(sorted[1], Is.EqualTo(items[1]));
+
+            logger.DidNotReceive().Detailed("No dependencies between items, no need to sort on dependencies");
+            logger.Received(1).Detailed("Sorted 2 packages by dependencies but no change made");
+        }
+
+        [Test]
+        public void CanSortTwoRelatedItemsinReverseOrder()
+        {
+            var fishPackage = MakeUpdateSet("fish", "1.2.3");
+
+            var items = new List<PackageUpdateSet>
+            {
+                MakeUpdateSet("bar", "2.3.4", DependencyOn(fishPackage)),
+                fishPackage
+            };
+
+
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageUpdateSetTopologicalSort(logger);
+
+            var sorted = sorter.Sort(items)
+                .ToList();
+
+            AssertIsASortOf(sorted, items);
+
+            Assert.That(sorted[0], Is.EqualTo(items[1]));
+            Assert.That(sorted[1], Is.EqualTo(items[0]));
+
+            logger.DidNotReceive().Detailed("No dependencies between items, no need to sort on dependencies");
+            logger.Received(1).Detailed("Resorted 2 packages by dependencies, first change is fish moved to position 0 from 1.");
+        }
+
+        [Test]
+        public void CanSortThreeRelatePackages()
+        {
+            var apexPackage = MakeUpdateSet("apex", "1.2.3");
+
+            var items = new List<PackageUpdateSet>
+            {
+                MakeUpdateSet("foo", "1.2.3", DependencyOn(apexPackage)),
+                apexPackage,
+                MakeUpdateSet("bar", "2.3.4", DependencyOn(apexPackage)),
+            };
+
+
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageUpdateSetTopologicalSort(logger);
+
+            var sorted = sorter.Sort(items)
+                .ToList();
+
+
+            AssertIsASortOf(sorted, items);
+            Assert.That(sorted[0], Is.EqualTo(apexPackage));
+        }
+
+        private static void AssertIsASortOf(List<PackageUpdateSet> sorted, List<PackageUpdateSet> original)
+        {
+            Assert.That(sorted, Is.Not.Null);
+            Assert.That(sorted, Is.Not.Empty);
+            Assert.That(sorted.Count, Is.EqualTo(original.Count));
+            CollectionAssert.AreEquivalent(sorted, original);
+        }
+
+        private PackageDependency DependencyOn(PackageUpdateSet package)
+        {
+            return new PackageDependency(package.SelectedId, new VersionRange(package.SelectedVersion));
+        }
+
+        private PackageUpdateSet MakeUpdateSet(string packageId, string packageVersion, PackageDependency upstream = null)
         {
             var currentPackages = new List<PackageInProject>
             {
@@ -81,8 +172,10 @@ namespace NuKeeper.Inspection.Tests.Sort
                 new PackageInProject(packageId, packageVersion, PathToProjectTwo())
             };
 
+            var majorUpdate = Metadata(packageId, packageVersion, upstream);
+
             var lookupResult = new PackageLookupResult(VersionChange.Major,
-                Metadata(packageId, packageVersion), null, null);
+                majorUpdate, null, null);
             var updates = new PackageUpdateSet(lookupResult, currentPackages);
 
             return updates;
@@ -98,12 +191,18 @@ namespace NuKeeper.Inspection.Tests.Sort
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private PackageSearchMedatadata Metadata(string packageId, string version)
+        private PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
         {
+            var upstreams = new List<PackageDependency>();
+            if (upstream != null)
+            {
+                upstreams.Add(upstream);
+            }
+
             return new PackageSearchMedatadata(
                 new PackageIdentity(packageId, new NuGetVersion(version)),
                 new PackageSource(NuGetConstants.V3FeedUrl),
-                DateTimeOffset.Now, null);
+                DateTimeOffset.Now, upstreams);
         }
 
     }

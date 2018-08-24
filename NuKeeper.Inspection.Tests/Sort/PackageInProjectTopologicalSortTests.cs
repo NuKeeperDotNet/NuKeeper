@@ -41,8 +41,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
+            AssertIsASortOf(sorted, items);
             Assert.That(sorted[0], Is.EqualTo(items[0]));
         }
 
@@ -62,10 +61,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
-            Assert.That(sorted.Count, Is.EqualTo(2));
-
+            AssertIsASortOf(sorted, items);
             logger.Received(1).Detailed("No dependencies between items, no need to sort on dependencies");
        }
 
@@ -88,8 +84,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
+            AssertIsASortOf(sorted, items);
             Assert.That(sorted[0], Is.EqualTo(items[0]));
             Assert.That(sorted[1], Is.EqualTo(items[1]));
 
@@ -116,8 +111,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
+            AssertIsASortOf(sorted, items);
             Assert.That(sorted[0], Is.EqualTo(testProj));
             Assert.That(sorted[1], Is.EqualTo(aProj));
 
@@ -145,13 +139,17 @@ namespace NuKeeper.Inspection.Tests.Sort
             var sorted = sorter.Sort(items)
                 .ToList();
 
-            Assert.That(sorted, Is.Not.Null);
-            Assert.That(sorted, Is.Not.Empty);
-            Assert.That(sorted.Count, Is.EqualTo(2));
-
+            AssertIsASortOf(sorted, items);
             logger.Received(1).Minimal(Arg.Is<string>(s => s.StartsWith("Cannot sort by dependencies, cycle found at item")));
         }
 
+        private static void AssertIsASortOf(List<PackageInProject> sorted, List<PackageInProject> original)
+        {
+            Assert.That(sorted, Is.Not.Null);
+            Assert.That(sorted, Is.Not.Empty);
+            Assert.That(sorted.Count, Is.EqualTo(original.Count));
+            CollectionAssert.AreEquivalent(sorted, original);
+        }
 
         private PackageInProject PackageFor(string packageId, string packageVersion,
             string relativePath, PackageInProject refProject = null)
