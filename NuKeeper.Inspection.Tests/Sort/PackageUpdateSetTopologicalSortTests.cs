@@ -151,6 +151,31 @@ namespace NuKeeper.Inspection.Tests.Sort
             Assert.That(sorted[0], Is.EqualTo(apexPackage));
         }
 
+        [Test]
+        public void CanSortWithCycle()
+        {
+            var pakageOne = MakeUpdateSet("one", "1.2.3");
+            var packageAlpha = MakeUpdateSet("alpha", "2.3.4", DependencyOn(pakageOne));
+            pakageOne = MakeUpdateSet("one", "1.2.3", DependencyOn(packageAlpha));
+
+            var items = new List<PackageUpdateSet>
+            {
+                pakageOne,
+                packageAlpha
+            };
+
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageUpdateSetTopologicalSort(logger);
+
+            var sorted = sorter.Sort(items)
+                .ToList();
+
+            AssertIsASortOf(sorted, items);
+            logger.Received(1).Minimal(Arg.Is<string>(s => s.StartsWith("Cannot sort by dependencies, cycle found at item")));
+        }
+
+
         private static void AssertIsASortOf(List<PackageUpdateSet> sorted, List<PackageUpdateSet> original)
         {
             Assert.That(sorted, Is.Not.Null);
