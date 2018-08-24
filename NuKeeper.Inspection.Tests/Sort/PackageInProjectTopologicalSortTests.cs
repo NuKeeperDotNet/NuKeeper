@@ -124,6 +124,35 @@ namespace NuKeeper.Inspection.Tests.Sort
             logger.Received(1).Detailed(Arg.Is<string>(s => s.StartsWith("Resorted 2 projects by dependencies,")));
         }
 
+        [Test]
+        public void CanSortWithCycle()
+        {
+            var aProj = PackageFor("foo", "1.2.3", "someproject{sep}someproject.csproj");
+            var testProj = PackageFor("bar", "2.3.4", "someproject.tests{sep}someproject.tests.csproj", aProj);
+            // fake a circular ref - aproj is a new object but the same file path as above
+            aProj = PackageFor("foo", "1.2.3", "someproject{sep}someproject.csproj", testProj);
+
+            var items = new List<PackageInProject>
+            {
+                aProj,
+                testProj
+            };
+
+            var logger = Substitute.For<INuKeeperLogger>();
+
+            var sorter = new PackageInProjectTopologicalSort(logger);
+
+            var sorted = sorter.Sort(items)
+                .ToList();
+
+            Assert.That(sorted, Is.Not.Null);
+            Assert.That(sorted, Is.Not.Empty);
+            Assert.That(sorted.Count, Is.EqualTo(2));
+
+            logger.Received(1).Minimal(Arg.Is<string>(s => s.StartsWith("Cannot sort by dependencies, cycle found at item")));
+        }
+
+
         private PackageInProject PackageFor(string packageId, string packageVersion,
             string relativePath, PackageInProject refProject = null)
         {
