@@ -25,12 +25,9 @@ namespace NuKeeper.Inspection.Sort
             var sorted = topo.Sort(inputMap)
                 .ToList();
 
-            var hasChange = ReportSort(input.ToList(), sorted);
+            sorted.Reverse();
 
-            if (hasChange)
-            {
-                sorted.Reverse();
-            }
+            ReportSort(input.ToList(), sorted);
 
             return sorted;
         }
@@ -47,7 +44,7 @@ namespace NuKeeper.Inspection.Sort
             return all.Where(i => deps.Any(d => d == i.Path.FullName)).ToList();
         }
 
-        private bool ReportSort(IList<PackageInProject> input, IList<PackageInProject> output)
+        private void ReportSort(IList<PackageInProject> input, IList<PackageInProject> output)
         {
             bool hasChange = false;
 
@@ -67,8 +64,6 @@ namespace NuKeeper.Inspection.Sort
             {
                 _logger.Detailed($"Sorted {output.Count} projects by dependencies but no change made");
             }
-
-            return hasChange;
         }
     }
 }
