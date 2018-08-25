@@ -76,8 +76,10 @@ namespace NuKeeper.Inspection.RepositoryInspection
             var relativePath = el.Attribute("Include")?.Value;
 
             var currentDir = Path.GetDirectoryName(currentPath);
-            var fullPath = Path.Combine(currentDir, relativePath);
-            return fullPath;
+            var combinedPath = Path.Combine(currentDir, relativePath);
+
+            // combined path can still have "\..\" parts to it, need to canonicalise
+            return Path.GetFullPath(combinedPath);
         }
 
         private static PackagePath CreatePackagePath(XNamespace xmlNamespace, string baseDirectory, string relativePath)

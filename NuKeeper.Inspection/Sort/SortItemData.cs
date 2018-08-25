@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using NuGet.Packaging.Core;
-using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Sort
 {
@@ -11,25 +9,18 @@ namespace NuKeeper.Inspection.Sort
         Permanent
     }
 
-    public class SortItemData
+    public class SortItemData<T>
     {
-        public SortItemData(PackageUpdateSet set, IEnumerable<PackageDependency> deps)
+        public SortItemData(T item, IEnumerable<T> dependencies)
         {
-            PackageUpdateSet = set;
-            Dependencies = new List<PackageDependency>(deps);
+            Item = item;
+            Dependencies = new List<T>(dependencies);
             Mark = Mark.None;
         }
-        public PackageUpdateSet PackageUpdateSet { get; }
+        public T Item { get; }
 
-        public IReadOnlyCollection<PackageDependency> Dependencies { get; }
+        public IReadOnlyCollection<T> Dependencies { get; }
 
         public Mark Mark { get; set; }
-
-        public string PackageId => PackageUpdateSet.SelectedId;
-
-        public override string ToString()
-        {
-            return $"{PackageId}, {Dependencies.Count}";
-        }
     }
 }

@@ -306,7 +306,6 @@ namespace NuKeeper.Tests.Engine
             return new PackageUpdateSet(updates, packages);
         }
 
-
         private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
         {
             return UpdateSetForLimited(null, packages);
