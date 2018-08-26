@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
@@ -11,6 +12,7 @@ namespace NuKeeper.Engine.Packages
             IGitDriver git,
             PackageUpdateSet updateSet,
             NuGetSources sources,
-            RepositoryData repository);
+            RepositoryData repository,
+            SourceControlServerSettings serverSettings);
     }
 }

@@ -84,13 +84,15 @@ namespace NuKeeper.Engine
             var targetUpdates = await _updateSelection.SelectTargets(
                 repository.Push, updates, settings.PackageFilters);
 
-            return await DoTargetUpdates(git, repository, targetUpdates, sources);
+            return await DoTargetUpdates(git, repository, targetUpdates,
+                sources, settings.SourceControlServerSettings);
         }
 
         private async Task<int> DoTargetUpdates(
             IGitDriver git, RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> targetUpdates,
-            NuGetSources sources)
+            NuGetSources sources,
+            SourceControlServerSettings settings)
         {
             if (targetUpdates.Count == 0)
             {
@@ -103,7 +105,7 @@ namespace NuKeeper.Engine
                 await _solutionsRestore.Restore(git.WorkingFolder, sources);
             }
 
-            var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources);
+            var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources, settings);
 
             if (updatesDone < targetUpdates.Count)
             {
@@ -133,13 +135,15 @@ namespace NuKeeper.Engine
         private async Task<int> UpdateAllTargets(IGitDriver git,
             RepositoryData repository,
             IEnumerable<PackageUpdateSet> targetUpdates,
-            NuGetSources sources)
+            NuGetSources sources,
+            SourceControlServerSettings settings)
         {
             var updatesDone = 0;
 
             foreach (var updateSet in targetUpdates)
             {
-                var success = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources, repository);
+                var success = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources,
+                    repository, settings);
                 if (success)
                 {
                     updatesDone++;

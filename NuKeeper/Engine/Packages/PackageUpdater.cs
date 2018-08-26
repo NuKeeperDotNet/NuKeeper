@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -15,26 +16,24 @@ namespace NuKeeper.Engine.Packages
     {
         private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
-        private readonly SourceControlServerSettings _serverSettings;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
             IGitHub gitHub,
             IUpdateRunner localUpdater,
-            INuKeeperLogger logger,
-            SourceControlServerSettings serverSettings)
+            INuKeeperLogger logger)
         {
             _gitHub = gitHub;
             _updateRunner = localUpdater;
             _logger = logger;
-            _serverSettings = serverSettings;
         }
 
         public async Task<bool> MakeUpdatePullRequest(
             IGitDriver git,
             PackageUpdateSet updateSet,
             NuGetSources sources,
-            RepositoryData repository)
+            RepositoryData repository,
+            SourceControlServerSettings serverSettings)
         {
             try
             {
@@ -55,7 +54,8 @@ namespace NuKeeper.Engine.Packages
                 git.Push("nukeeper_push", branchName);
 
                 var prTitle = CommitWording.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, repository, prTitle, branchName);
+                await MakeGitHubPullRequest(updateSet, repository, prTitle,
+                    branchName, serverSettings.Labels);
 
                 git.Checkout(repository.DefaultBranch);
                 return true;
@@ -70,7 +70,8 @@ namespace NuKeeper.Engine.Packages
         private async Task MakeGitHubPullRequest(
             PackageUpdateSet updates,
             RepositoryData repository,
-            string title, string branchWithChanges)
+            string title, string branchWithChanges,
+            IEnumerable<string> labels)
         {
             string qualifiedBranch;
             if (repository.Pull.Owner == repository.Push.Owner)
@@ -87,7 +88,7 @@ namespace NuKeeper.Engine.Packages
                 Body = CommitWording.MakeCommitDetails(updates)
             };
 
-            await _gitHub.OpenPullRequest(repository.Pull, pr, _serverSettings.Labels);
+            await _gitHub.OpenPullRequest(repository.Pull, pr, labels);
         }
     }
 }
