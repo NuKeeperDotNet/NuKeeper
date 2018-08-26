@@ -142,8 +142,9 @@ namespace NuKeeper.Engine
 
             foreach (var updateSet in targetUpdates)
             {
-                var success = await _packageUpdater.MakeUpdatePullRequest(git, updateSet, sources,
-                    repository, settings);
+                var success = await _packageUpdater.MakeUpdatePullRequest(
+                    git, repository, updateSet,
+                    sources, settings);
                 if (success)
                 {
                     updatesDone++;

@@ -10,9 +10,9 @@ namespace NuKeeper.Engine.Packages
     {
         Task<bool> MakeUpdatePullRequest(
             IGitDriver git,
+            RepositoryData repository,
             PackageUpdateSet updateSet,
             NuGetSources sources,
-            RepositoryData repository,
             SourceControlServerSettings serverSettings);
     }
 }

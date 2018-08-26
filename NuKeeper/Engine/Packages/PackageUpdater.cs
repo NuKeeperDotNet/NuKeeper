@@ -30,9 +30,9 @@ namespace NuKeeper.Engine.Packages
 
         public async Task<bool> MakeUpdatePullRequest(
             IGitDriver git,
+            RepositoryData repository,
             PackageUpdateSet updateSet,
             NuGetSources sources,
-            RepositoryData repository,
             SourceControlServerSettings serverSettings)
         {
             try
