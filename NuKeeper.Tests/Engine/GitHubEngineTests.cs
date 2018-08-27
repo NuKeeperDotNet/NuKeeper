@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Engine
             var engine = MakeGithubEngine(
                 new List<RepositorySettings>());
 
-            var count = await engine.Run(ServerScope.Repository, MakeSettings());
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -35,7 +35,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(oneRepo);
 
-            var count = await engine.Run(ServerScope.Repository, MakeSettings());
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
         }
@@ -50,7 +50,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(repos);
 
-            var count = await engine.Run(ServerScope.Repository, MakeSettings());
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(2, repos);
 
-            var count = await engine.Run(ServerScope.Repository, MakeSettings());
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(2));
         }
@@ -82,7 +82,7 @@ namespace NuKeeper.Tests.Engine
             };
             var engine = MakeGithubEngine(0, repos);
 
-            var count = await engine.Run(ServerScope.Repository, MakeSettings());
+            var count = await engine.Run(MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
         }
@@ -99,14 +99,17 @@ namespace NuKeeper.Tests.Engine
 
             var engine = MakeGithubEngine(1, repos);
 
-            var count = await engine.Run(ServerScope.Repository, new SettingsContainer
+            var settings = new SettingsContainer
             {
                 GithubAuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
-                }
-            });
+                },
+                SourceControlServerSettings = MakseServerSettings()
+            };
+
+            var count = await engine.Run(settings);
 
             Assert.That(count, Is.EqualTo(1));
         }
@@ -126,7 +129,6 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
             var githubCreator = Substitute.For<ICreate<IGitHub>>();
-            var repositoryDiscoveryCreator = Substitute.For<ICreate<IGitHubRepositoryDiscovery>>();
             var repoEngineCreator = Substitute.For<ICreate<IGitHubRepositoryEngine>>();
 
             github.GetCurrentUser().Returns(
@@ -134,16 +136,14 @@ namespace NuKeeper.Tests.Engine
 
             githubCreator.Create(null).ReturnsForAnyArgs(github);
 
-            repoDiscovery.GetRepositories(Arg.Any<ServerScope>())
+            repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
-
-            repositoryDiscoveryCreator.Create(null).ReturnsForAnyArgs(repoDiscovery);
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
             repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
 
-            var engine = new GitHubEngine(githubCreator, repositoryDiscoveryCreator, repoEngineCreator,
+            var engine = new GitHubEngine(githubCreator, repoDiscovery, repoEngineCreator,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }
@@ -153,7 +153,16 @@ namespace NuKeeper.Tests.Engine
             return new SettingsContainer
             {
                 GithubAuthSettings = MakeGitHubAuthSettings(),
-                UserSettings = MakeUserSettings()
+                UserSettings = MakeUserSettings(),
+                SourceControlServerSettings = MakseServerSettings()
+            };
+        }
+
+        private static SourceControlServerSettings MakseServerSettings()
+        {
+            return new SourceControlServerSettings
+            {
+                Scope = ServerScope.Repository
             };
         }
 

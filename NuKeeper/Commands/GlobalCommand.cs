@@ -24,6 +24,8 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
+            settings.SourceControlServerSettings.Scope = ServerScope.Global;
+
             if (settings.PackageFilters.Includes == null)
             {
                 return ValidationResult.Failure("Global mode must have an include regex");
@@ -40,7 +42,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(ServerScope.Global, settings);
+            await _engine.Run(settings);
             return 0;
         }
 

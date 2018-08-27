@@ -23,6 +23,7 @@ namespace NuKeeper
         private static void Register(Container container)
         {
             container.Register<GitHubEngine>();
+            container.Register<IGitHubRepositoryDiscovery, GitHubRepositoryDiscovery>();
             container.Register<ILocalUpdater, LocalUpdater>();
             container.Register<IUpdateSelection, UpdateSelection>();
         }
