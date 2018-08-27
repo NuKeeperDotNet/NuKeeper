@@ -39,6 +39,7 @@ namespace NuKeeper.Tests.Local
             await updater.Received(0)
                 .ApplyUpdates(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<SettingsContainer>());
         }
@@ -66,6 +67,7 @@ namespace NuKeeper.Tests.Local
                 .Received(1)
                 .ApplyUpdates(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<SettingsContainer>());
         }
