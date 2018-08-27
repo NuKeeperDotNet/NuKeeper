@@ -100,10 +100,7 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            if (AnyProjectRequiresNuGetRestore(targetUpdates))
-            {
-                await _solutionsRestore.Restore(git.WorkingFolder, sources);
-            }
+            await _solutionsRestore.CheckRestore(targetUpdates, git.WorkingFolder, sources);
 
             var updatesDone = await UpdateAllTargets(git, repository, targetUpdates, sources, settings);
 
@@ -117,12 +114,6 @@ namespace NuKeeper.Engine
             }
 
             return updatesDone;
-        }
-
-        private static bool AnyProjectRequiresNuGetRestore(IEnumerable<PackageUpdateSet> targetUpdates)
-        {
-            return targetUpdates.SelectMany(u => u.CurrentPackages)
-                .Any(p => p.Path.PackageReferenceType != PackageReferenceType.ProjectFile);
         }
 
         private static void GitInit(IGitDriver git, RepositoryData repository)

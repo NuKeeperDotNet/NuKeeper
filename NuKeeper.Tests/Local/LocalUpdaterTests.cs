@@ -7,12 +7,14 @@ using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Local;
 using NuKeeper.Update;
+using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
 
@@ -27,10 +29,13 @@ namespace NuKeeper.Tests.Local
             var selection = Substitute.For<IUpdateSelection>();
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
+            var folder = Substitute.For<IFolder>();
+            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
 
-            var updater = new LocalUpdater(selection, runner, logger);
+            var updater = new LocalUpdater(selection, runner, restorer, logger);
 
             await updater.ApplyUpdates(new List<PackageUpdateSet>(),
+                folder,
                 NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(0)
@@ -52,10 +57,12 @@ namespace NuKeeper.Tests.Local
 
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
+            var folder = Substitute.For<IFolder>();
+            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
 
-            var updater = new LocalUpdater(selection, runner, logger);
+            var updater = new LocalUpdater(selection, runner, restorer, logger);
 
-            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed, Settings());
+            await updater.ApplyUpdates(updates, folder, NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(1)
                 .Update(Arg.Any<PackageUpdateSet>(), Arg.Any<NuGetSources>());
@@ -74,13 +81,14 @@ namespace NuKeeper.Tests.Local
             var selection = Substitute.For<IUpdateSelection>();
             FilterIsPassThrough(selection);
 
-
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
+            var folder = Substitute.For<IFolder>();
+            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
 
-            var updater = new LocalUpdater(selection, runner, logger);
+            var updater = new LocalUpdater(selection, runner, restorer, logger);
 
-            await updater.ApplyUpdates(updates, NuGetSources.GlobalFeed, Settings());
+            await updater.ApplyUpdates(updates, folder, NuGetSources.GlobalFeed, Settings());
 
             await runner.Received(2)
                 .Update(Arg.Any<PackageUpdateSet>(), Arg.Any<NuGetSources>());

@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Update.Process
@@ -13,7 +16,15 @@ namespace NuKeeper.Update.Process
             _fileRestoreCommand = fileRestoreCommand;
         }
 
-        public async Task Restore(IFolder workingFolder, NuGetSources sources)
+        public async Task CheckRestore(IEnumerable<PackageUpdateSet> targetUpdates, IFolder workingFolder, NuGetSources sources)
+        {
+            if (AnyProjectRequiresNuGetRestore(targetUpdates))
+            {
+                await Restore(workingFolder, sources);
+            }
+        }
+
+        private async Task Restore(IFolder workingFolder, NuGetSources sources)
         {
             var solutionFiles = workingFolder.Find("*.sln");
 
@@ -21,6 +32,12 @@ namespace NuKeeper.Update.Process
             {
                 await _fileRestoreCommand.Invoke(sln, sources);
             }
+        }
+
+        private static bool AnyProjectRequiresNuGetRestore(IEnumerable<PackageUpdateSet> targetUpdates)
+        {
+            return targetUpdates.SelectMany(u => u.CurrentPackages)
+                .Any(p => p.Path.PackageReferenceType != PackageReferenceType.ProjectFile);
         }
     }
 }
