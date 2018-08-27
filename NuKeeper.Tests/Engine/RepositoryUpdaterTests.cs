@@ -153,9 +153,10 @@ namespace NuKeeper.Tests.Engine
             await packageUpdater.Received(count)
                 .MakeUpdatePullRequest(
                     Arg.Any<IGitDriver>(),
-                    Arg.Any<PackageUpdateSet>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<RepositoryData>());
+                Arg.Any<RepositoryData>(),
+                Arg.Any<PackageUpdateSet>(),
+                Arg.Any<NuGetSources>(),
+                Arg.Any<SourceControlServerSettings>());
         }
 
         private async Task AssertDidNotReceiveMakeUpdate(
@@ -164,9 +165,10 @@ namespace NuKeeper.Tests.Engine
             await packageUpdater.DidNotReceiveWithAnyArgs()
                 .MakeUpdatePullRequest(
                     Arg.Any<IGitDriver>(),
-                    Arg.Any<PackageUpdateSet>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<RepositoryData>());
+                Arg.Any<RepositoryData>(),
+                Arg.Any<PackageUpdateSet>(),
+                Arg.Any<NuGetSources>(),
+                Arg.Any<SourceControlServerSettings>());
         }
 
         private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
@@ -196,8 +198,6 @@ namespace NuKeeper.Tests.Engine
                     ReportMode = reportMode
                 }
             };
-
-
         }
 
         private IRepositoryUpdater MakeRepositoryUpdater(
@@ -218,9 +218,10 @@ namespace NuKeeper.Tests.Engine
 
             packageUpdater.MakeUpdatePullRequest(
                 Arg.Any<IGitDriver>(),
+                Arg.Any<RepositoryData>(),
                 Arg.Any<PackageUpdateSet>(),
                 Arg.Any<NuGetSources>(),
-                Arg.Any<RepositoryData>())
+                Arg.Any<SourceControlServerSettings>())
                 .Returns(true);
 
             var repoUpdater = new RepositoryUpdater(
