@@ -43,12 +43,13 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Cound not read GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
+            settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             return ValidationResult.Success;
         }
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(ServerScope.Repository, settings);
+            await _engine.Run(settings);
             return 0;
         }
     }

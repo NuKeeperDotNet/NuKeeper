@@ -10,7 +10,6 @@ namespace NuKeeper.Creators
         public static void Initialize(Container container)
         {
             container.Register<ICreate<IGitHub>, OctokitClientCreator>();
-            container.Register<ICreate<IGitHubRepositoryDiscovery>, GitHubRepositoryDiscoveryCreator>();
             container.Register<ICreate<IExistingBranchFilter>, ExistingBranchFilterCreator>();
             container.Register<ICreate<IPackageUpdateSelection>, PackageUpdateSelectionCreator>();
             container.Register<ICreate<IRepositoryUpdater>, RepositoryUpdaterCreator>();

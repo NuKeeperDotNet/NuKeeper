@@ -10,57 +10,53 @@ namespace NuKeeper.Engine
 {
     public class GitHubRepositoryDiscovery : IGitHubRepositoryDiscovery
     {
-        private readonly IGitHub _gitHub;
-        private readonly SourceControlServerSettings _settings;
         private readonly INuKeeperLogger _logger;
 
         public GitHubRepositoryDiscovery(
-            IGitHub gitHub, 
-            SourceControlServerSettings settings,
             INuKeeperLogger logger)
         {
-            _gitHub = gitHub;
-            _settings = settings;
             _logger = logger;
         }
 
-        public async Task<IEnumerable<RepositorySettings>> GetRepositories(ServerScope scope)
+        public async Task<IEnumerable<RepositorySettings>> GetRepositories(
+            IGitHub gitHub, SourceControlServerSettings settings)
         {
-            switch (scope)
+            switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    return await ForAllOrgs();
+                    return await ForAllOrgs(gitHub);
 
                 case ServerScope.Organisation:
-                    return await FromOrganisation(_settings.OrganisationName);
+                    return await FromOrganisation(gitHub, settings.OrganisationName);
 
                 case ServerScope.Repository:
-                    return new[] { _settings.Repository };
+                    return new[] { settings.Repository };
 
                 default:
-                    _logger.Error($"Unknown GithubScope {scope}");
+                    _logger.Error($"Unknown Server Scope {settings.Scope}");
                     return Enumerable.Empty<RepositorySettings>();
             }
         }
 
-        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs()
+        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(IGitHub gitHub)
         {
-            var allOrgs = await _gitHub.GetOrganizations();
+            var allOrgs = await gitHub.GetOrganizations();
 
             var allRepos = new List<RepositorySettings>();
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(org.Name ?? org.Login);
+                var repos = await FromOrganisation(gitHub, org.Name ?? org.Login);
                 allRepos.AddRange(repos);
             }
 
             return allRepos;
         }
 
-        private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(string organisationName)
+        private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(
+            IGitHub gitHub, string organisationName)
         {
-            var allOrgRepos = await _gitHub.GetRepositoriesForOrganisation(organisationName);
+            var allOrgRepos = await gitHub.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
                 .Where(RepoIsModifiable)

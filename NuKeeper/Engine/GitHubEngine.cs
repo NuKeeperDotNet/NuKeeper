@@ -14,29 +14,28 @@ namespace NuKeeper.Engine
     public class GitHubEngine
     {
         private readonly ICreate<IGitHub> _githubCreator;
-        private readonly ICreate<IGitHubRepositoryDiscovery> _repositoryDiscoveryCreator;
+        private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
         private readonly ICreate<IGitHubRepositoryEngine> _repositoryEngineCreator;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GitHubEngine(
             ICreate<IGitHub> githubCreator,
-            ICreate<IGitHubRepositoryDiscovery> repositoryDiscoveryCreator,
+            IGitHubRepositoryDiscovery repositoryDiscovery,
             ICreate<IGitHubRepositoryEngine> repositoryEngineCreator,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _githubCreator = githubCreator;
-            _repositoryDiscoveryCreator = repositoryDiscoveryCreator;
+            _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngineCreator = repositoryEngineCreator;
             _folderFactory = folderFactory;
             _logger = logger;
         }
 
-        public async Task<int> Run(ServerScope scope, SettingsContainer settings)
+        public async Task<int> Run(SettingsContainer settings)
         {
             var github = _githubCreator.Create(settings);
-            var repositoryDiscovery = _repositoryDiscoveryCreator.Create(settings);
             var repositoryEngine = _repositoryEngineCreator.Create(settings);
 
             _logger.Detailed($"{Now()}: Started");
@@ -52,7 +51,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await repositoryDiscovery.GetRepositories(scope);
+            var repositories = await _repositoryDiscovery.GetRepositories(github, settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 
