@@ -1,3 +1,4 @@
+using NuKeeper.Configuration;
 using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.Local;
@@ -26,6 +27,7 @@ namespace NuKeeper
             container.Register<IGitHubRepositoryDiscovery, GitHubRepositoryDiscovery>();
             container.Register<ILocalUpdater, LocalUpdater>();
             container.Register<IUpdateSelection, UpdateSelection>();
+            container.Register<IFileSettingsCache, FileSettingsCache>();
         }
     }
 }
