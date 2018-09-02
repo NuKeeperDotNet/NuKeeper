@@ -17,7 +17,8 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GitHubRepositoryUri { get; }
 
-        public RepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public RepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger, FileSettingsCache fileSettingsCache)
+            : base(logger, fileSettingsCache)
         {
             _engine = engine;
         }

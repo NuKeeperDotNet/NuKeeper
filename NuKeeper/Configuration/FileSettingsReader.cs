@@ -15,11 +15,11 @@ namespace NuKeeper.Configuration
             _logger = logger;
         }
 
-        public FileSettings Read(IFolder folder)
+        public FileSettings Read(string folder)
         {
             const string fileName = "NuKeeper.Settings.json";
 
-            var fullPath = Path.Join(folder.FullPath, fileName);
+            var fullPath = Path.Join(folder, fileName);
 
             if (File.Exists(fullPath))
             {

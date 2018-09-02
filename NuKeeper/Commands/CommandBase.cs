@@ -14,6 +14,7 @@ namespace NuKeeper.Commands
     internal abstract class CommandBase
     {
         private readonly IConfigureLogLevel _configureLogger;
+        private readonly IFileSettingsCache _fileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
@@ -48,9 +49,10 @@ namespace NuKeeper.Commands
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         protected string Exclude { get; }
 
-        protected CommandBase(IConfigureLogLevel logger)
+        protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
+            _fileSettingsCache = fileSettingsCache;
         }
 
 
@@ -97,13 +99,13 @@ namespace NuKeeper.Commands
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
 
-            var regexIncludeValid = PopulatePackageIncludes(settings, Include);
+            var regexIncludeValid = PopulatePackageIncludes(settings);
             if (!regexIncludeValid.IsSuccess)
             {
                 return regexIncludeValid;
             }
 
-            var regexExcludeValid = PopulatePackageExcludes(settings, Exclude);
+            var regexExcludeValid = PopulatePackageExcludes(settings);
             if (!regexExcludeValid.IsSuccess)
             {
                 return regexExcludeValid;
@@ -112,9 +114,12 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulatePackageIncludes(
-            SettingsContainer settings, string value)
+        private ValidationResult PopulatePackageIncludes(
+            SettingsContainer settings)
         {
+            var settingsFromFile = _fileSettingsCache.Get();
+            var value = FirstPopulated(Include, settingsFromFile.Include);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.PackageFilters.Includes = null;
@@ -136,9 +141,12 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulatePackageExcludes(
-            SettingsContainer settings, string value)
+        private ValidationResult PopulatePackageExcludes(
+            SettingsContainer settings)
         {
+            var settingsFromFile = _fileSettingsCache.Get();
+            var value = FirstPopulated(Exclude, settingsFromFile.Exclude);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.PackageFilters.Excludes = null;
@@ -158,6 +166,16 @@ namespace NuKeeper.Commands
             }
 
             return ValidationResult.Success;
+        }
+
+        private static string FirstPopulated(string value1, string value2)
+        {
+            if (!string.IsNullOrWhiteSpace(value1))
+            {
+                return value1;
+            }
+
+            return value2;
         }
 
         protected abstract Task<int> Run(SettingsContainer settings);

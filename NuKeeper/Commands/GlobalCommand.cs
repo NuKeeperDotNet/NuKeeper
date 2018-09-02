@@ -11,7 +11,8 @@ namespace NuKeeper.Commands
     {
         private readonly GitHubEngine _engine;
 
-        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+            : base(logger, fileSettingsCache)
         {
             _engine = engine;
         }
