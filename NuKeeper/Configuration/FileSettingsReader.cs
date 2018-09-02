@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Newtonsoft.Json;
-using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Configuration
@@ -17,7 +16,7 @@ namespace NuKeeper.Configuration
 
         public FileSettings Read(string folder)
         {
-            const string fileName = "NuKeeper.Settings.json";
+            const string fileName = "nukeeper.settings.json";
 
             var fullPath = Path.Join(folder, fileName);
 
