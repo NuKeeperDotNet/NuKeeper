@@ -118,7 +118,7 @@ namespace NuKeeper.Commands
             SettingsContainer settings)
         {
             var settingsFromFile = _fileSettingsCache.Get();
-            var value = FirstPopulated(Include, settingsFromFile.Include);
+            var value = Concat.FirstValue(Include, settingsFromFile.Include);
 
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -145,7 +145,7 @@ namespace NuKeeper.Commands
             SettingsContainer settings)
         {
             var settingsFromFile = _fileSettingsCache.Get();
-            var value = FirstPopulated(Exclude, settingsFromFile.Exclude);
+            var value = Concat.FirstValue(Exclude, settingsFromFile.Exclude);
 
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -166,16 +166,6 @@ namespace NuKeeper.Commands
             }
 
             return ValidationResult.Success;
-        }
-
-        private static string FirstPopulated(string value1, string value2)
-        {
-            if (!string.IsNullOrWhiteSpace(value1))
-            {
-                return value1;
-            }
-
-            return value2;
         }
 
         protected abstract Task<int> Run(SettingsContainer settings);
