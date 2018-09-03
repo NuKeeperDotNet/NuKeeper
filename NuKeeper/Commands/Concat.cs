@@ -1,15 +1,12 @@
+using System.Linq;
+
 namespace NuKeeper.Commands
 {
     public static class Concat
     {
-        public static string FirstValue(string value1, string value2)
+        public static string FirstValue(params string[] values)
         {
-            if (!string.IsNullOrWhiteSpace(value1))
-            {
-                return value1;
-            }
-
-            return value2;
+            return values.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
     }
 }

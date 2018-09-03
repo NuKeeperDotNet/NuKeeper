@@ -37,7 +37,7 @@ namespace NuKeeper.Commands
             Description =
                 "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string MinimumPackageAge { get; } = "7d";
+        protected string MinimumPackageAge { get; } 
 
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
@@ -91,7 +91,10 @@ namespace NuKeeper.Commands
 
         protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            var minPackageAge = DurationParser.Parse(MinimumPackageAge);
+            var settingsFromFile = _fileSettingsCache.Get();
+            var valueWithFallback = Concat.FirstValue(MinimumPackageAge, settingsFromFile.Age, "7d");
+
+            var minPackageAge = DurationParser.Parse(valueWithFallback);
             if (!minPackageAge.HasValue)
             {
                 return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");

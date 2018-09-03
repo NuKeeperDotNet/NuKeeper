@@ -2,6 +2,7 @@ namespace NuKeeper.Configuration
 {
     public class FileSettings
     {
+        public string Age { get; set; }
         public string Include { get; set; }
         public string Exclude { get; set; }
 
