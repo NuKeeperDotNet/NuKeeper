@@ -41,8 +41,9 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
                 "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string GithubApiEndpoint { get; } = "https://api.github.com/";
+        protected string GithubApiEndpoint { get; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
@@ -67,9 +68,9 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("No GitHub Api base found");
             }
 
+            var githubEndpointWithFallback = GithubEndpointWithFallback();
 
-            Uri githubUri;
-            if (!Uri.TryCreate(GithubApiEndpoint, UriKind.Absolute, out githubUri))
+            if (!Uri.TryCreate(githubEndpointWithFallback, UriKind.Absolute, out var githubUri))
             {
                 return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
             }
@@ -92,6 +93,13 @@ namespace NuKeeper.Commands
             settings.SourceControlServerSettings.Labels = Label;
 
             return ValidationResult.Success;
+        }
+
+        private string GithubEndpointWithFallback()
+        {
+            const string defaultGithubApi = "https://api.github.com/";
+            var fileSetting = FileSettingsCache.Get();
+            return Concat.FirstValue(GithubApiEndpoint, fileSetting.Api, defaultGithubApi);
         }
 
         private string ReadToken()

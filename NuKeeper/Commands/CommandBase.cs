@@ -14,7 +14,7 @@ namespace NuKeeper.Commands
     internal abstract class CommandBase
     {
         private readonly IConfigureLogLevel _configureLogger;
-        private readonly IFileSettingsCache _fileSettingsCache;
+        protected readonly IFileSettingsCache FileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
@@ -53,7 +53,7 @@ namespace NuKeeper.Commands
         protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
-            _fileSettingsCache = fileSettingsCache;
+            FileSettingsCache = fileSettingsCache;
         }
 
 
@@ -117,8 +117,9 @@ namespace NuKeeper.Commands
 
         private TimeSpan? ReadMinPackageAge()
         {
-            var settingsFromFile = _fileSettingsCache.Get();
-            var valueWithFallback = Concat.FirstValue(MinimumPackageAge, settingsFromFile.Age, "7d");
+            const string defaultMinPackageAge = "7d";
+            var settingsFromFile = FileSettingsCache.Get();
+            var valueWithFallback = Concat.FirstValue(MinimumPackageAge, settingsFromFile.Age, defaultMinPackageAge);
 
             return DurationParser.Parse(valueWithFallback);
         }
@@ -126,7 +127,7 @@ namespace NuKeeper.Commands
         private ValidationResult PopulatePackageIncludes(
             SettingsContainer settings)
         {
-            var settingsFromFile = _fileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.Get();
             var value = Concat.FirstValue(Include, settingsFromFile.Include);
 
             if (string.IsNullOrWhiteSpace(value))
@@ -153,7 +154,7 @@ namespace NuKeeper.Commands
         private ValidationResult PopulatePackageExcludes(
             SettingsContainer settings)
         {
-            var settingsFromFile = _fileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.Get();
             var value = Concat.FirstValue(Exclude, settingsFromFile.Exclude);
 
             if (string.IsNullOrWhiteSpace(value))
