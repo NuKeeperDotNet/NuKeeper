@@ -35,7 +35,6 @@ namespace NuKeeper.Configuration
                 var contents = File.ReadAllText(fullPath);
                 var result = JsonConvert.DeserializeObject<FileSettings>(contents);
                 return result;
-
             }
             catch (Exception ex)
             {

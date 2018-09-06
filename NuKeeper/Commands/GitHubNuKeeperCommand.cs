@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
@@ -90,7 +92,10 @@ namespace NuKeeper.Commands
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
 
-            settings.SourceControlServerSettings.Labels = Label;
+            var fileSetting = FileSettingsCache.Get();
+
+            settings.SourceControlServerSettings.Labels =
+                Concat.AllPopulated(Label, fileSetting.Label).ToList();
 
             return ValidationResult.Success;
         }
