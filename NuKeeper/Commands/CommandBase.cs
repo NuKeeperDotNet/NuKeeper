@@ -14,6 +14,7 @@ namespace NuKeeper.Commands
     internal abstract class CommandBase
     {
         private readonly IConfigureLogLevel _configureLogger;
+        protected readonly IFileSettingsCache FileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
@@ -35,8 +36,9 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
                 "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string MinimumPackageAge { get; } = "7d";
+        protected string MinimumPackageAge { get; } 
 
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
@@ -48,9 +50,10 @@ namespace NuKeeper.Commands
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         protected string Exclude { get; }
 
-        protected CommandBase(IConfigureLogLevel logger)
+        protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
+            FileSettingsCache = fileSettingsCache;
         }
 
 
@@ -89,7 +92,7 @@ namespace NuKeeper.Commands
 
         protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            var minPackageAge = DurationParser.Parse(MinimumPackageAge);
+            var minPackageAge = ReadMinPackageAge();
             if (!minPackageAge.HasValue)
             {
                 return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
@@ -97,13 +100,13 @@ namespace NuKeeper.Commands
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
 
-            var regexIncludeValid = PopulatePackageIncludes(settings, Include);
+            var regexIncludeValid = PopulatePackageIncludes(settings);
             if (!regexIncludeValid.IsSuccess)
             {
                 return regexIncludeValid;
             }
 
-            var regexExcludeValid = PopulatePackageExcludes(settings, Exclude);
+            var regexExcludeValid = PopulatePackageExcludes(settings);
             if (!regexExcludeValid.IsSuccess)
             {
                 return regexExcludeValid;
@@ -112,9 +115,21 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulatePackageIncludes(
-            SettingsContainer settings, string value)
+        private TimeSpan? ReadMinPackageAge()
         {
+            const string defaultMinPackageAge = "7d";
+            var settingsFromFile = FileSettingsCache.Get();
+            var valueWithFallback = Concat.FirstValue(MinimumPackageAge, settingsFromFile.Age, defaultMinPackageAge);
+
+            return DurationParser.Parse(valueWithFallback);
+        }
+
+        private ValidationResult PopulatePackageIncludes(
+            SettingsContainer settings)
+        {
+            var settingsFromFile = FileSettingsCache.Get();
+            var value = Concat.FirstValue(Include, settingsFromFile.Include);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.PackageFilters.Includes = null;
@@ -136,9 +151,12 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulatePackageExcludes(
-            SettingsContainer settings, string value)
+        private ValidationResult PopulatePackageExcludes(
+            SettingsContainer settings)
         {
+            var settingsFromFile = FileSettingsCache.Get();
+            var value = Concat.FirstValue(Exclude, settingsFromFile.Exclude);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.PackageFilters.Excludes = null;

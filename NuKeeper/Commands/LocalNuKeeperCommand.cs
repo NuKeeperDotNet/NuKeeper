@@ -13,7 +13,8 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string Path { get; }
 
-        protected LocalNuKeeperCommand(IConfigureLogLevel logger) : base(logger)
+        protected LocalNuKeeperCommand(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+            : base(logger, fileSettingsCache)
         {
         }
 
