@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -32,13 +32,13 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            var regexIncludeReposValid = PopulateIncludeRepos(settings, IncludeRepos);
+            var regexIncludeReposValid = PopulateIncludeRepos(settings);
             if (!regexIncludeReposValid.IsSuccess)
             {
                 return regexIncludeReposValid;
             }
 
-            var regexExcludeReposValid = PopulateExcludeRepos(settings, ExcludeRepos);
+            var regexExcludeReposValid = PopulateExcludeRepos(settings);
             if (!regexExcludeReposValid.IsSuccess)
             {
                 return regexExcludeReposValid;
@@ -47,8 +47,11 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulateIncludeRepos(SettingsContainer settings, string value)
+        private ValidationResult PopulateIncludeRepos(SettingsContainer settings)
         {
+            var settingsFromFile = FileSettingsCache.Get();
+            var value = Concat.FirstValue(IncludeRepos, settingsFromFile.IncludeRepos);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.SourceControlServerSettings.IncludeRepos = null;
@@ -67,8 +70,11 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private static ValidationResult PopulateExcludeRepos(SettingsContainer settings, string value)
+        private ValidationResult PopulateExcludeRepos(SettingsContainer settings)
         {
+            var settingsFromFile = FileSettingsCache.Get();
+            var value = Concat.FirstValue(ExcludeRepos, settingsFromFile.ExcludeRepos);
+
             if (string.IsNullOrWhiteSpace(value))
             {
                 settings.SourceControlServerSettings.ExcludeRepos = null;
