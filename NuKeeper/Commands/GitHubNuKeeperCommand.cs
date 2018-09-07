@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -45,15 +46,17 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
                 "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string GithubApiEndpoint { get; } = "https://api.github.com/";
+        protected string GithubApiEndpoint { get; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
                 "Controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
         protected ReportMode ReportMode { get; } = ReportMode.Off;
 
-        protected GitHubNuKeeperCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
+        protected GitHubNuKeeperCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache) :
+            base(logger, fileSettingsCache)
         {
             _engine = engine;
         }
@@ -71,9 +74,9 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("No GitHub Api base found");
             }
 
+            var githubEndpointWithFallback = GithubEndpointWithFallback();
 
-            Uri githubUri;
-            if (!Uri.TryCreate(GithubApiEndpoint, UriKind.Absolute, out githubUri))
+            if (!Uri.TryCreate(githubEndpointWithFallback, UriKind.Absolute, out var githubUri))
             {
                 return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
             }
@@ -93,7 +96,10 @@ namespace NuKeeper.Commands
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
 
-            settings.SourceControlServerSettings.Labels = Label;
+            var fileSetting = FileSettingsCache.Get();
+
+            settings.SourceControlServerSettings.Labels =
+                Concat.AllPopulated(Label, fileSetting.Label).ToList();
 
             return ValidationResult.Success;
         }
@@ -102,6 +108,13 @@ namespace NuKeeper.Commands
         {
             await _engine.Run(settings);
             return 0;
+        }
+
+        private string GithubEndpointWithFallback()
+        {
+            const string defaultGithubApi = "https://api.github.com/";
+            var fileSetting = FileSettingsCache.Get();
+            return Concat.FirstValue(GithubApiEndpoint, fileSetting.Api, defaultGithubApi);
         }
 
         private string ReadToken()

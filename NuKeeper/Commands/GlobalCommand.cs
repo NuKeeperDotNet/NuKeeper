@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -9,7 +8,8 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : MultipleRepositoryCommand
     {
-        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(engine, logger)
+        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+            : base(engine, logger, fileSettingsCache)
         {
         }
 

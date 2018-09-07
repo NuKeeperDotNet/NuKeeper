@@ -11,8 +11,8 @@ namespace NuKeeper.Commands
     {
         private readonly LocalEngine _engine;
 
-        public InspectCommand(LocalEngine engine, IConfigureLogLevel logger) :
-            base(logger)
+        public InspectCommand(LocalEngine engine, IConfigureLogLevel logger, FileSettingsCache fileSettingsCache) :
+            base(logger, fileSettingsCache)
         {
             _engine = engine;
         }

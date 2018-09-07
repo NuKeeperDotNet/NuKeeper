@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -14,7 +13,8 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GithubOrganisationName { get; }
 
-        public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(engine, logger)
+        public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+            : base(engine, logger, fileSettingsCache)
         {
         }
 
