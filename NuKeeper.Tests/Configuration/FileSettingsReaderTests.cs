@@ -52,6 +52,8 @@ namespace NuKeeper.Tests.Configuration
                ""api"":""http://api.com"",
                ""include"":""fred"",
                ""exclude"":""fish"",
+               ""includeRepos"":""repoIn"",
+               ""excludeRepos"":""repoOut"",
                ""label"":""mark""
 }";
 
@@ -66,6 +68,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Api, Is.EqualTo("http://api.com"));
             Assert.That(data.Include, Is.EqualTo("fred"));
             Assert.That(data.Exclude, Is.EqualTo("fish"));
+            Assert.That(data.IncludeRepos, Is.EqualTo("repoIn"));
+            Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.Label, Is.EqualTo("mark"));
         }
 
@@ -77,6 +81,7 @@ namespace NuKeeper.Tests.Configuration
                ""API"":""http://api.com"",
                ""iNClude"":""fred"",
                ""excludE"":""fish"",
+               ""IncluDeRepoS"":""repo2"",
                ""label"":""mark""
 }";
 
@@ -91,6 +96,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Api, Is.EqualTo("http://api.com"));
             Assert.That(data.Include, Is.EqualTo("fred"));
             Assert.That(data.Exclude, Is.EqualTo("fish"));
+            Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
             Assert.That(data.Label, Is.EqualTo("mark"));
         }
 
