@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.GitHub;
@@ -24,10 +25,10 @@ namespace NuKeeper.Engine
             switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    return await ForAllOrgs(gitHub);
+                    return await ForAllOrgs(gitHub, settings);
 
                 case ServerScope.Organisation:
-                    return await FromOrganisation(gitHub, settings.OrganisationName);
+                    return await FromOrganisation(gitHub, settings.OrganisationName, settings);
 
                 case ServerScope.Repository:
                     return new[] { settings.Repository };
@@ -38,7 +39,8 @@ namespace NuKeeper.Engine
             }
         }
 
-        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(IGitHub gitHub)
+        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(
+            IGitHub gitHub, SourceControlServerSettings settings)
         {
             var allOrgs = await gitHub.GetOrganizations();
 
@@ -46,7 +48,7 @@ namespace NuKeeper.Engine
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(gitHub, org.Name ?? org.Login);
+                var repos = await FromOrganisation(gitHub, org.Name ?? org.Login, settings);
                 allRepos.AddRange(repos);
             }
 
@@ -54,11 +56,12 @@ namespace NuKeeper.Engine
         }
 
         private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(
-            IGitHub gitHub, string organisationName)
+            IGitHub gitHub, string organisationName, SourceControlServerSettings settings)
         {
             var allOrgRepos = await gitHub.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
+                .Where(r => MatchesIncludeExclude(r, settings))
                 .Where(RepoIsModifiable)
                 .ToList();
 
@@ -70,6 +73,23 @@ namespace NuKeeper.Engine
             return usableRepos
                 .Select(r => new RepositorySettings(r))
                 .ToList();
+        }
+
+        private static bool MatchesIncludeExclude(Repository repo, SourceControlServerSettings settings)
+        {
+            return
+                MatchesInclude(settings.IncludeRepos, repo)
+                && !MatchesExclude(settings.ExcludeRepos, repo);
+        }
+
+        private static bool MatchesInclude(Regex regex, Repository repo)
+        {
+            return regex == null || regex.IsMatch(repo.Name);
+        }
+
+        private static bool MatchesExclude(Regex regex, Repository repo)
+        {
+            return regex != null && regex.IsMatch(repo.Name);
         }
 
         private static bool RepoIsModifiable(Repository repo)

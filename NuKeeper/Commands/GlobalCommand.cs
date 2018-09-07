@@ -7,13 +7,10 @@ using NuKeeper.Inspection.Logging;
 namespace NuKeeper.Commands
 {
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
-    internal class GlobalCommand : GitHubNuKeeperCommand
+    internal class GlobalCommand : MultipleRepositoryCommand
     {
-        private readonly GitHubEngine _engine;
-
-        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(logger)
+        public GlobalCommand(GitHubEngine engine, IConfigureLogLevel logger) : base(engine, logger)
         {
-            _engine = engine;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -39,12 +36,5 @@ namespace NuKeeper.Commands
 
             return ValidationResult.Success;
         }
-
-        protected override async Task<int> Run(SettingsContainer settings)
-        {
-            await _engine.Run(settings);
-            return 0;
-        }
-
     }
 }

@@ -18,9 +18,10 @@ namespace NuKeeper.Tests.Engine
         }
 
         public static Repository MakeRepository(
-            string forkHtmlUrl = ForkHtmlUrl, 
-            string forkCloneUrl = ForkCloneUrl, 
-            bool canPull = true, bool canPush = true)
+            string forkHtmlUrl = ForkHtmlUrl,
+            string forkCloneUrl = ForkCloneUrl,
+            bool canPull = true, bool canPush = true,
+            string name = "repoName")
         {
             const string omniUrl = "http://somewhere.com/fork";
             var owner = MakeUser(omniUrl);
@@ -31,7 +32,7 @@ namespace NuKeeper.Tests.Engine
             return new Repository(omniUrl, forkHtmlUrl, forkCloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                owner, "repoName", "repoName", "a test repo", "homepage",
+                owner, name, name, "a test repo", "homepage",
                 "EN", false, true,
                 1, 1, "master",
                 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
