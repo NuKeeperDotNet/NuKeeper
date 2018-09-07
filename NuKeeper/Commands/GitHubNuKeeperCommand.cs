@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
+using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
 
@@ -10,6 +11,8 @@ namespace NuKeeper.Commands
 {
     internal abstract class GitHubNuKeeperCommand : CommandBase
     {
+        private readonly GitHubEngine _engine;
+
         [Argument(1, Name = "Token",
             Description =
                 "GitHub personal access token to authorise access to GitHub server.")]
@@ -52,9 +55,10 @@ namespace NuKeeper.Commands
                 "Controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
         protected ReportMode ReportMode { get; } = ReportMode.Off;
 
-        protected GitHubNuKeeperCommand(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache) :
+        protected GitHubNuKeeperCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache) :
             base(logger, fileSettingsCache)
         {
+            _engine = engine;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -98,6 +102,12 @@ namespace NuKeeper.Commands
                 Concat.AllPopulated(Label, fileSetting.Label).ToList();
 
             return ValidationResult.Success;
+        }
+
+        protected override async Task<int> Run(SettingsContainer settings)
+        {
+            await _engine.Run(settings);
+            return 0;
         }
 
         private string GithubEndpointWithFallback()

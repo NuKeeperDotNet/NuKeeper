@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -7,19 +6,16 @@ using NuKeeper.Inspection.Logging;
 namespace NuKeeper.Commands
 {
     [Command(Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
-    internal class OrganisationCommand : GitHubNuKeeperCommand
+    internal class OrganisationCommand : MultipleRepositoryCommand
     {
-        private readonly GitHubEngine _engine;
-
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GithubOrganisationName { get; }
 
         public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
-            : base(logger, fileSettingsCache)
+            : base(engine, logger, fileSettingsCache)
         {
-            _engine = engine;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -33,12 +29,6 @@ namespace NuKeeper.Commands
             settings.SourceControlServerSettings.Scope = ServerScope.Organisation;
             settings.SourceControlServerSettings.OrganisationName = GithubOrganisationName;
             return ValidationResult.Success;
-        }
-
-        protected override async Task<int> Run(SettingsContainer settings)
-        {
-            await _engine.Run(settings);
-            return 0;
         }
     }
 }

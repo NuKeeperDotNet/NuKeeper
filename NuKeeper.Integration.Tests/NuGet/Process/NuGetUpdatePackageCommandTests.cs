@@ -14,7 +14,7 @@ using NuKeeper.Update.ProcessRunner;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    [Category("WindowsOnly")]
+    [Category("WindowsOnly")] // Windows only due to NuGetUpdatePackageCommand
     public class NuGetUpdatePackageCommandTests
     {
         private readonly string _testDotNetClassicProject =
@@ -48,7 +48,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             Directory.CreateDirectory(workDirectory);
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
-            
+
             var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion);
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
