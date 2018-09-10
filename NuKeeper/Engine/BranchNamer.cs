@@ -13,13 +13,7 @@ namespace NuKeeper.Engine
 
         public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            if (updates.Count == 1)
-            {
-                return MakeName(updates.First());
-            }
-
-            // TODO: Complete - add timestamp
-            return "nukeeper-update";
+            return updates.Count > 1 ? "nukeeper-update-packages" : MakeName(updates.First());
         }
     }
 }
