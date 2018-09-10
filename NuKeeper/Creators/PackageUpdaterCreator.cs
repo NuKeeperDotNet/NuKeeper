@@ -21,6 +21,11 @@ namespace NuKeeper.Creators
 
         public IPackageUpdater Create(SettingsContainer settings)
         {
+            if (settings.UserSettings.ConsolidateUpdatesInSinglePullRequest)
+            {
+                return new ConsolidatingPackageUpdater(_githubCreator.Create(settings), _updateRunner, _logger);
+            }
+
             return new PackageUpdater(_githubCreator.Create(settings), _updateRunner, _logger);
         }
     }

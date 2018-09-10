@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
@@ -94,6 +95,26 @@ namespace NuKeeper.Engine
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
 
             return builder.ToString();
+        }
+
+        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            if (updates.Count == 1)
+            {
+                return MakePullRequestTitle(updates.First());
+            }
+            // TODO: Is this adequate?
+            return "Automatic update of multiple packages";
+        }
+
+        public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            if (updates.Count == 1)
+            {
+                return MakeCommitDetails(updates.First());
+            }
+            // TODO: Complete
+            return "Add some commit details here...";
         }
 
         private static string ChangeLevel(NuGetVersion oldVersion, NuGetVersion newVersion)

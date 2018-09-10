@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -13,6 +15,11 @@ namespace NuKeeper.Engine
                 .Distinct();
 
             return $"Updating '{updateSet.SelectedId}' from {oldVersions.JoinWithCommas()} to {updateSet.SelectedVersion} in {updateSet.CurrentPackages.Count} projects";
+        }
+
+        public static string OldVersionsToBeUpdated(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            return updates.Select(OldVersionsToBeUpdated).JoinWithSeparator(Environment.NewLine);
         }
     }
 }

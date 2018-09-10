@@ -36,6 +36,11 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected int MaxPullRequestsPerRepository { get; } = 3;
 
+        [Option(CommandOptionType.NoValue, ShortName = "co", LongName = "consolidate",
+            Description = "Consolidate updates into a single pull request. Defaults to false.")]
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected bool ConsolidateUpdatesInSinglePullRequest { get; } = false;
+
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description =
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
@@ -92,6 +97,7 @@ namespace NuKeeper.Commands
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
+            settings.UserSettings.ConsolidateUpdatesInSinglePullRequest = ConsolidateUpdatesInSinglePullRequest;
             settings.PackageFilters.MaxPackageUpdates = MaxPullRequestsPerRepository;
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
