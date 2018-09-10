@@ -69,14 +69,14 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            var githubEndpointWithFallback = GithubEndpointWithFallback();
+            var apiBase = GithubEndpointWithFallback();
 
-            if (string.IsNullOrWhiteSpace(githubEndpointWithFallback))
+            if (string.IsNullOrWhiteSpace(apiBase))
             {
                 return ValidationResult.Failure("No GitHub Api base found");
             }
 
-            if (!Uri.TryCreate(githubEndpointWithFallback, UriKind.Absolute, out var githubUri))
+            if (!Uri.TryCreate(apiBase, UriKind.Absolute, out var githubUri))
             {
                 return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
             }
