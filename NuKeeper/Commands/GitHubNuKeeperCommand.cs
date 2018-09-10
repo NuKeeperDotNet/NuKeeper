@@ -46,7 +46,7 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = {"nukeeper"};
+        protected string[] Label { get; } = { "nukeeper" };
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
@@ -74,14 +74,14 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            if (string.IsNullOrWhiteSpace(GithubApiEndpoint))
+            var apiBase = GithubEndpointWithFallback();
+
+            if (string.IsNullOrWhiteSpace(apiBase))
             {
                 return ValidationResult.Failure("No GitHub Api base found");
             }
 
-            var githubEndpointWithFallback = GithubEndpointWithFallback();
-
-            if (!Uri.TryCreate(githubEndpointWithFallback, UriKind.Absolute, out var githubUri))
+            if (!Uri.TryCreate(apiBase, UriKind.Absolute, out var githubUri))
             {
                 return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
             }
