@@ -12,6 +12,12 @@ namespace NuKeeper.Engine
     public static class CommitWording
     {
         private const string CommitEmoji = "package";
+
+        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            return updates.Count > 1 ? $"{updates.Count} packages have been updated" : MakePullRequestTitle(updates.First());
+        }
+
         public static string MakePullRequestTitle(PackageUpdateSet updates)
         {
             return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
@@ -20,6 +26,20 @@ namespace NuKeeper.Engine
         public static string MakeCommitMessage(PackageUpdateSet updates)
         {
             return $":{CommitEmoji}: {MakePullRequestTitle(updates)}";
+        }
+
+        public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            if (updates.Count == 1)
+            {
+                return MakeCommitDetails(updates.First());
+            }
+
+            var builder = new StringBuilder(MakePullRequestTitle(updates));
+            builder.Append(" (see commit messages for more details)");
+            AddCommitFooter(builder);
+
+            return builder.ToString();
         }
 
         public static string MakeCommitDetails(PackageUpdateSet updates)
@@ -85,36 +105,22 @@ namespace NuKeeper.Engine
                 builder.AppendLine(line);
             }
 
-            builder.AppendLine();
-            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
             }
-            builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
+
+            AddCommitFooter(builder);
 
             return builder.ToString();
         }
 
-        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        private static void AddCommitFooter(StringBuilder builder)
         {
-            if (updates.Count == 1)
-            {
-                return MakePullRequestTitle(updates.First());
-            }
-            // TODO: Is this adequate?
-            return "Automatic update of multiple packages";
-        }
-
-        public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
-        {
-            if (updates.Count == 1)
-            {
-                return MakeCommitDetails(updates.First());
-            }
-            // TODO: Complete
-            return "Add some commit details here...";
+            builder.AppendLine();
+            builder.AppendLine("This is an automated update. Merge only if it passes tests");
+            builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
         }
 
         private static string ChangeLevel(NuGetVersion oldVersion, NuGetVersion newVersion)
