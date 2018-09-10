@@ -41,7 +41,7 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = {"nukeeper"};
+        protected string[] Label { get; } = { "nukeeper" };
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
