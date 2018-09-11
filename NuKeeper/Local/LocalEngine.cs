@@ -14,7 +14,7 @@ using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Local
 {
-    public class LocalEngine
+    public class LocalEngine : ILocalEngine
     {
         private readonly INuGetSourcesReader _nuGetSourcesReader;
         private readonly IUpdateFinder _updateFinder;

@@ -9,9 +9,9 @@ namespace NuKeeper.Commands
     [Command(Description = "Checks projects existing locally for possible updates.")]
     internal class InspectCommand : LocalNuKeeperCommand
     {
-        private readonly LocalEngine _engine;
+        private readonly ILocalEngine _engine;
 
-        public InspectCommand(LocalEngine engine, IConfigureLogLevel logger, FileSettingsCache fileSettingsCache) :
+        public InspectCommand(ILocalEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache) :
             base(logger, fileSettingsCache)
         {
             _engine = engine;
