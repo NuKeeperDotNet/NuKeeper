@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Commands
 {
     [TestFixture]
-    public class InspectCommandTests
+    public class UpdateCommandTests
     {
         [Test]
         public async Task ShouldCallEngineAndSucceed()
@@ -23,14 +23,14 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.Get().Returns(FileSettings.Empty());
 
-            var command = new InspectCommand(engine, logger, fileSettings);
+            var command = new UpdateCommand(engine, logger, fileSettings);
 
             var status = await command.OnExecute();
 
             Assert.That(status, Is.EqualTo(0));
             await engine
                 .Received(1)
-                .Run(Arg.Any<SettingsContainer>(), false);
+                .Run(Arg.Any<SettingsContainer>(), true);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters.MinimumAge, Is.EqualTo(TimeSpan.FromDays(7)));
             Assert.That(settings.PackageFilters.Excludes, Is.Null);
             Assert.That(settings.PackageFilters.Includes, Is.Null);
-            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(0));
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(1));
 
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
@@ -93,12 +93,12 @@ namespace NuKeeper.Tests.Commands
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ILocalEngine>();
-            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), false);
+            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), true);
 
 
             fileSettings.Get().Returns(settingsIn);
 
-            var command = new InspectCommand(engine, logger, fileSettings);
+            var command = new UpdateCommand(engine, logger, fileSettings);
 
             await command.OnExecute();
 
