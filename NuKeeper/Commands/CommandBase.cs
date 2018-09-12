@@ -41,14 +41,10 @@ namespace NuKeeper.Commands
         protected string MinimumPackageAge { get; } 
 
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string Include { get; }
+        public string Include { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        protected string Exclude { get; }
+        public string Exclude { get; set; }
 
         protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
         {
@@ -56,8 +52,6 @@ namespace NuKeeper.Commands
             FileSettingsCache = fileSettingsCache;
         }
 
-
-        // ReSharper disable once UnusedMember.Global
         public async Task<int> OnExecute()
         {
             _configureLogger.SetLogLevel(Verbosity);

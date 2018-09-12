@@ -66,6 +66,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Organisation));
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Null);
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.EqualTo("testOrg"));
         }

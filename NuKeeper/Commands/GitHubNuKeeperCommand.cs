@@ -16,8 +16,6 @@ namespace NuKeeper.Commands
         [Argument(1, Name = "Token",
             Description =
                 "GitHub personal access token to authorise access to GitHub server.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
         public string GitHubToken { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "maxrepo",
@@ -46,9 +44,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
                 "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string GithubApiEndpoint { get; }
+        public string GithubApiEndpoint { get; set;  }
 
         [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
             Description =
