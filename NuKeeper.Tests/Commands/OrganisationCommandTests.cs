@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Commands
 {
     [TestFixture]
-    public class RepositoryCommandTests
+    public class OrganisationCommandTests
     {
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
@@ -23,7 +23,7 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.Get().Returns(FileSettings.Empty());
 
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var command = new OrganisationCommand(engine, logger, fileSettings);
 
             var status = await command.OnExecute();
 
@@ -42,9 +42,9 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.Get().Returns(FileSettings.Empty());
 
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var command = new OrganisationCommand(engine, logger, fileSettings);
             command.GitHubToken = "abc";
-            command.GitHubRepositoryUri = "http://github.com/abc/abc";
+            command.GithubOrganisationName = "testOrg";
 
             var status = await command.OnExecute();
 
@@ -66,10 +66,8 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.EqualTo(new Uri("http://github.com/test/test")));
-            Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
+            Assert.That(settings.SourceControlServerSettings.Repository, Is.Null);
+            Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.EqualTo("testOrg"));
         }
 
         [Test]
@@ -129,6 +127,25 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("testLabel"));
         }
 
+        [Test]
+        public async Task WillReadRepoFiltersFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                IncludeRepos = "foo",
+                ExcludeRepos = "bar"
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos.ToString(), Is.EqualTo("foo"));
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos.ToString(), Is.EqualTo("bar"));
+        }
+
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
@@ -141,9 +158,9 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.Get().Returns(settingsIn);
 
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var command = new OrganisationCommand(engine, logger, fileSettings);
             command.GitHubToken = "testToken";
-            command.GitHubRepositoryUri = "http://github.com/test/test";
+            command.GithubOrganisationName = "testOrg";
 
             await command.OnExecute();
 
