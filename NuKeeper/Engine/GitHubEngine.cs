@@ -11,7 +11,7 @@ using Octokit;
 
 namespace NuKeeper.Engine
 {
-    public class GitHubEngine
+    public class GitHubEngine : IGitHubEngine
     {
         private readonly ICreate<IGitHub> _githubCreator;
         private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;

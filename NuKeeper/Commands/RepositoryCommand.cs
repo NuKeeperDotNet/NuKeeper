@@ -12,9 +12,9 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string GitHubRepositoryUri { get; }
+        public string GitHubRepositoryUri { get; set; }
 
-        public RepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger, FileSettingsCache fileSettingsCache)
+        public RepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }

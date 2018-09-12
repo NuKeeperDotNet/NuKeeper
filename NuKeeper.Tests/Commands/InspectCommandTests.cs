@@ -69,6 +69,21 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters.MinimumAge, Is.EqualTo(TimeSpan.FromDays(8)));
         }
 
+
+        [Test]
+        public async Task InvalidMaxAgeWillFail()
+        {
+            var fileSettings = new FileSettings
+            {
+                Age = "fish"
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Null);
+        }
+
+
         [Test]
         public async Task WillReadIncludeExcludeFromFile()
         {

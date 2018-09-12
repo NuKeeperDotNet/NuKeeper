@@ -19,7 +19,7 @@ namespace NuKeeper.Commands
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         protected string ExcludeRepos { get; }
 
-        protected MultipleRepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }

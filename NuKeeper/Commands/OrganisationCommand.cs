@@ -13,7 +13,7 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string GithubOrganisationName { get; }
 
-        public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        public OrganisationCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }
