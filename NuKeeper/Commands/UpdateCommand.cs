@@ -13,9 +13,9 @@ namespace NuKeeper.Commands
             Description = "Maximum number of package updates to make. Defaults to 1.")]
         protected int MaxPackageUpdates { get; } = 1;
 
-        private readonly LocalEngine _engine;
+        private readonly ILocalEngine _engine;
 
-        public UpdateCommand(LocalEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        public UpdateCommand(ILocalEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(logger, fileSettingsCache)
         {
             _engine = engine;
