@@ -37,9 +37,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description =
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Label { get; } = { "nukeeper" };
+        public string[] Label { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
@@ -92,10 +90,12 @@ namespace NuKeeper.Commands
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
 
-            var fileSetting = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.Get();
 
-            settings.SourceControlServerSettings.Labels =
-                Concat.AllPopulated(Label, fileSetting.Label).ToList();
+            var defaultLabels = new[] { "nukeeper" };
+            var labelArray = Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);
+
+            settings.SourceControlServerSettings.Labels = labelArray.ToList();
 
             return ValidationResult.Success;
         }
