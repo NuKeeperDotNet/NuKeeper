@@ -25,6 +25,5 @@ namespace NuKeeper.Commands
 
             return result;
         }
-
     }
 }

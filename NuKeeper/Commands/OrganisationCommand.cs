@@ -9,11 +9,9 @@ namespace NuKeeper.Commands
     internal class OrganisationCommand : MultipleRepositoryCommand
     {
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string GithubOrganisationName { get; }
+        public string GithubOrganisationName { get; set; }
 
-        public OrganisationCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        public OrganisationCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }
