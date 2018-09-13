@@ -146,7 +146,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task MaxPrFromCommandLIneOverrirdesFiles()
+        public async Task MaxPrFromCommandLineOverridesFiles()
         {
             var fileSettings = new FileSettings
             {
