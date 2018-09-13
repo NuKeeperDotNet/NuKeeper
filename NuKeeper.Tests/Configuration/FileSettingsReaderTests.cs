@@ -137,6 +137,5 @@ namespace NuKeeper.Tests.Configuration
             var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return ff.UniqueTemporaryFolder();
         }
-
     }
 }
