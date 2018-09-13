@@ -10,20 +10,39 @@ namespace NuKeeper.Commands
             return values.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public static IEnumerable<string> AllPopulated(IEnumerable<string> values, string value)
+        public static IReadOnlyCollection<string> FirstPopulatedList(string[] list1, string[] list2, string[] list3)
         {
-            var result = new List<string>();
-            if (values != null)
+            return FirstPopulatedArray(list1, list2, list3)
+                .ToList();
+        }
+
+        private static string[] FirstPopulatedArray(string[] list1, string[] list2, string[] list3)
+        {
+            if (HasElements(list1))
             {
-                result.AddRange(values.Where(s => ! string.IsNullOrWhiteSpace(s)));
+                return list1;
             }
 
-            if (!string.IsNullOrWhiteSpace(value))
+            if (HasElements(list2))
             {
-                result.Add(value);
+                return list2;
             }
 
-            return result;
+            if (HasElements(list3))
+            {
+                return list3;
+            }
+
+            return new string[0];
+        }
+
+        private static bool HasElements(string[] strings)
+        {
+            if (strings == null)
+            {
+                return false;
+            }
+            return strings.Length > 0;
         }
     }
 }

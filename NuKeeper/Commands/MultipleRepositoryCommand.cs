@@ -10,14 +10,10 @@ namespace NuKeeper.Commands
     internal abstract class MultipleRepositoryCommand : GitHubNuKeeperCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "ir", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string IncludeRepos { get; }
+        public string IncludeRepos { get; set;  }
 
         [Option(CommandOptionType.SingleValue, ShortName = "er", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        protected string ExcludeRepos { get; }
+        public string ExcludeRepos { get; set; }
 
         protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)

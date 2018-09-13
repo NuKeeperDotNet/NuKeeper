@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json.Serialization;
 
 namespace NuKeeper
 {

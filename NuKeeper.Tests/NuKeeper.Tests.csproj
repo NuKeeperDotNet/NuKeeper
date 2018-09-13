@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0027" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />

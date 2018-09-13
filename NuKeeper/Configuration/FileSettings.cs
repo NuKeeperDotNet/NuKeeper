@@ -10,7 +10,7 @@ namespace NuKeeper.Configuration
         public string IncludeRepos { get; set; }
         public string ExcludeRepos { get; set; }
 
-        public string Label { get; set; }
+        public string[] Label { get; set; }
 
         public static FileSettings Empty()
         {

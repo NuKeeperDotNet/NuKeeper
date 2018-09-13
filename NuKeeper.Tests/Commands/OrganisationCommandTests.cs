@@ -116,7 +116,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = "testLabel"
+                Label = new[] { "testLabel" }
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -124,7 +124,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Labels, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Labels, Has.Count.EqualTo(2));
+            Assert.That(settings.SourceControlServerSettings.Labels, Has.Count.EqualTo(1));
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("testLabel"));
         }
 
@@ -147,7 +147,47 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos.ToString(), Is.EqualTo("bar"));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        [Test]
+        public async Task CommandLineWillOverrideIncludeRepo()
+        {
+            var fileSettings = new FileSettings
+            {
+                IncludeRepos = "foo",
+                ExcludeRepos = "bar"
+            };
+
+            var settings = await CaptureSettings(fileSettings, true, false);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos.ToString(), Is.EqualTo("IncludeFromCommand"));
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos.ToString(), Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public async Task CommandLineWillOverrideExcludeRepo()
+        {
+            var fileSettings = new FileSettings
+            {
+                IncludeRepos = "foo",
+                ExcludeRepos = "bar"
+            };
+
+            var settings = await CaptureSettings(fileSettings, false, true);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.IncludeRepos.ToString(), Is.EqualTo("foo"));
+            Assert.That(settings.SourceControlServerSettings.ExcludeRepos.ToString(), Is.EqualTo("ExcludeFromCommand"));
+        }
+
+
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            bool addCommandRepoInclude = false, bool addCommandRepoExclude = false)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -162,6 +202,16 @@ namespace NuKeeper.Tests.Commands
             var command = new OrganisationCommand(engine, logger, fileSettings);
             command.GitHubToken = "testToken";
             command.GithubOrganisationName = "testOrg";
+
+            if (addCommandRepoInclude)
+            {
+                command.IncludeRepos = "IncludeFromCommand";
+            }
+
+            if (addCommandRepoExclude)
+            {
+                command.ExcludeRepos = "ExcludeFromCommand";
+            }
 
             await command.OnExecute();
 

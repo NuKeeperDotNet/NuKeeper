@@ -54,7 +54,7 @@ namespace NuKeeper.Tests.Configuration
                ""exclude"":""fish"",
                ""includeRepos"":""repoIn"",
                ""excludeRepos"":""repoOut"",
-               ""label"":""mark""
+               ""label"": [ ""foo"", ""bar"" ]
 }";
 
             var path = MakeTestFile(configData);
@@ -70,7 +70,9 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repoIn"));
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
-            Assert.That(data.Label, Is.EqualTo("mark"));
+            Assert.That(data.Label.Length, Is.EqualTo(2));
+            Assert.That(data.Label, Does.Contain("foo"));
+            Assert.That(data.Label, Does.Contain("bar"));
         }
 
         [Test]
@@ -82,7 +84,7 @@ namespace NuKeeper.Tests.Configuration
                ""iNClude"":""fred"",
                ""excludE"":""fish"",
                ""IncluDeRepoS"":""repo2"",
-               ""label"":""mark""
+               ""label"": [""mark"" ]
 }";
 
             var path = MakeTestFile(configData);
@@ -97,7 +99,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Include, Is.EqualTo("fred"));
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
-            Assert.That(data.Label, Is.EqualTo("mark"));
+            Assert.That(data.Label.Length, Is.EqualTo(1));
+            Assert.That(data.Label, Does.Contain("mark"));
         }
 
         [Test]
@@ -134,6 +137,5 @@ namespace NuKeeper.Tests.Configuration
             var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return ff.UniqueTemporaryFolder();
         }
-
     }
 }
