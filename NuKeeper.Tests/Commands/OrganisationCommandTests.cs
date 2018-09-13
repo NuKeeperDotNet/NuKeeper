@@ -185,6 +185,20 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos.ToString(), Is.EqualTo("ExcludeFromCommand"));
         }
 
+        [Test]
+        public async Task WillReadMaxPrFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxPr = 42
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(42));
+        }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
             bool addCommandRepoInclude = false, bool addCommandRepoExclude = false)
