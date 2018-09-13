@@ -130,7 +130,27 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("testLabel"));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        [Test]
+        public async Task LabelsOnCommandLineWillReplaceFileLabels()
+        {
+            var fileSettings = new FileSettings
+            {
+                Label = new[] { "testLabel" }
+            };
+
+            var settings = await CaptureSettings(fileSettings, true);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.Labels, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.Labels, Has.Count.EqualTo(2));
+            Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("runLabel1"));
+            Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("runLabel2"));
+            Assert.That(settings.SourceControlServerSettings.Labels, Does.Not.Contain("testLabel"));
+        }
+
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            bool addLabels = false)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -145,6 +165,11 @@ namespace NuKeeper.Tests.Commands
             var command = new RepositoryCommand(engine, logger, fileSettings);
             command.GitHubToken = "testToken";
             command.GitHubRepositoryUri = "http://github.com/test/test";
+
+            if (addLabels)
+            {
+                command.Label = new[] {"runLabel1", "runLabel2"};
+            }
 
             await command.OnExecute();
 
