@@ -140,7 +140,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Labels, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Labels, Has.Length.EqualTo(1));
+            Assert.That(settings.SourceControlServerSettings.Labels, Has.Count.EqualTo(1));
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("testLabel"));
         }
 

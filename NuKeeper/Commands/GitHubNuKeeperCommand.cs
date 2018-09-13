@@ -93,9 +93,9 @@ namespace NuKeeper.Commands
             var fileSettings = FileSettingsCache.Get();
 
             var defaultLabels = new[] { "nukeeper" };
-            var labelArray = Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);
 
-            settings.SourceControlServerSettings.Labels = labelArray.ToList();
+            settings.SourceControlServerSettings.Labels =
+                Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);
 
             return ValidationResult.Success;
         }

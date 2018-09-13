@@ -10,19 +10,39 @@ namespace NuKeeper.Commands
             return values.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public static string[] FirstPopulatedList(string[] list1, string[] list2, string[] list3)
+        public static IReadOnlyCollection<string> FirstPopulatedList(string[] list1, string[] list2, string[] list3)
         {
-            if ((list1?.Length ?? 0) > 0)
+            return FirstPopulatedArray(list1, list2, list3)
+                .ToList();
+        }
+
+        private static string[] FirstPopulatedArray(string[] list1, string[] list2, string[] list3)
+        {
+            if (HasElements(list1))
             {
                 return list1;
             }
 
-            if ((list2?.Length ?? 0) > 0)
+            if (HasElements(list2))
             {
                 return list2;
             }
 
-            return list3;
+            if (HasElements(list3))
+            {
+                return list3;
+            }
+
+            return new string[0];
+        }
+
+        private static bool HasElements(string[] strings)
+        {
+            if (strings == null)
+            {
+                return false;
+            }
+            return strings.Length > 0;
         }
     }
 }
