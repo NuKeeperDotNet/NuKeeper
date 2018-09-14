@@ -69,7 +69,6 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters.MinimumAge, Is.EqualTo(TimeSpan.FromDays(8)));
         }
 
-
         [Test]
         public async Task InvalidMaxAgeWillFail()
         {
@@ -99,6 +98,90 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.Includes.ToString(), Is.EqualTo("foo"));
             Assert.That(settings.PackageFilters.Excludes.ToString(), Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public async Task LogLevelIsNormalByDefault()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogLevel>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            fileSettings.Get().Returns(FileSettings.Empty());
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .SetLogLevel(LogLevel.Normal);
+        }
+
+        [Test]
+        public async Task ShouldSetLogLevelFromCommand()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogLevel>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            fileSettings.Get().Returns(FileSettings.Empty());
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+            command.Verbosity = LogLevel.Minimal;
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .SetLogLevel(LogLevel.Minimal);
+        }
+
+        [Test]
+        public async Task ShouldSetLogLevelFromFile()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogLevel>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            var settings = new FileSettings
+            {
+                Verbosity = LogLevel.Detailed
+            };
+
+            fileSettings.Get().Returns(settings);
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .SetLogLevel(LogLevel.Detailed);
+        }
+
+        [Test]
+        public async Task CommandLineLogLevelOverridesFile()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogLevel>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            var settings = new FileSettings
+            {
+                Verbosity = LogLevel.Detailed
+            };
+
+            fileSettings.Get().Returns(settings);
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+            command.Verbosity = LogLevel.Minimal;
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .SetLogLevel(LogLevel.Minimal);
         }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)

@@ -27,6 +27,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Label, Is.Null);
             Assert.That(data.MaxPr, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
+            Assert.That(data.Verbosity, Is.Null);
         }
 
         [Test]
@@ -46,6 +47,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Label, Is.Null);
             Assert.That(data.MaxPr, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
+            Assert.That(data.Verbosity, Is.Null);
         }
 
         [Test]
@@ -61,6 +63,7 @@ namespace NuKeeper.Tests.Configuration
                ""label"": [ ""foo"", ""bar"" ],
                ""maxpr"": 42,
                ""maxRepo"": 12,
+               ""verbosity"": ""Detailed""
 }";
 
             var path = MakeTestFile(configData);
@@ -83,6 +86,7 @@ namespace NuKeeper.Tests.Configuration
 
             Assert.That(data.MaxPr, Is.EqualTo(42));
             Assert.That(data.MaxRepo, Is.EqualTo(12));
+            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
         }
 
         [Test]
@@ -96,7 +100,7 @@ namespace NuKeeper.Tests.Configuration
                ""IncluDeRepoS"":""repo2"",
                ""label"": [""mark"" ],
                ""MAXrepo"":3,
-
+               ""vErBoSiTy"": ""Q""
 }";
 
             var path = MakeTestFile(configData);
@@ -114,6 +118,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Label.Length, Is.EqualTo(1));
             Assert.That(data.Label, Does.Contain("mark"));
             Assert.That(data.MaxRepo, Is.EqualTo(3));
+            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
         }
 
         [Test]

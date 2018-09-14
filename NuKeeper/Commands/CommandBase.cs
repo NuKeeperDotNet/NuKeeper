@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         // ReSharper disable once MemberCanBePrivate.Global
-        protected LogLevel Verbosity { get; } = LogLevel.Normal;
+        public LogLevel? Verbosity { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
@@ -54,7 +54,8 @@ namespace NuKeeper.Commands
 
         public async Task<int> OnExecute()
         {
-            _configureLogger.SetLogLevel(Verbosity);
+            SetLogLevel();
+
             var settings = MakeSettings();
 
             var validationResult = PopulateSettings(settings);
@@ -66,6 +67,13 @@ namespace NuKeeper.Commands
             }
 
             return await Run(settings);
+        }
+
+        private void SetLogLevel()
+        {
+            var fileSettings = FileSettingsCache.Get();
+            var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
+            _configureLogger.SetLogLevel(logLevel);
         }
 
         private SettingsContainer MakeSettings()
