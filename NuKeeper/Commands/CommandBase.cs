@@ -18,7 +18,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
-        protected VersionChange AllowedChange { get; } = VersionChange.Major;
+        public VersionChange? AllowedChange { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",
             Description =
@@ -78,13 +78,16 @@ namespace NuKeeper.Commands
 
         private SettingsContainer MakeSettings()
         {
+            var fileSettings = FileSettingsCache.Get();
+            var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
+
             var settings = new SettingsContainer
             {
                 SourceControlServerSettings = new SourceControlServerSettings(),
                 PackageFilters = new FilterSettings(),
                 UserSettings = new UserSettings
                 {
-                    AllowedChange = AllowedChange,
+                    AllowedChange = allowedChange,
                     NuGetSources = NuGetSources
                 }
             };
