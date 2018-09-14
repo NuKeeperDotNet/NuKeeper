@@ -38,6 +38,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Could not read GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
+            settings.UserSettings.MaxRepositoriesChanged = 1;
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             return ValidationResult.Success;
         }

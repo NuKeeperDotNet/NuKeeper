@@ -92,6 +92,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(1));
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);
@@ -146,6 +147,21 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
+        public async Task WillNotReadMaxRepoFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxRepo = 42
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(1));
+        }
+
+        [Test]
         public async Task MaxPrFromCommandLineOverridesFiles()
         {
             var fileSettings = new FileSettings
@@ -159,7 +175,6 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(101));
         }
-
 
         [Test]
         public async Task LabelsOnCommandLineWillReplaceFileLabels()
