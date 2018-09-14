@@ -131,6 +131,37 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
+        public async Task WillReadMaxPrFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxPr = 42
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(42));
+        }
+
+        [Test]
+        public async Task MaxPrFromCommandLineOverridesFiles()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxPr = 42
+            };
+
+            var settings = await CaptureSettings(fileSettings, false, 101);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(101));
+        }
+
+
+        [Test]
         public async Task LabelsOnCommandLineWillReplaceFileLabels()
         {
             var fileSettings = new FileSettings
@@ -150,7 +181,8 @@ namespace NuKeeper.Tests.Commands
         }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
-            bool addLabels = false)
+            bool addLabels = false,
+            int? maxPr = null)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -169,6 +201,11 @@ namespace NuKeeper.Tests.Commands
             if (addLabels)
             {
                 command.Label = new[] {"runLabel1", "runLabel2"};
+            }
+
+            if (maxPr.HasValue)
+            {
+                command.MaxPullRequestsPerRepository = maxPr.Value;
             }
 
             await command.OnExecute();

@@ -31,8 +31,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpr",
             Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected int MaxPullRequestsPerRepository { get; } = 3;
+        public int? MaxPullRequestsPerRepository { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description =
@@ -85,12 +84,16 @@ namespace NuKeeper.Commands
 
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
+            var fileSettings = FileSettingsCache.Get();
+
+            const int DefaultMaxPr = 3;
+
             settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
-            settings.PackageFilters.MaxPackageUpdates = MaxPullRequestsPerRepository;
+            settings.PackageFilters.MaxPackageUpdates =
+                Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, DefaultMaxPr);
+
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;
-
-            var fileSettings = FileSettingsCache.Get();
 
             var defaultLabels = new[] { "nukeeper" };
 

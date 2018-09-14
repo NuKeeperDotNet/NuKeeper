@@ -12,6 +12,8 @@ namespace NuKeeper.Configuration
 
         public string[] Label { get; set; }
 
+        public int? MaxPr { get; set; }
+
         public static FileSettings Empty()
         {
             return new FileSettings();

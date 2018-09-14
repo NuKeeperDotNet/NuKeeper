@@ -35,7 +35,7 @@ namespace NuKeeper.Commands
 
             if (settings.SourceControlServerSettings.Repository == null)
             {
-                return ValidationResult.Failure($"Cound not read GitHub repository URI: '{GitHubRepositoryUri}'");
+                return ValidationResult.Failure($"Could not read GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;

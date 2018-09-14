@@ -10,6 +10,11 @@ namespace NuKeeper.Commands
             return values.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
+        public static int FirstValue(params int?[] values)
+        {
+            return values.FirstOrDefault(i => i.HasValue) ?? 0;
+        }
+
         public static IReadOnlyCollection<string> FirstPopulatedList(string[] list1, string[] list2, string[] list3)
         {
             return FirstPopulatedArray(list1, list2, list3)
