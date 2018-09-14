@@ -260,10 +260,7 @@ namespace NuKeeper.Tests.Commands
                 command.ExcludeRepos = "ExcludeFromCommand";
             }
 
-            if (maxRepo.HasValue)
-            {
-                command.AllowedMaxRepositoriesChangedChange = maxRepo;
-            }
+            command.AllowedMaxRepositoriesChangedChange = maxRepo;
 
             await command.OnExecute();
 
