@@ -39,7 +39,7 @@ namespace NuKeeper.Configuration
             }
             catch (Exception ex)
             {
-                _logger.Error($"Cannot read setings file at {fullPath}", ex);
+                _logger.Error($"Cannot read settings file at {fullPath}", ex);
                 return FileSettings.Empty();
             }
         }
