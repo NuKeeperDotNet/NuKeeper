@@ -26,6 +26,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
             Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxRepo, Is.Null);
         }
 
         [Test]
@@ -44,6 +45,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
             Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxRepo, Is.Null);
         }
 
         [Test]
@@ -57,7 +59,8 @@ namespace NuKeeper.Tests.Configuration
                ""includeRepos"":""repoIn"",
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
-               ""maxpr"": 42
+               ""maxpr"": 42,
+               ""maxRepo"": 12,
 }";
 
             var path = MakeTestFile(configData);
@@ -79,6 +82,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Label, Does.Contain("bar"));
 
             Assert.That(data.MaxPr, Is.EqualTo(42));
+            Assert.That(data.MaxRepo, Is.EqualTo(12));
         }
 
         [Test]
@@ -90,7 +94,9 @@ namespace NuKeeper.Tests.Configuration
                ""iNClude"":""fred"",
                ""excludE"":""fish"",
                ""IncluDeRepoS"":""repo2"",
-               ""label"": [""mark"" ]
+               ""label"": [""mark"" ],
+               ""MAXrepo"":3,
+
 }";
 
             var path = MakeTestFile(configData);
@@ -107,6 +113,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
             Assert.That(data.Label.Length, Is.EqualTo(1));
             Assert.That(data.Label, Does.Contain("mark"));
+            Assert.That(data.MaxRepo, Is.EqualTo(3));
         }
 
         [Test]

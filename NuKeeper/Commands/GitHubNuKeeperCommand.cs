@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -17,11 +16,6 @@ namespace NuKeeper.Commands
             Description =
                 "GitHub personal access token to authorise access to GitHub server.")]
         public string GitHubToken { get; set; }
-
-        [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "maxrepo",
-            Description = "The maximum number of repositories to change. Defaults to 10.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected int AllowedMaxRepositoriesChangedChange { get; } = 10;
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
             Description =
@@ -86,11 +80,9 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.Get();
 
-            const int DefaultMaxPr = 3;
-
-            settings.UserSettings.MaxRepositoriesChanged = AllowedMaxRepositoriesChangedChange;
+            const int defaultMaxPullRequests = 3;
             settings.PackageFilters.MaxPackageUpdates =
-                Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, DefaultMaxPr);
+                Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);
 
             settings.UserSettings.ForkMode = ForkMode;
             settings.UserSettings.ReportMode = ReportMode;

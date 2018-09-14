@@ -66,6 +66,9 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.GithubAuthSettings, Is.Not.Null);
             Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
 
+            Assert.That(settings.GithubAuthSettings.ApiBase, Is.Not.Null);
+            Assert.That(settings.GithubAuthSettings.ApiBase.ToString(), Is.EqualTo("http://github.contoso.com/api/"));
+
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Null);
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
@@ -79,12 +82,12 @@ namespace NuKeeper.Tests.Commands
             var settings = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(10));
+
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.Includes, Is.Not.Null);
             Assert.That(settings.PackageFilters.Includes.ToString(), Is.EqualTo("testRepos"));
-            Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.ApiBase.ToString(), Is.EqualTo("http://github.contoso.com/api/"));
         }
 
         [Test]
@@ -176,6 +179,21 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(42));
+        }
+
+        [Test]
+        public async Task WillReadMaxRepoFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxRepo = 42
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(42));
         }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)

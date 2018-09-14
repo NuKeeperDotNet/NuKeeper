@@ -15,6 +15,11 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "er", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
         public string ExcludeRepos { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "maxrepo",
+            Description = "The maximum number of repositories to change. Defaults to 10.")]
+        public int? AllowedMaxRepositoriesChangedChange { get; set; }
+
+
         protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
@@ -39,6 +44,12 @@ namespace NuKeeper.Commands
             {
                 return regexExcludeReposValid;
             }
+
+            var fileSettings = FileSettingsCache.Get();
+
+            const int defaultMaxReposChanged = 10;
+            settings.UserSettings.MaxRepositoriesChanged = Concat.FirstValue(
+                AllowedMaxRepositoriesChangedChange, fileSettings.MaxRepo, defaultMaxReposChanged);
 
             return ValidationResult.Success;
         }
