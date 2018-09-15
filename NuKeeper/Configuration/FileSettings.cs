@@ -1,4 +1,5 @@
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.NuGetApi;
 
 namespace NuKeeper.Configuration
 {
@@ -9,6 +10,7 @@ namespace NuKeeper.Configuration
         public string Include { get; set; }
         public string Exclude { get; set; }
         public LogLevel? Verbosity { get; set; }
+        public VersionChange? Change { get; set; }
 
         public string IncludeRepos { get; set; }
         public string ExcludeRepos { get; set; }

@@ -218,10 +218,7 @@ namespace NuKeeper.Tests.Commands
                 command.Label = new[] {"runLabel1", "runLabel2"};
             }
 
-            if (maxPr.HasValue)
-            {
-                command.MaxPullRequestsPerRepository = maxPr.Value;
-            }
+            command.MaxPullRequestsPerRepository = maxPr;
 
             await command.OnExecute();
 

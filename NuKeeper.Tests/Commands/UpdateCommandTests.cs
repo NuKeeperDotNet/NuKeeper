@@ -86,7 +86,38 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters.Excludes.ToString(), Is.EqualTo("bar"));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        [Test]
+        public async Task WillReadVersionChangeFromCommandLineOverFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                Change = VersionChange.Patch
+            };
+
+            var settings = await CaptureSettings(fileSettings, VersionChange.Minor);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Minor));
+        }
+
+        [Test]
+        public async Task WillReadVersionChangeFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                Change = VersionChange.Patch
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
+        }
+
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            VersionChange? change = null)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -99,6 +130,7 @@ namespace NuKeeper.Tests.Commands
             fileSettings.Get().Returns(settingsIn);
 
             var command = new UpdateCommand(engine, logger, fileSettings);
+            command.AllowedChange = change;
 
             await command.OnExecute();
 

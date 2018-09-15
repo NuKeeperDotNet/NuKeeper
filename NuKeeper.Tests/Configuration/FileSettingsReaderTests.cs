@@ -3,6 +3,7 @@ using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration
@@ -28,6 +29,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.MaxPr, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
+            Assert.That(data.Change, Is.Null);
         }
 
         [Test]
@@ -48,6 +50,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.MaxPr, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
+            Assert.That(data.Change, Is.Null);
         }
 
         [Test]
@@ -63,7 +66,8 @@ namespace NuKeeper.Tests.Configuration
                ""label"": [ ""foo"", ""bar"" ],
                ""maxpr"": 42,
                ""maxRepo"": 12,
-               ""verbosity"": ""Detailed""
+               ""verbosity"": ""Detailed"",
+               ""Change"": ""Minor""
 }";
 
             var path = MakeTestFile(configData);
@@ -87,6 +91,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.MaxPr, Is.EqualTo(42));
             Assert.That(data.MaxRepo, Is.EqualTo(12));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
+            Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
         }
 
         [Test]
@@ -100,7 +105,8 @@ namespace NuKeeper.Tests.Configuration
                ""IncluDeRepoS"":""repo2"",
                ""label"": [""mark"" ],
                ""MAXrepo"":3,
-               ""vErBoSiTy"": ""Q""
+               ""vErBoSiTy"": ""Q"",
+               ""CHANGE"": ""PATCH""
 }";
 
             var path = MakeTestFile(configData);
@@ -119,6 +125,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Label, Does.Contain("mark"));
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
+            Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
         }
 
         [Test]
