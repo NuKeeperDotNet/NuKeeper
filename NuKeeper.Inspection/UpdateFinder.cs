@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,13 @@ namespace NuKeeper.Inspection
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly IPackageUpdatesLookup _packageUpdatesLookup;
         private readonly INuKeeperLogger _logger;
+
+        // ASP.NET Core has well know packages that should either be implicitly versioned, or carefully selected based on installed runtime
+        private static readonly List<string> KnownIgnoredPackages = new List<string>
+        {
+            "Microsoft.AspNetCore.App",
+            "Microsoft.AspNetCore.All"
+        };
 
         public UpdateFinder(
             IRepositoryScanner repositoryScanner,
@@ -32,6 +40,7 @@ namespace NuKeeper.Inspection
         {
             // scan for nuget packages
             var packages = _repositoryScanner.FindAllNuGetPackages(workingFolder)
+                .Where(x => !KnownIgnoredPackages.Contains(x.Id, StringComparer.OrdinalIgnoreCase))
                 .ToList();
 
             _logger.Log(PackagesFoundLogger.Log(packages));
