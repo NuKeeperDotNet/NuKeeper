@@ -14,14 +14,14 @@ namespace NuKeeper.Inspection.Tests.Sources
         [Test]
         public void OverrideSourcesAreUsedWhenSupplied()
         {
-            var overrrideSources = new NuGetSources("overrideA");
+            var overrideSources = new NuGetSources("overrideA");
             var reader = MakeNuGetSourcesReader();
 
             var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
 
-            var result = reader.Read(ff.UniqueTemporaryFolder(), overrrideSources);
+            var result = reader.Read(ff.UniqueTemporaryFolder(), overrideSources);
 
-            Assert.That(result, Is.EqualTo(overrrideSources));
+            Assert.That(result, Is.EqualTo(overrideSources));
         }
 
         [Test]
@@ -43,6 +43,14 @@ namespace NuKeeper.Inspection.Tests.Sources
   </packageSources>
 </configuration>";
 
+        private const string ConfigFileWithNoSources =
+            @"<?xml version=""1.0"" encoding=""utf-8""?>
+<configuration>
+  <packageSources>
+  </packageSources>
+</configuration>";
+
+
         [Test]
         public void ConfigFileIsUsed()
         {
@@ -58,6 +66,19 @@ namespace NuKeeper.Inspection.Tests.Sources
             Assert.That(result.Items.First(), Is.EqualTo(new PackageSource("https://fromFile1.com", "From A file")));
         }
 
+        [Test]
+        public void EmptyConfigFileIsUsed()
+        {
+            var reader = MakeNuGetSourcesReader();
+
+            var folder = TemporaryFolder();
+            var path = Path.Join(folder.FullPath, "nuget.config");
+            File.WriteAllText(path, ConfigFileWithNoSources);
+
+            var result = reader.Read(folder, null);
+
+            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+        }
 
         [Test]
         public void SettingsOverridesConfigFile()

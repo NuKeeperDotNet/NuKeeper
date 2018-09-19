@@ -27,7 +27,14 @@ namespace NuKeeper.Inspection.Sources
 
             var enabledSources = SettingsUtility.GetEnabledSources(settings).ToList();
 
-            return ReadFromFile(enabledSources);
+            if (enabledSources.Count > 0)
+            {
+                _logger.Detailed($"Found {enabledSources.Count} package sources in files");
+                return ReadFromFile(enabledSources);
+            }
+
+            _logger.Detailed("No package sources found in files");
+            return null;
         }
 
         private NuGetSources ReadFromFile(IReadOnlyCollection<PackageSource> sources)
