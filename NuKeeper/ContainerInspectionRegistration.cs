@@ -16,7 +16,7 @@ namespace NuKeeper
     {
         public static void Register(Container container)
         {
-            var logger = new ConsoleLogger();
+            var logger = new ConfigurableLogger();
             container.RegisterInstance<INuKeeperLogger>(logger);
             container.RegisterInstance<IConfigureLogLevel>(logger);
             container.Register<ILogger, NuGetLogger>();

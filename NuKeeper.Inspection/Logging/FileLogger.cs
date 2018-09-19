@@ -1,13 +1,16 @@
 using System;
+using System.IO;
 
 namespace NuKeeper.Inspection.Logging
 {
-    public class ConsoleLogger : IInternalLogger
+    public class FileLogger : IInternalLogger
     {
+        private readonly string _filePath;
         private readonly LogLevel _logLevel;
 
-        public ConsoleLogger(LogLevel logLevel)
+        public FileLogger(string filePath, LogLevel logLevel)
         {
+            _filePath = filePath;
             _logLevel = logLevel;
         }
 
@@ -15,14 +18,14 @@ namespace NuKeeper.Inspection.Logging
         {
             if (ex == null)
             {
-                Console.Error.WriteLine(message);
+                WriteMessageToFile(message);
             }
             else
             {
-                Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+                Log(LogLevel.Quiet, $"{message} {ex.GetType().Name} : {ex.Message}");
                 if (_logLevel == LogLevel.Detailed)
                 {
-                    Console.Error.WriteLine(ex.StackTrace);
+                    WriteMessageToFile(ex.StackTrace);
                 }
             }
         }
@@ -31,8 +34,13 @@ namespace NuKeeper.Inspection.Logging
         {
             if (_logLevel >= level)
             {
-                Console.WriteLine(message);
+                WriteMessageToFile(message);
             }
+        }
+
+        private void WriteMessageToFile(string message)
+        {
+            File.AppendAllLines(_filePath, new[] {message});
         }
     }
 }
