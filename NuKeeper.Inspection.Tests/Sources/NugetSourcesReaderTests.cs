@@ -47,7 +47,8 @@ namespace NuKeeper.Inspection.Tests.Sources
             @"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <packageSources>
-  </packageSources>
+   <clear />
+</packageSources>
 </configuration>";
 
 
@@ -77,7 +78,8 @@ namespace NuKeeper.Inspection.Tests.Sources
 
             var result = reader.Read(folder, null);
 
-            Assert.That(result.Items.Count, Is.GreaterThanOrEqualTo(1));
+            Assert.That(result.Items.Count, Is.EqualTo(1));
+            Assert.That(result.ToString(), Is.EqualTo(NuGetSources.GlobalFeed.ToString()));
         }
 
         [Test]
