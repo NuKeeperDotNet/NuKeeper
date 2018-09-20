@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using Octokit;
 
@@ -7,6 +8,8 @@ namespace NuKeeper.GitHub
 {
     public interface IGitHub
     {
+        void Initialise(GithubAuthSettings settings);
+
         Task<Account> GetCurrentUser();
 
         Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels);

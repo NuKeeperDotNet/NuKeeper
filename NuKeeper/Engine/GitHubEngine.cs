@@ -13,20 +13,20 @@ namespace NuKeeper.Engine
 {
     public class GitHubEngine : IGitHubEngine
     {
-        private readonly ICreate<IGitHub> _githubCreator;
+        private readonly IGitHub _github;
         private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
         private readonly ICreate<IGitHubRepositoryEngine> _repositoryEngineCreator;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GitHubEngine(
-            ICreate<IGitHub> githubCreator,
+            IGitHub github,
             IGitHubRepositoryDiscovery repositoryDiscovery,
             ICreate<IGitHubRepositoryEngine> repositoryEngineCreator,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
-            _githubCreator = githubCreator;
+            _github = github;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngineCreator = repositoryEngineCreator;
             _folderFactory = folderFactory;
@@ -35,14 +35,14 @@ namespace NuKeeper.Engine
 
         public async Task<int> Run(SettingsContainer settings)
         {
-            var github = _githubCreator.Create(settings);
+            _github.Initialise(settings.GithubAuthSettings);
             var repositoryEngine = _repositoryEngineCreator.Create(settings);
 
             _logger.Detailed($"{Now()}: Started");
 
             _folderFactory.DeleteExistingTempDirs();
 
-            var githubUser = await github.GetCurrentUser();
+            var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
@@ -51,7 +51,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories(github, settings.SourceControlServerSettings);
+            var repositories = await _repositoryDiscovery.GetRepositories(_github, settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 
