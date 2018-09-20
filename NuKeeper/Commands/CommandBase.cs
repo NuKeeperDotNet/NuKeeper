@@ -18,7 +18,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
-        protected VersionChange AllowedChange { get; } = VersionChange.Major;
+        public VersionChange? AllowedChange { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",
             Description =
@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         // ReSharper disable once MemberCanBePrivate.Global
-        protected LogLevel Verbosity { get; } = LogLevel.Normal;
+        public LogLevel? Verbosity { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
@@ -41,14 +41,10 @@ namespace NuKeeper.Commands
         protected string MinimumPackageAge { get; } 
 
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string Include { get; }
+        public string Include { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        protected string Exclude { get; }
+        public string Exclude { get; set; }
 
         protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
         {
@@ -56,11 +52,10 @@ namespace NuKeeper.Commands
             FileSettingsCache = fileSettingsCache;
         }
 
-
-        // ReSharper disable once UnusedMember.Global
         public async Task<int> OnExecute()
         {
-            _configureLogger.SetLogLevel(Verbosity);
+            SetLogLevel();
+
             var settings = MakeSettings();
 
             var validationResult = PopulateSettings(settings);
@@ -74,15 +69,25 @@ namespace NuKeeper.Commands
             return await Run(settings);
         }
 
+        private void SetLogLevel()
+        {
+            var fileSettings = FileSettingsCache.Get();
+            var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
+            _configureLogger.SetLogLevel(logLevel);
+        }
+
         private SettingsContainer MakeSettings()
         {
+            var fileSettings = FileSettingsCache.Get();
+            var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
+
             var settings = new SettingsContainer
             {
                 SourceControlServerSettings = new SourceControlServerSettings(),
                 PackageFilters = new FilterSettings(),
                 UserSettings = new UserSettings
                 {
-                    AllowedChange = AllowedChange,
+                    AllowedChange = allowedChange,
                     NuGetSources = NuGetSources
                 }
             };

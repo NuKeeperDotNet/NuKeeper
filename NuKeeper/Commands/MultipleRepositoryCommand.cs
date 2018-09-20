@@ -10,16 +10,17 @@ namespace NuKeeper.Commands
     internal abstract class MultipleRepositoryCommand : GitHubNuKeeperCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "ir", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string IncludeRepos { get; }
+        public string IncludeRepos { get; set;  }
 
         [Option(CommandOptionType.SingleValue, ShortName = "er", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        protected string ExcludeRepos { get; }
+        public string ExcludeRepos { get; set; }
 
-        protected MultipleRepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "maxrepo",
+            Description = "The maximum number of repositories to change. Defaults to 10.")]
+        public int? AllowedMaxRepositoriesChangedChange { get; set; }
+
+
+        protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }
@@ -43,6 +44,12 @@ namespace NuKeeper.Commands
             {
                 return regexExcludeReposValid;
             }
+
+            var fileSettings = FileSettingsCache.Get();
+
+            const int defaultMaxReposChanged = 10;
+            settings.UserSettings.MaxRepositoriesChanged = Concat.FirstValue(
+                AllowedMaxRepositoriesChangedChange, fileSettings.MaxRepo, defaultMaxReposChanged);
 
             return ValidationResult.Success;
         }

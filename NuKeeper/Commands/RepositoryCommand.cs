@@ -10,11 +10,9 @@ namespace NuKeeper.Commands
     internal class RepositoryCommand : GitHubNuKeeperCommand
     {
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string GitHubRepositoryUri { get; }
+        public string GitHubRepositoryUri { get; set; }
 
-        public RepositoryCommand(GitHubEngine engine, IConfigureLogLevel logger, FileSettingsCache fileSettingsCache)
+        public RepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }
@@ -37,9 +35,10 @@ namespace NuKeeper.Commands
 
             if (settings.SourceControlServerSettings.Repository == null)
             {
-                return ValidationResult.Failure($"Cound not read GitHub repository URI: '{GitHubRepositoryUri}'");
+                return ValidationResult.Failure($"Could not read GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
+            settings.UserSettings.MaxRepositoriesChanged = 1;
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             return ValidationResult.Success;
         }

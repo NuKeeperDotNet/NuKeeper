@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Commands
 {
     [TestFixture]
-    public class InspectCommandTests
+    public class UpdateCommandTests
     {
         [Test]
         public async Task ShouldCallEngineAndSucceed()
@@ -23,14 +23,14 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.Get().Returns(FileSettings.Empty());
 
-            var command = new InspectCommand(engine, logger, fileSettings);
+            var command = new UpdateCommand(engine, logger, fileSettings);
 
             var status = await command.OnExecute();
 
             Assert.That(status, Is.EqualTo(0));
             await engine
                 .Received(1)
-                .Run(Arg.Any<SettingsContainer>(), false);
+                .Run(Arg.Any<SettingsContainer>(), true);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters.MinimumAge, Is.EqualTo(TimeSpan.FromDays(7)));
             Assert.That(settings.PackageFilters.Excludes, Is.Null);
             Assert.That(settings.PackageFilters.Includes, Is.Null);
-            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(0));
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(1));
 
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
@@ -70,20 +70,6 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task InvalidMaxAgeWillFail()
-        {
-            var fileSettings = new FileSettings
-            {
-                Age = "fish"
-            };
-
-            var settings = await CaptureSettings(fileSettings);
-
-            Assert.That(settings, Is.Null);
-        }
-
-
-        [Test]
         public async Task WillReadIncludeExcludeFromFile()
         {
             var fileSettings = new FileSettings
@@ -101,102 +87,50 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task LogLevelIsNormalByDefault()
+        public async Task WillReadVersionChangeFromCommandLineOverFile()
         {
-            var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
-            var fileSettings = Substitute.For<IFileSettingsCache>();
-
-            fileSettings.Get().Returns(FileSettings.Empty());
-
-            var command = new InspectCommand(engine, logger, fileSettings);
-
-            await command.OnExecute();
-
-            logger
-                .Received(1)
-                .SetLogLevel(LogLevel.Normal);
-        }
-
-        [Test]
-        public async Task ShouldSetLogLevelFromCommand()
-        {
-            var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
-            var fileSettings = Substitute.For<IFileSettingsCache>();
-
-            fileSettings.Get().Returns(FileSettings.Empty());
-
-            var command = new InspectCommand(engine, logger, fileSettings);
-            command.Verbosity = LogLevel.Minimal;
-
-            await command.OnExecute();
-
-            logger
-                .Received(1)
-                .SetLogLevel(LogLevel.Minimal);
-        }
-
-        [Test]
-        public async Task ShouldSetLogLevelFromFile()
-        {
-            var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
-            var fileSettings = Substitute.For<IFileSettingsCache>();
-
-            var settings = new FileSettings
+            var fileSettings = new FileSettings
             {
-                Verbosity = LogLevel.Detailed
+                Change = VersionChange.Patch
             };
 
-            fileSettings.Get().Returns(settings);
+            var settings = await CaptureSettings(fileSettings, VersionChange.Minor);
 
-            var command = new InspectCommand(engine, logger, fileSettings);
-
-            await command.OnExecute();
-
-            logger
-                .Received(1)
-                .SetLogLevel(LogLevel.Detailed);
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Minor));
         }
 
         [Test]
-        public async Task CommandLineLogLevelOverridesFile()
+        public async Task WillReadVersionChangeFromFile()
         {
-            var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
-            var fileSettings = Substitute.For<IFileSettingsCache>();
-
-            var settings = new FileSettings
+            var fileSettings = new FileSettings
             {
-                Verbosity = LogLevel.Detailed
+                Change = VersionChange.Patch
             };
 
-            fileSettings.Get().Returns(settings);
+            var settings = await CaptureSettings(fileSettings);
 
-            var command = new InspectCommand(engine, logger, fileSettings);
-            command.Verbosity = LogLevel.Minimal;
-
-            await command.OnExecute();
-
-            logger
-                .Received(1)
-                .SetLogLevel(LogLevel.Minimal);
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            VersionChange? change = null)
         {
             var logger = Substitute.For<IConfigureLogLevel>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ILocalEngine>();
-            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), false);
+            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), true);
 
 
             fileSettings.Get().Returns(settingsIn);
 
-            var command = new InspectCommand(engine, logger, fileSettings);
+            var command = new UpdateCommand(engine, logger, fileSettings);
+            command.AllowedChange = change;
 
             await command.OnExecute();
 

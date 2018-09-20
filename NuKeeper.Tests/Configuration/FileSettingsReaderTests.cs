@@ -3,6 +3,7 @@ using NSubstitute;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration
@@ -25,6 +26,10 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
+            Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxRepo, Is.Null);
+            Assert.That(data.Verbosity, Is.Null);
+            Assert.That(data.Change, Is.Null);
         }
 
         [Test]
@@ -42,6 +47,10 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
+            Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxRepo, Is.Null);
+            Assert.That(data.Verbosity, Is.Null);
+            Assert.That(data.Change, Is.Null);
         }
 
         [Test]
@@ -54,7 +63,11 @@ namespace NuKeeper.Tests.Configuration
                ""exclude"":""fish"",
                ""includeRepos"":""repoIn"",
                ""excludeRepos"":""repoOut"",
-               ""label"":""mark""
+               ""label"": [ ""foo"", ""bar"" ],
+               ""maxpr"": 42,
+               ""maxRepo"": 12,
+               ""verbosity"": ""Detailed"",
+               ""Change"": ""Minor""
 }";
 
             var path = MakeTestFile(configData);
@@ -70,7 +83,15 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repoIn"));
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
-            Assert.That(data.Label, Is.EqualTo("mark"));
+
+            Assert.That(data.Label.Length, Is.EqualTo(2));
+            Assert.That(data.Label, Does.Contain("foo"));
+            Assert.That(data.Label, Does.Contain("bar"));
+
+            Assert.That(data.MaxPr, Is.EqualTo(42));
+            Assert.That(data.MaxRepo, Is.EqualTo(12));
+            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
+            Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
         }
 
         [Test]
@@ -82,7 +103,10 @@ namespace NuKeeper.Tests.Configuration
                ""iNClude"":""fred"",
                ""excludE"":""fish"",
                ""IncluDeRepoS"":""repo2"",
-               ""label"":""mark""
+               ""label"": [""mark"" ],
+               ""MAXrepo"":3,
+               ""vErBoSiTy"": ""Q"",
+               ""CHANGE"": ""PATCH""
 }";
 
             var path = MakeTestFile(configData);
@@ -97,7 +121,11 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Include, Is.EqualTo("fred"));
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
-            Assert.That(data.Label, Is.EqualTo("mark"));
+            Assert.That(data.Label.Length, Is.EqualTo(1));
+            Assert.That(data.Label, Does.Contain("mark"));
+            Assert.That(data.MaxRepo, Is.EqualTo(3));
+            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
+            Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
         }
 
         [Test]
@@ -134,6 +162,5 @@ namespace NuKeeper.Tests.Configuration
             var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return ff.UniqueTemporaryFolder();
         }
-
     }
 }

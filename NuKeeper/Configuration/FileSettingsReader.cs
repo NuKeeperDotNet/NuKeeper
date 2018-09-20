@@ -34,11 +34,12 @@ namespace NuKeeper.Configuration
             {
                 var contents = File.ReadAllText(fullPath);
                 var result = JsonConvert.DeserializeObject<FileSettings>(contents);
+                _logger.Detailed($"Read settings file at {fullPath}");
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.Error($"Cannot read setings file at {fullPath}", ex);
+                _logger.Error($"Cannot read settings file at {fullPath}", ex);
                 return FileSettings.Empty();
             }
         }
