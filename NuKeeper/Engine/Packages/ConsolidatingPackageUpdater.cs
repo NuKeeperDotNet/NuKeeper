@@ -11,13 +11,13 @@ using NuKeeper.Update;
 
 namespace NuKeeper.Engine.Packages
 {
-    public class PackageUpdater : IPackageUpdater
+    public class ConsolidatingPackageUpdater : IPackageUpdater
     {
         private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
         private readonly IUpdateRunner _updateRunner;
 
-        public PackageUpdater(
+        public ConsolidatingPackageUpdater(
             IGitHub gitHub,
             IUpdateRunner localUpdater,
             INuKeeperLogger logger)
@@ -32,58 +32,40 @@ namespace NuKeeper.Engine.Packages
             RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources,
-            SourceControlServerSettings settings)
-        {
-            var updatesDone = 0;
-
-            foreach (var updateSet in updates)
-            {
-                var success = await MakeUpdatePullRequest(git, repository, updateSet, sources, settings);
-                if (success)
-                {
-                    updatesDone++;
-                }
-            }
-
-            return updatesDone;
-        }
-
-        private async Task<bool> MakeUpdatePullRequest(
-            IGitDriver git,
-            RepositoryData repository,
-            PackageUpdateSet updateSet,
-            NuGetSources sources,
             SourceControlServerSettings serverSettings)
         {
             try
             {
-                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
+                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
                 git.Checkout(repository.DefaultBranch);
 
                 // branch
-                var branchName = BranchNamer.MakeName(updateSet);
+                var branchName = BranchNamer.MakeName(updates);
                 _logger.Detailed($"Using branch name: '{branchName}'");
                 git.CheckoutNewBranch(branchName);
 
-                await _updateRunner.Update(updateSet, sources);
+                foreach (var updateSet in updates)
+                {
+                    await _updateRunner.Update(updateSet, sources);
 
-                var commitMessage = CommitWording.MakeCommitMessage(updateSet);
-                git.Commit(commitMessage);
+                    var commitMessage = CommitWording.MakeCommitMessage(updateSet);
+                    git.Commit(commitMessage);
+                }
 
                 git.Push("nukeeper_push", branchName);
 
-                var title = CommitWording.MakePullRequestTitle(updateSet);
-                var body = CommitWording.MakeCommitDetails(updateSet);
+                var title = CommitWording.MakePullRequestTitle(updates);
+                var body = CommitWording.MakeCommitDetails(updates);
                 await _gitHub.CreatePullRequest(repository, title, body, branchName, serverSettings.Labels);
 
                 git.Checkout(repository.DefaultBranch);
-                return true;
+                return updates.Count;
             }
             catch (Exception ex)
             {
                 _logger.Error("Update failed", ex);
-                return false;
+                return 0;
             }
         }
     }
