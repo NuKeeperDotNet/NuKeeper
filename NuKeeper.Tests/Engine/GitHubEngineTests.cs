@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Configuration;
-using NuKeeper.Creators;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
@@ -128,22 +127,16 @@ namespace NuKeeper.Tests.Engine
             var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
-            var githubCreator = Substitute.For<ICreate<IGitHub>>();
-            var repoEngineCreator = Substitute.For<ICreate<IGitHubRepositoryEngine>>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
-
-            githubCreator.Create(null).ReturnsForAnyArgs(github);
 
             repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            repoEngineCreator.Create(null).ReturnsForAnyArgs(repoEngine);
-
-            var engine = new GitHubEngine(githubCreator, repoDiscovery, repoEngineCreator,
+            var engine = new GitHubEngine(github, repoDiscovery, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

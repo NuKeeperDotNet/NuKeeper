@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Configuration;
-using NuKeeper.Creators;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
@@ -15,32 +14,30 @@ namespace NuKeeper.Engine
     {
         private readonly IGitHub _github;
         private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
-        private readonly ICreate<IGitHubRepositoryEngine> _repositoryEngineCreator;
+        private readonly IGitHubRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GitHubEngine(
             IGitHub github,
             IGitHubRepositoryDiscovery repositoryDiscovery,
-            ICreate<IGitHubRepositoryEngine> repositoryEngineCreator,
+            IGitHubRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _github = github;
             _repositoryDiscovery = repositoryDiscovery;
-            _repositoryEngineCreator = repositoryEngineCreator;
+            _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
             _logger = logger;
         }
 
         public async Task<int> Run(SettingsContainer settings)
         {
-            _github.Initialise(settings.GithubAuthSettings);
-            var repositoryEngine = _repositoryEngineCreator.Create(settings);
-
             _logger.Detailed($"{Now()}: Started");
-
             _folderFactory.DeleteExistingTempDirs();
+
+            _github.Initialise(settings.GithubAuthSettings);
 
             var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
@@ -63,7 +60,7 @@ namespace NuKeeper.Engine
                     break;
                 }
 
-                var updatesInThisRepo = await repositoryEngine.Run(repository,
+                var updatesInThisRepo = await _repositoryEngine.Run(repository,
                     gitCreds, userIdentity, settings);
 
                 if (updatesInThisRepo > 0)
