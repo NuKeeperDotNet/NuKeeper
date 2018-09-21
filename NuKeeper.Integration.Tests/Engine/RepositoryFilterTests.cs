@@ -40,10 +40,11 @@ namespace NuKeeper.Integration.Tests.Engine
         {
             const string testKeyWithOnlyPublicAccess = "c13d2ce7774d39ae99ddaad46bd69c3d459b9992";
             var logger = Substitute.For<INuKeeperLogger>();
-            return new RepositoryFilter(
-                new OctokitClient(
-                    new GithubAuthSettings(new Uri("https://api.github.com"),
-                        testKeyWithOnlyPublicAccess), logger), logger);
+
+            var gitHubClient = new OctokitClient(logger);
+            gitHubClient.Initialise(new GithubAuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
+
+            return new RepositoryFilter(gitHubClient, logger);
         }
     }
 }
