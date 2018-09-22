@@ -40,7 +40,10 @@ namespace NuKeeper.Inspection.Logging
 
         private void WriteMessageToFile(string message)
         {
-            File.AppendAllLines(_filePath, new[] {message});
+            using (var w = File.AppendText(_filePath))
+            {
+                w.WriteLine(_filePath);
+            }
         }
     }
 }
