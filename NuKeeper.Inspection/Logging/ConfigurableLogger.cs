@@ -47,7 +47,9 @@ namespace NuKeeper.Inspection.Logging
             }
         }
 
-        private IInternalLogger CreateLogger(LogLevel logLevel, LogDestination destination, string filePath)
+        private static IInternalLogger CreateLogger(
+            LogLevel logLevel, LogDestination destination,
+            string filePath)
         {
             switch (destination)
             {
