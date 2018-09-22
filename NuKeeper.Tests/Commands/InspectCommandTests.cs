@@ -115,7 +115,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Normal, string.Empty);
+                .Initialise(LogLevel.Normal, null);
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Minimal, string.Empty);
+                .Initialise(LogLevel.Minimal, null);
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Detailed, string.Empty);
+                .Initialise(LogLevel.Detailed, null);
         }
 
         [Test]
@@ -181,7 +181,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Minimal, string.Empty);
+                .Initialise(LogLevel.Minimal, null);
         }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
