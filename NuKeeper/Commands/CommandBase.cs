@@ -77,8 +77,9 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.Get();
             var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
+            var logFile = Concat.FirstValue(LogFile, fileSettings.LogFile);
 
-            _configureLogger.Initialise(logLevel, LogFile);
+            _configureLogger.Initialise(logLevel, logFile);
         }
 
         private SettingsContainer MakeSettings()

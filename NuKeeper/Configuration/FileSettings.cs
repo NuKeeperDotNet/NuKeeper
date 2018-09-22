@@ -17,6 +17,8 @@ namespace NuKeeper.Configuration
 
         public string[] Label { get; set; }
 
+        public string LogFile { get; set; }
+
         public int? MaxPr { get; set; }
         public int? MaxRepo { get; set; }
 
