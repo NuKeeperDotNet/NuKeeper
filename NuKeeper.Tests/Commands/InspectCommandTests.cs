@@ -134,7 +134,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Minimal, LogDestination.Console, String.Empty);
+                .Initialise(LogLevel.Minimal, string.Empty);
         }
 
         [Test]
