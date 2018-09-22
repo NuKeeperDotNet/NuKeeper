@@ -42,7 +42,7 @@ namespace NuKeeper.Inspection.Logging
         {
             using (var w = File.AppendText(_filePath))
             {
-                w.WriteLine(_filePath);
+                w.WriteLine(message);
             }
         }
     }
