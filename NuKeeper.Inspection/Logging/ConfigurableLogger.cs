@@ -6,8 +6,12 @@ namespace NuKeeper.Inspection.Logging
     {
         private IInternalLogger _inner;
 
-        public void Initialise(LogLevel logLevel, LogDestination destination, string filePath)
+        public void Initialise(LogLevel logLevel, string filePath)
         {
+            var destination = string.IsNullOrWhiteSpace(filePath) ?
+                LogDestination.Console :
+                LogDestination.File;
+
             _inner = CreateLogger(logLevel, destination, filePath);
         }
 

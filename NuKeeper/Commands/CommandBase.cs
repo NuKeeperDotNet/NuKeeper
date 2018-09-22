@@ -29,9 +29,13 @@ namespace NuKeeper.Commands
 
         protected NuGetSources NuGetSources => Source == null?  null : new NuGetSources(Source);
 
-        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
-        // ReSharper disable once MemberCanBePrivate.Global
+        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
+            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         public LogLevel? Verbosity { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
+            Description = "Log to the named file")]
+        public string LogFile { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
@@ -73,7 +77,8 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.Get();
             var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
-            _configureLogger.Initialise(logLevel, LogDestination.Console, string.Empty);
+
+            _configureLogger.Initialise(logLevel, LogFile);
         }
 
         private SettingsContainer MakeSettings()

@@ -8,6 +8,6 @@ namespace NuKeeper.Inspection.Logging
 
     public interface IConfigureLogger
     {
-        void Initialise(LogLevel logLevel, LogDestination destination, string filePath);
+        void Initialise(LogLevel logLevel, string filePath);
     }
 }
