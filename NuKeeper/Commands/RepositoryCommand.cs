@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         public string GitHubRepositoryUri { get; set; }
 
-        public RepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        public RepositoryCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }

@@ -13,7 +13,7 @@ namespace NuKeeper.Commands
     [HelpOption]
     internal abstract class CommandBase
     {
-        private readonly IConfigureLogLevel _configureLogger;
+        private readonly IConfigureLogger _configureLogger;
         protected readonly IFileSettingsCache FileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
@@ -46,7 +46,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
 
-        protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
             FileSettingsCache = fileSettingsCache;
@@ -54,7 +54,7 @@ namespace NuKeeper.Commands
 
         public async Task<int> OnExecute()
         {
-            SetLogLevel();
+            InitialiseLogging();
 
             var settings = MakeSettings();
 
@@ -69,11 +69,11 @@ namespace NuKeeper.Commands
             return await Run(settings);
         }
 
-        private void SetLogLevel()
+        private void InitialiseLogging()
         {
             var fileSettings = FileSettingsCache.Get();
             var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
-            _configureLogger.SetLogLevel(logLevel);
+            _configureLogger.Initialise(logLevel, LogDestination.Console, string.Empty);
         }
 
         private SettingsContainer MakeSettings()
