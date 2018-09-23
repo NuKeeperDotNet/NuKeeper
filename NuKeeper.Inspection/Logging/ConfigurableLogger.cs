@@ -15,7 +15,7 @@ namespace NuKeeper.Inspection.Logging
             _inner = CreateLogger(logLevel, destination, filePath);
         }
 
-        public void Error(string message, Exception ex = null)
+        public void Error(string message, Exception ex)
         {
             CheckLoggerCreated();
             _inner.Error(message, ex);

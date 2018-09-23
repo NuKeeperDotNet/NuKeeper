@@ -11,7 +11,7 @@ namespace NuKeeper.Inspection.Logging
             _logLevel = logLevel;
         }
 
-        public void Error(string message, Exception ex = null)
+        public void Error(string message, Exception ex)
         {
             if (ex == null)
             {
