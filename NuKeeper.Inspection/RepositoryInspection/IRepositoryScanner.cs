@@ -5,6 +5,6 @@ namespace NuKeeper.Inspection.RepositoryInspection
 {
     public interface IRepositoryScanner
     {
-        IEnumerable<PackageInProject> FindAllNuGetPackages(IFolder workingFolder);
+        IReadOnlyCollection<PackageInProject> FindAllNuGetPackages(IFolder workingFolder);
     }
 }
