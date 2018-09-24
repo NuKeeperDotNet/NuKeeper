@@ -42,7 +42,7 @@ namespace NuKeeper.Commands
                 "Controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
         protected ReportMode ReportMode { get; } = ReportMode.Off;
 
-        protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache) :
+        protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :
             base(logger, fileSettingsCache)
         {
             _engine = engine;

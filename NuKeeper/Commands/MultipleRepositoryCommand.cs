@@ -20,7 +20,7 @@ namespace NuKeeper.Commands
         public int? AllowedMaxRepositoriesChangedChange { get; set; }
 
 
-        protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }

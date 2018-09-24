@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.Commands
         public async Task ShouldCallEngineAndSucceed()
         {
             var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             fileSettings.Get().Returns(FileSettings.Empty());
@@ -104,7 +104,7 @@ namespace NuKeeper.Tests.Commands
         public async Task LogLevelIsNormalByDefault()
         {
             var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             fileSettings.Get().Returns(FileSettings.Empty());
@@ -115,14 +115,14 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .SetLogLevel(LogLevel.Normal);
+                .Initialise(LogLevel.Normal, null);
         }
 
         [Test]
         public async Task ShouldSetLogLevelFromCommand()
         {
             var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             fileSettings.Get().Returns(FileSettings.Empty());
@@ -134,14 +134,14 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .SetLogLevel(LogLevel.Minimal);
+                .Initialise(LogLevel.Minimal, null);
         }
 
         [Test]
         public async Task ShouldSetLogLevelFromFile()
         {
             var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             var settings = new FileSettings
@@ -157,14 +157,14 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .SetLogLevel(LogLevel.Detailed);
+                .Initialise(LogLevel.Detailed, null);
         }
 
         [Test]
         public async Task CommandLineLogLevelOverridesFile()
         {
             var engine = Substitute.For<ILocalEngine>();
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             var settings = new FileSettings
@@ -181,12 +181,12 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .SetLogLevel(LogLevel.Minimal);
+                .Initialise(LogLevel.Minimal, null);
         }
 
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
         {
-            var logger = Substitute.For<IConfigureLogLevel>();
+            var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             SettingsContainer settingsOut = null;

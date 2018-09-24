@@ -13,7 +13,7 @@ namespace NuKeeper.Commands
     [HelpOption]
     internal abstract class CommandBase
     {
-        private readonly IConfigureLogLevel _configureLogger;
+        private readonly IConfigureLogger _configureLogger;
         protected readonly IFileSettingsCache FileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
@@ -29,9 +29,13 @@ namespace NuKeeper.Commands
 
         protected NuGetSources NuGetSources => Source == null?  null : new NuGetSources(Source);
 
-        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity", Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
-        // ReSharper disable once MemberCanBePrivate.Global
+        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
+            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         public LogLevel? Verbosity { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
+            Description = "Log to the named file")]
+        public string LogFile { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description =
@@ -46,7 +50,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
 
-        protected CommandBase(IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
             FileSettingsCache = fileSettingsCache;
@@ -54,7 +58,7 @@ namespace NuKeeper.Commands
 
         public async Task<int> OnExecute()
         {
-            SetLogLevel();
+            InitialiseLogging();
 
             var settings = MakeSettings();
 
@@ -69,11 +73,13 @@ namespace NuKeeper.Commands
             return await Run(settings);
         }
 
-        private void SetLogLevel()
+        private void InitialiseLogging()
         {
             var fileSettings = FileSettingsCache.Get();
             var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
-            _configureLogger.SetLogLevel(logLevel);
+            var logFile = Concat.FirstValue(LogFile, fileSettings.LogFile);
+
+            _configureLogger.Initialise(logLevel, logFile);
         }
 
         private SettingsContainer MakeSettings()

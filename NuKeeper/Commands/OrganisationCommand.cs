@@ -11,7 +11,7 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
         public string GithubOrganisationName { get; set; }
 
-        public OrganisationCommand(IGitHubEngine engine, IConfigureLogLevel logger, IFileSettingsCache fileSettingsCache)
+        public OrganisationCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }

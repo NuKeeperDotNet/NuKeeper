@@ -2,11 +2,16 @@ using System;
 
 namespace NuKeeper.Inspection.Logging
 {
-    public class ConsoleLogger : INuKeeperLogger, IConfigureLogLevel
+    public class ConsoleLogger : IInternalLogger
     {
-        private LogLevel _logLevel = LogLevel.Normal;
+        private readonly LogLevel _logLevel;
 
-        public void Error(string message, Exception ex = null)
+        public ConsoleLogger(LogLevel logLevel)
+        {
+            _logLevel = logLevel;
+        }
+
+        public void Error(string message, Exception ex)
         {
             if (ex == null)
             {
@@ -22,32 +27,12 @@ namespace NuKeeper.Inspection.Logging
             }
         }
 
-        public void Minimal(string message)
-        {
-            LogWithLevel(message, LogLevel.Minimal);
-        }
-
-        public void Normal(string message)
-        {
-            LogWithLevel(message, LogLevel.Normal);
-        }
-
-        public void Detailed(string message)
-        {
-            LogWithLevel(message, LogLevel.Detailed);
-        }
-
-        private void LogWithLevel(string message, LogLevel level)
+        public void Log(LogLevel level, string message)
         {
             if (_logLevel >= level)
             {
                 Console.WriteLine(message);
             }
-        }
-
-        void IConfigureLogLevel.SetLogLevel(LogLevel logLevel)
-        {
-            _logLevel = logLevel;
         }
     }
 }
