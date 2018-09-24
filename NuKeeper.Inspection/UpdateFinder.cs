@@ -39,20 +39,7 @@ namespace NuKeeper.Inspection
             NuGetSources sources,
             VersionChange allowedChange)
         {
-            // scan for nuget packages
-            var allPackages = _repositoryScanner.FindAllNuGetPackages(workingFolder);
-
-            var metaPackages = allPackages
-                .Where(x => KnownMetapackage.Contains(x.Id, StringComparer.OrdinalIgnoreCase));
-
-            foreach (var metaPackage in metaPackages)
-            {
-                _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version}, should not have explicit version.");
-            }
-
-            var packages = _repositoryScanner.FindAllNuGetPackages(workingFolder)
-                .Except(metaPackages)
-                .ToList();
+            var packages = FindPackages(workingFolder);
 
             _logger.Log(PackagesFoundLogger.Log(packages));
 
@@ -62,6 +49,28 @@ namespace NuKeeper.Inspection
 
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;
+        }
+
+        private IReadOnlyCollection<PackageInProject> FindPackages(IFolder workingFolder)
+        {
+            // scan for nuget packages
+            var allPackages = _repositoryScanner.FindAllNuGetPackages(workingFolder);
+
+            var metaPackages = allPackages
+                .Where(x => KnownMetapackage.Contains(x.Id, StringComparer.OrdinalIgnoreCase));
+
+            foreach (var metaPackage in metaPackages)
+            {
+                LogVersionedMetapackage(metaPackage);
+            }
+
+            return allPackages.Except(metaPackages)
+                .ToList();
+        }
+
+        private void LogVersionedMetapackage(PackageInProject metaPackage)
+        {
+            _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version}, should not have explicit version.");
         }
     }
 }

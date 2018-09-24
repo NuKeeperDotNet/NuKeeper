@@ -8,7 +8,7 @@ namespace NuKeeper.Inspection
 {
     public static class PackagesFoundLogger
     {
-        public static LogData Log(List<PackageInProject> packages)
+        public static LogData Log(IReadOnlyCollection<PackageInProject> packages)
         {
             var projectPathCount = packages
                 .Select(p => p.Path)
