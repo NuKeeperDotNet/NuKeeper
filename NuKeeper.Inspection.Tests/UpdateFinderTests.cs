@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Configuration;
@@ -24,6 +26,8 @@ namespace NuKeeper.Inspection.Tests
             var logger = Substitute.For<INuKeeperLogger>();
             var folder = Substitute.For<IFolder>();
 
+            ReturnsUpdateSetForEachPackage(updater);
+
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
@@ -31,6 +35,10 @@ namespace NuKeeper.Inspection.Tests
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(0));
+
+            logger
+                .DidNotReceive()
+                .Error(Arg.Any<string>(), Arg.Any<Exception>());
         }
 
         [Test]
@@ -46,11 +54,7 @@ namespace NuKeeper.Inspection.Tests
             scanner.FindAllNuGetPackages(Arg.Any<IFolder>())
                 .Returns(new List<PackageInProject> { pip });
 
-            updater.FindUpdatesForPackages(
-                    Arg.Any<IReadOnlyCollection<PackageInProject>>(),
-                    Arg.Any<NuGetSources>(),
-                    Arg.Any<VersionChange>())
-                .Returns(new List<PackageUpdateSet>{ BuildPackageUpdateSet(pip) } );
+            ReturnsUpdateSetForEachPackage(updater);
 
             var finder = new UpdateFinder(scanner, updater, logger);
 
@@ -59,6 +63,52 @@ namespace NuKeeper.Inspection.Tests
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.First().SelectedId, Is.EqualTo("somePackage"));
+
+            logger
+                .DidNotReceive()
+                .Error(Arg.Any<string>(), Arg.Any<Exception>());
+        }
+
+        [Test]
+        public async Task FindWithMetapackageResult()
+        {
+            var scanner = Substitute.For<IRepositoryScanner>();
+            var updater = Substitute.For<IPackageUpdatesLookup>();
+            var logger = Substitute.For<INuKeeperLogger>();
+            var folder = Substitute.For<IFolder>();
+
+            var pip = BuildPackageInProject("somePackage");
+            var aspnetCore = BuildPackageInProject("Microsoft.AspNetCore.App");
+
+            scanner.FindAllNuGetPackages(Arg.Any<IFolder>())
+                .Returns(new List<PackageInProject> { pip, aspnetCore });
+
+            ReturnsUpdateSetForEachPackage(updater);
+
+            var finder = new UpdateFinder(scanner, updater, logger);
+
+            var results = await finder.FindPackageUpdateSets(
+                folder, NuGetSources.GlobalFeed, VersionChange.Major);
+
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.First().SelectedId, Is.EqualTo("somePackage"));
+
+            logger
+                .Received()
+                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'")));
+        }
+
+        private void ReturnsUpdateSetForEachPackage(IPackageUpdatesLookup updater)
+        {
+            updater.FindUpdatesForPackages(
+                    Arg.Any<IReadOnlyCollection<PackageInProject>>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<VersionChange>())
+                .Returns(a => a.ArgAt<IReadOnlyCollection<PackageInProject>>(0)
+                    .Select(BuildPackageUpdateSet)
+                    .ToList());
         }
 
         private PackageInProject BuildPackageInProject(string packageName)
