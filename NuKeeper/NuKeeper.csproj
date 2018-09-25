@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <RootNamespace>NuKeeper</RootNamespace>
     <AssemblyName>NuKeeper</AssemblyName>
