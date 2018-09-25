@@ -2,8 +2,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
-    <RootNamespace>NuKeeper</RootNamespace>
-    <AssemblyName>NuKeeper</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
   </PropertyGroup>
