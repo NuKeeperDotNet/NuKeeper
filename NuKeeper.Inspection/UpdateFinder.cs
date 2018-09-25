@@ -70,7 +70,8 @@ namespace NuKeeper.Inspection
 
         private void LogVersionedMetapackage(PackageInProject metaPackage)
         {
-            _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version}, should not have explicit version.");
+            _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version} in {metaPackage.Path.FullName}, " +
+                  "but should not have explicit version.");
         }
     }
 }
