@@ -13,17 +13,27 @@ namespace NuKeeper.Inspection.Logging
 
         public void Error(string message, Exception ex)
         {
-            if (ex == null)
+            var saveColor = Console.ForegroundColor;
+            try
             {
-                Console.Error.WriteLine(message);
-            }
-            else
-            {
-                Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
-                if (_logLevel == LogLevel.Detailed)
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                if (ex == null)
                 {
-                    Console.Error.WriteLine(ex.StackTrace);
+                    Console.Error.WriteLine(message);
                 }
+                else
+                {
+                    Console.Error.WriteLine($"{message} {ex.GetType().Name} : {ex.Message}");
+                    if (_logLevel == LogLevel.Detailed)
+                    {
+                        Console.Error.WriteLine(ex.StackTrace);
+                    }
+                }
+            }
+            finally
+            {
+                Console.ForegroundColor = saveColor;
             }
         }
 
