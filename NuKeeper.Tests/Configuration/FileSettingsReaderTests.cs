@@ -53,10 +53,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Change, Is.Null);
         }
 
-        [Test]
-        public void PopulatedConfigReturnsAllSettings()
-        {
-            const string configData = @"{
+        private const string FullFileData = @"{
                ""age"":""3d"",
                ""api"":""http://api.com"",
                ""include"":""fred"",
@@ -64,13 +61,18 @@ namespace NuKeeper.Tests.Configuration
                ""includeRepos"":""repoIn"",
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
+               ""logFile"":""somefile.log"",
                ""maxpr"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
                ""Change"": ""Minor""
 }";
 
-            var path = MakeTestFile(configData);
+        [Test]
+        public void PopulatedConfigReturnsAllStringSettings()
+        {
+
+            var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
 
@@ -83,13 +85,48 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repoIn"));
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
+            Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
+        }
+
+        [Test]
+        public void PopulatedConfigReturnsLabels()
+        {
+
+            var path = MakeTestFile(FullFileData);
+
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+
+            var data = fsr.Read(path);
 
             Assert.That(data.Label.Length, Is.EqualTo(2));
             Assert.That(data.Label, Does.Contain("foo"));
             Assert.That(data.Label, Does.Contain("bar"));
+        }
+
+        [Test]
+        public void PopulatedConfigReturnsNumericSettings()
+        {
+
+            var path = MakeTestFile(FullFileData);
+
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+
+            var data = fsr.Read(path);
 
             Assert.That(data.MaxPr, Is.EqualTo(42));
             Assert.That(data.MaxRepo, Is.EqualTo(12));
+        }
+
+        [Test]
+        public void PopulatedConfigReturnsEnumSettings()
+        {
+
+            var path = MakeTestFile(FullFileData);
+
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+
+            var data = fsr.Read(path);
+
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
         }
