@@ -71,7 +71,7 @@ namespace NuKeeper.Inspection.Tests
         }
 
         [Test]
-        public async Task FindWithMetapackageResult()
+        public async Task FindSkipsMetapackageResult()
         {
             var scanner = Substitute.For<IRepositoryScanner>();
             var updater = Substitute.For<IPackageUpdatesLookup>();
@@ -96,8 +96,42 @@ namespace NuKeeper.Inspection.Tests
             Assert.That(results.First().SelectedId, Is.EqualTo("somePackage"));
 
             logger
-                .Received()
+                .Received(1)
                 .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'")));
+        }
+
+        [Test]
+        public async Task FindSkipsBothMetapackageResult()
+        {
+            var scanner = Substitute.For<IRepositoryScanner>();
+            var updater = Substitute.For<IPackageUpdatesLookup>();
+            var logger = Substitute.For<INuKeeperLogger>();
+            var folder = Substitute.For<IFolder>();
+
+            var aspnetCoreAll = BuildPackageInProject("Microsoft.AspNetCore.All");
+            var pip = BuildPackageInProject("somePackage");
+            var aspnetCoreApp = BuildPackageInProject("Microsoft.AspNetCore.App");
+
+            scanner.FindAllNuGetPackages(Arg.Any<IFolder>())
+                .Returns(new List<PackageInProject> { aspnetCoreAll, pip, aspnetCoreApp });
+
+            ReturnsUpdateSetForEachPackage(updater);
+
+            var finder = new UpdateFinder(scanner, updater, logger);
+
+            var results = await finder.FindPackageUpdateSets(
+                folder, NuGetSources.GlobalFeed, VersionChange.Major);
+
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.First().SelectedId, Is.EqualTo("somePackage"));
+
+            logger
+                .Received(1)
+                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'")));
+            logger
+                .Received(1)
+                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.All'")));
         }
 
         private void ReturnsUpdateSetForEachPackage(IPackageUpdatesLookup updater)
@@ -127,6 +161,5 @@ namespace NuKeeper.Inspection.Tests
 
             return new PackageUpdateSet(updates, new List<PackageInProject> {pip });
         }
-
     }
 }
