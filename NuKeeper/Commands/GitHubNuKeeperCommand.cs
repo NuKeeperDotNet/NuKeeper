@@ -27,6 +27,10 @@ namespace NuKeeper.Commands
             Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
         public int? MaxPullRequestsPerRepository { get; set; }
 
+        [Option(CommandOptionType.NoValue, ShortName = "co", LongName = "consolidate",
+            Description = "Consolidate updates into a single pull request. Defaults to false.")]
+        public bool? Consolidate { get; set; } 
+
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description =
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
@@ -76,9 +80,13 @@ namespace NuKeeper.Commands
 
             var githubUrl = GitSettingsReader.EnsureTrailingSlash(githubUri);
 
+            var fileSettings = FileSettingsCache.Get();
+
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
-            var fileSettings = FileSettingsCache.Get();
+            settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
+                Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
+
 
             const int defaultMaxPullRequests = 3;
             settings.PackageFilters.MaxPackageUpdates =

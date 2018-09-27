@@ -93,6 +93,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
             Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(1));
+            Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.False);
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);
@@ -144,6 +145,20 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(42));
+        }
+
+        [Test]
+        public async Task WillReadConsolidateFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                Consolidate = true
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.True);
         }
 
         [Test]

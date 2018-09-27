@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
@@ -8,10 +9,10 @@ namespace NuKeeper.Engine.Packages
 {
     public interface IPackageUpdater
     {
-        Task<bool> MakeUpdatePullRequest(
+        Task<int> MakeUpdatePullRequests(
             IGitDriver git,
             RepositoryData repository,
-            PackageUpdateSet updateSet,
+            IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources,
             SourceControlServerSettings serverSettings);
     }
