@@ -84,14 +84,14 @@ namespace NuKeeper.Engine
                 repository.Push, updates, settings.PackageFilters);
 
             return await DoTargetUpdates(git, repository, targetUpdates,
-                sources, settings.SourceControlServerSettings);
+                sources, settings);
         }
 
         private async Task<int> DoTargetUpdates(
             IGitDriver git, RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> targetUpdates,
             NuGetSources sources,
-            SourceControlServerSettings settings)
+            SettingsContainer settings)
         {
             if (targetUpdates.Count == 0)
             {

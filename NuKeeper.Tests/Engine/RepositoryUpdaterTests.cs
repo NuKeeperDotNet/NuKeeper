@@ -167,7 +167,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<RepositoryData>(),
                 Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                 Arg.Any<NuGetSources>(),
-                Arg.Any<SourceControlServerSettings>());
+                Arg.Any<SettingsContainer>());
         }
 
         private async Task AssertDidNotReceiveMakeUpdate(
@@ -179,7 +179,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<RepositoryData>(),
                 Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                 Arg.Any<NuGetSources>(),
-                Arg.Any<SourceControlServerSettings>());
+                Arg.Any<SettingsContainer>());
         }
 
         private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
@@ -237,7 +237,7 @@ namespace NuKeeper.Tests.Engine
                         Arg.Any<RepositoryData>(),
                         Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                         Arg.Any<NuGetSources>(),
-                        Arg.Any<SourceControlServerSettings>())
+                        Arg.Any<SettingsContainer>())
                     .Returns(1);
             }
 

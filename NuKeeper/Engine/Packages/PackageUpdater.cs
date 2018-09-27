@@ -32,59 +32,62 @@ namespace NuKeeper.Engine.Packages
             RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources,
-            SourceControlServerSettings settings)
+            SettingsContainer settings)
         {
-            var updatesDone = 0;
-
-            foreach (var updateSet in updates)
-            {
-                var success = await MakeUpdatePullRequest(git, repository, updateSet, sources, settings);
-                if (success)
-                {
-                    updatesDone++;
-                }
-            }
-
-            return updatesDone;
-        }
-
-        private async Task<bool> MakeUpdatePullRequest(
-            IGitDriver git,
-            RepositoryData repository,
-            PackageUpdateSet updateSet,
-            NuGetSources sources,
-            SourceControlServerSettings serverSettings)
-        {
+            int totalCount = 0;
             try
             {
-                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
+                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
-                git.Checkout(repository.DefaultBranch);
+                var groups = PackageUpdateConsolidator.Consolidate(updates,
+                    settings.UserSettings.ConsolidateUpdatesInSinglePullRequest);
 
-                // branch
-                var branchName = BranchNamer.MakeName(updateSet);
-                _logger.Detailed($"Using branch name: '{branchName}'");
-                git.CheckoutNewBranch(branchName);
+                foreach (var updateSets in groups)
+                {
+                    var updatesMade = await MakeUpdatePullRequests(
+                        git, repository,
+                        sources, settings, updateSets);
 
-                await _updateRunner.Update(updateSet, sources);
-
-                var commitMessage = CommitWording.MakeCommitMessage(updateSet);
-                git.Commit(commitMessage);
-
-                git.Push("nukeeper_push", branchName);
-
-                var title = CommitWording.MakePullRequestTitle(updateSet);
-                var body = CommitWording.MakeCommitDetails(updateSet);
-                await _gitHub.CreatePullRequest(repository, title, body, branchName, serverSettings.Labels);
-
-                git.Checkout(repository.DefaultBranch);
-                return true;
+                    totalCount += updatesMade;
+                }
             }
             catch (Exception ex)
             {
                 _logger.Error("Update failed", ex);
-                return false;
             }
+
+            return totalCount;
+        }
+
+        private async Task<int> MakeUpdatePullRequests(
+            IGitDriver git, RepositoryData repository,
+            NuGetSources sources, SettingsContainer settings,
+            IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            git.Checkout(repository.DefaultBranch);
+
+            // branch
+            var branchName = BranchNamer.MakeName(updates);
+            _logger.Detailed($"Using branch name: '{branchName}'");
+            git.CheckoutNewBranch(branchName);
+
+            foreach (var updateSet in updates)
+            {
+                await _updateRunner.Update(updateSet, sources);
+
+                var commitMessage = CommitWording.MakeCommitMessage(updateSet);
+                git.Commit(commitMessage);
+            }
+
+            git.Push("nukeeper_push", branchName);
+
+            var title = CommitWording.MakePullRequestTitle(updates);
+            var body = CommitWording.MakeCommitDetails(updates);
+            await _gitHub.CreatePullRequest(repository, title, body, branchName,
+                settings.SourceControlServerSettings.Labels);
+
+            git.Checkout(repository.DefaultBranch);
+            return updates.Count;
         }
     }
 }
