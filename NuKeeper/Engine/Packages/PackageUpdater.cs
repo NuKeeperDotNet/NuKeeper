@@ -37,8 +37,6 @@ namespace NuKeeper.Engine.Packages
             int totalCount = 0;
             try
             {
-                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updates));
-
                 var groups = UpdateConsolidator.Consolidate(updates,
                     settings.UserSettings.ConsolidateUpdatesInSinglePullRequest);
 
@@ -53,7 +51,7 @@ namespace NuKeeper.Engine.Packages
             }
             catch (Exception ex)
             {
-                _logger.Error("Update failed", ex);
+                _logger.Error("Updates failed", ex);
             }
 
             return totalCount;
@@ -64,6 +62,8 @@ namespace NuKeeper.Engine.Packages
             NuGetSources sources, SettingsContainer settings,
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            _logger.Normal(UpdatesLogger.OldVersionsToBeUpdated(updates));
+
             git.Checkout(repository.DefaultBranch);
 
             // branch

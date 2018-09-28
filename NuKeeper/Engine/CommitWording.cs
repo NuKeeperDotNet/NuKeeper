@@ -15,34 +15,44 @@ namespace NuKeeper.Engine
 
         public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            return updates.Count > 1 ? $"{updates.Count} packages have been updated" : MakePullRequestTitle(updates.First());
+            if (updates.Count == 1)
+            {
+                return PackageTitle(updates.First());
+            }
+
+            return $"Automatic update of {updates.Count} packages";
         }
 
-        public static string MakePullRequestTitle(PackageUpdateSet updates)
+        private static string PackageTitle(PackageUpdateSet updates)
         {
             return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
         public static string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $":{CommitEmoji}: {MakePullRequestTitle(updates)}";
+            return $":{CommitEmoji}: {PackageTitle(updates)}";
         }
 
         public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            if (updates.Count == 1)
+            var builder = new StringBuilder(MakePullRequestTitle(updates));
+
+            if (updates.Count > 1)
             {
-                return MakeCommitDetails(updates.First());
+                builder.AppendLine($"{updates.Count} packages were updated");
             }
 
-            var builder = new StringBuilder(MakePullRequestTitle(updates));
-            builder.Append(" (see commit messages for more details)");
+            foreach (var update in updates)
+            {
+                builder.AppendLine(MakeCommitVersionDetails(update));
+            }
+
             AddCommitFooter(builder);
 
             return builder.ToString();
         }
 
-        public static string MakeCommitDetails(PackageUpdateSet updates)
+        private static string MakeCommitVersionDetails(PackageUpdateSet updates)
         {
             var versionsInUse = updates.CurrentPackages
                 .Select(u => u.Version)
@@ -110,8 +120,6 @@ namespace NuKeeper.Engine
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
             }
-
-            AddCommitFooter(builder);
 
             return builder.ToString();
         }

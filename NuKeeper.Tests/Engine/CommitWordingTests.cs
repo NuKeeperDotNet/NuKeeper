@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -15,7 +16,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MarkPullRequestTitle_UpdateIsCorrect()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakePullRequestTitle(updates);
 
@@ -64,7 +65,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_IsNotEmpty()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -75,7 +76,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -85,7 +86,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -95,7 +96,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasPublishedDate()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -106,7 +107,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasProjectDetails()
         {
-            var updates = UpdateSetFor(MakePackageForV110());
+            var updates = UpdateSetsFor(MakePackageForV110());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -117,7 +118,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_NotEmpty()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -128,7 +129,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -139,7 +140,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -150,7 +151,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasProjectList()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV100());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -162,7 +163,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_NotEmpty()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -173,7 +174,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -183,7 +184,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -193,7 +194,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasProjectList()
         {
-            var updates = UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
+            var updates = UpdateSetsFor(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitWording.MakeCommitDetails(updates);
 
@@ -207,7 +208,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = UpdateSetForLimited(MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates});
 
             Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4`, but this was not applied as only `Minor` version changes are allowed."));
         }
@@ -218,7 +219,7 @@ namespace NuKeeper.Tests.Engine
             var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32 ,45, TimeSpan.Zero);
             var updates = UpdateSetForLimited(publishedAt, MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
 
             Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`,"));
             Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
@@ -229,7 +230,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0"));
         }
@@ -239,7 +240,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = UpdateSetForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> {updates});
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.1` from `1.1.0"));
         }
@@ -249,7 +250,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = UpdateSetForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates});
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a patch update of `foo.bar` to `1.1.9` from `1.1.0"));
         }
@@ -259,7 +260,7 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = UpdateSetForInternalSource(MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(updates);
+            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
 
             Assert.That(report, Does.Not.Contain("on NuGet.org"));
             Assert.That(report, Does.Not.Contain("www.nuget.org"));
@@ -279,6 +280,14 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Not.Contain("[ "));
             Assert.That(report, Does.Not.Contain(" ]"));
             Assert.That(report, Does.Not.Contain("There is also a higher version"));
+        }
+
+        private static List<PackageUpdateSet> UpdateSetsFor(params PackageInProject[] packages)
+        {
+            return  new List<PackageUpdateSet>
+            {
+                UpdateSetFor(packages)
+            };
         }
 
         private static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
