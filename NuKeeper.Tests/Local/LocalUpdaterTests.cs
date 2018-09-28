@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Configuration;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Local;
@@ -48,7 +43,7 @@ namespace NuKeeper.Tests.Local
 
             var updates = new List<PackageUpdateSet>
             {
-                MakePackageUpdateSet("foo")
+                PackageUpdateSetBuilder.MakePackageUpdateSet("foo")
             };
 
             var selection = Substitute.For<IUpdateSelection>();
@@ -74,8 +69,8 @@ namespace NuKeeper.Tests.Local
 
             var updates = new List<PackageUpdateSet>
             {
-                MakePackageUpdateSet("foo"),
-                MakePackageUpdateSet("bar")
+                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
+                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
             };
 
             var selection = Substitute.For<IUpdateSelection>();
@@ -103,19 +98,6 @@ namespace NuKeeper.Tests.Local
                     Arg.Any<FilterSettings>(),
                     Arg.Any<Func<PackageUpdateSet, Task<bool>>>())
                 .Returns(x => x.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(0));
-        }
-
-        private static PackageUpdateSet MakePackageUpdateSet(string packageName)
-        {
-            var fooPackage = new PackageIdentity(packageName, new NuGetVersion("1.2.3"));
-            var latest = new PackageSearchMedatadata(fooPackage, new PackageSource("http://none"), null,
-                Enumerable.Empty<PackageDependency>());
-            var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
-
-            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile);
-            var pip = new PackageInProject(fooPackage, path, null);
-
-            return new PackageUpdateSet(packages, new List<PackageInProject> {pip});
         }
 
         private static SettingsContainer Settings()

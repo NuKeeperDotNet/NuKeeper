@@ -4,7 +4,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public static class PackageUpdateConsolidator
+    public static class UpdateConsolidator
     {
         public static IReadOnlyCollection<IReadOnlyCollection<PackageUpdateSet>> Consolidate(
             IReadOnlyCollection<PackageUpdateSet> updates, bool consolidate)

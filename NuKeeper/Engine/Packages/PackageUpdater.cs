@@ -39,7 +39,7 @@ namespace NuKeeper.Engine.Packages
             {
                 _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
-                var groups = PackageUpdateConsolidator.Consolidate(updates,
+                var groups = UpdateConsolidator.Consolidate(updates,
                     settings.UserSettings.ConsolidateUpdatesInSinglePullRequest);
 
                 foreach (var updateSets in groups)
