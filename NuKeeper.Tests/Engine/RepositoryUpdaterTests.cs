@@ -54,12 +54,13 @@ namespace NuKeeper.Tests.Engine
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             UpdateSelectionAll(updateSelection);
 
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSet()
+            };
+
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
-                updateSelection,
-                new List<PackageUpdateSet>
-                {
-                    UpdateSet()
-                });
+                updateSelection, updates);
 
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
@@ -82,12 +83,16 @@ namespace NuKeeper.Tests.Engine
             var gitDriver = Substitute.For<IGitDriver>();
             UpdateSelectionAll(updateSelection);
 
+            var packageUpdater = new PackageUpdater(gitHub,
+                Substitute.For<IUpdateRunner>(),
+                Substitute.For<INuKeeperLogger>());
+
             var updates = Enumerable.Range(1, numberOfUpdates).Select(x => UpdateSet()).ToList();
 
             var settings = MakeSettings(ReportMode.Off, consolidateUpdates);
             
             var (repoUpdater, _) = MakeRepositoryUpdater(
-                updateSelection, updates, null);
+                updateSelection, updates, packageUpdater);
 
             var repo = MakeRepositoryData();
 
