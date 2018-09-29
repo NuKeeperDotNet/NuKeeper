@@ -35,7 +35,7 @@ namespace NuKeeper.Engine
 
         public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            var builder = new StringBuilder(MakePullRequestTitle(updates));
+            var builder = new StringBuilder();
 
             if (updates.Count > 1)
             {

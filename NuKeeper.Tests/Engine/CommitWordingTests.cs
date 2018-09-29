@@ -206,9 +206,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasVersionLimitData()
         {
-            var updates = UpdateSetForLimited(MakePackageForV110());
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForLimited(MakePackageForV110())
+            };
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates});
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4`, but this was not applied as only `Minor` version changes are allowed."));
         }
@@ -217,9 +220,13 @@ namespace NuKeeper.Tests.Engine
         public void OneUpdateWithDate_MakeCommitDetails_HasVersionLimitDataWithDate()
         {
             var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32 ,45, TimeSpan.Zero);
-            var updates = UpdateSetForLimited(publishedAt, MakePackageForV110());
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForLimited(publishedAt, MakePackageForV110())
+            };
+
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`,"));
             Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
@@ -228,9 +235,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMajorVersionChange()
         {
-            var updates = UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110());
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110())
+            };
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0"));
         }
@@ -238,9 +248,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMinorVersionChange()
         {
-            var updates = UpdateSetForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110());
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110())
+            };
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> {updates});
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a minor update of `foo.bar` to `1.2.1` from `1.1.0"));
         }
@@ -248,9 +261,12 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithPatchVersionChange()
         {
-            var updates = UpdateSetForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110());
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110())
+            };
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates});
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.StartWith("NuKeeper has generated a patch update of `foo.bar` to `1.1.9` from `1.1.0"));
         }
@@ -258,12 +274,33 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithInternalPackageSource()
         {
-            var updates = UpdateSetForInternalSource(MakePackageForV110());
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForInternalSource(MakePackageForV110())
+            };
 
-            var report = CommitWording.MakeCommitDetails(new List<PackageUpdateSet> { updates });
+            var report = CommitWording.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Not.Contain("on NuGet.org"));
             Assert.That(report, Does.Not.Contain("www.nuget.org"));
+        }
+
+        [Test]
+        public void TwoUpdateSets()
+        {
+            var packageTwo = new PackageIdentity("packageTwo", new NuGetVersion("3.4.5"));
+
+            var updates = new List<PackageUpdateSet>
+            {
+                UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110()),
+                UpdateSetForNewVersion(packageTwo, MakePackageForV110("packageTwo"))
+            };
+
+            var report = CommitWording.MakeCommitDetails(updates);
+
+            Assert.That(report, Does.StartWith("2 packages were updated"));
+            Assert.That(report, Does.Contain("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0`"));
+            Assert.That(report, Does.Contain("NuKeeper has generated a major update of `packageTwo` to `3.4.5` from `1.1.0`"));
         }
 
         private static void AssertContainsStandardText(string report)
@@ -347,11 +384,11 @@ namespace NuKeeper.Tests.Engine
             return new PackageSource(NuGetConstants.V3FeedUrl);
         }
 
-        private static PackageInProject MakePackageForV110()
+        private static PackageInProject MakePackageForV110(string packageName = "foo.bar")
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
                 PackageReferenceType.PackagesConfig);
-            return new PackageInProject("foo.bar", "1.1.0", path);
+            return new PackageInProject(packageName, "1.1.0", path);
         }
 
         private static PackageInProject MakePackageForV100()
