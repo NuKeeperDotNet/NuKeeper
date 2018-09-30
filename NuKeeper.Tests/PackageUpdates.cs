@@ -11,6 +11,8 @@ namespace NuKeeper.Tests
 {
     public static class PackageUpdates
     {
+        private static readonly DateTimeOffset StandardPublishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
+
         public static PackageUpdateSet For(
             PackageIdentity package,
             DateTimeOffset published,
@@ -75,6 +77,19 @@ namespace NuKeeper.Tests
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(newPackage,
                 InternalPackageSource(), publishedDate, null);
+
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
+        public static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
+        {
+            return UpdateSetFor(package, StandardPublishedDate, packages);
+        }
+
+        public static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
+        {
+            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
