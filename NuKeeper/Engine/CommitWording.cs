@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
 
             if (updates.Count > 1)
             {
-                builder.AppendLine($"{updates.Count} packages were updated");
+                MultiPackagePrefix(updates, builder);
             }
 
             foreach (var update in updates)
@@ -50,6 +50,14 @@ namespace NuKeeper.Engine
             AddCommitFooter(builder);
 
             return builder.ToString();
+        }
+
+        private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
+        {
+            var packageNames = updates
+                .Select(p => CodeQuote(p.SelectedId))
+                .JoinWithCommas();
+            builder.AppendLine($"{updates.Count} packages were updated: {packageNames}");
         }
 
         private static string MakeCommitVersionDetails(PackageUpdateSet updates)
