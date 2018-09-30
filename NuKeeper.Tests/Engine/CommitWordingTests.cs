@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
@@ -219,7 +218,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasVersionLimitData()
         {
-            var updates = UpdateSetForLimited(MakePackageForV110())
+            var updates = PackageUpdates.LimitedToMinor(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -232,7 +231,7 @@ namespace NuKeeper.Tests.Engine
         {
             var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32 ,45, TimeSpan.Zero);
 
-            var updates = UpdateSetForLimited(publishedAt, MakePackageForV110())
+            var updates = PackageUpdates.LimitedToMinor(publishedAt, MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -244,7 +243,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMajorVersionChange()
         {
-            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(new PackageIdentity("foo.bar", new NuGetVersion("2.1.1")), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -255,7 +254,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMinorVersionChange()
         {
-            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(new PackageIdentity("foo.bar", new NuGetVersion("1.2.1")), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -266,7 +265,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithPatchVersionChange()
         {
-            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(new PackageIdentity("foo.bar", new NuGetVersion("1.1.9")), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -293,7 +292,7 @@ namespace NuKeeper.Tests.Engine
 
             var updates = new List<PackageUpdateSet>
             {
-                PackageUpdates.ForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110()),
+                PackageUpdates.ForNewVersion(new PackageIdentity("foo.bar", new NuGetVersion("2.1.1")), MakePackageForV110()),
                 PackageUpdates.ForNewVersion(packageTwo, MakePackageForV110("packageTwo"))
             };
 
@@ -318,33 +317,6 @@ namespace NuKeeper.Tests.Engine
             Assert.That(report, Does.Not.Contain("[ "));
             Assert.That(report, Does.Not.Contain(" ]"));
             Assert.That(report, Does.Not.Contain("There is also a higher version"));
-        }
-
-        private static PackageUpdateSet UpdateSetForLimited(params PackageInProject[] packages)
-        {
-            return UpdateSetForLimited(null, packages);
-        }
-
-        private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
-        {
-            var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, PackageUpdates.OfficialPackageSource(), publishedAt, null);
-
-            var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), PackageUpdates.OfficialPackageSource(), null, null);
-
-            var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
-        private static PackageIdentity NewPackageFooBar123()
-        {
-            return NewPackageFooBar("1.2.3");
-        }
-
-        private static PackageIdentity NewPackageFooBar(string version)
-        {
-            return new PackageIdentity("foo.bar", new NuGetVersion(version));
         }
 
         private static PackageInProject MakePackageForV110(string packageName = "foo.bar")

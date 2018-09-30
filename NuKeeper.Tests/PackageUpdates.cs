@@ -95,6 +95,23 @@ namespace NuKeeper.Tests
             return new PackageUpdateSet(updates, packages);
         }
 
+        public static PackageUpdateSet LimitedToMinor(params PackageInProject[] packages)
+        {
+            return LimitedToMinor(null, packages);
+        }
+
+        public static PackageUpdateSet LimitedToMinor(DateTimeOffset? publishedAt, params PackageInProject[] packages)
+        {
+            var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
+            var latest = new PackageSearchMedatadata(latestId, OfficialPackageSource(), publishedAt, null);
+
+            var match = new PackageSearchMedatadata(
+                new PackageIdentity("foo.bar", new NuGetVersion("1.2.3")), OfficialPackageSource(), null, null);
+
+            var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
         public static PackageSource OfficialPackageSource()
         {
             return new PackageSource(NuGetConstants.V3FeedUrl);
