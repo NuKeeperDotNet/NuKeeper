@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Engine;
@@ -36,10 +35,8 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion()
-            };
+            var updateSets = UpdateFooFromOneVersion()
+                .InList();
 
             var target = SelectionForFilter(BranchFilter(true));
 

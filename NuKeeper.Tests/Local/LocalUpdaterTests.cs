@@ -40,11 +40,8 @@ namespace NuKeeper.Tests.Local
         [Test]
         public async Task SingleItemCase()
         {
-
-            var updates = new List<PackageUpdateSet>
-            {
-                PackageUpdates.MakeUpdateSet("foo")
-            };
+            var updates = PackageUpdates.MakeUpdateSet("foo")
+                .InList();
 
             var selection = Substitute.For<IUpdateSelection>();
             FilterIsPassThrough(selection);

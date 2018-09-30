@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -54,10 +53,8 @@ namespace NuKeeper.Tests.Engine
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             UpdateSelectionAll(updateSelection);
 
-            var updates = new List<PackageUpdateSet>
-            {
-                UpdateSet()
-            };
+            var updates = UpdateSet()
+                .InList();
 
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
                 updateSelection, updates);
