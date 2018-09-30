@@ -196,7 +196,7 @@ namespace NuKeeper.Tests.Engine.Sort
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
         {
-            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, null);
+            var latest = new PackageSearchMedatadata(package, PackageUpdates.OfficialPackageSource(), published, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);

@@ -116,7 +116,7 @@ namespace NuKeeper.Tests.Engine
 
             var matchVersion = new NuGetVersion("4.0.0");
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
-                new PackageSource("http://none"), pubDate, null);
+                PackageUpdates.OfficialPackageSource(), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
@@ -133,7 +133,7 @@ namespace NuKeeper.Tests.Engine
             };
 
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, new PackageSource("http://none"), pubDate, null);
+            var match = new PackageSearchMedatadata(matchId, PackageUpdates.OfficialPackageSource(), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
