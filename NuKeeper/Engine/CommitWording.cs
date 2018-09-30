@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
@@ -11,17 +12,55 @@ namespace NuKeeper.Engine
     public static class CommitWording
     {
         private const string CommitEmoji = "package";
-        public static string MakePullRequestTitle(PackageUpdateSet updates)
+
+        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            if (updates.Count == 1)
+            {
+                return PackageTitle(updates.First());
+            }
+
+            return $"Automatic update of {updates.Count} packages";
+        }
+
+        private static string PackageTitle(PackageUpdateSet updates)
         {
             return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
         public static string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $":{CommitEmoji}: {MakePullRequestTitle(updates)}";
+            return $":{CommitEmoji}: {PackageTitle(updates)}";
         }
 
-        public static string MakeCommitDetails(PackageUpdateSet updates)
+        public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            var builder = new StringBuilder();
+
+            if (updates.Count > 1)
+            {
+                MultiPackagePrefix(updates, builder);
+            }
+
+            foreach (var update in updates)
+            {
+                builder.AppendLine(MakeCommitVersionDetails(update));
+            }
+
+            AddCommitFooter(builder);
+
+            return builder.ToString();
+        }
+
+        private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
+        {
+            var packageNames = updates
+                .Select(p => CodeQuote(p.SelectedId))
+                .JoinWithCommas();
+            builder.AppendLine($"{updates.Count} packages were updated: {packageNames}");
+        }
+
+        private static string MakeCommitVersionDetails(PackageUpdateSet updates)
         {
             var versionsInUse = updates.CurrentPackages
                 .Select(u => u.Version)
@@ -84,16 +123,20 @@ namespace NuKeeper.Engine
                 builder.AppendLine(line);
             }
 
-            builder.AppendLine();
-            builder.AppendLine("This is an automated update. Merge only if it passes tests");
             if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
             }
-            builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
 
             return builder.ToString();
+        }
+
+        private static void AddCommitFooter(StringBuilder builder)
+        {
+            builder.AppendLine();
+            builder.AppendLine("This is an automated update. Merge only if it passes tests");
+            builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
         }
 
         private static string ChangeLevel(NuGetVersion oldVersion, NuGetVersion newVersion)

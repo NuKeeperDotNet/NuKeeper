@@ -8,7 +8,6 @@ using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
-using Octokit;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -28,67 +27,67 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public async Task<bool> MakeUpdatePullRequest(
+        public async Task<int> MakeUpdatePullRequests(
             IGitDriver git,
             RepositoryData repository,
-            PackageUpdateSet updateSet,
+            IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources,
-            SourceControlServerSettings serverSettings)
+            SettingsContainer settings)
         {
+            int totalCount = 0;
             try
             {
-                _logger.Minimal(UpdatesLogger.OldVersionsToBeUpdated(updateSet));
+                var groups = UpdateConsolidator.Consolidate(updates,
+                    settings.UserSettings.ConsolidateUpdatesInSinglePullRequest);
 
-                git.Checkout(repository.DefaultBranch);
+                foreach (var updateSets in groups)
+                {
+                    var updatesMade = await MakeUpdatePullRequests(
+                        git, repository,
+                        sources, settings, updateSets);
 
-                // branch
-                var branchName = BranchNamer.MakeName(updateSet);
-                _logger.Detailed($"Using branch name: '{branchName}'");
-                git.CheckoutNewBranch(branchName);
+                    totalCount += updatesMade;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Updates failed", ex);
+            }
 
+            return totalCount;
+        }
+
+        private async Task<int> MakeUpdatePullRequests(
+            IGitDriver git, RepositoryData repository,
+            NuGetSources sources, SettingsContainer settings,
+            IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            _logger.Normal(UpdatesLogger.OldVersionsToBeUpdated(updates));
+
+            git.Checkout(repository.DefaultBranch);
+
+            // branch
+            var branchName = BranchNamer.MakeName(updates);
+            _logger.Detailed($"Using branch name: '{branchName}'");
+            git.CheckoutNewBranch(branchName);
+
+            foreach (var updateSet in updates)
+            {
                 await _updateRunner.Update(updateSet, sources);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
-
-                git.Push("nukeeper_push", branchName);
-
-                var prTitle = CommitWording.MakePullRequestTitle(updateSet);
-                await MakeGitHubPullRequest(updateSet, repository, prTitle,
-                    branchName, serverSettings.Labels);
-
-                git.Checkout(repository.DefaultBranch);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("Update failed", ex);
-                return false;
-            }
-        }
-
-        private async Task MakeGitHubPullRequest(
-            PackageUpdateSet updates,
-            RepositoryData repository,
-            string title, string branchWithChanges,
-            IEnumerable<string> labels)
-        {
-            string qualifiedBranch;
-            if (repository.Pull.Owner == repository.Push.Owner)
-            {
-                qualifiedBranch = branchWithChanges;
-            }
-            else
-            {
-                qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
             }
 
-            var pr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch)
-            {
-                Body = CommitWording.MakeCommitDetails(updates)
-            };
+            git.Push("nukeeper_push", branchName);
 
-            await _gitHub.OpenPullRequest(repository.Pull, pr, labels);
+            var title = CommitWording.MakePullRequestTitle(updates);
+            var body = CommitWording.MakeCommitDetails(updates);
+            await _gitHub.CreatePullRequest(repository, title, body, branchName,
+                settings.SourceControlServerSettings.Labels);
+
+            git.Checkout(repository.DefaultBranch);
+            return updates.Count;
         }
     }
 }

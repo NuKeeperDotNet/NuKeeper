@@ -12,6 +12,8 @@ namespace NuKeeper.Configuration
 
         public int MaxRepositoriesChanged { get; set; }
 
+        public bool ConsolidateUpdatesInSinglePullRequest { get; set; }
+
         public VersionChange AllowedChange { get; set; }
 
         public ForkMode ForkMode { get; set; }

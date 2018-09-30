@@ -22,6 +22,8 @@ namespace NuKeeper.Configuration
         public int? MaxPr { get; set; }
         public int? MaxRepo { get; set; }
 
+        public bool? Consolidate { get; set; }
+
         public static FileSettings Empty()
         {
             return new FileSettings();

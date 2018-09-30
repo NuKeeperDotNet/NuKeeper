@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -38,6 +39,8 @@ namespace NuKeeper.Update
         {
             var sortedUpdates = Sort(updateSet.CurrentPackages);
 
+            _logger.Detailed($"Updating '{updateSet.SelectedId}' to {updateSet.SelectedVersion} in {sortedUpdates.Count} projects");
+
             foreach (var current in sortedUpdates)
             {
                 var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType);
@@ -48,10 +51,11 @@ namespace NuKeeper.Update
             }
         }
 
-        private IEnumerable<PackageInProject> Sort(IReadOnlyCollection<PackageInProject> packages)
+        private IReadOnlyCollection<PackageInProject> Sort(IReadOnlyCollection<PackageInProject> packages)
         {
             var sorter = new PackageInProjectTopologicalSort(_logger);
-            return sorter.Sort(packages);
+            return sorter.Sort(packages)
+                .ToList();
         }
 
         private IReadOnlyCollection<IPackageCommand> GetUpdateCommands(
