@@ -2,11 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Configuration;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
@@ -36,10 +32,8 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreNoMatchingPackagesTheCommandIsNotCalled()
         {
-            var packages = new List<PackageUpdateSet>()
-            {
-                UpdateSet(PackageReferenceType.ProjectFile),
-            };
+            var packages = PackageUpdates.ForRefType(PackageReferenceType.ProjectFile)
+                .InList();
 
             var sln = new FileInfo("foo.sln");
 
@@ -58,10 +52,8 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneSolutionsTheCommandIsCalled()
         {
-            var packages = new List<PackageUpdateSet>
-            {
-                UpdateSet(PackageReferenceType.PackagesConfig)
-            };
+            var packages = PackageUpdates.ForRefType(PackageReferenceType.PackagesConfig)
+                .InList();
 
             var sln = new FileInfo("foo.sln");
 
@@ -80,10 +72,8 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreTwoSolutionsTheCommandIsCalledForEachOfThem()
         {
-            var packages = new List<PackageUpdateSet>
-            {
-                UpdateSet(PackageReferenceType.PackagesConfig)
-            };
+            var packages = PackageUpdates.ForRefType(PackageReferenceType.PackagesConfig)
+                .InList();
 
             var sln1 = new FileInfo("foo.sln");
             var sln2 = new FileInfo("bar.sln");
@@ -100,21 +90,5 @@ namespace NuKeeper.Tests.Engine
             await cmd.Received().Invoke(sln1, Arg.Any<NuGetSources>());
             await cmd.Received().Invoke(sln2, Arg.Any<NuGetSources>());
         }
-
-        private static PackageUpdateSet UpdateSet(PackageReferenceType refType)
-        {
-            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1, 2, 3));
-            var path = new PackagePath("c:\\foo", "bar", refType);
-            var packages = new[]
-            {
-                new PackageInProject(fooPackage, path, null)
-            };
-
-            var latest = new PackageSearchMedatadata(fooPackage, new PackageSource(NuGetConstants.V3FeedUrl), null, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
     }
 }

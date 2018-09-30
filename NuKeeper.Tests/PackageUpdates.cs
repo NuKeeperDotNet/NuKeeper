@@ -11,6 +11,33 @@ namespace NuKeeper.Tests
 {
     public static class PackageUpdates
     {
+        public static PackageUpdateSet For(
+            PackageIdentity package,
+            DateTimeOffset published,
+            List<PackageInProject> packages,
+            List<PackageDependency> dependencies)
+        {
+            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, dependencies);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
+        public static PackageUpdateSet ForRefType(PackageReferenceType refType)
+        {
+            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1, 2, 3));
+            var path = new PackagePath("c:\\foo", "bar", refType);
+            var packages = new[]
+            {
+                new PackageInProject(fooPackage, path, null)
+            };
+
+            var latest = new PackageSearchMedatadata(fooPackage, OfficialPackageSource(), null, null);
+
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
+
         public static PackageUpdateSet MakeUpdateSet(string packageName, string version = "1.2.3")
         {
             var packageId = new PackageIdentity(packageName, new NuGetVersion(version));
