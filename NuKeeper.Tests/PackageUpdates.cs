@@ -13,6 +13,23 @@ namespace NuKeeper.Tests
     {
         private static readonly DateTimeOffset StandardPublishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
 
+        public static PackageUpdateSet UpdateSet()
+        {
+            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1, 2, 3));
+            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.PackagesConfig);
+            var packages = new[]
+            {
+                new PackageInProject(fooPackage, path, null)
+            };
+
+            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
+            var latest = new PackageSearchMedatadata(fooPackage,
+                OfficialPackageSource(), publishedDate, null);
+
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
         public static PackageUpdateSet For(
             PackageIdentity package,
             DateTimeOffset published,
