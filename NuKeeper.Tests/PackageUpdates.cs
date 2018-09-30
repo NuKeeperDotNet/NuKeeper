@@ -9,17 +9,9 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Tests
 {
-    public static class PackageUpdateSetBuilder
+    public static class PackageUpdates
     {
-        public static List<T> InList<T>(this T item)
-        {
-            return new List<T>
-            {
-                item
-            };
-        }
-
-        public static PackageUpdateSet MakePackageUpdateSet(string packageName, string version = "1.2.3")
+        public static PackageUpdateSet MakeUpdateSet(string packageName, string version = "1.2.3")
         {
             var packageId = new PackageIdentity(packageName, new NuGetVersion(version));
             var latest = new PackageSearchMedatadata(
@@ -35,13 +27,13 @@ namespace NuKeeper.Tests
             return new PackageUpdateSet(packages, new List<PackageInProject> { pip });
         }
 
-        public static PackageUpdateSet UpdateSetFor(params PackageInProject[] packages)
+        public static PackageUpdateSet For(params PackageInProject[] packages)
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-            return UpdateSetForNewVersion(newPackage, packages);
+            return ForNewVersion(newPackage, packages);
         }
 
-        public static PackageUpdateSet UpdateSetForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
+        public static PackageUpdateSet ForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(newPackage, OfficialPackageSource(), publishedDate, null);
@@ -50,7 +42,7 @@ namespace NuKeeper.Tests
             return new PackageUpdateSet(updates, packages);
         }
 
-        public static PackageUpdateSet UpdateSetForInternalSource(params PackageInProject[] packages)
+        public static PackageUpdateSet ForInternalSource(params PackageInProject[] packages)
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);

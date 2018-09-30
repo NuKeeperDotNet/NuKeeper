@@ -16,8 +16,8 @@ namespace NuKeeper.Tests.Engine
         {
             var items = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
-                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
+                PackageUpdates.MakeUpdateSet("foo"),
+                PackageUpdates.MakeUpdateSet("bar")
             };
 
             var output = UpdateConsolidator.Consolidate(items, true);
@@ -34,8 +34,8 @@ namespace NuKeeper.Tests.Engine
         {
             var items = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
-                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
+                PackageUpdates.MakeUpdateSet("foo"),
+                PackageUpdates.MakeUpdateSet("bar")
             };
 
             var output = UpdateConsolidator.Consolidate(items, false);

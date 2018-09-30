@@ -16,7 +16,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MarkPullRequestTitle_UpdateIsCorrect()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakePullRequestTitle(updates);
@@ -29,7 +29,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_OneUpdateIsCorrect()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110());
+            var updates = PackageUpdates.For(MakePackageForV110());
 
             var report = CommitWording.MakeCommitMessage(updates);
 
@@ -41,7 +41,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_TwoUpdatesIsCorrect()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV100());
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100());
 
             var report = CommitWording.MakeCommitMessage(updates);
 
@@ -53,7 +53,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void MakeCommitMessage_TwoUpdatesSameVersionIsCorrect()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3());
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3());
 
             var report = CommitWording.MakeCommitMessage(updates);
 
@@ -66,7 +66,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_IsNotEmpty()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -78,7 +78,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -89,7 +89,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasPublishedDate()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -112,7 +112,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdate_MakeCommitDetails_HasProjectDetails()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110())
+            var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -124,7 +124,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_NotEmpty()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV100())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -136,7 +136,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV100())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -148,7 +148,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV100())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -160,7 +160,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdates_MakeCommitDetails_HasProjectList()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV100())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -173,7 +173,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_NotEmpty()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -185,7 +185,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasStandardTexts()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -196,7 +196,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasVersionInfo()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -207,7 +207,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TwoUpdatesSameVersion_MakeCommitDetails_HasProjectList()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetFor(MakePackageForV110(), MakePackageForV110InProject3())
+            var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -245,7 +245,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMajorVersionChange()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -256,7 +256,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithMinorVersionChange()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("1.2.1"), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -267,7 +267,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithPatchVersionChange()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110())
+            var updates = PackageUpdates.ForNewVersion(NewPackageFooBar("1.1.9"), MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -278,7 +278,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithInternalPackageSource()
         {
-            var updates = PackageUpdateSetBuilder.UpdateSetForInternalSource(MakePackageForV110())
+            var updates = PackageUpdates.ForInternalSource(MakePackageForV110())
                 .InList();
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -294,8 +294,8 @@ namespace NuKeeper.Tests.Engine
 
             var updates = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.UpdateSetForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110()),
-                PackageUpdateSetBuilder.UpdateSetForNewVersion(packageTwo, MakePackageForV110("packageTwo"))
+                PackageUpdates.ForNewVersion(NewPackageFooBar("2.1.1"), MakePackageForV110()),
+                PackageUpdates.ForNewVersion(packageTwo, MakePackageForV110("packageTwo"))
             };
 
             var report = CommitWording.MakeCommitDetails(updates);
@@ -329,10 +329,10 @@ namespace NuKeeper.Tests.Engine
         private static PackageUpdateSet UpdateSetForLimited(DateTimeOffset? publishedAt, params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, PackageUpdateSetBuilder.OfficialPackageSource(), publishedAt, null);
+            var latest = new PackageSearchMedatadata(latestId, PackageUpdates.OfficialPackageSource(), publishedAt, null);
 
             var match = new PackageSearchMedatadata(
-                NewPackageFooBar123(), PackageUpdateSetBuilder.OfficialPackageSource(), null, null);
+                NewPackageFooBar123(), PackageUpdates.OfficialPackageSource(), null, null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
             return new PackageUpdateSet(updates, packages);

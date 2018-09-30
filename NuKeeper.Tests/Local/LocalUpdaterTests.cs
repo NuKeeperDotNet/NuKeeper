@@ -43,7 +43,7 @@ namespace NuKeeper.Tests.Local
 
             var updates = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo")
+                PackageUpdates.MakeUpdateSet("foo")
             };
 
             var selection = Substitute.For<IUpdateSelection>();
@@ -69,8 +69,8 @@ namespace NuKeeper.Tests.Local
 
             var updates = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
-                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
+                PackageUpdates.MakeUpdateSet("foo"),
+                PackageUpdates.MakeUpdateSet("bar")
             };
 
             var selection = Substitute.For<IUpdateSelection>();
