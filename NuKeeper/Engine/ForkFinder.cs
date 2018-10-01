@@ -11,36 +11,34 @@ namespace NuKeeper.Engine
     {
         private readonly IGitHub _gitHub;
         private readonly INuKeeperLogger _logger;
-        private readonly ForkMode _forkMode;
 
-        public ForkFinder(IGitHub gitHub, UserSettings settings, INuKeeperLogger logger)
+        public ForkFinder(IGitHub gitHub, INuKeeperLogger logger)
         {
             _gitHub = gitHub;
-            _forkMode = settings.ForkMode;
             _logger = logger;
         }
 
-        public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
+        public async Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork)
         {
-            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
+            _logger.Detailed($"FindPushFork. Fork Mode is {forkMode}");
 
-            switch (_forkMode)
+            switch (forkMode)
             {
                 case ForkMode.PreferFork:
-                    return await FindUserForkOrUpstream(userName, fallbackFork);
+                    return await FindUserForkOrUpstream(forkMode, userName, fallbackFork);
 
                 case ForkMode.PreferSingleRepository:
-                    return await FindUpstreamRepoOrUserFork(userName, fallbackFork);
+                    return await FindUpstreamRepoOrUserFork(forkMode, userName, fallbackFork);
 
                 case ForkMode.SingleRepositoryOnly:
-                    return await FindUpstreamRepoOnly(fallbackFork);
+                    return await FindUpstreamRepoOnly(forkMode, fallbackFork);
 
                 default:
-                    throw new Exception($"Unknown fork mode: {_forkMode}");
+                    throw new Exception($"Unknown fork mode: {forkMode}");
             }
         }
 
-        private async Task<ForkData> FindUserForkOrUpstream(string userName, ForkData pullFork)
+        private async Task<ForkData> FindUserForkOrUpstream(ForkMode forkMode, string userName, ForkData pullFork)
         {
             var userFork = await TryFindUserFork(userName, pullFork);
             if (userFork != null)
@@ -56,11 +54,11 @@ namespace NuKeeper.Engine
                 return pullFork;
             }
 
-            NoPushableForkFound(pullFork.Name);
+            NoPushableForkFound(forkMode, pullFork.Name);
             return null;
         }
 
-        private async Task<ForkData> FindUpstreamRepoOrUserFork(string userName, ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOrUserFork(ForkMode forkMode, string userName, ForkData pullFork)
         {
             // prefer to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -77,11 +75,11 @@ namespace NuKeeper.Engine
                 return userFork;
             }
 
-            NoPushableForkFound(pullFork.Name);
+            NoPushableForkFound(forkMode, pullFork.Name);
             return null;
         }
 
-        private async Task<ForkData> FindUpstreamRepoOnly(ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOnly(ForkMode forkMode, ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -91,13 +89,13 @@ namespace NuKeeper.Engine
                 return pullFork;
             }
 
-            NoPushableForkFound(pullFork.Name);
+            NoPushableForkFound(forkMode, pullFork.Name);
             return null;
         }
 
-        private void NoPushableForkFound(string name)
+        private void NoPushableForkFound(ForkMode forkMode, string name)
         {
-            _logger.Error($"No pushable fork found for {name} in mode {_forkMode}");
+            _logger.Error($"No pushable fork found for {name} in mode {forkMode}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)

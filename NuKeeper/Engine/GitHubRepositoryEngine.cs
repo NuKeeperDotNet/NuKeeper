@@ -37,7 +37,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
+                var repo = await BuildGitRepositorySpec(repository, settings.UserSettings.ForkMode, gitCreds.Username);
                 if (repo == null)
                 {
                     return 0;
@@ -64,11 +64,12 @@ namespace NuKeeper.Engine
         }
 
         private async Task<RepositoryData> BuildGitRepositorySpec(
-            RepositorySettings repository, 
+            RepositorySettings repository,
+            ForkMode forkMode,
             string userName)
         {
             var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _forkFinder.FindPushFork(userName, pullFork);
+            var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
 
             if (pushFork == null)
             {

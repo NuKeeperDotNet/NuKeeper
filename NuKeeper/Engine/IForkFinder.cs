@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
+using NuKeeper.Configuration;
 
 namespace NuKeeper.Engine
 {
     public interface IForkFinder
     {
-        Task<ForkData> FindPushFork(string userName, ForkData fallbackFork);
+        Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork);
     };
 }
