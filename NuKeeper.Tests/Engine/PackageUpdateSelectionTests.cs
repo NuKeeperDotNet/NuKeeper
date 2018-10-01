@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
@@ -22,11 +19,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreNoInputs_NoTargetsOut()
         {
-            var updateSets = new List<PackageUpdateSet>();
-
             var target = SelectionForFilter(BranchFilter(true));
 
-            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
+            var results = await target.SelectTargets(PushFork(),
+                new List<PackageUpdateSet>(), NoFilter());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -35,7 +31,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = UpdateFooFromOneVersion()
+            var updateSets = PackageUpdates.UpdateFooFromOneVersion()
                 .InList();
 
             var target = SelectionForFilter(BranchFilter(true));
@@ -53,8 +49,8 @@ namespace NuKeeper.Tests.Engine
             // sort should not change this ordering
             var updateSets = new List<PackageUpdateSet>
             {
-                UpdateBarFromTwoVersions(),
-                UpdateFooFromOneVersion()
+                PackageUpdates.UpdateBarFromTwoVersions(),
+                PackageUpdates.UpdateFooFromOneVersion()
             };
 
             var target = SelectionForFilter(BranchFilter(true));
@@ -71,8 +67,8 @@ namespace NuKeeper.Tests.Engine
             // sort should change this ordering
             var updateSets = new List<PackageUpdateSet>
             {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
+                PackageUpdates.UpdateFooFromOneVersion(),
+                PackageUpdates.UpdateBarFromTwoVersions()
             };
 
             var target = SelectionForFilter(BranchFilter(true));
@@ -88,8 +84,8 @@ namespace NuKeeper.Tests.Engine
         {
             var updateSets = new List<PackageUpdateSet>
             {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
+                PackageUpdates.UpdateFooFromOneVersion(),
+                PackageUpdates.UpdateBarFromTwoVersions()
             };
 
             var filter = BranchFilter(false);
@@ -99,51 +95,6 @@ namespace NuKeeper.Tests.Engine
             var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
 
             Assert.That(results.Count, Is.EqualTo(0));
-        }
-
-        private PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
-        {
-            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
-
-            var currentPackages = new List<PackageInProject>
-            {
-                new PackageInProject("foo", "1.0.1", PathToProjectOne()),
-                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
-            };
-
-            var matchVersion = new NuGetVersion("4.0.0");
-            var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
-                PackageUpdates.OfficialPackageSource(), pubDate, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
-            return new PackageUpdateSet(updates, currentPackages);
-        }
-
-        private PackageUpdateSet UpdateBarFromTwoVersions(TimeSpan? packageAge = null)
-        {
-            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
-
-            var currentPackages = new List<PackageInProject>
-            {
-                new PackageInProject("bar", "1.0.1", PathToProjectOne()),
-                new PackageInProject("bar", "1.2.1", PathToProjectTwo())
-            };
-
-            var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, PackageUpdates.OfficialPackageSource(), pubDate, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
-            return new PackageUpdateSet(updates, currentPackages);
-        }
-
-        private PackagePath PathToProjectOne()
-        {
-            return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
-        }
-
-        private PackagePath PathToProjectTwo()
-        {
-            return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
         private static IPackageUpdateSelection SelectionForFilter(IExistingBranchFilter filter)

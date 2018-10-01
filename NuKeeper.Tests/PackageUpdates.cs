@@ -129,6 +129,52 @@ namespace NuKeeper.Tests
             return new PackageUpdateSet(updates, packages);
         }
 
+        // todo move these to PackageUpdates.
+        public static PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
+        {
+            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("foo", "1.0.1", PathToProjectOne()),
+                new PackageInProject("foo", "1.0.1", PathToProjectTwo())
+            };
+
+            var matchVersion = new NuGetVersion("4.0.0");
+            var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
+                OfficialPackageSource(), pubDate, null);
+
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            return new PackageUpdateSet(updates, currentPackages);
+        }
+
+        public static PackageUpdateSet UpdateBarFromTwoVersions(TimeSpan? packageAge = null)
+        {
+            var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
+
+            var currentPackages = new List<PackageInProject>
+            {
+                new PackageInProject("bar", "1.0.1", PathToProjectOne()),
+                new PackageInProject("bar", "1.2.1", PathToProjectTwo())
+            };
+
+            var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
+            var match = new PackageSearchMedatadata(matchId, OfficialPackageSource(), pubDate, null);
+
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            return new PackageUpdateSet(updates, currentPackages);
+        }
+
+        private static PackagePath PathToProjectOne()
+        {
+            return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
+        }
+
+        private static PackagePath PathToProjectTwo()
+        {
+            return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
+        }
+
         public static PackageSource OfficialPackageSource()
         {
             return new PackageSource(NuGetConstants.V3FeedUrl);
