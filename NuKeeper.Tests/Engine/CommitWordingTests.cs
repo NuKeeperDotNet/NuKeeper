@@ -338,7 +338,7 @@ namespace NuKeeper.Tests.Engine
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(newPackage, OfficialPackageSource(), publishedDate, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 
@@ -348,7 +348,7 @@ namespace NuKeeper.Tests.Engine
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(newPackage, new PackageSource("http://internalfeed.myco.com/api"), publishedDate, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 
@@ -365,7 +365,7 @@ namespace NuKeeper.Tests.Engine
             var match = new PackageSearchMedatadata(
                 NewPackageFooBar123(), OfficialPackageSource(), null, null);
 
-            var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
+            var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 

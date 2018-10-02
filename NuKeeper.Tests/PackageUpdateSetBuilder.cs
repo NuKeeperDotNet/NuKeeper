@@ -12,10 +12,10 @@ namespace NuKeeper.Tests
     {
         public static PackageUpdateSet MakePackageUpdateSet(string packageName)
         {
-            var fooPackage = new PackageIdentity(packageName, new NuGetVersion("1.2.3"));
+            var fooPackage = new PackageIdentity(packageName, new NuGetVersion("1.2.3-preview004"));
             var latest = new PackageSearchMedatadata(fooPackage, new PackageSource("http://none"), null,
                 Enumerable.Empty<PackageDependency>());
-            var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var packages = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
 
             var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile);
             var pip = new PackageInProject(fooPackage, path, null);

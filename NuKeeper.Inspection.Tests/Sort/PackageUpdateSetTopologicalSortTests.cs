@@ -200,7 +200,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             var majorUpdate = Metadata(packageId, packageVersion, upstream);
 
             var lookupResult = new PackageLookupResult(VersionChange.Major,
-                majorUpdate, null, null);
+                majorUpdate, null, null, null);
             var updates = new PackageUpdateSet(lookupResult, currentPackages);
 
             return updates;

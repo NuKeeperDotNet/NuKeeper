@@ -245,7 +245,7 @@ namespace NuKeeper.Update.Tests
 
             var latest = new PackageSearchMedatadata(newPackage, new PackageSource("http://none"), DateTimeOffset.Now, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, currentPackages);
         }
 
@@ -263,7 +263,7 @@ namespace NuKeeper.Update.Tests
             var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
                 new PackageSource("http://none"), pubDate, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null, null);
             return new PackageUpdateSet(updates, currentPackages);
         }
 
@@ -280,7 +280,7 @@ namespace NuKeeper.Update.Tests
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
             var match = new PackageSearchMedatadata(matchId, new PackageSource("http://none"), pubDate, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, match, null, null, null);
             return new PackageUpdateSet(updates, currentPackages);
         }
 

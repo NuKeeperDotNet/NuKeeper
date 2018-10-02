@@ -17,7 +17,7 @@ namespace NuKeeper.Commands
         protected readonly IFileSettingsCache FileSettingsCache;
 
         [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "change",
-            Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
+            Description = "Allowed version change: Release, Patch, Minor, Major. Defaults to Major.")]
         public VersionChange? AllowedChange { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",

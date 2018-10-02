@@ -111,7 +111,7 @@ namespace NuKeeper.Inspection.Tests.Report
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
             var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), publishedDate, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 

@@ -198,7 +198,7 @@ namespace NuKeeper.Tests.Engine.Sort
         {
             var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 
@@ -213,8 +213,8 @@ namespace NuKeeper.Tests.Engine.Sort
 
         private static PackageUpdateSet OnePackageUpdateSet(int projectCount)
         {
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
-            var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5-preview006"));
+            var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3-preview004"));
 
             var projects = new List<PackageInProject>();
             foreach(var i in Enumerable.Range(1, projectCount))
@@ -227,10 +227,10 @@ namespace NuKeeper.Tests.Engine.Sort
 
         private PackageUpdateSet MakeTwoProjectVersions()
         {
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
+            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5-preview006"));
 
-            var package123 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-            var package124 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.4"));
+            var package123 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3-preview004"));
+            var package124 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.4-preview005"));
             var projects = new List<PackageInProject>
             {
                 MakePackageInProjectFor(package123),

@@ -18,15 +18,22 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                     return NewMajorVersion()
                         .Concat(MinorVersions())
                         .Concat(PatchVersions())
+                        .Concat(ReleaseVersions())
                         .ToList();
 
                 case VersionChange.Minor:
                     return MinorVersions()
                         .Concat(PatchVersions())
+                        .Concat(ReleaseVersions())
                         .ToList();
 
                 case VersionChange.Patch:
-                    return PatchVersions();
+                    return PatchVersions()
+                        .Concat(ReleaseVersions())
+                        .ToList();
+
+                case VersionChange.Release:
+                    return ReleaseVersions();
 
                 case VersionChange.None:
                     return CurrentVersionOnly();
@@ -73,6 +80,22 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 PackageVersion(1, 0, 0)
             };
         }
+        private static List<PackageSearchMedatadata> ReleaseVersions()
+        {
+            return new List<PackageSearchMedatadata>
+            {
+                PackageVersion(1, 2, 3, "preview005"),
+                PackageVersion(1, 2, 3, "preview004"),
+                PackageVersion(1, 2, 3, "preview003"),
+                PackageVersion(1, 2, 3, "preview002"),
+                PackageVersion(1, 2, 3, "preview001"),
+
+                PackageVersion(1, 1, 0, "preview001"),
+                PackageVersion(1, 1, 0, "preview001"),
+                PackageVersion(1, 0, 0, "preview001"),
+                PackageVersion(1, 0, 0, "preview000"),
+            };
+        }
 
         private static List<PackageSearchMedatadata> CurrentVersionOnly()
         {
@@ -82,9 +105,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
         }
 
-        public static PackageSearchMedatadata PackageVersion(int major, int minor, int patch)
+        public static PackageSearchMedatadata PackageVersion(int major, int minor, int patch, string release = "")
         {
-            var version = new NuGetVersion(major, minor, patch);
+            var version = new NuGetVersion(major, minor, patch, release);
             var metadata = new PackageIdentity("TestPackage", version);
             return new PackageSearchMedatadata(metadata, new PackageSource("http://none"), DateTimeOffset.Now, null);
         }

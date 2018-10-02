@@ -112,7 +112,7 @@ namespace NuKeeper.Tests.Engine
 
             var latest = new PackageSearchMedatadata(fooPackage, new PackageSource(NuGetConstants.V3FeedUrl), null, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 

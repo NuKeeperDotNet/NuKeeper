@@ -8,12 +8,14 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange,
             PackageSearchMedatadata major,
             PackageSearchMedatadata minor,
-            PackageSearchMedatadata patch)
+            PackageSearchMedatadata patch,
+            PackageSearchMedatadata release)
         {
             AllowedChange = allowedChange;
             Major = major;
             Minor = minor;
             Patch = patch;
+            Release = release;
         }
 
         public VersionChange AllowedChange { get; }
@@ -21,6 +23,7 @@ namespace NuKeeper.Inspection.NuGetApi
         public PackageSearchMedatadata Major { get; }
         public PackageSearchMedatadata Minor { get; }
         public PackageSearchMedatadata Patch { get; }
+        public PackageSearchMedatadata Release { get; }
 
         public PackageSearchMedatadata Selected()
         {
@@ -34,6 +37,9 @@ namespace NuKeeper.Inspection.NuGetApi
 
                 case VersionChange.Patch:
                     return Patch;
+
+                case VersionChange.Release:
+                    return Release;
 
                 case VersionChange.None:
                     return null;

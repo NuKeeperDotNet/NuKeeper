@@ -18,7 +18,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var logger = Substitute.For<INuKeeperLogger>();
             var reporter = new PackageLookupResultReporter(logger);
 
-            var data = new PackageLookupResult(VersionChange.Major, null, null, null);
+            var data = new PackageLookupResult(VersionChange.Major, null, null, null, null);
 
             reporter.Report(data);
 
@@ -39,7 +39,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
                 new PackageSource("http://none"), DateTimeOffset.Now, null);
 
-            var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata, fooMetadata);
+            var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -60,7 +60,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 new PackageSource("http://none"), DateTimeOffset.Now, null);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata, fooMetadata);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMetadata, fooMetadata, fooMetadata, fooMetadata);
 
             reporter.Report(data);
 
@@ -85,7 +85,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 new PackageSource("http://none"), DateTimeOffset.Now, null);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor, null);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, fooMinor, null, null);
 
             reporter.Report(data);
 
@@ -106,7 +106,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 new PackageIdentity("foo", new NuGetVersion(3, 0, 0)),
                 new PackageSource("http://none"), DateTimeOffset.Now, null);
 
-            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null, null);
+            var data = new PackageLookupResult(VersionChange.Minor, fooMajor, null, null, null);
 
             reporter.Report(data);
 
