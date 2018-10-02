@@ -56,18 +56,19 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         [TestCase(VersionChange.Major, 2, 3, 4)]
         [TestCase(VersionChange.Minor, 1, 3, 1)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.Release, 1, 2, 3, "preview005")]
         [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenMajorVersionChangesAreAllowed(VersionChange dataRange,
-            int expectedMajor, int expectedMinor, int expectedPatch)
+            int expectedMajor, int expectedMinor, int expectedPatch, string expectedRelease = null)
         {
-            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch);
+            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch, expectedRelease);
             var resultPackages = PackageVersionTestData.VersionsFor(dataRange);
             var allVersionsLookup = MockVersionLookup(resultPackages);
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
             var updates = await lookup.FindVersionUpdate(
-                CurrentVersion123("TestPackage"),
+                CurrentVersion123("TestPackage", expectedRelease),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major);
 
@@ -79,18 +80,19 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         [TestCase(VersionChange.Major, 1, 3, 1)]
         [TestCase(VersionChange.Minor, 1, 3, 1)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.Release, 1, 2, 3, "preview005")]
         [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenMinorVersionChangesAreAllowed(VersionChange dataRange,
-            int expectedMajor, int expectedMinor, int expectedPatch)
+            int expectedMajor, int expectedMinor, int expectedPatch, string expectedRelease = null)
         {
-            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch);
+            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch, expectedRelease);
             var resultPackages = PackageVersionTestData.VersionsFor(dataRange);
             var allVersionsLookup = MockVersionLookup(resultPackages);
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
             var updates = await lookup.FindVersionUpdate(
-                CurrentVersion123("TestPackage"),
+                CurrentVersion123("TestPackage", expectedRelease),
                 NuGetSources.GlobalFeed,
                 VersionChange.Minor);
 
@@ -102,20 +104,45 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         [TestCase(VersionChange.Major, 1, 2, 5)]
         [TestCase(VersionChange.Minor, 1, 2, 5)]
         [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.Release, 1, 2, 3, "preview005")]
         [TestCase(VersionChange.None, 1, 2, 3)]
         public async Task WhenPatchVersionChangesAreAllowed(VersionChange dataRange,
-            int expectedMajor, int expectedMinor, int expectedPatch)
+            int expectedMajor, int expectedMinor, int expectedPatch, string expectedRelease = null)
         {
-            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch);
+            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch, expectedRelease);
             var resultPackages = PackageVersionTestData.VersionsFor(dataRange);
             var allVersionsLookup = MockVersionLookup(resultPackages);
 
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
             var updates = await lookup.FindVersionUpdate(
-                CurrentVersion123("TestPackage"),
+                CurrentVersion123("TestPackage", expectedRelease),
                 NuGetSources.GlobalFeed,
                 VersionChange.Patch);
+
+            AssertPackagesIdentityIs(updates, "TestPackage");
+            Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
+            Assert.That(updates.Major.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
+        }
+
+        [TestCase(VersionChange.Major, 1, 2, 5)]
+        [TestCase(VersionChange.Minor, 1, 2, 5)]
+        [TestCase(VersionChange.Patch, 1, 2, 5)]
+        [TestCase(VersionChange.Release, 1, 2, 3, "preview005")]
+        [TestCase(VersionChange.None, 1, 2, 3)]
+        public async Task WhenReleaseVersionChangesAreAllowed(VersionChange dataRange,
+            int expectedMajor, int expectedMinor, int expectedPatch, string expectedRelease = null)
+        {
+            var expectedUpdate = new NuGetVersion(expectedMajor, expectedMinor, expectedPatch, expectedRelease);
+            var resultPackages = PackageVersionTestData.VersionsFor(dataRange);
+            var allVersionsLookup = MockVersionLookup(resultPackages);
+
+            IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
+
+            var updates = await lookup.FindVersionUpdate(
+                CurrentVersion123("TestPackage", expectedRelease),
+                NuGetSources.GlobalFeed,
+                VersionChange.Release);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
             Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
@@ -130,9 +157,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             return allVersions;
         }
 
-        private PackageIdentity CurrentVersion123(string packageId)
+        private PackageIdentity CurrentVersion123(string packageId, string release = null)
         {
-            return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
+            return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3, release));
         }
 
         private static void AssertPackagesIdentityIs(PackageLookupResult packages, string id)

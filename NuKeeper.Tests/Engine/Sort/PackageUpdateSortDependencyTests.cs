@@ -184,8 +184,8 @@ namespace NuKeeper.Tests.Engine.Sort
         private static PackageUpdateSet OnePackageUpdateSet(string packageName, int projectCount,
             List<PackageDependency> deps)
         {
-            var newPackage = new PackageIdentity(packageName, new NuGetVersion("1.4.5"));
-            var package = new PackageIdentity(packageName, new NuGetVersion("1.2.3"));
+            var newPackage = new PackageIdentity(packageName, new NuGetVersion("1.4.5-prview006"));
+            var package = new PackageIdentity(packageName, new NuGetVersion("1.2.3-preview004"));
 
             var projects = new List<PackageInProject>();
             foreach (var i in Enumerable.Range(1, projectCount))
@@ -216,7 +216,7 @@ namespace NuKeeper.Tests.Engine.Sort
         {
             var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, deps);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
             return new PackageUpdateSet(updates, packages);
         }
 

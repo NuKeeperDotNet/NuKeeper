@@ -19,7 +19,8 @@ namespace NuKeeper.Inspection.NuGetApi
             var major = FirstMatch(orderedCandidates, current, VersionChange.Major);
             var minor = FirstMatch(orderedCandidates, current, VersionChange.Minor);
             var patch = FirstMatch(orderedCandidates, current, VersionChange.Patch);
-            return new PackageLookupResult(allowedChange, major, minor, patch);
+            var release = FirstMatch(orderedCandidates, current, VersionChange.Release);
+            return new PackageLookupResult(allowedChange, major, minor, patch, release);
         }
 
         private static PackageSearchMedatadata FirstMatch(
@@ -42,6 +43,23 @@ namespace NuKeeper.Inspection.NuGetApi
 
                 case VersionChange.Patch:
                     return (v1.Major == v2.Major) && (v1.Minor == v2.Minor);
+
+                case VersionChange.Release:
+                    if (string.IsNullOrEmpty(v1.Release))
+                    {
+                        return (v1.Major == v2.Major) && (v1.Minor == v2.Minor);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(v2.Release))
+                        {
+                            return (v1.Major == v2.Major) && (v1.Minor == v2.Minor);
+                        }
+                        else
+                        {
+                            return (v1.Major == v2.Major) && (v1.Minor == v2.Minor) && (v1.Patch == v2.Patch);
+                        }
+                    }
 
                 case VersionChange.None:
                     return (v1 == v2);

@@ -157,7 +157,7 @@ namespace NuKeeper.Inspection.Tests
             var package = new PackageIdentity(pip.Id, new NuGetVersion("1.4.5"));
             var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), null, null);
 
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null, null);
 
             return new PackageUpdateSet(updates, new List<PackageInProject> {pip });
         }
