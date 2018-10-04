@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
@@ -193,7 +191,7 @@ namespace NuKeeper.Tests.Engine.Sort
                 projects.Add(MakePackageInProjectFor(package));
             }
 
-            return UpdateSetFor(newPackage, projects, deps);
+            return PackageUpdates.For(newPackage, StandardPublishedDate, projects, deps);
         }
 
         private static PackageInProject MakePackageInProjectFor(PackageIdentity package)
@@ -203,21 +201,6 @@ namespace NuKeeper.Tests.Engine.Sort
                 Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
             return new PackageInProject(package.Id, package.Version.ToString(), path);
-        }
-
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package,
-            List<PackageInProject> packages, List<PackageDependency> deps)
-        {
-            return UpdateSetFor(package, StandardPublishedDate, packages, deps);
-        }
-
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published,
-            List<PackageInProject> packages, List<PackageDependency> deps)
-        {
-            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, deps);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
         }
 
         private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)

@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
-using NuGet.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine.Sort
@@ -32,10 +30,8 @@ namespace NuKeeper.Tests.Engine.Sort
         [Test]
         public void CanSortOneItem()
         {
-            var items = new List<PackageUpdateSet>
-            {
-                OnePackageUpdateSet(1)
-            };
+            var items = OnePackageUpdateSet(1)
+                .InList();
 
             var output = Sort(items);
 
@@ -189,19 +185,6 @@ namespace NuKeeper.Tests.Engine.Sort
             return packageUpdateSet.Selected.Identity.Version.ToString();
         }
 
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
-        {
-            return UpdateSetFor(package, StandardPublishedDate, packages);
-        }
-
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
-        {
-            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), published, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
         private static PackageInProject MakePackageInProjectFor(PackageIdentity package)
         {
             var path = new PackagePath(
@@ -222,7 +205,7 @@ namespace NuKeeper.Tests.Engine.Sort
                 projects.Add(MakePackageInProjectFor(package));
             }
 
-            return UpdateSetFor(newPackage, projects.ToArray());
+            return PackageUpdates.UpdateSetFor(newPackage, projects.ToArray());
         }
 
         private PackageUpdateSet MakeTwoProjectVersions()
@@ -237,7 +220,7 @@ namespace NuKeeper.Tests.Engine.Sort
                 MakePackageInProjectFor(package124),
             };
 
-            return UpdateSetFor(newPackage, projects.ToArray());
+            return PackageUpdates.UpdateSetFor(newPackage, projects.ToArray());
         }
 
         private static PackageUpdateSet PackageChange(string newVersion, string oldVersion, DateTimeOffset? publishedDate = null)
@@ -255,7 +238,7 @@ namespace NuKeeper.Tests.Engine.Sort
                 MakePackageInProjectFor(oldPackage)
             };
 
-            return UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
+            return PackageUpdates.UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
         }
 
         private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)

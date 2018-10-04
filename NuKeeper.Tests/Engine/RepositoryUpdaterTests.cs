@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Configuration;
@@ -54,10 +53,8 @@ namespace NuKeeper.Tests.Engine
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             UpdateSelectionAll(updateSelection);
 
-            var updates = new List<PackageUpdateSet>
-            {
-                UpdateSet()
-            };
+            var updates = PackageUpdates.UpdateSet()
+                .InList();
 
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
                 updateSelection, updates);
@@ -87,7 +84,9 @@ namespace NuKeeper.Tests.Engine
                 Substitute.For<IUpdateRunner>(),
                 Substitute.For<INuKeeperLogger>());
 
-            var updates = Enumerable.Range(1, numberOfUpdates).Select(x => UpdateSet()).ToList();
+            var updates = Enumerable.Range(1, numberOfUpdates)
+                .Select(_ => PackageUpdates.UpdateSet())
+                .ToList();
 
             var settings = MakeSettings(ReportMode.Off, consolidateUpdates);
             
@@ -120,8 +119,8 @@ namespace NuKeeper.Tests.Engine
 
             var twoUpdates = new List<PackageUpdateSet>
             {
-                UpdateSet(),
-                UpdateSet()
+                PackageUpdates.UpdateSet(),
+                PackageUpdates.UpdateSet()
             };
 
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
@@ -145,8 +144,8 @@ namespace NuKeeper.Tests.Engine
 
             var twoUpdates = new List<PackageUpdateSet>
                 {
-                    UpdateSet(),
-                    UpdateSet()
+                    PackageUpdates.UpdateSet(),
+                    PackageUpdates.UpdateSet()
                 };
 
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
@@ -259,22 +258,6 @@ namespace NuKeeper.Tests.Engine
             return new RepositoryData(
                 new ForkData(new Uri("http://foo.com"), "me", "test"),
                 new ForkData(new Uri("http://foo.com"), "me", "test"));
-        }
-
-        private static PackageUpdateSet UpdateSet()
-        {
-            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1,2,3));
-            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.PackagesConfig);
-            var packages = new[]
-            {
-                new PackageInProject(fooPackage, path, null)
-            };
-
-            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(fooPackage, new PackageSource("https://somewhere"), publishedDate, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
         }
     }
 }

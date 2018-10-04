@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Inspection.NuGetApi;
@@ -31,10 +30,8 @@ namespace NuKeeper.Tests.Engine
         public void WhenThereIsANewMajorVersion()
         {
             var current = new NuGetVersion(1, 2, 3);
-            var candidates = new List<PackageSearchMedatadata>
-            {
-                MetadataForVersion(2, 3, 4)
-            };
+            var candidates = MetadataForVersion(2, 3, 4)
+                .InList();
 
             var result = VersionChanges.MakeVersions(current, candidates, VersionChange.Major);
 
@@ -204,7 +201,7 @@ namespace NuKeeper.Tests.Engine
         {
             var version = new NuGetVersion(major, minor, patch);
             var packageId = new PackageIdentity("foo", version);
-            return new PackageSearchMedatadata(packageId, new PackageSource("http://none"), DateTimeOffset.Now, null);
+            return new PackageSearchMedatadata(packageId, PackageUpdates.OfficialPackageSource(), DateTimeOffset.Now, null);
         }
     }
 }

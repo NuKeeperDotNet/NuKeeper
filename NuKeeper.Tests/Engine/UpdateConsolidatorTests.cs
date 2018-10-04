@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -12,12 +10,42 @@ namespace NuKeeper.Tests.Engine
     public class UpdateConsolidatorTests
     {
         [Test]
+        public void WhenOneItemIsConsolidated()
+        {
+            var items = PackageUpdates.MakeUpdateSet("foo")
+                .InList();
+
+            var output = UpdateConsolidator.Consolidate(items, true);
+
+            var listOfLists = output.ToList();
+
+            // one list, containing all the items
+            Assert.That(listOfLists.Count, Is.EqualTo(1));
+            Assert.That(listOfLists[0].Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void WhenOneItemIsNotConsolidated()
+        {
+            var items = PackageUpdates.MakeUpdateSet("foo")
+                .InList();
+
+            var output = UpdateConsolidator.Consolidate(items, false);
+
+            var listOfLists = output.ToList();
+
+            // one list, containing all the items
+            Assert.That(listOfLists.Count, Is.EqualTo(1));
+            Assert.That(listOfLists[0].Count, Is.EqualTo(1));
+        }
+
+        [Test]
         public void WhenItemsAreConsolidated()
         {
             var items = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
-                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
+                PackageUpdates.MakeUpdateSet("foo"),
+                PackageUpdates.MakeUpdateSet("bar")
             };
 
             var output = UpdateConsolidator.Consolidate(items, true);
@@ -34,8 +62,8 @@ namespace NuKeeper.Tests.Engine
         {
             var items = new List<PackageUpdateSet>
             {
-                PackageUpdateSetBuilder.MakePackageUpdateSet("foo"),
-                PackageUpdateSetBuilder.MakePackageUpdateSet("bar")
+                PackageUpdates.MakeUpdateSet("foo"),
+                PackageUpdates.MakeUpdateSet("bar")
             };
 
             var output = UpdateConsolidator.Consolidate(items, false);
