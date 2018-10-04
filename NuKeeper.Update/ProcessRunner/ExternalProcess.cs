@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NuKeeper.Inspection;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Update.ProcessRunner
@@ -40,7 +41,7 @@ namespace NuKeeper.Update.ProcessRunner
 
             if (process == null)
             {
-                throw new Exception($"Could not start external process for {command}");
+                throw new NuKeeperException($"Could not start external process for {command}");
             }
 
             var textOut = await process.StandardOutput.ReadToEndAsync();
@@ -57,7 +58,7 @@ namespace NuKeeper.Update.ProcessRunner
 
                 if (ensureSuccess)
                 {
-                    throw new Exception(message);
+                    throw new NuKeeperException(message);
                 }
             }
 

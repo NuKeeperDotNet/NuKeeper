@@ -150,7 +150,6 @@ namespace NuKeeper.Tests
             return new PackagePath("c:\\foo", "bar\\aproj.csproj", packageRefType);
         }
 
-
         private static PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);

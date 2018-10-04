@@ -34,7 +34,7 @@ namespace NuKeeper.Engine
                     return await FindUpstreamRepoOnly(forkMode, fallbackFork);
 
                 default:
-                    throw new Exception($"Unknown fork mode: {forkMode}");
+                    throw new ArgumentOutOfRangeException($"Unknown fork mode: {forkMode}");
             }
         }
 

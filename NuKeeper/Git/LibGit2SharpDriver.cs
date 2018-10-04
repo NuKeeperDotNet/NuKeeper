@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using LibGit2Sharp;
+using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using GitCommands = LibGit2Sharp.Commands;
@@ -81,7 +82,7 @@ namespace NuKeeper.Git
             var qualifiedBranchName = "origin/" + branchName;
             if (BranchExists(qualifiedBranchName))
             {
-                throw new Exception($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
+                throw new NuKeeperException($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
             }
 
             _logger.Detailed($"Git checkout new branch '{branchName}'");
@@ -124,7 +125,7 @@ namespace NuKeeper.Git
 
             if (repoSignature == null)
             {
-                throw new InvalidOperationException(
+                throw new NuKeeperException(
                     "Failed to build signature, did not get valid git user identity from github token or from repo config");
             }
 

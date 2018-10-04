@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
@@ -39,7 +40,7 @@ namespace NuKeeper.GitHub
         {
             if (!_initialised)
             {
-                throw new InvalidOperationException("Github has not been initialised");
+                throw new NuKeeperException("Github has not been initialised");
             }
         }
 
