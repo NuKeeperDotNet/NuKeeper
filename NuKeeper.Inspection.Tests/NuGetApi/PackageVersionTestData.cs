@@ -32,7 +32,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                     return CurrentVersionOnly();
 
                 default:
-                    throw new Exception($"Invalid version change {change}");
+                    throw new ArgumentOutOfRangeException($"Invalid version change {change}");
             }
         }
 

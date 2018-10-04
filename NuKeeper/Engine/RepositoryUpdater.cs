@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
                     return 0;
 
                 default:
-                    throw new Exception($"Unknown report mode: '{settings.UserSettings.ReportMode}'");
+                    throw new ArgumentOutOfRangeException($"Unknown report mode: '{settings.UserSettings.ReportMode}'");
             }
 
             if (updates.Count == 0)

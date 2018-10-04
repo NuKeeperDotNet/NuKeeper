@@ -33,7 +33,7 @@ namespace NuKeeper.Inspection.NuGetApi
                     _logger.Error(message.Message);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"Invalid log level {message.Level}");
             }
         }
 
