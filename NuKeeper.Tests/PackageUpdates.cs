@@ -53,7 +53,6 @@ namespace NuKeeper.Tests
             return MakeUpdateSet("foo", "1.2.3", refType);
         }
 
-
         public static PackageUpdateSet For(params PackageInProject[] packages)
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
@@ -98,7 +97,8 @@ namespace NuKeeper.Tests
             return LimitedToMinor(null, packages);
         }
 
-        public static PackageUpdateSet LimitedToMinor(DateTimeOffset? publishedAt, params PackageInProject[] packages)
+        public static PackageUpdateSet LimitedToMinor(DateTimeOffset? publishedAt,
+            params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
             var latest = new PackageSearchMedatadata(latestId, OfficialPackageSource(), publishedAt, null);
