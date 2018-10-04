@@ -30,8 +30,7 @@ namespace NuKeeper.Tests
 
             var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
 
-            var path = new PackagePath("c:\\foo", "bar", packageRefType);
-            var pip = new PackageInProject(packageId, path, null)
+            var pip = new PackageInProject(packageId, MakePackagePath(packageRefType), null)
                 .InList();
 
             return new PackageUpdateSet(packages, pip);
@@ -145,6 +144,12 @@ namespace NuKeeper.Tests
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);
         }
+
+        private static PackagePath MakePackagePath(PackageReferenceType packageRefType)
+        {
+            return new PackagePath("c:\\foo", "bar\\aproj.csproj", packageRefType);
+        }
+
 
         private static PackagePath PathToProjectOne()
         {
