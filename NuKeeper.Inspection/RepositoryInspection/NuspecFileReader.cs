@@ -28,7 +28,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Unable to parse file {packagePath.FullName}", ex);
+                throw new NuKeeperException($"Unable to parse file {packagePath.FullName}", ex);
             }
         }
 
