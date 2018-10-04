@@ -15,49 +15,12 @@ namespace NuKeeper.Tests
 
         public static PackageUpdateSet UpdateSet()
         {
-            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1, 2, 3));
-            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.PackagesConfig);
-            var packages = new[]
-            {
-                new PackageInProject(fooPackage, path, null)
-            };
-
-            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(fooPackage,
-                OfficialPackageSource(), publishedDate, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
+            return MakeUpdateSet("foo", "1.2.3", PackageReferenceType.PackagesConfig);
         }
 
-        public static PackageUpdateSet For(
-            PackageIdentity package,
-            DateTimeOffset published,
-            List<PackageInProject> packages,
-            List<PackageDependency> dependencies)
-        {
-            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, dependencies);
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
-        public static PackageUpdateSet ForRefType(PackageReferenceType refType)
-        {
-            var fooPackage = new PackageIdentity("foo", new NuGetVersion(1, 2, 3));
-            var path = new PackagePath("c:\\foo", "bar", refType);
-            var packages = new[]
-            {
-                new PackageInProject(fooPackage, path, null)
-            };
-
-            var latest = new PackageSearchMedatadata(fooPackage, OfficialPackageSource(), null, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
-
-        public static PackageUpdateSet MakeUpdateSet(string packageName, string version = "1.2.3")
+        public static PackageUpdateSet MakeUpdateSet(string packageName,
+            string version = "1.2.3",
+            PackageReferenceType packageRefType = PackageReferenceType.ProjectFile)
         {
             var packageId = new PackageIdentity(packageName, new NuGetVersion(version));
             var latest = new PackageSearchMedatadata(
@@ -67,11 +30,29 @@ namespace NuKeeper.Tests
 
             var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
 
-            var path = new PackagePath("c:\\foo", "bar", PackageReferenceType.ProjectFile);
-            var pip = new PackageInProject(packageId, path, null);
+            var path = new PackagePath("c:\\foo", "bar", packageRefType);
+            var pip = new PackageInProject(packageId, path, null)
+                .InList();
 
-            return new PackageUpdateSet(packages, new List<PackageInProject> { pip });
+            return new PackageUpdateSet(packages, pip);
         }
+
+        public static PackageUpdateSet For(
+            PackageIdentity package,
+            DateTimeOffset published,
+            IEnumerable<PackageInProject> packages,
+            IEnumerable<PackageDependency> dependencies)
+        {
+            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, dependencies);
+            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
+            return new PackageUpdateSet(updates, packages);
+        }
+
+        public static PackageUpdateSet ForPackageRefType(PackageReferenceType refType)
+        {
+            return MakeUpdateSet("foo", "1.2.3", refType);
+        }
+
 
         public static PackageUpdateSet For(params PackageInProject[] packages)
         {

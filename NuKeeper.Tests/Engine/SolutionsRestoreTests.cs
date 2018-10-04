@@ -32,7 +32,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreNoMatchingPackagesTheCommandIsNotCalled()
         {
-            var packages = PackageUpdates.ForRefType(PackageReferenceType.ProjectFile)
+            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.ProjectFile)
                 .InList();
 
             var sln = new FileInfo("foo.sln");
@@ -52,7 +52,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneSolutionsTheCommandIsCalled()
         {
-            var packages = PackageUpdates.ForRefType(PackageReferenceType.PackagesConfig)
+            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
                 .InList();
 
             var sln = new FileInfo("foo.sln");
@@ -72,7 +72,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreTwoSolutionsTheCommandIsCalledForEachOfThem()
         {
-            var packages = PackageUpdates.ForRefType(PackageReferenceType.PackagesConfig)
+            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
                 .InList();
 
             var sln1 = new FileInfo("foo.sln");
