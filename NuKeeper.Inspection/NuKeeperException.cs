@@ -6,8 +6,9 @@ namespace NuKeeper.Inspection
     public class NuKeeperException: ApplicationException
     {
         public NuKeeperException()
-        {            
+        {
         }
+
         public NuKeeperException(string message) : base(message)
         {
         }
@@ -15,6 +16,5 @@ namespace NuKeeper.Inspection
         public NuKeeperException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
     }
 }
