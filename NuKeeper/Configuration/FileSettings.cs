@@ -1,5 +1,6 @@
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 
 namespace NuKeeper.Configuration
 {
@@ -23,6 +24,9 @@ namespace NuKeeper.Configuration
         public int? MaxRepo { get; set; }
 
         public bool? Consolidate { get; set; }
+
+        public OutputFormat? OutputFormat { get; set; }
+        public OutputDestination? OutputDestination { get; set; }
 
         public static FileSettings Empty()
         {
