@@ -225,7 +225,7 @@ namespace NuKeeper.Tests.Engine
             var sources = Substitute.For<INuGetSourcesReader>();
             var updateFinder = Substitute.For<IUpdateFinder>();
             var fileRestore = Substitute.For<IFileRestoreCommand>();
-            var reporter = Substitute.For<IAvailableUpdatesReporter>();
+            var reporter = Substitute.For<IReporter>();
 
             updateFinder.FindPackageUpdateSets(
                     Arg.Any<IFolder>(),

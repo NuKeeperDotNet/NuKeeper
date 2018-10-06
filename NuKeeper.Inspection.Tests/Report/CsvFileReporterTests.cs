@@ -93,9 +93,9 @@ namespace NuKeeper.Inspection.Tests.Report
             streamSource.GetStream(Arg.Any<string>())
                 .Returns(writer);
 
-            var reporter = new CsvFileReporter(streamSource, Substitute.For<INuKeeperLogger>());
+            var reporter = new CsvReportFormat(streamSource, Substitute.For<INuKeeperLogger>());
 
-            reporter.Report("test", rows);
+            reporter.Write("test", rows);
 
             return StreamToString(memoryStream);
         }

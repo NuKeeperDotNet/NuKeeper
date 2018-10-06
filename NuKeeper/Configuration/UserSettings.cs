@@ -18,7 +18,8 @@ namespace NuKeeper.Configuration
 
         public ForkMode ForkMode { get; set; }
 
-        public ReportMode ReportMode { get; set; }
+        public OutputFormat OutputFormat { get; set; }
+        public OutputDestination OutputDestination { get; set; }
 
         public string Directory { get; set; }
     }

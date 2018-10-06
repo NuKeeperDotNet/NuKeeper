@@ -6,18 +6,25 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class ConsoleReporter : IAvailableUpdatesReporter
+    public class PlainTextReportFormat : IReportFormat
     {
-        public void Report(string name, IReadOnlyCollection<PackageUpdateSet> updates)
+        private readonly IReportWriter _writer;
+
+        public PlainTextReportFormat(IReportWriter writer)
         {
-            Console.WriteLine();
-            Console.WriteLine(MessageForCount(updates.Count));
-            Console.WriteLine(MessageForAgeSum(updates));
-            Console.WriteLine();
+            _writer = writer;
+        }
+
+        public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            _writer.WriteLine();
+            _writer.WriteLine(MessageForCount(updates.Count));
+            _writer.WriteLine(MessageForAgeSum(updates));
+            _writer.WriteLine();
 
             foreach (var update in updates)
             {
-                Console.WriteLine(Describe(update));
+                _writer.WriteLine(Describe(update));
             }
         }
 
@@ -27,7 +34,7 @@ namespace NuKeeper.Inspection.Report
             {
                 return "Found no package updates";
             }
-            else if (count == 1)
+            if (count == 1)
             {
                 return "Found 1 package update";
             }
@@ -47,9 +54,9 @@ namespace NuKeeper.Inspection.Report
             return result;
         }
 
-        public string Describe(PackageUpdateSet update)
+        public static string Describe(PackageUpdateSet update)
         {
-            var occurences = update.CurrentPackages.Count;
+            var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
                 .Select(p => p.Version)
                 .ToList();
@@ -74,9 +81,9 @@ namespace NuKeeper.Inspection.Report
                 ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
             }
 
-            var optS = occurences > 1 ? "s" : string.Empty;
+            var optS = occurrences > 1 ? "s" : string.Empty;
 
-            return  $"{update.SelectedId} to {update.SelectedVersion} from {versionInUse} in {occurences} place{optS} since {ago}.";
+            return  $"{update.SelectedId} to {update.SelectedVersion} from {versionInUse} in {occurrences} place{optS} since {ago}.";
         }
     }
 }

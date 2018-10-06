@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Formats;
@@ -9,37 +8,33 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class CsvFileReporter: IAvailableUpdatesReporter
+    public class CsvReportFormat: IReportFormat
     {
-        private readonly IReportStreamSource _reportStreamSource;
+        private readonly IReportWriter _writer;
         private readonly INuKeeperLogger _logger;
 
-        public CsvFileReporter(IReportStreamSource reportStreamSource, INuKeeperLogger logger)
+        public CsvReportFormat(IReportWriter writer, INuKeeperLogger logger)
         {
-            _reportStreamSource = reportStreamSource;
+            _writer = writer;
             _logger = logger;
         }
 
-        public void Report(string name, IReadOnlyCollection<PackageUpdateSet> updates)
+        public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            using (var writer = _reportStreamSource.GetStream(name))
+            _logger.Detailed($"writing {updates.Count} lines to report");
+            WriteHeading();
+
+            foreach (var update in updates)
             {
-                _logger.Detailed($"writing {updates.Count} lines to report");
-                WriteHeading(writer);
-
-                foreach (var update in updates)
-                {
-                    WriteLine(writer, update);
-                }
-
-                writer.Close();
-                _logger.Detailed("Report written");
+                WriteLine(update);
             }
+
+            _logger.Detailed("Write written");
         }
 
-        private void WriteHeading(StreamWriter writer)
+        private void WriteHeading()
         {
-            writer.WriteLine(
+            _writer.WriteLine(
                 "Package id,Package source," +
                 "Usage count,Versions in use,Lowest version in use,Highest Version in use," +
                 "Major version update,Major published date," +
@@ -48,9 +43,9 @@ namespace NuKeeper.Inspection.Report
                 );
         }
 
-        private void WriteLine(StreamWriter writer, PackageUpdateSet update)
+        private void WriteLine(PackageUpdateSet update)
         {
-            var occurences = update.CurrentPackages.Count;
+            var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
                 .Select(p => p.Version)
                 .ToList();
@@ -64,9 +59,9 @@ namespace NuKeeper.Inspection.Report
             var minorData = PackageVersionAndDate(lowest, update.Packages.Minor);
             var patchData = PackageVersionAndDate(lowest, update.Packages.Patch);
 
-            writer.WriteLine(
+            _writer.WriteLine(
                 $"{update.SelectedId},{packageSource}," +
-                $"{occurences},{update.CountCurrentVersions()},{lowest},{highest}," +
+                $"{occurrences},{update.CountCurrentVersions()},{lowest},{highest}," +
                 $"{majorData},{minorData},{patchData}");
         }
 
