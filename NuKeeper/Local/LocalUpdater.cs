@@ -62,7 +62,7 @@ namespace NuKeeper.Local
 
             foreach (var update in updates)
             {
-                _logger.Minimal("Updating " + PlainTextReportFormat.Describe(update));
+                _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
                 await _updateRunner.Update(update, sources);
             }

@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
@@ -24,7 +21,7 @@ namespace NuKeeper.Inspection.Report
 
             foreach (var update in updates)
             {
-                _writer.WriteLine(Describe(update));
+                _writer.WriteLine(Description.ForUpdateSet(update));
             }
         }
 
@@ -52,38 +49,6 @@ namespace NuKeeper.Inspection.Report
              $" Days: {totalAge:%d}\n" +
              $" LibYears: {years:0.0}";
             return result;
-        }
-
-        public static string Describe(PackageUpdateSet update)
-        {
-            var occurrences = update.CurrentPackages.Count;
-            var versionsInUse = update.CurrentPackages
-                .Select(p => p.Version)
-                .ToList();
-
-            var lowest = versionsInUse.Min();
-            var highest = versionsInUse.Max();
-
-            string versionInUse;
-            if (lowest == highest)
-            {
-                versionInUse = highest.ToString();
-            }
-            else
-            {
-                versionInUse = $"{lowest} - {highest}";
-            }
-
-            var ago = "?";
-            if (update.Selected.Published.HasValue)
-            {
-                var pubDate = update.Selected.Published.Value.UtcDateTime;
-                ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
-            }
-
-            var optS = occurrences > 1 ? "s" : string.Empty;
-
-            return  $"{update.SelectedId} to {update.SelectedVersion} from {versionInUse} in {occurrences} place{optS} since {ago}.";
         }
     }
 }
