@@ -20,7 +20,7 @@ namespace NuKeeper.Engine
 
         public async Task<bool> ContainsDotNetProjects(RepositorySettings repository)
         {
-            var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\" OR \".nfproj\"")
+            var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
                 Repos = new RepositoryCollection {{repository.RepositoryOwner, repository.RepositoryName}},
                 In = new []{CodeInQualifier.Path},
