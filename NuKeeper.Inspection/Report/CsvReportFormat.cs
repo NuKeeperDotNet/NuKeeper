@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Inspection.Formats;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 

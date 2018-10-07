@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using NSubstitute;
-using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -34,7 +29,7 @@ namespace NuKeeper.Inspection.Tests.Report
         [Test]
         public void OneRowHasOutput()
         {
-            var rows = OnePackageUpdateSet();
+            var rows = PackageUpdates.OnePackageUpdateSet();
 
             var output = ReportToString(rows);
 
@@ -68,8 +63,8 @@ namespace NuKeeper.Inspection.Tests.Report
 
             var rows = new List<PackageUpdateSet>
             {
-                UpdateSetFor(package1, MakePackageForV110(package1)),
-                UpdateSetFor(package2, MakePackageForV110(package2))
+                PackageUpdates.UpdateSetFor(package1, PackageUpdates.MakePackageForV110(package1)),
+                PackageUpdates.UpdateSetFor(package2, PackageUpdates.MakePackageForV110(package2))
             };
 
             var output = ReportToString(rows);
@@ -91,33 +86,6 @@ namespace NuKeeper.Inspection.Tests.Report
             reporter.Write("test", rows);
 
             return output.Data();
-        }
-
-        private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)
-        {
-            var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), publishedDate, null);
-
-            var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
-            return new PackageUpdateSet(updates, packages);
-        }
-
-        private static PackageInProject MakePackageForV110(PackageIdentity package)
-        {
-            var path = new PackagePath(
-                OsSpecifics.GenerateBaseDirectory(),
-                Path.Combine("folder", "src", "project1", "packages.config"),
-                PackageReferenceType.PackagesConfig);
-            return new PackageInProject(package.Id, package.Version.ToString(), path);
-        }
-        private static List<PackageUpdateSet> OnePackageUpdateSet()
-        {
-            var package = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-
-            return new List<PackageUpdateSet>
-            {
-                UpdateSetFor(package, MakePackageForV110(package))
-            };
         }
     }
 }
