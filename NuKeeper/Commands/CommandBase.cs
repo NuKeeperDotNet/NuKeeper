@@ -138,7 +138,7 @@ namespace NuKeeper.Commands
 
             settings.UserSettings.OutputFormat =
                 Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
-                    Inspection.Report.OutputFormat.PlainText);
+                    Inspection.Report.OutputFormat.Text);
 
             settings.UserSettings.OutputDestination =
                 Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,

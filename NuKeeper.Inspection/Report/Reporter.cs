@@ -33,8 +33,8 @@ namespace NuKeeper.Inspection.Report
 
             switch (format)
             {
-                case OutputFormat.PlainText:
-                    return new PlainTextReportFormat(target);
+                case OutputFormat.Text:
+                    return new TextReportFormat(target);
 
                 case OutputFormat.Csv:
                     return new CsvReportFormat(target, _logger);

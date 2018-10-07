@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Engine
                 .Select(_ => PackageUpdates.UpdateSet())
                 .ToList();
 
-            var settings = MakeSettings(ReportMode.Off, consolidateUpdates);
+            var settings = MakeSettings(consolidateUpdates);
             
             var (repoUpdater, _) = MakeRepositoryUpdater(
                 updateSelection, updates, packageUpdater);
@@ -155,7 +155,7 @@ namespace NuKeeper.Tests.Engine
             var git = Substitute.For<IGitDriver>();
             var repo = MakeRepositoryData();
 
-            var count = await repoUpdater.Run(git, repo, MakeSettings(ReportMode.ReportOnly));
+            var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(0));
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
@@ -204,14 +204,13 @@ namespace NuKeeper.Tests.Engine
                 .Returns(new List<PackageUpdateSet>());
         }
 
-        private SettingsContainer MakeSettings(ReportMode reportMode = ReportMode.Off, bool consolidateUpdates = false)
+        private SettingsContainer MakeSettings(bool consolidateUpdates = false)
         {
             return new SettingsContainer
             {
                 SourceControlServerSettings = new SourceControlServerSettings(),
                 UserSettings = new UserSettings
                 {
-                    ReportMode = reportMode,
                     ConsolidateUpdatesInSinglePullRequest = consolidateUpdates
                 }
             };

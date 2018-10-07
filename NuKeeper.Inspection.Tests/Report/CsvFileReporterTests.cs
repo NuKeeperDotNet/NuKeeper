@@ -89,10 +89,6 @@ namespace NuKeeper.Inspection.Tests.Report
             var memoryStream = new MemoryStream();
             var writer = new StreamWriter(memoryStream);
 
-            var streamSource = Substitute.For<IReportStreamSource>();
-            streamSource.GetStream(Arg.Any<string>())
-                .Returns(writer);
-
             var reporter = new CsvReportFormat(streamSource, Substitute.For<INuKeeperLogger>());
 
             reporter.Write("test", rows);

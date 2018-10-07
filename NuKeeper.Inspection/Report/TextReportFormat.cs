@@ -3,11 +3,11 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class PlainTextReportFormat : IReportFormat
+    public class TextReportFormat : IReportFormat
     {
         private readonly IReportWriter _writer;
 
-        public PlainTextReportFormat(IReportWriter writer)
+        public TextReportFormat(IReportWriter writer)
         {
             _writer = writer;
         }

@@ -80,7 +80,7 @@ namespace NuKeeper.Local
 
         private void Report(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _reporter.Report(OutputDestination.Console, OutputFormat.PlainText,
+            _reporter.Report(OutputDestination.Console, OutputFormat.Text,
                 "ConsoleReport", updates);
         }
     }
