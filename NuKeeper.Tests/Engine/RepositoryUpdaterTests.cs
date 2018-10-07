@@ -136,31 +136,6 @@ namespace NuKeeper.Tests.Engine
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
         }
 
-        [Test]
-        public async Task WhenReportOnly_CountIsZero()
-        {
-            var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            UpdateSelectionAll(updateSelection);
-
-            var twoUpdates = new List<PackageUpdateSet>
-                {
-                    PackageUpdates.UpdateSet(),
-                    PackageUpdates.UpdateSet()
-                };
-
-            var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
-                updateSelection,
-                twoUpdates);
-
-            var git = Substitute.For<IGitDriver>();
-            var repo = MakeRepositoryData();
-
-            var count = await repoUpdater.Run(git, repo, MakeSettings());
-
-            Assert.That(count, Is.EqualTo(0));
-            await AssertDidNotReceiveMakeUpdate(packageUpdater);
-        }
-
         private async Task AssertReceivedMakeUpdate(
             IPackageUpdater packageUpdater,
             int count)

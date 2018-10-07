@@ -185,6 +185,22 @@ namespace NuKeeper.Tests.Commands
                 .Initialise(LogLevel.Minimal, null);
         }
 
+        [Test]
+        public async Task ShouldSetOutputOptionsFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                OutputDestination = OutputDestination.File,
+                OutputFormat = OutputFormat.Csv
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+        }
+
         public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
         {
             var logger = Substitute.For<IConfigureLogger>();

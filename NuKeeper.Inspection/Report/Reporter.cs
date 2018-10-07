@@ -20,9 +20,12 @@ namespace NuKeeper.Inspection.Report
             string name,
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _logger.Detailed($"Output mode is {format} to {destination}");
+            _logger.Detailed($"Output report mode is {format} to {destination}");
+
             var reporter = MakeReporter(format, destination);
             reporter.Write(name, updates);
+
+            _logger.Detailed($"Wrote report for {updates.Count} updates");
         }
 
         private IReportFormat MakeReporter(
@@ -37,7 +40,7 @@ namespace NuKeeper.Inspection.Report
                     return new TextReportFormat(target);
 
                 case OutputFormat.Csv:
-                    return new CsvReportFormat(target, _logger);
+                    return new CsvReportFormat(target);
 
                 default:
                     throw new ArgumentOutOfRangeException($"Invalid OutputFormat: {format}");

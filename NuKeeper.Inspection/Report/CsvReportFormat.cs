@@ -11,25 +11,20 @@ namespace NuKeeper.Inspection.Report
     public class CsvReportFormat: IReportFormat
     {
         private readonly IReportWriter _writer;
-        private readonly INuKeeperLogger _logger;
 
-        public CsvReportFormat(IReportWriter writer, INuKeeperLogger logger)
+        public CsvReportFormat(IReportWriter writer)
         {
             _writer = writer;
-            _logger = logger;
         }
 
         public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _logger.Detailed($"writing {updates.Count} lines to report");
             WriteHeading();
 
             foreach (var update in updates)
             {
                 WriteLine(update);
             }
-
-            _logger.Detailed("Write written");
         }
 
         private void WriteHeading()

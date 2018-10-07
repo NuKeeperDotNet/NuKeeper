@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -15,31 +14,8 @@ using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.Report
 {
-    public class TestReportWriter : IReportWriter
-    {
-        private StringBuilder _data = new StringBuilder();
-
-        public TestReportWriter()
-        {
-        }
-
-        public void Close()
-        {
-        }
-
-        public void WriteLine(string value = "")
-        {
-            _data.AppendLine(value);
-        }
-
-        public string Data()
-        {
-            return _data.ToString();
-        }
-    }
-
     [TestFixture]
-    public class CsvFileReporterTests
+    public class CsvReportFormatTests
     {
         [Test]
         public void NoRowsHasHeaderLineInOutput()
@@ -111,7 +87,7 @@ namespace NuKeeper.Inspection.Tests.Report
         {
             var output = new TestReportWriter();
 
-            var reporter = new CsvReportFormat(output, Substitute.For<INuKeeperLogger>());
+            var reporter = new CsvReportFormat(output);
             reporter.Write("test", rows);
 
             return output.Data();
