@@ -15,6 +15,29 @@ using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.Report
 {
+    public class TestReportWriter : IReportWriter
+    {
+        private StringBuilder _data = new StringBuilder();
+
+        public TestReportWriter()
+        {
+        }
+
+        public void Close()
+        {
+        }
+
+        public void WriteLine(string value = "")
+        {
+            _data.AppendLine(value);
+        }
+
+        public string Data()
+        {
+            return _data.ToString();
+        }
+    }
+
     [TestFixture]
     public class CsvFileReporterTests
     {
@@ -86,20 +109,12 @@ namespace NuKeeper.Inspection.Tests.Report
 
         private static string ReportToString(List<PackageUpdateSet> rows)
         {
-            var memoryStream = new MemoryStream();
-            var writer = new StreamWriter(memoryStream);
+            var output = new TestReportWriter();
 
-            var reporter = new CsvReportFormat(streamSource, Substitute.For<INuKeeperLogger>());
-
+            var reporter = new CsvReportFormat(output, Substitute.For<INuKeeperLogger>());
             reporter.Write("test", rows);
 
-            return StreamToString(memoryStream);
-        }
-
-        private static string StreamToString(MemoryStream memoryStream)
-        {
-            var data = Encoding.UTF8.GetString(memoryStream.ToArray());
-            return data.Trim();
+            return output.Data();
         }
 
         private static PackageUpdateSet UpdateSetFor(PackageIdentity package, params PackageInProject[] packages)

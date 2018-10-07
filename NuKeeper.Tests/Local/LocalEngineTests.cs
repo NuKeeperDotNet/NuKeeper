@@ -6,6 +6,7 @@ using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Sources;
@@ -86,7 +87,10 @@ namespace NuKeeper.Tests.Local
 
             var logger = Substitute.For<INuKeeperLogger>();
 
-            var engine = new LocalEngine(reader, finder, sorter, updater, logger);
+            var reporter = Substitute.For<IReporter>();
+
+            var engine = new LocalEngine(reader, finder, sorter, updater,
+                reporter, logger);
             Assert.That(engine, Is.Not.Null);
             return engine;
         }
