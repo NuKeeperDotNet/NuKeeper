@@ -201,7 +201,20 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        [Test]
+        public async Task ShouldSetOutputOptionsFromCommand()
+        {
+            var settingsOut = await CaptureSettings(FileSettings.Empty(),
+                OutputDestination.File,
+                OutputFormat.Csv);
+
+            Assert.That(settingsOut.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
+            Assert.That(settingsOut.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+        }
+
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            OutputDestination? outputDestination =null,
+            OutputFormat? outputFormat = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -214,6 +227,15 @@ namespace NuKeeper.Tests.Commands
             fileSettings.Get().Returns(settingsIn);
 
             var command = new InspectCommand(engine, logger, fileSettings);
+
+            if (outputDestination.HasValue)
+            {
+                command.OutputDestination = outputDestination.Value;
+            }
+            if (outputFormat.HasValue)
+            {
+                command.OutputFormat = outputFormat.Value;
+            }
 
             await command.OnExecute();
 
