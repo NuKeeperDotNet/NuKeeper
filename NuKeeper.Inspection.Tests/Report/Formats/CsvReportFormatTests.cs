@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Inspection.Tests.Report
+namespace NuKeeper.Inspection.Tests.Report.Formats
 {
     [TestFixture]
     public class CsvReportFormatTests

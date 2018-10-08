@@ -5,7 +5,7 @@ using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
-namespace NuKeeper.Inspection.Tests.Report
+namespace NuKeeper.Inspection.Tests.Report.Formats
 {
     [TestFixture]
     public class ReportFormatTests
