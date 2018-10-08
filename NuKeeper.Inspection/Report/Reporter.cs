@@ -36,11 +36,17 @@ namespace NuKeeper.Inspection.Report
 
             switch (format)
             {
+                case OutputFormat.None:
+                    return new NullReportFormat(target);
+
                 case OutputFormat.Text:
                     return new TextReportFormat(target);
 
                 case OutputFormat.Csv:
                     return new CsvReportFormat(target);
+
+                case OutputFormat.LibYears:
+                    return new LibYearsReportFormat(target);
 
                 default:
                     throw new ArgumentOutOfRangeException($"Invalid OutputFormat: {format}");

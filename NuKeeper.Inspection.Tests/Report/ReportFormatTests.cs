@@ -9,7 +9,7 @@ namespace NuKeeper.Inspection.Tests.Report
     [TestFixture]
     public class ReportFormatTests
     {
-        [Test, TestCaseSource("AllReportFormats")]
+        [Test, TestCaseSource(nameof(AllReportFormats))]
         public void EmptyUpdateListCanBeWritten(Type reportType)
         {
             var rows = new List<PackageUpdateSet>();
@@ -19,7 +19,7 @@ namespace NuKeeper.Inspection.Tests.Report
             Assert.That(outData, Is.Not.Null);
         }
 
-        [Test, TestCaseSource("AllReportFormats")]
+        [Test, TestCaseSource(nameof(AllReportFormats))]
         public void OneUpdateInListCanBeWritten(Type reportType)
         {
             var rows = PackageUpdates.OnePackageUpdateSet();
@@ -29,7 +29,7 @@ namespace NuKeeper.Inspection.Tests.Report
             Assert.That(outData, Is.Not.Null);
         }
 
-        [Test, TestCaseSource("AllReportFormats")]
+        [Test, TestCaseSource(nameof(AllReportFormats))]
         public void MultipleUpdatesInListCanBeWritten(Type reportType)
         {
             var rows = PackageUpdates.PackageUpdateSets(5);
@@ -43,8 +43,10 @@ namespace NuKeeper.Inspection.Tests.Report
         {
             return new[]
             {
+                typeof(NullReportFormat),
                 typeof(TextReportFormat),
-                typeof(CsvReportFormat)
+                typeof(CsvReportFormat),
+                typeof(LibYearsReportFormat)
             };
         }
 
