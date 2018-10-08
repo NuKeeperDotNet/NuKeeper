@@ -3,7 +3,7 @@ using System.Linq;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Inspection.Report
+namespace NuKeeper.Inspection.Report.Formats
 {
     public static class Description
     {

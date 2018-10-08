@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NuKeeper.Inspection.Logging;
+using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report

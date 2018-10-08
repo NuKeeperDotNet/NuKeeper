@@ -5,7 +5,7 @@ using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Inspection.Report
+namespace NuKeeper.Inspection.Report.Formats
 {
     public class CsvReportFormat: IReportFormat
     {

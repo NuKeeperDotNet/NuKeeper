@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NuKeeper.Inspection.RepositoryInspection;
 
-namespace NuKeeper.Inspection.Report
+namespace NuKeeper.Inspection.Report.Formats
 {
     public interface IReportFormat
     {
