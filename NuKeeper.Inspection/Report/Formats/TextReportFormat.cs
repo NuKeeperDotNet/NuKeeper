@@ -14,9 +14,7 @@ namespace NuKeeper.Inspection.Report.Formats
 
         public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _writer.WriteLine();
             _writer.WriteLine(MessageForCount(updates.Count));
-            _writer.WriteLine();
 
             foreach (var update in updates)
             {
