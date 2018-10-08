@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report.Formats
@@ -18,8 +19,20 @@ namespace NuKeeper.Inspection.Report.Formats
 
             // todo: count major, minor and patch updates
 
+            WriteProjectCount(updates);
             WriteLibYears(updates);
             _writer.Close();
+        }
+
+        private void WriteProjectCount(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            var projectCount = updates
+                .SelectMany(p => p.CurrentPackages)
+                .Select(c => c.Path.FullName)
+                .Distinct()
+                .Count();
+
+            _writer.WriteLine($"Projects: {projectCount}");
         }
 
         private void WriteLibYears(IReadOnlyCollection<PackageUpdateSet> updates)
