@@ -16,7 +16,6 @@ namespace NuKeeper.Inspection.Report
         {
             _writer.WriteLine();
             _writer.WriteLine(MessageForCount(updates.Count));
-            _writer.WriteLine(MessageForAgeSum(updates));
             _writer.WriteLine();
 
             foreach (var update in updates)
@@ -39,18 +38,6 @@ namespace NuKeeper.Inspection.Report
             }
 
             return $"Found {count} package updates";
-        }
-
-        private string MessageForAgeSum(IReadOnlyCollection<PackageUpdateSet> updates)
-        {
-            var totalAge = Age.Sum(updates);
-            var years = totalAge.TotalDays / 365;
-
-            var result =
-             "Total package age:\n" +
-             $" Days: {totalAge:%d}\n" +
-             $" LibYears: {years:0.0}";
-            return result;
         }
     }
 }
