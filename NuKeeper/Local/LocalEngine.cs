@@ -47,7 +47,7 @@ namespace NuKeeper.Local
 
             var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
 
-            Report(sortedUpdates);
+            Report(settings.UserSettings, sortedUpdates);
 
             if (write)
             {
@@ -78,9 +78,12 @@ namespace NuKeeper.Local
             return new Folder(_logger, new DirectoryInfo(dir));
         }
 
-        private void Report(IReadOnlyCollection<PackageUpdateSet> updates)
+        private void Report(
+            UserSettings settings,
+            IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _reporter.Report(OutputDestination.Console, OutputFormat.Text,
+            _reporter.Report(
+                settings.OutputDestination, settings.OutputFormat,
                 "ConsoleReport", updates);
         }
     }
