@@ -5,7 +5,9 @@ namespace NuKeeper.Inspection.Tests.Report
 {
     public class TestReportWriter : IReportWriter
     {
-        private StringBuilder _data = new StringBuilder();
+        private readonly StringBuilder _data = new StringBuilder();
+
+        public int CloseCallCount { get; private set; }
 
         public TestReportWriter()
         {
@@ -13,6 +15,7 @@ namespace NuKeeper.Inspection.Tests.Report
 
         public void Close()
         {
+            CloseCallCount++;
         }
 
         public void WriteLine(string value = "")

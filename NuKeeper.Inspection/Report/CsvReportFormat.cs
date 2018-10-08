@@ -24,6 +24,8 @@ namespace NuKeeper.Inspection.Report
             {
                 WriteLine(update);
             }
+
+            _writer.Close();
         }
 
         private void WriteHeading()

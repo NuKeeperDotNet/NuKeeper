@@ -55,13 +55,15 @@ namespace NuKeeper.Inspection.Tests.Report
             var reporter = MakeInstance(reportType, output);
             reporter.Write("test", rows);
 
+            Assert.That(output.CloseCallCount, Is.EqualTo(1));
+
             return output.Data();
         }
 
-        private static IReportFormat MakeInstance(Type reportType, TestReportWriter output)
+        private static IReportFormat MakeInstance(Type reportType, IReportWriter writer)
         {
-            var ctor = reportType.GetConstructor(new Type[] { typeof(IReportWriter) } );
-            return (IReportFormat)ctor.Invoke(new object[] { output } );
+            var ctor = reportType.GetConstructor(new [] { typeof(IReportWriter) } );
+            return (IReportFormat)ctor.Invoke(new object[] { writer } );
         }
     }
 }

@@ -23,6 +23,8 @@ namespace NuKeeper.Inspection.Report
             {
                 _writer.WriteLine(Description.ForUpdateSet(update));
             }
+
+            _writer.Close();
         }
 
         private string MessageForCount(int count)
