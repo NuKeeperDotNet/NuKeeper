@@ -46,6 +46,7 @@ namespace NuKeeper.Inspection.Tests.Report
                 typeof(NullReportFormat),
                 typeof(TextReportFormat),
                 typeof(CsvReportFormat),
+                typeof(MetricsReportFormat),
                 typeof(LibYearsReportFormat)
             };
         }

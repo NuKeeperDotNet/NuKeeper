@@ -5,6 +5,7 @@ namespace NuKeeper.Inspection.Report
         None,
         Text,
         Csv,
+        Metrics,
         LibYears
     }
 }

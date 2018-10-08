@@ -45,6 +45,9 @@ namespace NuKeeper.Inspection.Report
                 case OutputFormat.Csv:
                     return new CsvReportFormat(target);
 
+                case OutputFormat.Metrics:
+                    return new MetricsReportFormat(target);
+
                 case OutputFormat.LibYears:
                     return new LibYearsReportFormat(target);
 
