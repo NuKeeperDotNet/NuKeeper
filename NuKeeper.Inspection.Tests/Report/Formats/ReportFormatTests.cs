@@ -28,6 +28,7 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
             var outData = ReportToString(reportType, rows);
 
             Assert.That(outData, Is.Not.Null);
+            AssertExpectedEmpty(reportType, outData);
         }
 
         [Test, TestCaseSource(nameof(AllReportFormats))]
@@ -38,6 +39,21 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
             var outData = ReportToString(reportType, rows);
 
             Assert.That(outData, Is.Not.Null);
+
+            AssertExpectedEmpty(reportType, outData);
+        }
+
+        private static void AssertExpectedEmpty(Type reportType, string outData)
+        {
+            var expectEmpty = reportType == typeof(NullReportFormat);
+            if (expectEmpty)
+            {
+                Assert.That(outData, Is.Empty);
+            }
+            else
+            {
+                Assert.That(outData, Is.Not.Empty);
+            }
         }
 
         public static Type[] AllReportFormats()
