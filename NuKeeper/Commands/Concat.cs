@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace NuKeeper.Commands
 
         public static T FirstValue<T>(params T?[] values) where T: struct 
         {
-            return values.FirstOrDefault(i => i.HasValue) ?? default(T);
+            return values.FirstOrDefault(i => i.HasValue) ?? default;
         }
 
         public static IReadOnlyCollection<string> FirstPopulatedList(string[] list1, string[] list2, string[] list3)
@@ -38,7 +39,7 @@ namespace NuKeeper.Commands
                 return list3;
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         private static bool HasElements(string[] strings)

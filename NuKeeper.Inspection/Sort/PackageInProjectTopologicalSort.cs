@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.Sort
             return a.Path.FullName == b.Path.FullName;
         }
 
-        private IReadOnlyCollection<PackageInProject> ProjectDeps(PackageInProject selected,
+        private static IReadOnlyCollection<PackageInProject> ProjectDeps(PackageInProject selected,
             IReadOnlyCollection<PackageInProject> all)
         {
             var deps = selected.ProjectReferences;

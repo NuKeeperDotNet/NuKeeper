@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +24,9 @@ namespace NuKeeper.Update.Process
             {
                 using (var projectContents = File.Open(currentProject, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    var projectsToCheck = await UpdateConditionsOnProjects(projectContents);
+                    var projectsToCheck = await UpdateConditionsOnProjects(projectContents)
+                        .ConfigureAwait(false);
+
                     foreach (var potentialProject in projectsToCheck)
                     {
                         var fullPath =
@@ -37,7 +40,7 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        private async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
+        private static async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
@@ -51,7 +54,9 @@ namespace NuKeeper.Update.Process
 
             var imports = project.Elements(ns + "Import");
             var importsWithToolsPath = imports
-                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)"))).ToList();
+                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)", StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
             var importsWithoutCondition = importsWithToolsPath.Where(i => !i.Attributes("Condition").Any());
             var importsWithBrokenVsToolsCondition = importsWithToolsPath.Where(i =>
                 i.Attributes("Condition").Any(a => a.Value == "\'$(VSToolsPath)\' != \'\'"));
@@ -66,7 +71,8 @@ namespace NuKeeper.Update.Process
             if (saveRequired)
             {
                 fileContents.Seek(0, SeekOrigin.Begin);
-                await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
+                await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None)
+                    .ConfigureAwait(false);
             }
 
             return FindProjectReferences(project, ns);

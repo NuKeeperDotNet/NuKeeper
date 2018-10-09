@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using NuKeeper.Inspection.Files;
@@ -21,7 +23,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .ToList();
         }
 
-        private IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
+        private static IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
             IPackageReferenceFinder packageReferenceFinder)
         {
             var files =  packageReferenceFinder
@@ -37,12 +39,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
                         f.FullName)));
         }
 
-        private string GetRelativeFileName(string rootDir, string fileName)
+        private static string GetRelativeFileName(string rootDir, string fileName)
         {
-            var rootDirWithSeparator = rootDir.EndsWith(Path.DirectorySeparatorChar.ToString())
+            var separatorChar = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
+            var rootDirWithSeparator = rootDir.EndsWith(separatorChar, StringComparison.OrdinalIgnoreCase)
                 ? rootDir
                 : rootDir + Path.DirectorySeparatorChar;
-            return fileName.Replace(rootDirWithSeparator, string.Empty);
+            return fileName.Replace(rootDirWithSeparator, string.Empty, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

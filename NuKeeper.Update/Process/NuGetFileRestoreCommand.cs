@@ -48,7 +48,9 @@ namespace NuKeeper.Update.Process
 
             var restoreCommand = $"restore {file.Name} {sourcesCommandLine}";
 
-            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget, restoreCommand, ensureSuccess: false);
+            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget,
+                restoreCommand, ensureSuccess: false)
+                .ConfigureAwait(false);
 
             if (processOutput.Success)
             {
@@ -63,7 +65,8 @@ namespace NuKeeper.Update.Process
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
-            await Invoke(currentPackage.Path.Info, allSources);
+            await Invoke(currentPackage.Path.Info, allSources)
+                .ConfigureAwait(false);
         }
     }
 }

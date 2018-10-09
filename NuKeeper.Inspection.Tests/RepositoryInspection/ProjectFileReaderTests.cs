@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -115,7 +116,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [Test]
         public void ProjectWithEmptyPackageListCanBeRead()
         {
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", "");
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", "", StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -129,7 +130,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -143,7 +144,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -161,7 +162,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -178,10 +179,10 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var relativePath = $"..{Path.DirectorySeparatorChar}other{Path.DirectorySeparatorChar}other.csproj";
-            projectFile = projectFile.Replace("other.csproj", relativePath);
+            projectFile = projectFile.Replace("other.csproj", relativePath, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -201,7 +202,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             const string packagesText = @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile);
@@ -233,7 +234,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
                   <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
@@ -252,7 +253,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 @"<PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
                   <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
@@ -287,7 +288,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 @"<PackageReference Include=""foo"" Version=""notaversion""></PackageReference>
                   <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
@@ -303,7 +304,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             const string noVersion =
                 @"<PackageReference Include=""Microsoft.AspNetCore.App"" />";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion, StringComparison.OrdinalIgnoreCase);
 
 
             var reader = MakeReader();
@@ -319,7 +320,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             const string noVersion =
                 @"<PackageReference Include=""AWSSDK.Core"" Version=""3.3.*"" />";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion, StringComparison.OrdinalIgnoreCase);
 
 
             var reader = MakeReader();
@@ -335,7 +336,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             const string noVersion =
                 @"<PackageReference Include=""foo"" Version=""2.0.0-beta01"" />";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion, StringComparison.OrdinalIgnoreCase);
 
 
             var reader = MakeReader();
@@ -352,7 +353,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             const string noVersion =
                 @"<PackageReference Include=""NuGet.Protocol"" Version=""4.7.0+9245481f357ae542f92e6bc5e504fc898cfe5fc0"" />";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion, StringComparison.OrdinalIgnoreCase);
 
 
             var reader = MakeReader();
@@ -369,7 +370,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             const string noVersion =
                 @"<PackageReference Include=""foo""><Version>15.0.26606</Version><ExcludeAssets>all</ExcludeAssets></PackageReference>";
 
-            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion);
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", noVersion, StringComparison.OrdinalIgnoreCase);
 
 
             var reader = MakeReader();
@@ -380,12 +381,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private ProjectFileReader MakeReader()
+        private static ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());
         }
 
-        private Stream StreamFromString(string contents)
+        private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using NuKeeper.Inspection.Logging;
@@ -28,7 +29,7 @@ namespace NuKeeper.Inspection.Files
 
         private static string GetUniqueTemporaryPath()
         {
-            var uniqueName = Guid.NewGuid().ToString("N");
+            var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
             return Path.Combine(NuKeeperTempFilesPath(), uniqueName);
         }
 

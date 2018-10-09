@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -115,7 +116,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [Test]
         public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
         {
-            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion");
+            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(badVersion), TempPath())
@@ -125,7 +126,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private PackagePath TempPath()
+        private static PackagePath TempPath()
         {
             return new PackagePath(
                 OsSpecifics.GenerateBaseDirectory(),
@@ -133,12 +134,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 PackageReferenceType.Nuspec);
         }
 
-        private NuspecFileReader MakeReader()
+        private static NuspecFileReader MakeReader()
         {
             return new NuspecFileReader(Substitute.For<INuKeeperLogger>());
         }
 
-        private Stream StreamFromString(string contents)
+        private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }

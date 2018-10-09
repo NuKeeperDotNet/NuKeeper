@@ -45,7 +45,8 @@ namespace NuKeeper.Inspection
 
             // look for updates to these packages
             var updates = await _packageUpdatesLookup.FindUpdatesForPackages(
-                packages, sources, allowedChange);
+                packages, sources, allowedChange)
+                .ConfigureAwait(false);
 
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;

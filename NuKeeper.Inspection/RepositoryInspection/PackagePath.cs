@@ -10,12 +10,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
         {
             if (string.IsNullOrWhiteSpace(baseDirectory))
             {
-                throw new ArgumentException(nameof(baseDirectory));
+                throw new ArgumentException("base directory is required", nameof(baseDirectory));
             }
 
             if (string.IsNullOrWhiteSpace(relativePath))
             {
-                throw new ArgumentException(nameof(relativePath));
+                throw new ArgumentException("relative path is required", nameof(relativePath));
             }
 
             if (relativePath[0] == Path.DirectorySeparatorChar)
