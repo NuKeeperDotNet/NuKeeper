@@ -35,7 +35,7 @@ namespace NuKeeper.Update.ProcessRunner
                     throw;
                 }
 
-                var message = $"LogError starting external process for {command}: {ex.GetType().Name} {ex.Message}";
+                var message = $"Error starting external process for {command}: {ex.GetType().Name} {ex.Message}";
                 return new ProcessOutput(string.Empty, message, 1);
             }
 
