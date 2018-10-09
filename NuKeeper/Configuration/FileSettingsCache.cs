@@ -23,7 +23,7 @@ namespace NuKeeper.Configuration
             return _settings;
         }
 
-        private string GetFolder()
+        private static string GetFolder()
         {
             return Directory.GetCurrentDirectory();
         }

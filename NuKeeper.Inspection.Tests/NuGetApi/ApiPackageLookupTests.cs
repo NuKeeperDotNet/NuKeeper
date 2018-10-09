@@ -130,7 +130,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             return allVersions;
         }
 
-        private PackageIdentity CurrentVersion123(string packageId)
+        private static PackageIdentity CurrentVersion123(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
         }

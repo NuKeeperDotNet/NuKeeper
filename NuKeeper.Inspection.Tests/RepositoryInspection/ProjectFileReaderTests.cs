@@ -386,7 +386,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());
         }
 
-        private Stream StreamFromString(string contents)
+        private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }

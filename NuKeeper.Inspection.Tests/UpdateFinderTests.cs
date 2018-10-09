@@ -97,7 +97,8 @@ namespace NuKeeper.Inspection.Tests
 
             logger
                 .Received(1)
-                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'")));
+                .Error(Arg.Is<string>(
+                    s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'", StringComparison.OrdinalIgnoreCase)));
         }
 
         [Test]
@@ -128,10 +129,10 @@ namespace NuKeeper.Inspection.Tests
 
             logger
                 .Received(1)
-                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'")));
+                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.App'", StringComparison.OrdinalIgnoreCase)));
             logger
                 .Received(1)
-                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.All'")));
+                .Error(Arg.Is<string>(s => s.StartsWith("Metapackage 'Microsoft.AspNetCore.All'", StringComparison.OrdinalIgnoreCase)));
         }
 
         private void ReturnsUpdateSetForEachPackage(IPackageUpdatesLookup updater)

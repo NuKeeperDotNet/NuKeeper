@@ -140,12 +140,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 PackageReferenceType.PackagesConfig);
         }
 
-        private PackagesFileReader MakeReader()
+        private static PackagesFileReader MakeReader()
         {
             return new PackagesFileReader(Substitute.For<INuKeeperLogger>());
         }
 
-        private Stream StreamFromString(string contents)
+        private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }

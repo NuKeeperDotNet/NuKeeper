@@ -134,12 +134,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 PackageReferenceType.Nuspec);
         }
 
-        private NuspecFileReader MakeReader()
+        private static NuspecFileReader MakeReader()
         {
             return new NuspecFileReader(Substitute.For<INuKeeperLogger>());
         }
 
-        private Stream StreamFromString(string contents)
+        private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
         }

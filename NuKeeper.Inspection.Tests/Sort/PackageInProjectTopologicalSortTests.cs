@@ -116,7 +116,8 @@ namespace NuKeeper.Inspection.Tests.Sort
             Assert.That(sorted[0], Is.EqualTo(testProj));
             Assert.That(sorted[1], Is.EqualTo(aProj));
 
-            logger.Received(1).Detailed(Arg.Is<string>(s => s.StartsWith("Resorted 2 projects by dependencies,")));
+            logger.Received(1).Detailed(Arg.Is<string>(s =>
+                s.StartsWith("Resorted 2 projects by dependencies,", StringComparison.OrdinalIgnoreCase)));
         }
 
         [Test]
@@ -141,7 +142,8 @@ namespace NuKeeper.Inspection.Tests.Sort
                 .ToList();
 
             AssertIsASortOf(sorted, items);
-            logger.Received(1).Minimal(Arg.Is<string>(s => s.StartsWith("Cannot sort by dependencies, cycle found at item")));
+            logger.Received(1).Minimal(Arg.Is<string>(
+                s => s.StartsWith("Cannot sort by dependencies, cycle found at item", StringComparison.OrdinalIgnoreCase)));
         }
 
         private static void AssertIsASortOf(List<PackageInProject> sorted, List<PackageInProject> original)

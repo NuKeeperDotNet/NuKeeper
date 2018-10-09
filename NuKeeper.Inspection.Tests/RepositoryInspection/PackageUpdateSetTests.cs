@@ -235,7 +235,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(updates.CountCurrentVersions(), Is.EqualTo(2));
         }
 
-        private PackageIdentity LatestVersionOfPackageFoo()
+        private static PackageIdentity LatestVersionOfPackageFoo()
         {
             return new PackageIdentity("foo", new NuGetVersion("1.2.3"));
         }
@@ -247,17 +247,17 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
                 _source, DateTimeOffset.Now, null);
         }
 
-        private NuGetVersion VersionFour()
+        private static NuGetVersion VersionFour()
         {
             return new NuGetVersion("4.0.0");
         }
 
-        private PackagePath PathToProjectOne()
+        private static PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
         }
 
-        private PackagePath PathToProjectTwo()
+        private static PackagePath PathToProjectTwo()
         {
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
