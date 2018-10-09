@@ -25,7 +25,7 @@ namespace NuKeeper.Configuration
             }
 
             var repoOwner = pathParts[0];
-            var repoName = pathParts[1].Replace(".git", string.Empty);
+            var repoName = pathParts[1].Replace(".git", string.Empty, StringComparison.OrdinalIgnoreCase);
 
             return new RepositorySettings
                 {
@@ -44,7 +44,7 @@ namespace NuKeeper.Configuration
 
             var path = uri.ToString();
 
-            if (path.EndsWith("/"))
+            if (path.EndsWith("/", StringComparison.OrdinalIgnoreCase))
             {
                 return uri;
             }

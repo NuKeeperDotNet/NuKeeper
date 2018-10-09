@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [TestCase("C:{sep}Code{sep}NuKeeper{sep}NuKeeper{sep}Packages.cs")]
         public void ShouldBeIncluded(string pathTemplate)
         {
-            var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}");
+            var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
             var actual = DirectoryExclusions.PathIsExcluded(path);
             Assert.That(actual, Is.False);
         }
@@ -25,7 +26,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [TestCase("C:{sep}Code{sep}NuKeeper{sep}.git{sep}config")]
         public void ShouldBeExcluded(string pathTemplate)
         {
-            var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}");
+            var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
 
             var actual = DirectoryExclusions.PathIsExcluded(path);
             Assert.That(actual, Is.True);

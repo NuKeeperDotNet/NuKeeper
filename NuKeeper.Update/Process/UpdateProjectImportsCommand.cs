@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        private async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
+        private static async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
@@ -53,7 +54,7 @@ namespace NuKeeper.Update.Process
 
             var imports = project.Elements(ns + "Import");
             var importsWithToolsPath = imports
-                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)")))
+                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)", StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
             var importsWithoutCondition = importsWithToolsPath.Where(i => !i.Attributes("Condition").Any());

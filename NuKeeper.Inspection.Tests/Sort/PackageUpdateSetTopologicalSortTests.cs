@@ -172,7 +172,8 @@ namespace NuKeeper.Inspection.Tests.Sort
                 .ToList();
 
             AssertIsASortOf(sorted, items);
-            logger.Received(1).Minimal(Arg.Is<string>(s => s.StartsWith("Cannot sort by dependencies, cycle found at item")));
+            logger.Received(1).Minimal(Arg.Is<string>(
+                s => s.StartsWith("Cannot sort by dependencies, cycle found at item", StringComparison.OrdinalIgnoreCase)));
         }
 
 
@@ -184,7 +185,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             CollectionAssert.AreEquivalent(sorted, original);
         }
 
-        private PackageDependency DependencyOn(PackageUpdateSet package)
+        private static PackageDependency DependencyOn(PackageUpdateSet package)
         {
             return new PackageDependency(package.SelectedId, new VersionRange(package.SelectedVersion));
         }
@@ -206,17 +207,17 @@ namespace NuKeeper.Inspection.Tests.Sort
             return updates;
         }
 
-        private PackagePath PathToProjectOne()
+        private static PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
         }
 
-        private PackagePath PathToProjectTwo()
+        private static PackagePath PathToProjectTwo()
         {
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
+        private static PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
         {
             var upstreams = new List<PackageDependency>();
             if (upstream != null)

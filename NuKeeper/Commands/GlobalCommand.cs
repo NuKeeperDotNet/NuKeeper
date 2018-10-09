@@ -1,3 +1,4 @@
+using System;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
@@ -29,7 +30,7 @@ namespace NuKeeper.Commands
             }
 
             var apiHost = settings.GithubAuthSettings.ApiBase.Host;
-            if (apiHost.EndsWith("github.com"))
+            if (apiHost.EndsWith("github.com", StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Failure("Global mode must not use public github");
             }
