@@ -18,7 +18,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
             if (packages.Selected() == null)
             {
-                throw new ArgumentException(nameof(packages));
+                throw new ArgumentException("packages does not have a selected update", nameof(packages));
             }
 
             Packages = packages;

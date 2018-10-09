@@ -34,7 +34,7 @@ namespace NuKeeper.Inspection.Sort
             return a.SelectedId == b.SelectedId;
         }
 
-        private IReadOnlyCollection<PackageUpdateSet> PackageDeps(PackageUpdateSet set, IReadOnlyCollection<PackageUpdateSet> all)
+        private static IReadOnlyCollection<PackageUpdateSet> PackageDeps(PackageUpdateSet set, IReadOnlyCollection<PackageUpdateSet> all)
         {
             var deps= set.Selected.Dependencies;
             return all.Where(i => deps.Any(d => d.Id == i.SelectedId)).ToList();

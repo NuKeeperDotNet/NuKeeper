@@ -30,7 +30,8 @@ namespace NuKeeper.Inspection.NuGetApi
         {
             var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
 
-            var results = await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(tasks)
+                .ConfigureAwait(false);
 
             return results
                 .SelectMany(r => r)
@@ -44,8 +45,10 @@ namespace NuKeeper.Inspection.NuGetApi
             var sourceRepository = _packageSources.Get(source);
             try
             {
-                var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>();
-                var metadatas = await FindPackage(metadataResource, packageName, includePrerelease);
+                var metadataResource = await sourceRepository.GetResourceAsync<PackageMetadataResource>()
+                    .ConfigureAwait(false);
+                var metadatas = await FindPackage(metadataResource, packageName, includePrerelease)
+                    .ConfigureAwait(false);
                 return metadatas.Select(m => BuildPackageData(source, m));
             }
             catch (Exception ex)
@@ -62,7 +65,8 @@ namespace NuKeeper.Inspection.NuGetApi
             {
                 return await metadataResource
                     .GetMetadataAsync(packageName, includePrerelease, false,
-                        cacheContext, _nuGetLogger, CancellationToken.None);
+                        cacheContext, _nuGetLogger, CancellationToken.None)
+                    .ConfigureAwait(false);
             }
         }
 

@@ -21,13 +21,13 @@ namespace NuKeeper.Inspection.Report
             }
         }
 
-        private string MessageForCount(int count)
+        private static string MessageForCount(int count)
         {
             if (count == 0)
             {
                 return "Found no package updates";
             }
-            else if (count == 1)
+            if (count == 1)
             {
                 return "Found 1 package update";
             }
@@ -35,7 +35,7 @@ namespace NuKeeper.Inspection.Report
             return $"Found {count} package updates";
         }
 
-        private string MessageForAgeSum(IReadOnlyCollection<PackageUpdateSet> updates)
+        private static string MessageForAgeSum(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var totalAge = Age.Sum(updates);
             var years = totalAge.TotalDays / 365;
@@ -49,7 +49,7 @@ namespace NuKeeper.Inspection.Report
 
         public string Describe(PackageUpdateSet update)
         {
-            var occurences = update.CurrentPackages.Count;
+            var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
                 .Select(p => p.Version)
                 .ToList();
@@ -74,9 +74,9 @@ namespace NuKeeper.Inspection.Report
                 ago = TimeSpanFormat.Ago(pubDate, DateTime.UtcNow);
             }
 
-            var optS = occurences > 1 ? "s" : string.Empty;
+            var optS = occurrences > 1 ? "s" : string.Empty;
 
-            return  $"{update.SelectedId} to {update.SelectedVersion} from {versionInUse} in {occurences} place{optS} since {ago}.";
+            return  $"{update.SelectedId} to {update.SelectedVersion} from {versionInUse} in {occurrences} place{optS} since {ago}.";
         }
     }
 }

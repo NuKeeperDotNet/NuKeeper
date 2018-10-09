@@ -4,7 +4,7 @@ namespace NuKeeper.Inspection.Logging
 {
     public interface IInternalLogger
     {
-        void Error(string message, Exception ex);
+        void LogError(string message, Exception ex);
         void Log(LogLevel level, string message);
     }
 }

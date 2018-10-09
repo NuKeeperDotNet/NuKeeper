@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.Report
             }
         }
 
-        private void WriteHeading(StreamWriter writer)
+        private static void WriteHeading(StreamWriter writer)
         {
             writer.WriteLine(
                 "Package id,Package source," +
@@ -48,9 +48,9 @@ namespace NuKeeper.Inspection.Report
                 );
         }
 
-        private void WriteLine(StreamWriter writer, PackageUpdateSet update)
+        private static void WriteLine(StreamWriter writer, PackageUpdateSet update)
         {
-            var occurences = update.CurrentPackages.Count;
+            var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
                 .Select(p => p.Version)
                 .ToList();
@@ -66,7 +66,7 @@ namespace NuKeeper.Inspection.Report
 
             writer.WriteLine(
                 $"{update.SelectedId},{packageSource}," +
-                $"{occurences},{update.CountCurrentVersions()},{lowest},{highest}," +
+                $"{occurrences},{update.CountCurrentVersions()},{lowest},{highest}," +
                 $"{majorData},{minorData},{patchData}");
         }
 

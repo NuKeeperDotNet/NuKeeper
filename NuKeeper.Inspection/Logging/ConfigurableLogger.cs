@@ -18,7 +18,7 @@ namespace NuKeeper.Inspection.Logging
         public void Error(string message, Exception ex)
         {
             CheckLoggerCreated();
-            _inner.Error(message, ex);
+            _inner.LogError(message, ex);
         }
 
         public void Minimal(string message)

@@ -1,5 +1,7 @@
 using System;
 
+#pragma warning disable CA1716
+
 namespace NuKeeper.Inspection.Logging
 {
     public interface INuKeeperLogger

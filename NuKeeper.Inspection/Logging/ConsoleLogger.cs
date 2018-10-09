@@ -11,7 +11,7 @@ namespace NuKeeper.Inspection.Logging
             _logLevel = logLevel;
         }
 
-        public void Error(string message, Exception ex)
+        public void LogError(string message, Exception ex)
         {
             var saveColor = Console.ForegroundColor;
             try

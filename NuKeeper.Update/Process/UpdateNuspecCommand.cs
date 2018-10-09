@@ -25,7 +25,8 @@ namespace NuKeeper.Update.Process
         {
             using (var nuspecContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
             {
-                await UpdateNuspec(nuspecContents, newVersion, currentPackage);
+                await UpdateNuspec(nuspecContents, newVersion, currentPackage)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -51,7 +52,8 @@ namespace NuKeeper.Update.Process
             }
 
             fileContents.Seek(0, SeekOrigin.Begin);
-            await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
+            await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None)
+                .ConfigureAwait(false);
         }
     }
 }
