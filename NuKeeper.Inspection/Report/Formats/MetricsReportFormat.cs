@@ -75,8 +75,7 @@ namespace NuKeeper.Inspection.Report.Formats
             var totalAge = Age.Sum(updates);
             var years = totalAge.TotalDays / 365;
 
-            _writer.WriteLine($"LibDays: {totalAge:%d}");
-            _writer.WriteLine($"LibYears: {years:0.0}");
+            _writer.WriteLine($"LibYears: {years:0.000}");
         }
     }
 }
