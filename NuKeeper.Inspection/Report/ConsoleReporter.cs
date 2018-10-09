@@ -47,7 +47,7 @@ namespace NuKeeper.Inspection.Report
             return result;
         }
 
-        public static string Describe(PackageUpdateSet update)
+        public string Describe(PackageUpdateSet update)
         {
             var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
