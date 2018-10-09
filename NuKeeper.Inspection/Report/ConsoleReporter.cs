@@ -47,6 +47,8 @@ namespace NuKeeper.Inspection.Report
             return result;
         }
 
+#pragma warning disable CA1822
+
         public string Describe(PackageUpdateSet update)
         {
             var occurrences = update.CurrentPackages.Count;

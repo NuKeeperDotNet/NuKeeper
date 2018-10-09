@@ -145,7 +145,7 @@ namespace NuKeeper.Inspection.Tests
                     .ToList());
         }
 
-        private PackageInProject BuildPackageInProject(string packageName)
+        private static PackageInProject BuildPackageInProject(string packageName)
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project1\\packages.config",
                 PackageReferenceType.PackagesConfig);

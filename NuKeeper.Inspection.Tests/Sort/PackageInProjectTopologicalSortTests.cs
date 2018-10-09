@@ -151,7 +151,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             CollectionAssert.AreEquivalent(sorted, original);
         }
 
-        private PackageInProject PackageFor(string packageId, string packageVersion,
+        private static PackageInProject PackageFor(string packageId, string packageVersion,
             string relativePath, PackageInProject refProject = null)
         {
             relativePath = relativePath.Replace("{sep}", $"{Path.DirectorySeparatorChar}");

@@ -380,7 +380,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private ProjectFileReader MakeReader()
+        private static ProjectFileReader MakeReader()
         {
             return new ProjectFileReader(Substitute.For<INuKeeperLogger>());
         }

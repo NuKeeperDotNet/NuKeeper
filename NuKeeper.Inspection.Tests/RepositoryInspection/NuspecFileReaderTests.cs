@@ -125,7 +125,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private PackagePath TempPath()
+        private static PackagePath TempPath()
         {
             return new PackagePath(
                 OsSpecifics.GenerateBaseDirectory(),

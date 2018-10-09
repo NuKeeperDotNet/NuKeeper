@@ -39,7 +39,7 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        private async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
+        private static async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();

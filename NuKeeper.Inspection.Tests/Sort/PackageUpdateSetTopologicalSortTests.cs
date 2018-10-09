@@ -216,7 +216,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
 
-        private PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
+        private static PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
         {
             var upstreams = new List<PackageDependency>();
             if (upstream != null)
