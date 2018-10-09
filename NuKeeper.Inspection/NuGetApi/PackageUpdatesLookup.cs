@@ -25,7 +25,8 @@ namespace NuKeeper.Inspection.NuGetApi
                 .Distinct();
 
             var latestVersions = await _bulkPackageLookup.FindVersionUpdates(
-                packageIds, sources, allowedChange);
+                packageIds, sources, allowedChange)
+                .ConfigureAwait(false);
 
             var results = new List<PackageUpdateSet>();
 

@@ -26,14 +26,15 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange)
         {
             var latestOfEach = packages
-                .GroupBy(pi => pi.Id.ToLowerInvariant())
+                .GroupBy(pi => pi.Id.ToUpperInvariant())
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
                 .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange))
                 .ToList();
 
-            await Task.WhenAll(lookupTasks);
+            await Task.WhenAll(lookupTasks)
+                .ConfigureAwait(false);
 
             var result = new Dictionary<string, PackageLookupResult>(StringComparer.OrdinalIgnoreCase);
 

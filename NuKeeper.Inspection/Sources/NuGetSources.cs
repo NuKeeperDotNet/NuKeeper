@@ -13,7 +13,7 @@ namespace NuKeeper.Inspection.Sources
         {
             if (!sources.Any())
             {
-                throw new ArgumentException(nameof(sources));
+                throw new ArgumentException("At least one source must be specified", nameof(sources));
             }
 
             Items = sources
@@ -32,7 +32,7 @@ namespace NuKeeper.Inspection.Sources
 
             if (!items.Any())
             {
-                throw new ArgumentException(nameof(sources));
+                throw new ArgumentException(nameof(items));
             }
 
             Items = items;

@@ -71,7 +71,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .ToList();
         }
 
-        private string MakeProjectPath(XElement el, string currentPath)
+        private static string MakeProjectPath(XElement el, string currentPath)
         {
             var relativePath = el.Attribute("Include")?.Value;
 

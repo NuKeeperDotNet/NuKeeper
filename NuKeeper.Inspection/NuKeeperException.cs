@@ -1,9 +1,10 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace NuKeeper.Inspection
 {
     [Serializable]
-    public class NuKeeperException: ApplicationException
+    public class NuKeeperException: Exception
     {
         public NuKeeperException()
         {
@@ -16,5 +17,8 @@ namespace NuKeeper.Inspection
         public NuKeeperException(string message, Exception innerException) : base(message, innerException)
         {
         }
+
+        protected NuKeeperException(SerializationInfo info, StreamingContext context) : base(info, context)
+        { }
     }
 }

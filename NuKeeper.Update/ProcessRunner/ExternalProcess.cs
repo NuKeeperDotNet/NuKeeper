@@ -35,7 +35,7 @@ namespace NuKeeper.Update.ProcessRunner
                     throw;
                 }
 
-                var message = $"Error starting external process for {command}: {ex.GetType().Name} {ex.Message}";
+                var message = $"LogError starting external process for {command}: {ex.GetType().Name} {ex.Message}";
                 return new ProcessOutput(string.Empty, message, 1);
             }
 
@@ -44,8 +44,10 @@ namespace NuKeeper.Update.ProcessRunner
                 throw new NuKeeperException($"Could not start external process for {command}");
             }
 
-            var textOut = await process.StandardOutput.ReadToEndAsync();
-            var errorOut = await process.StandardError.ReadToEndAsync();
+            var textOut = await process.StandardOutput.ReadToEndAsync()
+                .ConfigureAwait(false);
+            var errorOut = await process.StandardError.ReadToEndAsync()
+                .ConfigureAwait(false);
 
             process.WaitForExit();
 
