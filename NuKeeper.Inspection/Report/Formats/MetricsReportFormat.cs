@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
+using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report.Formats
@@ -30,18 +31,22 @@ namespace NuKeeper.Inspection.Report.Formats
             var patches = 0;
             foreach (var update in updates)
             {
-                var selectedUpdate = update.SelectedVersion;
-                var minCurrent = MinCurrentVersion(update);
+                var baselineVersion = MinCurrentVersion(update);
 
-                if (selectedUpdate.Major > minCurrent.Major)
+                var majorUpdate = FilteredPackageVersion(baselineVersion, update.Packages.Major);
+                var minorUpdate = FilteredPackageVersion(baselineVersion, update.Packages.Minor);
+                var patchUpdate = FilteredPackageVersion(baselineVersion, update.Packages.Patch);
+
+                if (majorUpdate != null && majorUpdate.Identity.Version.Major > baselineVersion.Major)
                 {
                     majors++;
                 }
-                else if (selectedUpdate.Minor > minCurrent.Minor)
+                if (minorUpdate != null && minorUpdate.Identity.Version.Minor > baselineVersion.Minor)
                 {
                     minors++;
                 }
-                else if (selectedUpdate.Patch > minCurrent.Patch)
+
+                if (patchUpdate != null)
                 {
                     patches++;
                 }
@@ -77,5 +82,21 @@ namespace NuKeeper.Inspection.Report.Formats
 
             _writer.WriteLine($"LibYears: {years:0.000}");
         }
+
+        private static PackageSearchMedatadata FilteredPackageVersion(NuGetVersion baseline, PackageSearchMedatadata packageVersion)
+        {
+            if (packageVersion == null)
+            {
+                return null;
+            }
+
+            if (packageVersion.Identity.Version <= baseline)
+            {
+                return null;
+            }
+
+            return packageVersion;
+        }
+
     }
 }
