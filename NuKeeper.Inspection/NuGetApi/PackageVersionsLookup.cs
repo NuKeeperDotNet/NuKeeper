@@ -53,7 +53,7 @@ namespace NuKeeper.Inspection.NuGetApi
             }
             catch (Exception ex)
             {
-                _nuKeeperLogger.Error($"LogError getting {packageName} from {source}", ex);
+                _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
         }
