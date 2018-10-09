@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -115,7 +116,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [Test]
         public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
         {
-            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion");
+            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(badVersion), TempPath())

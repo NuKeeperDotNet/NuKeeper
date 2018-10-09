@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -154,7 +155,7 @@ namespace NuKeeper.Inspection.Tests.Sort
         private static PackageInProject PackageFor(string packageId, string packageVersion,
             string relativePath, PackageInProject refProject = null)
         {
-            relativePath = relativePath.Replace("{sep}", $"{Path.DirectorySeparatorChar}");
+            relativePath = relativePath.Replace("{sep}", $"{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
             var basePath = "c_temp" + Path.DirectorySeparatorChar + "test";
 
             var refs = new List<string>();
