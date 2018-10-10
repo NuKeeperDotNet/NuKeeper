@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Engine
                 .Select(_ => PackageUpdates.UpdateSet())
                 .ToList();
 
-            var settings = MakeSettings(ReportMode.Off, consolidateUpdates);
+            var settings = MakeSettings(consolidateUpdates);
             
             var (repoUpdater, _) = MakeRepositoryUpdater(
                 updateSelection, updates, packageUpdater);
@@ -131,31 +131,6 @@ namespace NuKeeper.Tests.Engine
             var repo = MakeRepositoryData();
 
             var count = await repoUpdater.Run(git, repo, MakeSettings());
-
-            Assert.That(count, Is.EqualTo(0));
-            await AssertDidNotReceiveMakeUpdate(packageUpdater);
-        }
-
-        [Test]
-        public async Task WhenReportOnly_CountIsZero()
-        {
-            var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            UpdateSelectionAll(updateSelection);
-
-            var twoUpdates = new List<PackageUpdateSet>
-                {
-                    PackageUpdates.UpdateSet(),
-                    PackageUpdates.UpdateSet()
-                };
-
-            var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
-                updateSelection,
-                twoUpdates);
-
-            var git = Substitute.For<IGitDriver>();
-            var repo = MakeRepositoryData();
-
-            var count = await repoUpdater.Run(git, repo, MakeSettings(ReportMode.ReportOnly));
 
             Assert.That(count, Is.EqualTo(0));
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
@@ -204,14 +179,13 @@ namespace NuKeeper.Tests.Engine
                 .Returns(new List<PackageUpdateSet>());
         }
 
-        private SettingsContainer MakeSettings(ReportMode reportMode = ReportMode.Off, bool consolidateUpdates = false)
+        private SettingsContainer MakeSettings(bool consolidateUpdates = false)
         {
             return new SettingsContainer
             {
                 SourceControlServerSettings = new SourceControlServerSettings(),
                 UserSettings = new UserSettings
                 {
-                    ReportMode = reportMode,
                     ConsolidateUpdatesInSinglePullRequest = consolidateUpdates
                 }
             };
@@ -225,7 +199,7 @@ namespace NuKeeper.Tests.Engine
             var sources = Substitute.For<INuGetSourcesReader>();
             var updateFinder = Substitute.For<IUpdateFinder>();
             var fileRestore = Substitute.For<IFileRestoreCommand>();
-            var reporter = Substitute.For<IAvailableUpdatesReporter>();
+            var reporter = Substitute.For<IReporter>();
 
             updateFinder.FindPackageUpdateSets(
                     Arg.Any<IFolder>(),

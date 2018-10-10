@@ -20,6 +20,7 @@ namespace NuKeeper.Local
         private readonly IUpdateFinder _updateFinder;
         private readonly IPackageUpdateSetSort _sorter;
         private readonly ILocalUpdater _updater;
+        private readonly IReporter _reporter;
         private readonly INuKeeperLogger _logger;
 
         public LocalEngine(
@@ -27,12 +28,14 @@ namespace NuKeeper.Local
             IUpdateFinder updateFinder,
             IPackageUpdateSetSort sorter,
             ILocalUpdater updater,
+            IReporter reporter,
             INuKeeperLogger logger)
         {
             _nuGetSourcesReader = nuGetSourcesReader;
             _updateFinder = updateFinder;
             _sorter = sorter;
             _updater = updater;
+            _reporter = reporter;
             _logger = logger;
         }
 
@@ -45,14 +48,12 @@ namespace NuKeeper.Local
             var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange)
                 .ConfigureAwait(false);
 
+            Report(settings.UserSettings, sortedUpdates);
+
             if (write)
             {
                 await _updater.ApplyUpdates(sortedUpdates, folder, sources, settings)
                     .ConfigureAwait(false);
-            }
-            else
-            {
-                Report(sortedUpdates);
             }
         }
 
@@ -79,10 +80,13 @@ namespace NuKeeper.Local
             return new Folder(_logger, new DirectoryInfo(dir));
         }
 
-        private static void Report(IReadOnlyCollection<PackageUpdateSet> updates)
+        private void Report(
+            UserSettings settings,
+            IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            var reporter = new ConsoleReporter();
-            reporter.Report("ConsoleReport", updates);
+            _reporter.Report(
+                settings.OutputDestination, settings.OutputFormat,
+                "ConsoleReport", updates);
         }
     }
 }

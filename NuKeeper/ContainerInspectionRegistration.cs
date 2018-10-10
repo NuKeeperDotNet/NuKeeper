@@ -33,8 +33,7 @@ namespace NuKeeper
             container.Register<IUpdateFinder, UpdateFinder>();
             container.Register<INuGetSourcesReader, NuGetSourcesReader>();
 
-            container.Register<IReportStreamSource, ReportStreamSource>();
-            container.Register<IAvailableUpdatesReporter, CsvFileReporter>();
+            container.Register<IReporter, Reporter>();
             container.Register<IPackageUpdateSetSort, PackageUpdateSetSort>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

@@ -5,6 +5,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Report;
+using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
@@ -62,8 +63,7 @@ namespace NuKeeper.Local
 
             foreach (var update in updates)
             {
-                var reporter = new ConsoleReporter();
-                _logger.Minimal("Updating " + reporter.Describe(update));
+                _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
                 await _updateRunner.Update(update, sources);
             }

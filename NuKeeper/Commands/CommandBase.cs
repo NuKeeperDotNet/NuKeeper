@@ -5,6 +5,7 @@ using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Selection;
 
@@ -47,8 +48,18 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
         public string Include { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude", Description = "Do not consider packages matching this regex pattern.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude",
+            Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outputformat",
+            Description = "Format for output.")]
+        public OutputFormat? OutputFormat { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "od", LongName = "outputdestination",
+            Description = "Destination for output.")]
+        public OutputDestination? OutputDestination { get; set; }
+
 
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
@@ -123,6 +134,16 @@ namespace NuKeeper.Commands
             {
                 return regexExcludeValid;
             }
+
+            var settingsFromFile = FileSettingsCache.Get();
+
+            settings.UserSettings.OutputFormat =
+                Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
+                    Inspection.Report.OutputFormat.Text);
+
+            settings.UserSettings.OutputDestination =
+                Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
+                    Inspection.Report.OutputDestination.Console);
 
             return ValidationResult.Success;
         }

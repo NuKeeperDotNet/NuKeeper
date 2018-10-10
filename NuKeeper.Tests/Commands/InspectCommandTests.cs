@@ -51,7 +51,8 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
-            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Console));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Text));
         }
 
         [Test]
@@ -184,7 +185,36 @@ namespace NuKeeper.Tests.Commands
                 .Initialise(LogLevel.Minimal, null);
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        [Test]
+        public async Task ShouldSetOutputOptionsFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                OutputDestination = OutputDestination.File,
+                OutputFormat = OutputFormat.Csv
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+        }
+
+        [Test]
+        public async Task ShouldSetOutputOptionsFromCommand()
+        {
+            var settingsOut = await CaptureSettings(FileSettings.Empty(),
+                OutputDestination.File,
+                OutputFormat.Csv);
+
+            Assert.That(settingsOut.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
+            Assert.That(settingsOut.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+        }
+
+        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+            OutputDestination? outputDestination =null,
+            OutputFormat? outputFormat = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -197,6 +227,15 @@ namespace NuKeeper.Tests.Commands
             fileSettings.Get().Returns(settingsIn);
 
             var command = new InspectCommand(engine, logger, fileSettings);
+
+            if (outputDestination.HasValue)
+            {
+                command.OutputDestination = outputDestination.Value;
+            }
+            if (outputFormat.HasValue)
+            {
+                command.OutputFormat = outputFormat.Value;
+            }
 
             await command.OnExecute();
 

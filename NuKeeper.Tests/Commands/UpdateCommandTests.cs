@@ -51,7 +51,8 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Major));
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
-            Assert.That(settings.UserSettings.ReportMode, Is.EqualTo(ReportMode.Off));
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Console));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Text));
         }
 
         [Test]

@@ -4,7 +4,6 @@ using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.Report;
 
 namespace NuKeeper.Commands
 {
@@ -19,7 +18,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
             Description =
-                "Prefer to make branches on a fork of the target repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
+                "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
@@ -40,11 +39,6 @@ namespace NuKeeper.Commands
             Description =
                 "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         public string GithubApiEndpoint { get; set;  }
-
-        [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "report",
-            Description =
-                "Controls if a CSV report file of possible updates is generated. Allowed values are Off, On, ReportOnly (which skips applying updates). Defaults to Off.")]
-        protected ReportMode ReportMode { get; } = ReportMode.Off;
 
         protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :
             base(logger, fileSettingsCache)
@@ -93,7 +87,6 @@ namespace NuKeeper.Commands
                 Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);
 
             settings.UserSettings.ForkMode = ForkMode;
-            settings.UserSettings.ReportMode = ReportMode;
 
             var defaultLabels = new[] { "nukeeper" };
 

@@ -4,6 +4,7 @@ using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Inspection.Report;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration
@@ -30,6 +31,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
+            Assert.That(data.OutputDestination, Is.Null);
+            Assert.That(data.OutputFormat, Is.Null);
         }
 
         [Test]
@@ -51,6 +54,8 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
+            Assert.That(data.OutputDestination, Is.Null);
+            Assert.That(data.OutputFormat, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -65,7 +70,9 @@ namespace NuKeeper.Tests.Configuration
                ""maxpr"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
-               ""Change"": ""Minor""
+               ""Change"": ""Minor"",
+               ""OutputFormat"": ""Text"",
+               ""OutputDestination"": ""Console"",
 }";
 
         [Test]
@@ -129,6 +136,8 @@ namespace NuKeeper.Tests.Configuration
 
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
+            Assert.That(data.OutputDestination, Is.EqualTo(OutputDestination.Console));
+            Assert.That(data.OutputFormat, Is.EqualTo(OutputFormat.Text));
         }
 
         [Test]
