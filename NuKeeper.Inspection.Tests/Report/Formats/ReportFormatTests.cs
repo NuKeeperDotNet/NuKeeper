@@ -70,14 +70,12 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
 
         private static string ReportToString(Type reportType, List<PackageUpdateSet> rows)
         {
-            var output = new TestReportWriter();
-
-            var reporter = MakeInstance(reportType, output);
-            reporter.Write("test", rows);
-
-            Assert.That(output.CloseCallCount, Is.EqualTo(1));
-
-            return output.Data();
+            using (var output = new TestReportWriter())
+            {
+                var reporter = MakeInstance(reportType, output);
+                reporter.Write("test", rows);
+                return output.Data();
+            }
         }
 
         private static IReportFormat MakeInstance(Type reportType, IReportWriter writer)

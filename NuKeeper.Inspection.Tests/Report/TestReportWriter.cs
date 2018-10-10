@@ -3,20 +3,9 @@ using NuKeeper.Inspection.Report;
 
 namespace NuKeeper.Inspection.Tests.Report
 {
-    public class TestReportWriter : IReportWriter
+    public sealed class TestReportWriter : IReportWriter
     {
         private readonly StringBuilder _data = new StringBuilder();
-
-        public int CloseCallCount { get; private set; }
-
-        public TestReportWriter()
-        {
-        }
-
-        public void Close()
-        {
-            CloseCallCount++;
-        }
 
         public void WriteLine(string value = "")
         {
@@ -26,6 +15,10 @@ namespace NuKeeper.Inspection.Tests.Report
         public string Data()
         {
             return _data.ToString().TrimEnd();
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
