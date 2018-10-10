@@ -19,5 +19,11 @@ namespace NuKeeper.Inspection.Report.Formats
 
             return sum;
         }
+
+        public static string AsLibYears(TimeSpan totalAge)
+        {
+            var years = totalAge.TotalDays / 365;
+            return years.ToString("0.000");
+        }
     }
 }

@@ -78,9 +78,8 @@ namespace NuKeeper.Inspection.Report.Formats
         private void WriteLibYears(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var totalAge = Age.Sum(updates);
-            var years = totalAge.TotalDays / 365;
-
-            _writer.WriteLine($"LibYears: {years:0.000}");
+            var displayValue = Age.AsLibYears(totalAge);
+            _writer.WriteLine($"LibYears: {displayValue}");
         }
 
         private static PackageSearchMedatadata FilteredPackageVersion(NuGetVersion baseline, PackageSearchMedatadata packageVersion)
