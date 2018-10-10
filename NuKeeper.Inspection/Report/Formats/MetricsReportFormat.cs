@@ -17,7 +17,7 @@ namespace NuKeeper.Inspection.Report.Formats
 
         public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _writer.WriteLine($"Package updates: {updates.Count}");
+            _writer.WriteLine($"Packages with updates: {updates.Count}");
             WriteMajorMinorPatchCount(updates);
             WriteProjectCount(updates);
             WriteLibYears(updates);
@@ -52,9 +52,9 @@ namespace NuKeeper.Inspection.Report.Formats
                 }
             }
 
-            _writer.WriteLine($"Major version updates: {majors}");
-            _writer.WriteLine($"Minor version updates: {minors}");
-            _writer.WriteLine($"Patch version updates: {patches}");
+            _writer.WriteLine($"Packages with Major version updates: {majors}");
+            _writer.WriteLine($"Packages with Minor version updates: {minors}");
+            _writer.WriteLine($"Packages with Patch version updates: {patches}");
         }
 
         private static NuGetVersion MinCurrentVersion(PackageUpdateSet updates)
