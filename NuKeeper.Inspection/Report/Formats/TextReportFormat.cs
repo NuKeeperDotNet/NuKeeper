@@ -20,11 +20,9 @@ namespace NuKeeper.Inspection.Report.Formats
             {
                 _writer.WriteLine(Description.ForUpdateSet(update));
             }
-
-            _writer.Close();
         }
 
-        private string MessageForCount(int count)
+        private static string MessageForCount(int count)
         {
             if (count == 0)
             {

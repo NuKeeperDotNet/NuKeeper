@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using NuKeeper.Inspection.RepositoryInspection;
 
@@ -23,7 +24,7 @@ namespace NuKeeper.Inspection.Report.Formats
         public static string AsLibYears(TimeSpan totalAge)
         {
             var years = totalAge.TotalDays / 365;
-            return years.ToString("0.000");
+            return years.ToString("0.000", CultureInfo.InvariantCulture);
         }
     }
 }
