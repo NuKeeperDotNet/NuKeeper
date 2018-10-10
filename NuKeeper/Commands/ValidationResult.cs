@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
 
         public string ErrorMessage { get; }
 
-        public static ValidationResult Success = new ValidationResult(true, string.Empty);
+        public static ValidationResult Success => new ValidationResult(true, string.Empty);
 
         public static ValidationResult Failure(string errorMessage)
         {

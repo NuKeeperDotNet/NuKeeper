@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new InspectCommand(engine, logger, fileSettings);
 
@@ -108,7 +108,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new InspectCommand(engine, logger, fileSettings);
 
@@ -126,7 +126,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new InspectCommand(engine, logger, fileSettings);
             command.Verbosity = LogLevel.Minimal;
@@ -150,7 +150,7 @@ namespace NuKeeper.Tests.Commands
                 Verbosity = LogLevel.Detailed
             };
 
-            fileSettings.Get().Returns(settings);
+            fileSettings.GetSettings().Returns(settings);
 
             var command = new InspectCommand(engine, logger, fileSettings);
 
@@ -173,7 +173,7 @@ namespace NuKeeper.Tests.Commands
                 Verbosity = LogLevel.Detailed
             };
 
-            fileSettings.Get().Returns(settings);
+            fileSettings.GetSettings().Returns(settings);
 
             var command = new InspectCommand(engine, logger, fileSettings);
             command.Verbosity = LogLevel.Minimal;
@@ -224,7 +224,7 @@ namespace NuKeeper.Tests.Commands
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), false);
 
 
-            fileSettings.Get().Returns(settingsIn);
+            fileSettings.GetSettings().Returns(settingsIn);
 
             var command = new InspectCommand(engine, logger, fileSettings);
 

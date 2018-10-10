@@ -74,7 +74,7 @@ namespace NuKeeper.Commands
 
             var githubUrl = GitSettingsReader.EnsureTrailingSlash(githubUri);
 
-            var fileSettings = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.GetSettings();
 
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
@@ -105,7 +105,7 @@ namespace NuKeeper.Commands
         private string GithubEndpointWithFallback()
         {
             const string defaultGithubApi = "https://api.github.com/";
-            var fileSetting = FileSettingsCache.Get();
+            var fileSetting = FileSettingsCache.GetSettings();
             return Concat.FirstValue(GithubApiEndpoint, fileSetting.Api, defaultGithubApi);
         }
 

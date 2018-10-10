@@ -87,7 +87,7 @@ namespace NuKeeper.Commands
 
         private void InitialiseLogging()
         {
-            var fileSettings = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.GetSettings();
             var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
             var logFile = Concat.FirstValue(LogFile, fileSettings.LogFile);
 
@@ -96,7 +96,7 @@ namespace NuKeeper.Commands
 
         private SettingsContainer MakeSettings()
         {
-            var fileSettings = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.GetSettings();
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
 
             var settings = new SettingsContainer
@@ -135,7 +135,7 @@ namespace NuKeeper.Commands
                 return regexExcludeValid;
             }
 
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
 
             settings.UserSettings.OutputFormat =
                 Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
@@ -151,7 +151,7 @@ namespace NuKeeper.Commands
         private TimeSpan? ReadMinPackageAge()
         {
             const string defaultMinPackageAge = "7d";
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
             var valueWithFallback = Concat.FirstValue(MinimumPackageAge, settingsFromFile.Age, defaultMinPackageAge);
 
             return DurationParser.Parse(valueWithFallback);
@@ -160,7 +160,7 @@ namespace NuKeeper.Commands
         private ValidationResult PopulatePackageIncludes(
             SettingsContainer settings)
         {
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
             var value = Concat.FirstValue(Include, settingsFromFile.Include);
 
             if (string.IsNullOrWhiteSpace(value))
@@ -187,7 +187,7 @@ namespace NuKeeper.Commands
         private ValidationResult PopulatePackageExcludes(
             SettingsContainer settings)
         {
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
             var value = Concat.FirstValue(Exclude, settingsFromFile.Exclude);
 
             if (string.IsNullOrWhiteSpace(value))

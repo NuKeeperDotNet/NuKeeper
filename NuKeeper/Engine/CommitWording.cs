@@ -199,7 +199,7 @@ namespace NuKeeper.Engine
         {
             return
                 sourceUrl != null &&
-                sourceUrl.ToString().StartsWith("https://api.nuget.org/");
+                sourceUrl.ToString().StartsWith("https://api.nuget.org/", StringComparison.OrdinalIgnoreCase);
         }
 
         private static string NugetPackageLink(PackageIdentity package)

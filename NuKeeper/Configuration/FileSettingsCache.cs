@@ -13,7 +13,7 @@ namespace NuKeeper.Configuration
             _reader = reader;
         }
 
-        public FileSettings Get()
+        public FileSettings GetSettings()
         {
             if (_settings == null)
             {

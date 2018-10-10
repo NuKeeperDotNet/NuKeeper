@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+using System.Globalization;
+using Newtonsoft.Json.Serialization;
 
 namespace NuKeeper
 {
@@ -6,7 +7,7 @@ namespace NuKeeper
     {
         protected override string ResolvePropertyName(string propertyName)
         {
-            return propertyName.ToLower();
+            return propertyName.ToLower(CultureInfo.InvariantCulture);
         }
     }
 }

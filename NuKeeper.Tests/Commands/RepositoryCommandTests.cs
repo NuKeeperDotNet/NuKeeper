@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new RepositoryCommand(engine, logger, fileSettings);
 
@@ -40,7 +40,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new RepositoryCommand(engine, logger, fileSettings);
             command.GitHubToken = "abc";
@@ -224,7 +224,7 @@ namespace NuKeeper.Tests.Commands
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
 
-            fileSettings.Get().Returns(settingsIn);
+            fileSettings.GetSettings().Returns(settingsIn);
 
             var command = new RepositoryCommand(engine, logger, fileSettings);
             command.GitHubToken = "testToken";

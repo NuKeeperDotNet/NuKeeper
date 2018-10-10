@@ -329,7 +329,7 @@ namespace NuKeeper.Update.Tests
         private static Task<bool> Pass(PackageUpdateSet s) => Task.FromResult(true);
         private static Task<bool> Fail(PackageUpdateSet s) => Task.FromResult(false);
 
-        private Func<PackageUpdateSet, Task<bool>> FilterToId(string id)
+        private static Func<PackageUpdateSet, Task<bool>> FilterToId(string id)
         {
             return p => Task.FromResult(p.SelectedId == id);
         }

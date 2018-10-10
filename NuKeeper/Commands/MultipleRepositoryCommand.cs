@@ -45,7 +45,7 @@ namespace NuKeeper.Commands
                 return regexExcludeReposValid;
             }
 
-            var fileSettings = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.GetSettings();
 
             const int defaultMaxReposChanged = 10;
             settings.UserSettings.MaxRepositoriesChanged = Concat.FirstValue(
@@ -56,7 +56,7 @@ namespace NuKeeper.Commands
 
         private ValidationResult PopulateIncludeRepos(SettingsContainer settings)
         {
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
             var value = Concat.FirstValue(IncludeRepos, settingsFromFile.IncludeRepos);
 
             if (string.IsNullOrWhiteSpace(value))
@@ -79,7 +79,7 @@ namespace NuKeeper.Commands
 
         private ValidationResult PopulateExcludeRepos(SettingsContainer settings)
         {
-            var settingsFromFile = FileSettingsCache.Get();
+            var settingsFromFile = FileSettingsCache.GetSettings();
             var value = Concat.FirstValue(ExcludeRepos, settingsFromFile.ExcludeRepos);
 
             if (string.IsNullOrWhiteSpace(value))
