@@ -66,13 +66,18 @@ namespace NuKeeper.Inspection.Report.Formats
 
         private void WriteProjectCount(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            var projectCount = updates
+            var currentPackagesInProjects = updates
                 .SelectMany(p => p.CurrentPackages)
+                .ToList();
+
+            var projectCount = currentPackagesInProjects
                 .Select(c => c.Path.FullName)
                 .Distinct()
                 .Count();
 
             _writer.WriteLine($"Projects with updates: {projectCount}");
+            _writer.WriteLine($"Updates in projects: {currentPackagesInProjects.Count}");
+
         }
 
         private void WriteLibYears(IReadOnlyCollection<PackageUpdateSet> updates)
