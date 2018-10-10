@@ -1,8 +1,9 @@
+using System;
+
 namespace NuKeeper.Inspection.Report
 {
-    public interface IReportWriter
+    public interface IReportWriter : IDisposable
     {
         void WriteLine(string value = "");
-        void Close();
     }
 }

@@ -1,12 +1,12 @@
 namespace NuKeeper.Inspection.Report
 {
-    public class NullReportWriter : IReportWriter
+    public sealed class NullReportWriter : IReportWriter
     {
         public void WriteLine(string value)
         {
         }
 
-        public void Close()
+        public void Dispose()
         {
         }
     }

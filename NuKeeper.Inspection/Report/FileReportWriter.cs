@@ -5,7 +5,7 @@ namespace NuKeeper.Inspection.Report
 {
     public class FileReportWriter: IReportWriter
     {
-        private readonly TextWriter _stream;
+        private TextWriter _stream;
 
         public FileReportWriter(string fileName)
         {
@@ -18,10 +18,19 @@ namespace NuKeeper.Inspection.Report
             _stream.Write(value + Environment.NewLine);
         }
 
-        public void Close()
+        public void Dispose()
         {
-            _stream.Flush();
-            _stream.Close();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _stream?.Dispose();
+            }
+            _stream = null;
         }
     }
 }

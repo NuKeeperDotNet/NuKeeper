@@ -23,41 +23,42 @@ namespace NuKeeper.Inspection.Report
         {
             _logger.Detailed($"Output report mode is {format} to {destination}");
 
-            var reporter = MakeReporter(format, destination);
-            reporter.Write(name, updates);
+            using (var writer = MakeReportWriter(destination))
+            {
+                var reporter = MakeReporter(format, writer);
+                reporter.Write(name, updates);
+            }
 
             _logger.Detailed($"Wrote report for {updates.Count} updates");
         }
 
-        private IReportFormat MakeReporter(
+        private static IReportFormat MakeReporter(
             OutputFormat format,
-            OutputDestination destination)
+            IReportWriter writer)
         {
-            var target = MakeReportTarget(destination);
-
             switch (format)
             {
                 case OutputFormat.None:
-                    return new NullReportFormat(target);
+                    return new NullReportFormat(writer);
 
                 case OutputFormat.Text:
-                    return new TextReportFormat(target);
+                    return new TextReportFormat(writer);
 
                 case OutputFormat.Csv:
-                    return new CsvReportFormat(target);
+                    return new CsvReportFormat(writer);
 
                 case OutputFormat.Metrics:
-                    return new MetricsReportFormat(target);
+                    return new MetricsReportFormat(writer);
 
                 case OutputFormat.LibYears:
-                    return new LibYearsReportFormat(target);
+                    return new LibYearsReportFormat(writer);
 
                 default:
                     throw new ArgumentOutOfRangeException($"Invalid OutputFormat: {format}");
             }
         }
 
-        private static IReportWriter MakeReportTarget(OutputDestination destination)
+        private static IReportWriter MakeReportWriter(OutputDestination destination)
         {
             switch (destination)
             {

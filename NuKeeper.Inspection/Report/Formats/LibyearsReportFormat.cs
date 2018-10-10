@@ -16,9 +16,6 @@ namespace NuKeeper.Inspection.Report.Formats
         {
             var totalAge = Age.Sum(updates);
             _writer.WriteLine(Age.AsLibYears(totalAge));
-            _writer.Close();
         }
-
-
     }
 }

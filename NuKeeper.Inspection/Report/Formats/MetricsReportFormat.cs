@@ -21,7 +21,6 @@ namespace NuKeeper.Inspection.Report.Formats
             WriteMajorMinorPatchCount(updates);
             WriteProjectCount(updates);
             WriteLibYears(updates);
-            _writer.Close();
         }
 
         private void WriteMajorMinorPatchCount(IReadOnlyCollection<PackageUpdateSet> updates)
