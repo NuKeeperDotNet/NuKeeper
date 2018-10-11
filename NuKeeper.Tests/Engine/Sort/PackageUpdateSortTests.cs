@@ -180,7 +180,7 @@ namespace NuKeeper.Tests.Engine.Sort
             Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.2.6"));
         }
 
-        private string SelectedVersion(PackageUpdateSet packageUpdateSet)
+        private static string SelectedVersion(PackageUpdateSet packageUpdateSet)
         {
             return packageUpdateSet.Selected.Identity.Version.ToString();
         }
@@ -241,7 +241,7 @@ namespace NuKeeper.Tests.Engine.Sort
             return PackageUpdates.UpdateSetFor(newPackage, publishedDate.Value, projects.ToArray());
         }
 
-        private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
+        private static List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
             var sorter = new PackageUpdateSetSort(Substitute.For<INuKeeperLogger>());
             return sorter.Sort(input)

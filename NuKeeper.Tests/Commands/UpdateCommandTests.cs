@@ -21,7 +21,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new UpdateCommand(engine, logger, fileSettings);
 
@@ -117,7 +117,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+        public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
             VersionChange? change = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
@@ -128,7 +128,7 @@ namespace NuKeeper.Tests.Commands
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x), true);
 
 
-            fileSettings.Get().Returns(settingsIn);
+            fileSettings.GetSettings().Returns(settingsIn);
 
             var command = new UpdateCommand(engine, logger, fileSettings);
             command.AllowedChange = change;

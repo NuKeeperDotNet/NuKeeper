@@ -223,12 +223,12 @@ namespace NuKeeper.Tests.Engine
             Assert.That(fork, Is.Null);
         }
 
-        private ForkData DefaultFork()
+        private static ForkData DefaultFork()
         {
             return new ForkData(new Uri(RepositoryBuilder.ParentCloneUrl), "testOrg", "someRepo");
         }
 
-        private ForkData NoMatchFork()
+        private static ForkData NoMatchFork()
         {
             return new ForkData(new Uri(RepositoryBuilder.NoMatchUrl), "testOrg", "someRepo");
         }

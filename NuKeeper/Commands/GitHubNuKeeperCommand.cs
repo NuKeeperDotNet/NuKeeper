@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Configuration;
@@ -33,7 +34,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description =
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
-        public string[] Label { get; set; }
+        public List<string> Label { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
@@ -74,7 +75,7 @@ namespace NuKeeper.Commands
 
             var githubUrl = GitSettingsReader.EnsureTrailingSlash(githubUri);
 
-            var fileSettings = FileSettingsCache.Get();
+            var fileSettings = FileSettingsCache.GetSettings();
 
             settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
 
@@ -88,7 +89,7 @@ namespace NuKeeper.Commands
 
             settings.UserSettings.ForkMode = ForkMode;
 
-            var defaultLabels = new[] { "nukeeper" };
+            var defaultLabels = new List<string> { "nukeeper" };
 
             settings.SourceControlServerSettings.Labels =
                 Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);
@@ -105,7 +106,7 @@ namespace NuKeeper.Commands
         private string GithubEndpointWithFallback()
         {
             const string defaultGithubApi = "https://api.github.com/";
-            var fileSetting = FileSettingsCache.Get();
+            var fileSetting = FileSettingsCache.GetSettings();
             return Concat.FirstValue(GithubApiEndpoint, fileSetting.Api, defaultGithubApi);
         }
 

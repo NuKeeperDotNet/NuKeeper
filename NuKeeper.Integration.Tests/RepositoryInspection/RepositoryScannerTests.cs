@@ -170,13 +170,13 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             return projectRootDir;
         }
 
-        private IFolder GetUniqueTempFolder()
+        private static IFolder GetUniqueTempFolder()
         {
             var folderFactory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return folderFactory.UniqueTemporaryFolder();
         }
 
-        private IRepositoryScanner MakeScanner()
+        private static IRepositoryScanner MakeScanner()
         {
             var logger = Substitute.For<INuKeeperLogger>();
             return new RepositoryScanner(
@@ -185,7 +185,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
                 new NuspecFileReader(logger));
         }
 
-        private void WriteFile(IFolder path, string fileName, string contents)
+        private static void WriteFile(IFolder path, string fileName, string contents)
         {
             using (var file = File.CreateText(Path.Combine(path.FullPath, fileName)))
             {

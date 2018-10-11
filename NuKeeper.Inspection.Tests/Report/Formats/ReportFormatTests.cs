@@ -80,8 +80,14 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
 
         private static IReportFormat MakeInstance(Type reportType, IReportWriter writer)
         {
-            var ctor = reportType.GetConstructor(new [] { typeof(IReportWriter) } );
-            return (IReportFormat)ctor.Invoke(new object[] { writer } );
+            var noArgCtor = reportType.GetConstructor(Array.Empty<Type>());
+            if (noArgCtor != null)
+            {
+                return (IReportFormat)noArgCtor.Invoke(Array.Empty<object>());
+            }
+
+            var oneArgCtor = reportType.GetConstructor(new [] { typeof(IReportWriter) } );
+            return (IReportFormat)oneArgCtor.Invoke(new object[] { writer } );
         }
     }
 }

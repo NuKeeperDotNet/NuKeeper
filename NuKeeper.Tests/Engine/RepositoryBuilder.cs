@@ -1,9 +1,11 @@
 using System;
 using Octokit;
 
+#pragma warning disable CA1054
+
 namespace NuKeeper.Tests.Engine
 {
-    public class RepositoryBuilder
+    public static class RepositoryBuilder
     {
         public const string ParentHtmlUrl = "http://repos.com/org/parent";
         public const string ParentCloneUrl = "http://repos.com/org/parent.git";

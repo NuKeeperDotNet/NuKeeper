@@ -129,7 +129,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             }
         }
 
-        private IPackageVersionsLookup BuildPackageLookup()
+        private static IPackageVersionsLookup BuildPackageLookup()
         {
             return new PackageVersionsLookup(
                 Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>());

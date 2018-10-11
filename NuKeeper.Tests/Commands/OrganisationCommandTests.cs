@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Commands;
@@ -21,7 +22,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new OrganisationCommand(engine, logger, fileSettings);
 
@@ -40,7 +41,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
-            fileSettings.Get().Returns(FileSettings.Empty());
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var command = new OrganisationCommand(engine, logger, fileSettings);
             command.GitHubToken = "abc";
@@ -119,7 +120,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new[] { "testLabel" }
+                Label = new List<string> { "testLabel" }
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -232,7 +233,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(22));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(
+        public static async Task<SettingsContainer> CaptureSettings(
             FileSettings settingsIn,
             bool addCommandRepoInclude = false,
             bool addCommandRepoExclude = false,
@@ -246,7 +247,7 @@ namespace NuKeeper.Tests.Commands
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
 
-            fileSettings.Get().Returns(settingsIn);
+            fileSettings.GetSettings().Returns(settingsIn);
 
             var command = new OrganisationCommand(engine, logger, fileSettings);
             command.GitHubToken = "testToken";

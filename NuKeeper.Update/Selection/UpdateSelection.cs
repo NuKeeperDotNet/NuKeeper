@@ -27,8 +27,7 @@ namespace NuKeeper.Update.Selection
             _settings = settings;
             _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
 
-            var filtered = await ApplyFilters(candidates, remoteCheck)
-                .ConfigureAwait(false);
+            var filtered = await ApplyFilters(candidates, remoteCheck);
 
             var capped = filtered
                 .Take(settings.MaxPackageUpdates)
@@ -53,8 +52,7 @@ namespace NuKeeper.Update.Selection
                 _logger.Detailed($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
             }
 
-            var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck)
-                .ConfigureAwait(false);
+            var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
 
             if (remoteFiltered.Count < filteredLocally.Count)
             {
@@ -69,15 +67,14 @@ namespace NuKeeper.Update.Selection
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             var results = await packageUpdateSets
-                .WhereAsync(async p => await remoteCheck(p).ConfigureAwait(false))
-                .ConfigureAwait(false);
+                .WhereAsync(async p => await remoteCheck(p));
 
             return results.ToList();
         }
 
         private void LogPackageCounts(int candidates, int filtered, int capped)
         {
-            var message = $"Selection of package updates: {candidates} candiates";
+            var message = $"Selection of package updates: {candidates} candidates";
             if (filtered < candidates)
             {
                 message += $", filtered to {filtered}";

@@ -16,13 +16,7 @@ namespace NuKeeper.Commands
             return values.FirstOrDefault(i => i.HasValue) ?? default;
         }
 
-        public static IReadOnlyCollection<string> FirstPopulatedList(string[] list1, string[] list2, string[] list3)
-        {
-            return FirstPopulatedArray(list1, list2, list3)
-                .ToList();
-        }
-
-        private static string[] FirstPopulatedArray(string[] list1, string[] list2, string[] list3)
+        public static IReadOnlyCollection<string> FirstPopulatedList(List<string> list1, List<string> list2, List<string> list3)
         {
             if (HasElements(list1))
             {
@@ -39,16 +33,16 @@ namespace NuKeeper.Commands
                 return list3;
             }
 
-            return Array.Empty<string>();
+            return null;
         }
 
-        private static bool HasElements(string[] strings)
+        private static bool HasElements(List<string> strings)
         {
             if (strings == null)
             {
                 return false;
             }
-            return strings.Length > 0;
+            return strings.Count > 0;
         }
     }
 }

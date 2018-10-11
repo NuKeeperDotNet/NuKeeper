@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -64,13 +65,14 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await File.WriteAllTextAsync(projectPath, _testWebApiProject);
 
             var intermediateProject = Path.Combine(workDirectory, "Intermediate.csproj");
-            var intermediateContents = _projectWithReference.Replace("{importPath}", projectPath);
+            var intermediateContents = _projectWithReference.Replace("{importPath}", projectPath, StringComparison.OrdinalIgnoreCase);
             await File.WriteAllTextAsync(intermediateProject, intermediateContents);
 
             var rootProject = Path.Combine(workDirectory, "RootProject.csproj");
-            var rootContets = _projectWithReference.Replace("{importPath}",
-                Path.Combine("..", nameof(ShouldFollowResolvableImports), "Intermediate.csproj"));
-            await File.WriteAllTextAsync(rootProject, rootContets);
+            var rootContents = _projectWithReference.Replace("{importPath}",
+                Path.Combine("..", nameof(ShouldFollowResolvableImports), "Intermediate.csproj"),
+                StringComparison.OrdinalIgnoreCase);
+            await File.WriteAllTextAsync(rootProject, rootContents);
 
             var subject = new UpdateProjectImportsCommand();
 

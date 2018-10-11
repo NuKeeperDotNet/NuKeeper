@@ -24,8 +24,7 @@ namespace NuKeeper.Update.Process
             {
                 using (var projectContents = File.Open(currentProject, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    var projectsToCheck = await UpdateConditionsOnProjects(projectContents)
-                        .ConfigureAwait(false);
+                    var projectsToCheck = await UpdateConditionsOnProjects(projectContents);
 
                     foreach (var potentialProject in projectsToCheck)
                     {
@@ -71,8 +70,7 @@ namespace NuKeeper.Update.Process
             if (saveRequired)
             {
                 fileContents.Seek(0, SeekOrigin.Begin);
-                await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None)
-                    .ConfigureAwait(false);
+                await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
             }
 
             return FindProjectReferences(project, ns);

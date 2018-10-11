@@ -19,8 +19,7 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange)
         {
             var allowBetas = package.Version.IsPrerelease;
-            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, allowBetas, sources)
-                .ConfigureAwait(false);
+            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, allowBetas, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
     }

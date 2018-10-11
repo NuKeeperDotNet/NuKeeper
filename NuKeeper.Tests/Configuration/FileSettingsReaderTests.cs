@@ -105,7 +105,7 @@ namespace NuKeeper.Tests.Configuration
 
             var data = fsr.Read(path);
 
-            Assert.That(data.Label.Length, Is.EqualTo(2));
+            Assert.That(data.Label.Count, Is.EqualTo(2));
             Assert.That(data.Label, Does.Contain("foo"));
             Assert.That(data.Label, Does.Contain("bar"));
         }
@@ -167,7 +167,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Include, Is.EqualTo("fred"));
             Assert.That(data.Exclude, Is.EqualTo("fish"));
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
-            Assert.That(data.Label.Length, Is.EqualTo(1));
+            Assert.That(data.Label.Count, Is.EqualTo(1));
             Assert.That(data.Label, Does.Contain("mark"));
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
@@ -195,7 +195,7 @@ namespace NuKeeper.Tests.Configuration
         }
 
 
-        private string MakeTestFile(string contents)
+        private static string MakeTestFile(string contents)
         {
             var folder = TemporaryFolder();
             var path = Path.Join(folder.FullPath, "nukeeper.settings.json");

@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
+
+#pragma warning disable CA2227
 
 namespace NuKeeper.Configuration
 {
@@ -16,7 +19,7 @@ namespace NuKeeper.Configuration
         public string IncludeRepos { get; set; }
         public string ExcludeRepos { get; set; }
 
-        public string[] Label { get; set; }
+        public List<string> Label { get; set; }
 
         public string LogFile { get; set; }
 

@@ -136,7 +136,7 @@ namespace NuKeeper.Tests.Engine
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
         }
 
-        private async Task AssertReceivedMakeUpdate(
+        private static async Task AssertReceivedMakeUpdate(
             IPackageUpdater packageUpdater,
             int count)
         {
@@ -149,7 +149,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<SettingsContainer>());
         }
 
-        private async Task AssertDidNotReceiveMakeUpdate(
+        private static async Task AssertDidNotReceiveMakeUpdate(
             IPackageUpdater packageUpdater)
         {
             await packageUpdater.DidNotReceiveWithAnyArgs()
@@ -161,7 +161,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<SettingsContainer>());
         }
 
-        private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
+        private static void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
         {
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
@@ -170,7 +170,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
-        private void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
+        private static void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
         {
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
@@ -191,7 +191,8 @@ namespace NuKeeper.Tests.Engine
             };
         }
 
-        private (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
+        private static
+            (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
             IPackageUpdateSelection updateSelection, 
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Inspection.Logging;
@@ -29,7 +30,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         [Test]
         public async Task InvalidCommandShouldFail()
         {
-            var result = await RunExternalProcess(Guid.NewGuid().ToString("N"), false);
+            var result = await RunExternalProcess(Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture), false);
         
             Assert.That(result.ExitCode, Is.Not.EqualTo(0));
             Assert.That(result.ErrorOutput, Is.Not.Empty);
@@ -40,7 +41,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         public void InvalidCommandShouldThrowWhenSuccessIsEnsured()
         {
             Assert.ThrowsAsync(Is.AssignableTo<Exception>(),
-                () => RunExternalProcess(Guid.NewGuid().ToString("N"), true));
+                () => RunExternalProcess(Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture), true));
         }
 
         private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)

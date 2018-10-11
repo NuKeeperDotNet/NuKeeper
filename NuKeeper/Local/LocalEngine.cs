@@ -45,15 +45,13 @@ namespace NuKeeper.Local
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
 
-            var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange)
-                .ConfigureAwait(false);
+            var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
 
             Report(settings.UserSettings, sortedUpdates);
 
             if (write)
             {
-                await _updater.ApplyUpdates(sortedUpdates, folder, sources, settings)
-                    .ConfigureAwait(false);
+                await _updater.ApplyUpdates(sortedUpdates, folder, sources, settings);
             }
         }
 

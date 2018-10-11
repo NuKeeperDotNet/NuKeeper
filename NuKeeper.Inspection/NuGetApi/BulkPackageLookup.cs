@@ -33,8 +33,7 @@ namespace NuKeeper.Inspection.NuGetApi
                 .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange))
                 .ToList();
 
-            await Task.WhenAll(lookupTasks)
-                .ConfigureAwait(false);
+            await Task.WhenAll(lookupTasks);
 
             var result = new Dictionary<string, PackageLookupResult>(StringComparer.OrdinalIgnoreCase);
 

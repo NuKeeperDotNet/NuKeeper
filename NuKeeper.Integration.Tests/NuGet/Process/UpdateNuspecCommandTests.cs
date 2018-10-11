@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testNuspec);
         }
 
-        private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
+        private static async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
         {
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";
@@ -37,7 +38,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var testNuspec = $"{memberName}.nuspec";
             var workDirectory = Path.Combine(TestContext.CurrentContext.WorkDirectory, testFolder);
             Directory.CreateDirectory(workDirectory);
-            var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion);
+            var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
             var projectPath = Path.Combine(workDirectory, testNuspec);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
@@ -49,8 +50,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await command.Invoke(package, new NuGetVersion(newPackageVersion), null, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
-            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
-            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
+            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
+            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

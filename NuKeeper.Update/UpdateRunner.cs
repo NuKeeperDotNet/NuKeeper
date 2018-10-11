@@ -48,8 +48,7 @@ namespace NuKeeper.Update
                 {
                     await updateCommand.Invoke(current,
                         updateSet.SelectedVersion, updateSet.Selected.Source,
-                        sources)
-                        .ConfigureAwait(false);
+                        sources);
                 }
             }
         }
