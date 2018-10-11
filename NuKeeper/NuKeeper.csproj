@@ -2,6 +2,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
+    <PackageId>nukeeper</PackageId>
+    <ToolCommandName>nukeeper</ToolCommandName>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>1701;1702;CA2007</NoWarn>
