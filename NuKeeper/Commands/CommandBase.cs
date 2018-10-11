@@ -81,8 +81,7 @@ namespace NuKeeper.Commands
                 return -1;
             }
 
-            return await Run(settings)
-                .ConfigureAwait(false);
+            return await Run(settings);
         }
 
         private void InitialiseLogging()
