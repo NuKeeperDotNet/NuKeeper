@@ -149,7 +149,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<SettingsContainer>());
         }
 
-        private async Task AssertDidNotReceiveMakeUpdate(
+        private static async Task AssertDidNotReceiveMakeUpdate(
             IPackageUpdater packageUpdater)
         {
             await packageUpdater.DidNotReceiveWithAnyArgs()
@@ -191,7 +191,8 @@ namespace NuKeeper.Tests.Engine
             };
         }
 
-        private (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
+        private static
+            (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
             IPackageUpdateSelection updateSelection, 
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)

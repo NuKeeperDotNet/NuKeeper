@@ -15,7 +15,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
     public class ApiPackageLookupTests
     {
         [Test]
-        public async Task AmbigousPackageName_ShouldReturnCorrectResult()
+        public async Task AmbiguousPackageName_ShouldReturnCorrectResult()
         {
             var lookup = BuildPackageLookup();
 
@@ -124,7 +124,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 new PackageVersionsLookup(Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>()));
         }
 
-        private PackageIdentity Current(string packageId)
+        private static PackageIdentity Current(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1,2,3));
         }
