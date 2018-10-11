@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Commands;
@@ -119,7 +120,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new[] { "testLabel" }
+                Label = new List<string> { "testLabel" }
             };
 
             var settings = await CaptureSettings(fileSettings);

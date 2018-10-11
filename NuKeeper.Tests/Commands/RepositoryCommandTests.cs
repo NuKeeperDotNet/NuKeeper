@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Commands;
@@ -122,7 +123,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new[] { "testLabel" }
+                Label = new List<string> { "testLabel" }
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -198,7 +199,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new[] { "testLabel" }
+                Label = new List<string> { "testLabel" }
             };
 
             var settings = await CaptureSettings(fileSettings, true);
@@ -232,7 +233,7 @@ namespace NuKeeper.Tests.Commands
 
             if (addLabels)
             {
-                command.Label = new[] {"runLabel1", "runLabel2"};
+                command.Label = new List<string> { "runLabel1", "runLabel2"};
             }
 
             command.MaxPullRequestsPerRepository = maxPr;

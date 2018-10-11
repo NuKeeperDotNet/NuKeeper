@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -113,7 +114,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var workDirectory = Path.Combine(_tempFolder.FullPath, testFolder);
             Directory.CreateDirectory(workDirectory);
 
-            var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion);
+            var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
@@ -126,9 +127,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                 new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(projectPath);
-            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
+            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
             Assert.That(contents,
-                Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
+                Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
 
             _tempFolder.TryDelete();
         }

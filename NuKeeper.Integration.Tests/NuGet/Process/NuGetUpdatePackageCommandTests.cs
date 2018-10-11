@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -49,11 +50,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
 
-            var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion);
+            var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var packagesConfigContents = _testPackagesConfig.Replace("{packageVersion}", oldPackageVersion);
+            var packagesConfigContents = _testPackagesConfig.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
             var packagesConfigPath = Path.Combine(workDirectory, "packages.config");
             await File.WriteAllTextAsync(packagesConfigPath, packagesConfigContents);
 
@@ -69,8 +70,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                 new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
-            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion)));
-            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion)));
+            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
+            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
 
             tempFolder.TryDelete();
         }

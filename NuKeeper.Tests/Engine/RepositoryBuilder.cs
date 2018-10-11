@@ -1,6 +1,8 @@
 using System;
 using Octokit;
 
+#pragma warning disable CA1054
+
 namespace NuKeeper.Tests.Engine
 {
     public static class RepositoryBuilder
