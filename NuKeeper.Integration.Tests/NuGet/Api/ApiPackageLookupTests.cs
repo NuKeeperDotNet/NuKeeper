@@ -118,7 +118,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(isBeta, Is.True);
         }
 
-        private IApiPackageLookup BuildPackageLookup()
+        private static IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
                 new PackageVersionsLookup(Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>()));

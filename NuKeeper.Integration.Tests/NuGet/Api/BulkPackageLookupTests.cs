@@ -130,7 +130,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
         }
 
-        private PackageIdentity Current(string packageId)
+        private static PackageIdentity Current(string packageId)
         {
             return new PackageIdentity(packageId, new NuGetVersion(1, 2, 3));
         }

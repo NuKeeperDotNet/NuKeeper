@@ -136,7 +136,7 @@ namespace NuKeeper.Tests.Engine
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
         }
 
-        private async Task AssertReceivedMakeUpdate(
+        private static async Task AssertReceivedMakeUpdate(
             IPackageUpdater packageUpdater,
             int count)
         {

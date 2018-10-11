@@ -180,7 +180,7 @@ namespace NuKeeper.Tests.Engine.Sort
             Assert.That(SelectedVersion(output[2]), Is.EqualTo("1.2.6"));
         }
 
-        private string SelectedVersion(PackageUpdateSet packageUpdateSet)
+        private static string SelectedVersion(PackageUpdateSet packageUpdateSet)
         {
             return packageUpdateSet.Selected.Identity.Version.ToString();
         }

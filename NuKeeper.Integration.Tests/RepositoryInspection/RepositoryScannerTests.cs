@@ -170,13 +170,13 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             return projectRootDir;
         }
 
-        private IFolder GetUniqueTempFolder()
+        private static IFolder GetUniqueTempFolder()
         {
             var folderFactory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return folderFactory.UniqueTemporaryFolder();
         }
 
-        private IRepositoryScanner MakeScanner()
+        private static IRepositoryScanner MakeScanner()
         {
             var logger = Substitute.For<INuKeeperLogger>();
             return new RepositoryScanner(
