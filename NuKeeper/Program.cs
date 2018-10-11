@@ -6,6 +6,8 @@ using NuKeeper.Commands;
 
 [assembly:InternalsVisibleTo("NuKeeper.Tests")]
 
+#pragma warning disable CA1822
+
 namespace NuKeeper
 {
     [Command(

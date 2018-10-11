@@ -233,7 +233,7 @@ namespace NuKeeper.Update.Tests
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
-        private PackageUpdateSet UpdateFoobarFromOneVersion()
+        private static PackageUpdateSet UpdateFoobarFromOneVersion()
         {
             var newPackage = LatestVersionOfPackageFoobar();
 
@@ -249,7 +249,7 @@ namespace NuKeeper.Update.Tests
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
+        private static PackageUpdateSet UpdateFooFromOneVersion(TimeSpan? packageAge = null)
         {
             var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
 
@@ -267,7 +267,7 @@ namespace NuKeeper.Update.Tests
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageUpdateSet UpdateBarFromTwoVersions(TimeSpan? packageAge = null)
+        private static PackageUpdateSet UpdateBarFromTwoVersions(TimeSpan? packageAge = null)
         {
             var pubDate = DateTimeOffset.Now.Subtract(packageAge ?? TimeSpan.Zero);
 
@@ -284,17 +284,17 @@ namespace NuKeeper.Update.Tests
             return new PackageUpdateSet(updates, currentPackages);
         }
 
-        private PackageIdentity LatestVersionOfPackageFoobar()
+        private static PackageIdentity LatestVersionOfPackageFoobar()
         {
             return new PackageIdentity("foobar", new NuGetVersion("1.2.3"));
         }
 
-        private PackagePath PathToProjectOne()
+        private static PackagePath PathToProjectOne()
         {
             return new PackagePath("c_temp", "projectOne", PackageReferenceType.PackagesConfig);
         }
 
-        private PackagePath PathToProjectTwo()
+        private static PackagePath PathToProjectTwo()
         {
             return new PackagePath("c_temp", "projectTwo", PackageReferenceType.PackagesConfig);
         }
