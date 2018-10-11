@@ -232,7 +232,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(22));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(
+        public static async Task<SettingsContainer> CaptureSettings(
             FileSettings settingsIn,
             bool addCommandRepoInclude = false,
             bool addCommandRepoExclude = false,

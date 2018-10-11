@@ -212,7 +212,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settingsOut.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+        public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
             OutputDestination? outputDestination =null,
             OutputFormat? outputFormat = null)
         {

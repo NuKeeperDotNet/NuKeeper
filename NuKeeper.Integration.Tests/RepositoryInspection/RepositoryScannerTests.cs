@@ -185,7 +185,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
                 new NuspecFileReader(logger));
         }
 
-        private void WriteFile(IFolder path, string fileName, string contents)
+        private static void WriteFile(IFolder path, string fileName, string contents)
         {
             using (var file = File.CreateText(Path.Combine(path.FullPath, fileName)))
             {

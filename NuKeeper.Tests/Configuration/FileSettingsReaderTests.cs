@@ -195,7 +195,7 @@ namespace NuKeeper.Tests.Configuration
         }
 
 
-        private string MakeTestFile(string contents)
+        private static string MakeTestFile(string contents)
         {
             var folder = TemporaryFolder();
             var path = Path.Join(folder.FullPath, "nukeeper.settings.json");

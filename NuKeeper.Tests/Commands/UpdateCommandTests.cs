@@ -117,7 +117,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
+        public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
             VersionChange? change = null)
         {
             var logger = Substitute.For<IConfigureLogger>();

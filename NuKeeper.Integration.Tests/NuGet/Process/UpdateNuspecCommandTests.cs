@@ -26,7 +26,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testNuspec);
         }
 
-        private async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
+        private static async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
         {
             const string oldPackageVersion = "5.2.3";
             const string newPackageVersion = "5.2.4";

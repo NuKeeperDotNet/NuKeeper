@@ -203,7 +203,7 @@ namespace NuKeeper.Tests.Engine.Sort
             return new PackageInProject(package.Id, package.Version.ToString(), path);
         }
 
-        private List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
+        private static List<PackageUpdateSet> Sort(IReadOnlyCollection<PackageUpdateSet> input)
         {
             var sorter = new PackageUpdateSetSort(Substitute.For<INuKeeperLogger>());
             return sorter.Sort(input)

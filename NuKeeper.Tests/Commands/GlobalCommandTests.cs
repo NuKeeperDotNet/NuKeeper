@@ -197,7 +197,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(42));
         }
 
-        public async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();

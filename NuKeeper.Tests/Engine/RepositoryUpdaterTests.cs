@@ -161,7 +161,7 @@ namespace NuKeeper.Tests.Engine
                 Arg.Any<SettingsContainer>());
         }
 
-        private void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
+        private static void UpdateSelectionAll(IPackageUpdateSelection updateSelection)
         {
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
@@ -170,7 +170,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
-        private void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
+        private static void UpdateSelectionNone(IPackageUpdateSelection updateSelection)
         {
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),

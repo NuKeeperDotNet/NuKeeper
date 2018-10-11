@@ -75,7 +75,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             tempFolder.TryDelete();
         }
 
-        private IFolder UniqueTemporaryFolder()
+        private static IFolder UniqueTemporaryFolder()
         {
             var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return factory.UniqueTemporaryFolder();

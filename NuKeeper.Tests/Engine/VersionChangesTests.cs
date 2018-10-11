@@ -197,7 +197,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(result.Patch.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 9)));
         }
 
-        private PackageSearchMedatadata MetadataForVersion(int major, int minor, int patch)
+        private static PackageSearchMedatadata MetadataForVersion(int major, int minor, int patch)
         {
             var version = new NuGetVersion(major, minor, patch);
             var packageId = new PackageIdentity("foo", version);
