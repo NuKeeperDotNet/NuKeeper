@@ -22,7 +22,11 @@ namespace NuKeeper.Inspection.Report
             string fileName,
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            _logger.Detailed($"Output report mode is {format} to {destination}");
+            var destinationDesc = destination == OutputDestination.File ?
+                $" file: '{fileName}'":
+                destination.ToString();
+
+            _logger.Detailed($"Output report named {reportName}, is {format} to {destinationDesc}");
 
             using (var writer = MakeReportWriter(destination, fileName))
             {
