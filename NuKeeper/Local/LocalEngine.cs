@@ -84,7 +84,7 @@ namespace NuKeeper.Local
         {
             _reporter.Report(
                 settings.OutputDestination, settings.OutputFormat,
-                "ConsoleReport", updates);
+                "Inspect", settings.OutputFileName, updates);
         }
     }
 }

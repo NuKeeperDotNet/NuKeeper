@@ -18,15 +18,16 @@ namespace NuKeeper.Inspection.Report
         public void Report(
             OutputDestination destination,
             OutputFormat format,
-            string name,
+            string reportName,
+            string fileName,
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
             _logger.Detailed($"Output report mode is {format} to {destination}");
 
-            using (var writer = MakeReportWriter(destination))
+            using (var writer = MakeReportWriter(destination, fileName))
             {
                 var reporter = MakeReporter(format, writer);
-                reporter.Write(name, updates);
+                reporter.Write(reportName, updates);
             }
 
             _logger.Detailed($"Wrote report for {updates.Count} updates");
@@ -58,7 +59,9 @@ namespace NuKeeper.Inspection.Report
             }
         }
 
-        private static IReportWriter MakeReportWriter(OutputDestination destination)
+        private static IReportWriter MakeReportWriter(
+            OutputDestination destination,
+            string fileName)
         {
             switch (destination)
             {
@@ -66,7 +69,7 @@ namespace NuKeeper.Inspection.Report
                     return new ConsoleReportWriter();
 
                 case OutputDestination.File:
-                    return new FileReportWriter("nukeeper.out");
+                    return new FileReportWriter(fileName);
 
                 case OutputDestination.Off:
                     return new NullReportWriter();

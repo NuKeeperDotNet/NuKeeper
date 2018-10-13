@@ -13,13 +13,11 @@ namespace NuKeeper.Commands
         private readonly IGitHubEngine _engine;
 
         [Argument(1, Name = "Token",
-            Description =
-                "GitHub personal access token to authorise access to GitHub server.")]
+            Description = "GitHub personal access token to authorise access to GitHub server.")]
         public string GitHubToken { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
-            Description =
-                "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
+            Description = "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
@@ -32,13 +30,11 @@ namespace NuKeeper.Commands
         public bool? Consolidate { get; set; } 
 
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
-            Description =
-                "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
+            Description = "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         public List<string> Label { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
-            Description =
-                "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
+            Description = "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         public string GithubApiEndpoint { get; set;  }
 
         protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :

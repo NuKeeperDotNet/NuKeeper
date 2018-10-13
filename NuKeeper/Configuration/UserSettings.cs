@@ -20,6 +20,7 @@ namespace NuKeeper.Configuration
 
         public OutputFormat OutputFormat { get; set; }
         public OutputDestination OutputDestination { get; set; }
+        public string OutputFileName { get; set; }
 
         public string Directory { get; set; }
     }
