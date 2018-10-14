@@ -33,6 +33,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Change, Is.Null);
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
+            Assert.That(data.OutputFileName, Is.Null);
         }
 
         [Test]
@@ -56,6 +57,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.Change, Is.Null);
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
+            Assert.That(data.OutputFileName, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -73,6 +75,7 @@ namespace NuKeeper.Tests.Configuration
                ""Change"": ""Minor"",
                ""OutputFormat"": ""Text"",
                ""OutputDestination"": ""Console"",
+               ""OutputFileName"" : ""out_42.txt""
 }";
 
         [Test]
@@ -93,6 +96,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.IncludeRepos, Is.EqualTo("repoIn"));
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
+            Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
         }
 
         [Test]

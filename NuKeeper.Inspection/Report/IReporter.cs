@@ -8,7 +8,8 @@ namespace NuKeeper.Inspection.Report
         void Report(
             OutputDestination destination,
             OutputFormat format,
-            string name,
+            string reportName,
+            string fileName,
             IReadOnlyCollection<PackageUpdateSet> updates);
     }
 }

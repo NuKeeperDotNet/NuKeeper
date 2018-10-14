@@ -53,12 +53,13 @@ namespace NuKeeper.Engine
             var sources = _nugetSourcesReader.Read(git.WorkingFolder, userSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, sources, settings.UserSettings.AllowedChange);
+                git.WorkingFolder, sources, userSettings.AllowedChange);
 
             _reporter.Report(
                 userSettings.OutputDestination,
                 userSettings.OutputFormat,
                 repository.Pull.Name,
+                userSettings.OutputFileName,
                 updates);
 
             if (updates.Count == 0)

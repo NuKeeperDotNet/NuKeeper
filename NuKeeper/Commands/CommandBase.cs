@@ -39,20 +39,20 @@ namespace NuKeeper.Commands
         public string LogFile { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
-            Description =
-                "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
+            Description = "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
         protected string MinimumPackageAge { get; } 
 
-        [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include", Description = "Only consider packages matching this regex pattern.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include",
+            Description = "Only consider packages matching this regex pattern.")]
         public string Include { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude",
             Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outputformat",
+        [Option(CommandOptionType.SingleValue, ShortName = "om", LongName = "outputformat",
             Description = "Format for output.")]
         public OutputFormat? OutputFormat { get; set; }
 
@@ -60,6 +60,9 @@ namespace NuKeeper.Commands
             Description = "Destination for output.")]
         public OutputDestination? OutputDestination { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outputfile",
+            Description = "File name for output.")]
+        public string OutputFileName { get; set; }
 
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
@@ -136,13 +139,21 @@ namespace NuKeeper.Commands
 
             var settingsFromFile = FileSettingsCache.GetSettings();
 
+            var defaultOutputDestination = string.IsNullOrWhiteSpace(OutputFileName)
+                ? Inspection.Report.OutputDestination.Console
+                : Inspection.Report.OutputDestination.File;
+
+            settings.UserSettings.OutputDestination =
+                Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
+                    defaultOutputDestination);
+
             settings.UserSettings.OutputFormat =
                 Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
                     Inspection.Report.OutputFormat.Text);
 
-            settings.UserSettings.OutputDestination =
-                Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
-                    Inspection.Report.OutputDestination.Console);
+            settings.UserSettings.OutputFileName =
+                Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,
+                    "nukeeper.out");
 
             return ValidationResult.Success;
         }
