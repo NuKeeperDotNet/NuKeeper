@@ -60,7 +60,7 @@ namespace NuKeeper.Commands
             Description = "Destination for output.")]
         public OutputDestination? OutputDestination { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outoutfile",
+        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outputfile",
             Description = "File name for output.")]
         public string OutputFileName { get; set; }
 
