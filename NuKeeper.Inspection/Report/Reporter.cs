@@ -23,7 +23,7 @@ namespace NuKeeper.Inspection.Report
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var destinationDesc = destination == OutputDestination.File ?
-                $" file: '{fileName}'":
+                $" File '{fileName}'":
                 destination.ToString();
 
             _logger.Detailed($"Output report named {reportName}, is {format} to {destinationDesc}");

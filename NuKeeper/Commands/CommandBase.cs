@@ -139,13 +139,17 @@ namespace NuKeeper.Commands
 
             var settingsFromFile = FileSettingsCache.GetSettings();
 
-            settings.UserSettings.OutputFormat =
-                Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
-                    Inspection.Report.OutputFormat.Text);
+            var defaultOutputDestination = string.IsNullOrWhiteSpace(OutputFileName)
+                ? Inspection.Report.OutputDestination.Console
+                : Inspection.Report.OutputDestination.File;
 
             settings.UserSettings.OutputDestination =
                 Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
-                    Inspection.Report.OutputDestination.Console);
+                    defaultOutputDestination);
+
+            settings.UserSettings.OutputFormat =
+                Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
+                    Inspection.Report.OutputFormat.Text);
 
             settings.UserSettings.OutputFileName =
                 Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,

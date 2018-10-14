@@ -191,7 +191,8 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = new FileSettings
             {
                 OutputDestination = OutputDestination.File,
-                OutputFormat = OutputFormat.Csv
+                OutputFormat = OutputFormat.Csv,
+                OutputFileName = "foo.csv"
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -199,6 +200,41 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
             Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+            Assert.That(settings.UserSettings.OutputFileName, Is.EqualTo("foo.csv"));
+        }
+
+        [Test]
+        public async Task WhenFileNameIsExplicit_ShouldDefaultOutputDestToFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                OutputDestination = null,
+                OutputFormat = OutputFormat.Csv
+            };
+
+            var settings = await CaptureSettings(fileSettings, null, null, "foo.csv");
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.File));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+            Assert.That(settings.UserSettings.OutputFileName, Is.EqualTo("foo.csv"));
+        }
+
+        [Test]
+        public async Task WhenFileNameIsExplicit_ShouldKeepOutputDest()
+        {
+            var fileSettings = new FileSettings
+            {
+                OutputDestination = OutputDestination.Off,
+                OutputFormat = OutputFormat.Csv
+            };
+
+            var settings = await CaptureSettings(fileSettings, null, null, "foo.csv");
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Off));
+            Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Csv));
+            Assert.That(settings.UserSettings.OutputFileName, Is.EqualTo("foo.csv"));
         }
 
         [Test]
@@ -214,7 +250,8 @@ namespace NuKeeper.Tests.Commands
 
         public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
             OutputDestination? outputDestination =null,
-            OutputFormat? outputFormat = null)
+            OutputFormat? outputFormat = null,
+            string outputFileName = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -235,6 +272,11 @@ namespace NuKeeper.Tests.Commands
             if (outputFormat.HasValue)
             {
                 command.OutputFormat = outputFormat.Value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(outputFileName))
+            {
+                command.OutputFileName = outputFileName;
             }
 
             await command.OnExecute();
