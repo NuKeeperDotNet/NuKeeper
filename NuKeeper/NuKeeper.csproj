@@ -4,6 +4,7 @@
     <PackAsTool>true</PackAsTool>
     <PackageId>nukeeper</PackageId>
     <ToolCommandName>nukeeper</ToolCommandName>
+    <Description>Automagically update nuget packages in .NET projects</Description>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
