@@ -69,7 +69,9 @@ namespace NuKeeper.Engine
                 .Distinct()
                 .ToList();
 
-            builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} projects:");
+            var projectOptS = (projects.Count > 1) ? "s" : string.Empty;
+
+            builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
             builder.AppendLine(packageNames);
             builder.AppendLine("<details>");
             builder.AppendLine("<summary>Details of updated packages</summary>");
