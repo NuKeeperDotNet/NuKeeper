@@ -47,6 +47,11 @@ namespace NuKeeper.Engine
                 builder.AppendLine(MakeCommitVersionDetails(update));
             }
 
+            if (updates.Count > 1)
+            {
+                MultiPackageFooter(builder);
+            }
+
             AddCommitFooter(builder);
 
             return builder.ToString();
@@ -57,7 +62,24 @@ namespace NuKeeper.Engine
             var packageNames = updates
                 .Select(p => CodeQuote(p.SelectedId))
                 .JoinWithCommas();
-            builder.AppendLine($"{updates.Count} packages were updated: {packageNames}");
+
+            var projects = updates.SelectMany(
+                    u => u.CurrentPackages)
+                .Select(p => p.Path.FullName)
+                .Distinct()
+                .ToList();
+
+            builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} projects:");
+            builder.AppendLine(packageNames);
+            builder.AppendLine("<details>");
+            builder.AppendLine("<summary>Details of updated packages</summary>");
+            builder.AppendLine("");
+        }
+
+        private static void MultiPackageFooter(StringBuilder builder)
+        {
+            builder.AppendLine("</details>");
+            builder.AppendLine("");
         }
 
         private static string MakeCommitVersionDetails(PackageUpdateSet updates)
