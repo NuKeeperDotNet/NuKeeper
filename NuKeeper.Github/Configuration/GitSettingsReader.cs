@@ -36,7 +36,7 @@ namespace NuKeeper.Github.Configuration
             };
         }
 
-        internal static Uri EnsureTrailingSlash(Uri uri)
+        public static Uri EnsureTrailingSlash(Uri uri)
         {
             if (uri == null)
             {

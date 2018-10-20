@@ -1,5 +1,7 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
@@ -9,7 +11,7 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : MultipleRepositoryCommand
     {
-        public GlobalCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
+        public GlobalCommand(IEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
             : base(engine, logger, fileSettingsCache)
         {
         }
@@ -29,7 +31,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("Global mode must have an include regex");
             }
 
-            var apiHost = settings.GithubAuthSettings.ApiBase.Host;
+            var apiHost = settings.AuthSettings.ApiBase.Host;
             if (apiHost.EndsWith("github.com", StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Failure("Global mode must not use public github");

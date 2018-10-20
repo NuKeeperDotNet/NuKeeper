@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -12,7 +12,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Sources;
 
-namespace NuKeeper.Local
+namespace NuKeeper.Abstract.Local
 {
     public class LocalEngine : ILocalEngine
     {
@@ -39,19 +39,19 @@ namespace NuKeeper.Local
             _logger = logger;
         }
 
-        public async Task Run(SettingsContainer settings, bool write)
+        public async Task Run(ISettingsContainer settings, bool write)
         {
             var folder = TargetFolder(settings.UserSettings);
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
 
-            var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
+            var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange).ConfigureAwait(false);
 
             Report(settings.UserSettings, sortedUpdates);
 
             if (write)
             {
-                await _updater.ApplyUpdates(sortedUpdates, folder, sources, settings);
+                await _updater.ApplyUpdates(sortedUpdates, folder, sources, settings).ConfigureAwait(false);
             }
         }
 
@@ -61,7 +61,7 @@ namespace NuKeeper.Local
             VersionChange allowedChange)
         {
             var updates = await _updateFinder.FindPackageUpdateSets(
-                folder, sources, allowedChange);
+                folder, sources, allowedChange).ConfigureAwait(false);
 
             return _sorter.Sort(updates)
                 .ToList();

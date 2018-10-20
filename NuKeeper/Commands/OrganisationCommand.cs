@@ -1,4 +1,6 @@
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
@@ -11,8 +13,8 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
         public string GithubOrganisationName { get; set; }
 
-        public OrganisationCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
-            : base(engine, logger, fileSettingsCache)
+        public OrganisationCommand(IEngine githubEngine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
+            : base(githubEngine, logger, fileSettingsCache)
         {
         }
 

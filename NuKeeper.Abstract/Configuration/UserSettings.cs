@@ -4,7 +4,7 @@ using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Abstract.Configuration
 {
-    public abstract class UserSettings
+    public class UserSettings
     {
         public NuGetSources NuGetSources { get; set; }
 

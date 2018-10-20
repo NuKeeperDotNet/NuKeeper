@@ -4,7 +4,7 @@ using NuKeeper.Configuration;
 
 namespace NuKeeper.Abstract.Configuration
 {
-    public abstract class SourceControlServerSettings
+    public class SourceControlServerSettings
     {
         public ServerScope Scope { get; set; }
         public string OrganisationName { get; set; }

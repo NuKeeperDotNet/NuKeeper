@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Configuration;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Local;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Local;
 
 namespace NuKeeper.Commands
 {

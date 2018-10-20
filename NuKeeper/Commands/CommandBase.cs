@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
@@ -42,7 +43,7 @@ namespace NuKeeper.Commands
             Description = "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         // ReSharper disable once MemberCanBePrivate.Global
-        protected string MinimumPackageAge { get; } 
+        protected string MinimumPackageAge { get; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "include",
             Description = "Only consider packages matching this regex pattern.")]

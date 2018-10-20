@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -12,7 +13,7 @@ using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
 
-namespace NuKeeper.Local
+namespace NuKeeper.Abstract.Local
 {
     public class LocalUpdater : ILocalUpdater
     {
@@ -37,8 +38,7 @@ namespace NuKeeper.Local
             IReadOnlyCollection<PackageUpdateSet> updates,
             IFolder workingFolder,
             NuGetSources sources,
-
-            SettingsContainer settings)
+            ISettingsContainer settings)
         {
             if (!updates.Any())
             {
@@ -46,7 +46,7 @@ namespace NuKeeper.Local
             }
 
             var filtered = await _selection
-                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
+                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true)).ConfigureAwait(false);
 
             if (!filtered.Any())
             {
@@ -54,18 +54,18 @@ namespace NuKeeper.Local
                 return;
             }
 
-            await ApplyUpdates(filtered, workingFolder, sources);
+            await ApplyUpdates(filtered, workingFolder, sources).ConfigureAwait(false);
         }
 
         private async Task ApplyUpdates(IReadOnlyCollection<PackageUpdateSet> updates, IFolder workingFolder, NuGetSources sources)
         {
-            await _solutionsRestore.CheckRestore(updates, workingFolder, sources);
+            await _solutionsRestore.CheckRestore(updates, workingFolder, sources).ConfigureAwait(false);
 
             foreach (var update in updates)
             {
                 _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
-                await _updateRunner.Update(update, sources);
+                await _updateRunner.Update(update, sources).ConfigureAwait(false);
             }
         }
     }
