@@ -17,6 +17,8 @@
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NuKeeper.Abstract\NuKeeper.Abstract.csproj" />
+    <ProjectReference Include="..\NuKeeper.Github\NuKeeper.Github.csproj" />
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
   </ItemGroup>

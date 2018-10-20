@@ -25,7 +25,7 @@ namespace NuKeeper
         {
             container.Register<ILocalEngine, LocalEngine>();
             container.Register<IGitHubEngine, GitHubEngine>();
-            container.Register<IGitHubRepositoryEngine, GitHubRepositoryEngine>();
+            container.Register<IRepositoryEngine, RepositoryEngine>();
             container.Register<IGitHubRepositoryDiscovery, GitHubRepositoryDiscovery>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();

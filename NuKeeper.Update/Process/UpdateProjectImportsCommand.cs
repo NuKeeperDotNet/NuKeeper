@@ -20,7 +20,7 @@ namespace NuKeeper.Update.Process
             var projectsToUpdate = new Stack<string>();
             projectsToUpdate.Push(currentPackage.Path.FullName);
 
-            while (projectsToUpdate.TryPop(out var currentProject))
+            foreach (var currentProject in projectsToUpdate)
             {
                 using (var projectContents = File.Open(currentProject, FileMode.Open, FileAccess.ReadWrite))
                 {
@@ -39,7 +39,7 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        private static async Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
+        private static Task<IEnumerable<string>> UpdateConditionsOnProjects(Stream fileContents)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
@@ -48,12 +48,12 @@ namespace NuKeeper.Update.Process
 
             if (project == null)
             {
-                return Enumerable.Empty<string>();
+                return Task.FromResult(Enumerable.Empty<string>());
             }
 
             var imports = project.Elements(ns + "Import");
             var importsWithToolsPath = imports
-                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)", StringComparison.OrdinalIgnoreCase)))
+                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)")))
                 .ToList();
 
             var importsWithoutCondition = importsWithToolsPath.Where(i => !i.Attributes("Condition").Any());
@@ -70,10 +70,10 @@ namespace NuKeeper.Update.Process
             if (saveRequired)
             {
                 fileContents.Seek(0, SeekOrigin.Begin);
-                await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
+                xml.Save(fileContents);
             }
 
-            return FindProjectReferences(project, ns);
+            return Task.FromResult(FindProjectReferences(project, ns));
         }
 
         private static IEnumerable<string> FindProjectReferences(XElement project, XNamespace ns)

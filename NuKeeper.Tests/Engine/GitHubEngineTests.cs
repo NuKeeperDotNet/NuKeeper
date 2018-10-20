@@ -125,7 +125,7 @@ namespace NuKeeper.Tests.Engine
         {
             var github = Substitute.For<IGitHub>();
             var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
-            var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
+            var repoEngine = Substitute.For<IRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
             github.GetCurrentUser().Returns(
