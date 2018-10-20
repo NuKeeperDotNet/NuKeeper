@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTargetFallback>portable-net45+win8+wpa81+wp8</PackageTargetFallback>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.0-alpha" />
+      <PackageReference Include="Refit" Version="4.6.48" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
+    </ItemGroup>
+
+
+</Project>
