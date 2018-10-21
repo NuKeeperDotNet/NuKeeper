@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -6,16 +5,19 @@ using NuKeeper.Inspection.RepositoryInspection;
 namespace NuKeeper.Engine
 {
     public static class BranchNamer
-    {        public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates)
+    {
+        public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             return updates.Count > 1 ?
-                MakeMultiPackageName(updates.Count) :
+                MakeMultiPackageName(updates) :
                 MakeSinglePackageName(updates.First());
         }
 
-        private static string MakeMultiPackageName(int updateCount)
+        private static string MakeMultiPackageName(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            return $"nukeeper-update-{updateCount}-packages-{UniqueTimeString()}";
+            var updatesHash = Hasher.Hash(PackageVersionStrings(updates));
+
+            return $"nukeeper-update-{updates.Count}-packages-{updatesHash}";
         }
 
         public static string MakeSinglePackageName(PackageUpdateSet updateSet)
@@ -23,10 +25,14 @@ namespace NuKeeper.Engine
             return $"nukeeper-update-{updateSet.SelectedId}-to-{updateSet.SelectedVersion}";
         }
 
-        private static string UniqueTimeString()
+        private static string PackageVersionStrings(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            var now = DateTime.UtcNow;
-            return $"{now.Year}{now.Month:00}{now.Day:00}T{now.Hour:00}{now.Minute:00}{now.Second:00}";
+            return string.Join(",", updates.Select(PackageVersionString));
+        }
+
+        private static string PackageVersionString(PackageUpdateSet updateSet)
+        {
+            return $"{updateSet.SelectedId}-v{updateSet.SelectedVersion}";
         }
     }
 }
