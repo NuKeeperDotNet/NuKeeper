@@ -38,9 +38,9 @@ namespace NuKeeper.Github.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            await _githubClient.Initialise(settings.AuthSettings).ConfigureAwait(false);
+            await _githubClient.Initialise(settings.AuthSettings);
 
-            var githubUser = await _githubClient.GetCurrentUser().ConfigureAwait(false);
+            var githubUser = await _githubClient.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
@@ -49,7 +49,7 @@ namespace NuKeeper.Github.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories(_githubClient, settings.SourceControlServerSettings).ConfigureAwait(false);
+            var repositories = await _repositoryDiscovery.GetRepositories(_githubClient, settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 
@@ -62,7 +62,7 @@ namespace NuKeeper.Github.Engine
                 }
 
                 var updatesInThisRepo = await _repositoryEngine.Run(repository,
-                    gitCreds, userIdentity, settings).ConfigureAwait(false);
+                    gitCreds, userIdentity, settings);
 
                 if (updatesInThisRepo > 0)
                 {

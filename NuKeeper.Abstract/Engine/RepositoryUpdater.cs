@@ -52,7 +52,7 @@ namespace NuKeeper.Abstract.Engine
             var sources = _nugetSourcesReader.Read(git.WorkingFolder, userSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, sources, userSettings.AllowedChange).ConfigureAwait(false);
+                git.WorkingFolder, sources, userSettings.AllowedChange);
 
             _reporter.Report(
                 userSettings.OutputDestination,
@@ -68,10 +68,10 @@ namespace NuKeeper.Abstract.Engine
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(
-                repository.Push, updates, settings.PackageFilters).ConfigureAwait(false);
+                repository.Push, updates, settings.PackageFilters);
 
             return await DoTargetUpdates(git, repository, targetUpdates,
-                sources, settings).ConfigureAwait(false);
+                sources, settings);
         }
 
         private async Task<int> DoTargetUpdates(
@@ -86,9 +86,9 @@ namespace NuKeeper.Abstract.Engine
                 return 0;
             }
 
-            await _solutionsRestore.CheckRestore(targetUpdates, git.WorkingFolder, sources).ConfigureAwait(false);
+            await _solutionsRestore.CheckRestore(targetUpdates, git.WorkingFolder, sources);
 
-            var updatesDone = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings).ConfigureAwait(false);
+            var updatesDone = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings);
 
             if (updatesDone < targetUpdates.Count)
             {

@@ -52,7 +52,7 @@ namespace NuKeeper.GitHub
         {
             CheckInitialised();
 
-            var user = await _client.User.Current().ConfigureAwait(false);
+            var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
 
@@ -74,14 +74,14 @@ namespace NuKeeper.GitHub
 
             var pr = new GithubPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
 
-            await OpenPullRequest(repository.Pull, pr, labels).ConfigureAwait(false);
+            await OpenPullRequest(repository.Pull, pr, labels);
         }
 
         public async Task<IReadOnlyList<IOrganization>> GetOrganizations()
         {
             CheckInitialised();
 
-            var orgs = await _client.Organization.GetAll().ConfigureAwait(false);
+            var orgs = await _client.Organization.GetAll();
             _logger.Normal($"Read {orgs.Count} organisations");
             return AutoMapperConfiguration.GithubMappingConfiguration.Map<IReadOnlyList<GithubOrganization>>(orgs);
         }
@@ -90,7 +90,7 @@ namespace NuKeeper.GitHub
         {
             CheckInitialised();
 
-            var repos = await _client.Repository.GetAllForOrg(organisationName).ConfigureAwait(false);
+            var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
             return AutoMapperConfiguration.GithubMappingConfiguration.Map<IReadOnlyList<GithubRepository>>(repos);
         }
@@ -102,7 +102,7 @@ namespace NuKeeper.GitHub
             _logger.Detailed($"Looking for user fork for {userName}/{repositoryName}");
             try
             {
-                var result = await _client.Repository.Get(userName, repositoryName).ConfigureAwait(false);
+                var result = await _client.Repository.Get(userName, repositoryName);
                 _logger.Normal($"User fork found at {result.GitUrl} for {result.Owner.Login}");
                 return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubRepository>(result);
             }
@@ -120,7 +120,7 @@ namespace NuKeeper.GitHub
             _logger.Detailed($"Making user fork for {repositoryName}");
             try
             {
-                var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork()).ConfigureAwait(false);
+                var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
                 _logger.Normal($"User fork created at {result.GitUrl} for {result.Owner.Login}");
                 return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubRepository>(result);
             }
@@ -137,7 +137,7 @@ namespace NuKeeper.GitHub
 
             try
             {
-                var result = await _client.Repository.Branch.Get(userName, repositoryName, branchName).ConfigureAwait(false);
+                var result = await _client.Repository.Branch.Get(userName, repositoryName, branchName);
                 _logger.Detailed($"Branch found for {userName} / {repositoryName} / {branchName}");
                 return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubBranch>(result);
             }
@@ -157,9 +157,9 @@ namespace NuKeeper.GitHub
 
             _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Detailed($"PR title: {request.Title}");
-            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, newPullRequest).ConfigureAwait(false);
+            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, newPullRequest);
 
-            await AddLabelsToIssue(target, createdPullRequest.Number, labels).ConfigureAwait(false);
+            await AddLabelsToIssue(target, createdPullRequest.Number, labels);
 
             return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubPullRequestInfo>(createdPullRequest);
         }
@@ -172,7 +172,7 @@ namespace NuKeeper.GitHub
 
             var mappedRequest = AutoMapperConfiguration.GithubMappingConfiguration.Map<SearchCodeRequest>(request);
 
-            var result = await _client.Search.SearchCode(mappedRequest).ConfigureAwait(false);
+            var result = await _client.Search.SearchCode(mappedRequest);
 
             var mappedResult = AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubSearchCodeResult>(result);
 
@@ -194,7 +194,7 @@ namespace NuKeeper.GitHub
                 try
                 {
                     await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, issueNumber,
-                        labelsToApply).ConfigureAwait(false);
+                        labelsToApply);
 
                 }
                 catch (Exception ex)

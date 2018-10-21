@@ -38,7 +38,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, settings.UserSettings.ForkMode, gitCreds.Username).ConfigureAwait(false);
+                var repo = await BuildGitRepositorySpec(repository, settings.UserSettings.ForkMode, gitCreds.Username);
                 if (repo == null)
                 {
                     return 0;
@@ -52,7 +52,7 @@ namespace NuKeeper.Engine
                 var tempFolder = _folderFactory.UniqueTemporaryFolder();
                 var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
 
-                var updatesDone = await _repositoryUpdater.Run(git, repo, settings).ConfigureAwait(false);
+                var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 
                 tempFolder.TryDelete();
                 return updatesDone;
@@ -70,7 +70,7 @@ namespace NuKeeper.Engine
             string userName)
         {
             var pullFork = new ForkData(repository.Uri, repository.Owner, repository.RepositoryName);
-            var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork).ConfigureAwait(false);
+            var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
 
             if (pushFork == null)
             {

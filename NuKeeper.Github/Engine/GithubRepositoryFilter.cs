@@ -30,7 +30,7 @@ namespace NuKeeper.Github.Engine
             };
             try
             {
-                var result = await _client.Search(request).ConfigureAwait(false);
+                var result = await _client.Search(request);
                 if (result.TotalCount <= 0)
                 {
                     _logger.Detailed(

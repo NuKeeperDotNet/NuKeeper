@@ -46,7 +46,7 @@ namespace NuKeeper.Abstract.Local
             }
 
             var filtered = await _selection
-                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true)).ConfigureAwait(false);
+                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
 
             if (!filtered.Any())
             {
@@ -54,18 +54,18 @@ namespace NuKeeper.Abstract.Local
                 return;
             }
 
-            await ApplyUpdates(filtered, workingFolder, sources).ConfigureAwait(false);
+            await ApplyUpdates(filtered, workingFolder, sources);
         }
 
         private async Task ApplyUpdates(IReadOnlyCollection<PackageUpdateSet> updates, IFolder workingFolder, NuGetSources sources)
         {
-            await _solutionsRestore.CheckRestore(updates, workingFolder, sources).ConfigureAwait(false);
+            await _solutionsRestore.CheckRestore(updates, workingFolder, sources);
 
             foreach (var update in updates)
             {
                 _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
-                await _updateRunner.Update(update, sources).ConfigureAwait(false);
+                await _updateRunner.Update(update, sources);
             }
         }
     }

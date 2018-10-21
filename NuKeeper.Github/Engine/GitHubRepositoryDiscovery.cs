@@ -26,10 +26,10 @@ namespace NuKeeper.Github.Engine
             switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    return await ForAllOrgs(gitHub, settings).ConfigureAwait(false);
+                    return await ForAllOrgs(gitHub, settings);
 
                 case ServerScope.Organisation:
-                    return await FromOrganisation(gitHub, settings.OrganisationName, settings).ConfigureAwait(false);
+                    return await FromOrganisation(gitHub, settings.OrganisationName, settings);
 
                 case ServerScope.Repository:
                     return new[] { settings.Repository };
@@ -43,13 +43,13 @@ namespace NuKeeper.Github.Engine
         private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(
             IClient gitHubClient, SourceControlServerSettings settings)
         {
-            var allOrgs = await gitHubClient.GetOrganizations().ConfigureAwait(false);
+            var allOrgs = await gitHubClient.GetOrganizations();
 
             var allRepos = new List<RepositorySettings>();
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(gitHubClient, org.Name ?? org.Login, settings).ConfigureAwait(false);
+                var repos = await FromOrganisation(gitHubClient, org.Name ?? org.Login, settings);
                 allRepos.AddRange(repos);
             }
 
@@ -59,7 +59,7 @@ namespace NuKeeper.Github.Engine
         private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(
             IClient gitHubClient, string organisationName, SourceControlServerSettings settings)
         {
-            var allOrgRepos = await gitHubClient.GetRepositoriesForOrganisation(organisationName).ConfigureAwait(false);
+            var allOrgRepos = await gitHubClient.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
                 .Where(r => MatchesIncludeExclude(r, settings))

@@ -44,7 +44,7 @@ namespace NuKeeper.Abstract.Engine.Packages
                 {
                     var updatesMade = await MakeUpdatePullRequests(
                         git, repository,
-                        sources, settings, updateSets).ConfigureAwait(false);
+                        sources, settings, updateSets);
 
                     totalCount += updatesMade;
                 }
@@ -73,7 +73,7 @@ namespace NuKeeper.Abstract.Engine.Packages
 
             foreach (var updateSet in updates)
             {
-                await _updateRunner.Update(updateSet, sources).ConfigureAwait(false);
+                await _updateRunner.Update(updateSet, sources);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
@@ -85,7 +85,7 @@ namespace NuKeeper.Abstract.Engine.Packages
             var body = CommitWording.MakeCommitDetails(updates);
 
             await _client.CreatePullRequest(repository, title, body, branchName,
-                settings.SourceControlServerSettings.Labels).ConfigureAwait(false);
+                settings.SourceControlServerSettings.Labels);
 
             git.Checkout(repository.DefaultBranch);
             return updates.Count;

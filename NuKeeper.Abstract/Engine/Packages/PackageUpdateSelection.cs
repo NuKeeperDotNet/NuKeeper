@@ -39,7 +39,7 @@ namespace NuKeeper.Abstract.Engine.Packages
 
             var filtered = await _updateSelection.Filter(
                 sorted, settings,
-                p => _existingBranchFilter.CanMakeBranchFor(p, pushFork)).ConfigureAwait(false);
+                p => _existingBranchFilter.CanMakeBranchFor(p, pushFork));
 
             foreach (var updateSet in filtered)
             {

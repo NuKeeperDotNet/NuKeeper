@@ -29,7 +29,7 @@ namespace NuKeeper.Github.Engine
 
             var pr = new GithubPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
 
-            await gitHubClient.OpenPullRequest(repository.Pull, pr, labels).ConfigureAwait(false);
+            await gitHubClient.OpenPullRequest(repository.Pull, pr, labels);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace NuKeeper
                 .Select(item => new { Item = item, PredTask = predicate.Invoke(item) })
                 .ToList();
 
-            await Task.WhenAll(itemTaskList.Select(x => x.PredTask)).ConfigureAwait(false);
+            await Task.WhenAll(itemTaskList.Select(x => x.PredTask));
 
             return itemTaskList
                 .Where(x => x.PredTask.Result)

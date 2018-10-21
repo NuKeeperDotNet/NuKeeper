@@ -22,7 +22,7 @@ namespace NuKeeper.Abstract.Engine.Packages
             try
             {
                 var branchName = BranchNamer.MakeName(packageUpdateSet);
-                var githubBranch = await _client.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName).ConfigureAwait(false);
+                var githubBranch = await _client.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName);
                 return (githubBranch == null);
             }
             catch(Exception ex)
