@@ -32,6 +32,8 @@ namespace NuKeeper.Configuration
         public OutputDestination? OutputDestination { get; set; }
         public string OutputFileName { get; set; }
 
+        public LogDestination? LogDestination { get; set; }
+
         public static FileSettings Empty()
         {
             return new FileSettings();
