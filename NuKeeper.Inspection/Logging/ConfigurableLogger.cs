@@ -1,6 +1,4 @@
 using System;
-using NuGet.Common;
-using NuKeeper.Inspection.Report;
 
 namespace NuKeeper.Inspection.Logging
 {
