@@ -29,7 +29,7 @@ namespace NuKeeper.Update.Process
             }
         }
 
-        private async Task UpdateNuspec(FileStream fileContents, NuGetVersion newVersion,
+        private Task UpdateNuspec(FileStream fileContents, NuGetVersion newVersion,
             PackageInProject currentPackage)
         {
             var xml = XDocument.Load(fileContents);
@@ -37,7 +37,7 @@ namespace NuKeeper.Update.Process
             var packagesNode = xml.Element("package")?.Element("metadata")?.Element("dependencies");
             if (packagesNode == null)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             var packageNodeList = packagesNode.Elements()
@@ -51,7 +51,10 @@ namespace NuKeeper.Update.Process
             }
 
             fileContents.Seek(0, SeekOrigin.Begin);
-            await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
+            
+            xml.Save(fileContents);
+            
+            return Task.CompletedTask;
         }
     }
 }

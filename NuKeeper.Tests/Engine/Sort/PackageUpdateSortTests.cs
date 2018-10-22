@@ -208,7 +208,7 @@ namespace NuKeeper.Tests.Engine.Sort
             return PackageUpdates.UpdateSetFor(newPackage, projects.ToArray());
         }
 
-        private PackageUpdateSet MakeTwoProjectVersions()
+        private static PackageUpdateSet MakeTwoProjectVersions()
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.4.5"));
 
