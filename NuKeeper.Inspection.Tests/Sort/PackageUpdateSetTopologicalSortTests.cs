@@ -190,7 +190,7 @@ namespace NuKeeper.Inspection.Tests.Sort
             return new PackageDependency(package.SelectedId, new VersionRange(package.SelectedVersion));
         }
 
-        private PackageUpdateSet MakeUpdateSet(string packageId, string packageVersion, PackageDependency upstream = null)
+        private static PackageUpdateSet MakeUpdateSet(string packageId, string packageVersion, PackageDependency upstream = null)
         {
             var currentPackages = new List<PackageInProject>
             {

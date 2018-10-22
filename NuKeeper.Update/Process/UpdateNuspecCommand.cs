@@ -20,16 +20,17 @@ namespace NuKeeper.Update.Process
             _logger = logger;
         }
 
-        public async Task Invoke(PackageInProject currentPackage,
+        public Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
             using (var nuspecContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
             {
-                await UpdateNuspec(nuspecContents, newVersion, currentPackage);
+                UpdateNuspec(nuspecContents, newVersion, currentPackage);
+                return Task.CompletedTask;
             }
         }
 
-        private async Task UpdateNuspec(FileStream fileContents, NuGetVersion newVersion,
+        private void UpdateNuspec(FileStream fileContents, NuGetVersion newVersion,
             PackageInProject currentPackage)
         {
             var xml = XDocument.Load(fileContents);
@@ -51,7 +52,8 @@ namespace NuKeeper.Update.Process
             }
 
             fileContents.Seek(0, SeekOrigin.Begin);
-            await xml.SaveAsync(fileContents, SaveOptions.None, CancellationToken.None);
+            
+            xml.Save(fileContents);
         }
     }
 }
