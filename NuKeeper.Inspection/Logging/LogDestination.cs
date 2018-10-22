@@ -1,8 +1,9 @@
-﻿namespace NuKeeper.Inspection.Logging
+namespace NuKeeper.Inspection.Logging
 {
     public enum LogDestination
     {
         Console,
-        File
+        File,
+        Off
     }
 }

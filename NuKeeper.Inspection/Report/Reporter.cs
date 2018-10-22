@@ -43,7 +43,7 @@ namespace NuKeeper.Inspection.Report
         {
             switch (format)
             {
-                case OutputFormat.None:
+                case OutputFormat.Off:
                     return new NullReportFormat();
 
                 case OutputFormat.Text:

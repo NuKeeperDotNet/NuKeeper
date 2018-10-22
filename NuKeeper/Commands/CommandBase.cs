@@ -28,15 +28,7 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string[] Source { get; }
 
-        protected NuGetSources NuGetSources => Source == null?  null : new NuGetSources(Source);
-
-        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
-            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
-        public LogLevel? Verbosity { get; set; }
-
-        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
-            Description = "Log to the named file")]
-        public string LogFile { get; set; }
+        protected NuGetSources NuGetSources => Source == null ? null : new NuGetSources(Source);
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description = "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
@@ -51,6 +43,18 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude",
             Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
+            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
+        public LogLevel? Verbosity { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "ld", LongName = "logdestination",
+            Description = "Destination for logging.")]
+        public LogDestination? LogDestination { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
+            Description = "Log to the named file.")]
+        public string LogFile { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "om", LongName = "outputformat",
             Description = "Format for output.")]
@@ -89,11 +93,19 @@ namespace NuKeeper.Commands
 
         private void InitialiseLogging()
         {
-            var fileSettings = FileSettingsCache.GetSettings();
-            var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
-            var logFile = Concat.FirstValue(LogFile, fileSettings.LogFile);
+            var settingsFromFile = FileSettingsCache.GetSettings();
 
-            _configureLogger.Initialise(logLevel, logFile);
+            var defaultLogDestination = string.IsNullOrWhiteSpace(LogFile)
+                ? Inspection.Logging.LogDestination.Console
+                : Inspection.Logging.LogDestination.File;
+
+            var logDest = Concat.FirstValue(LogDestination, settingsFromFile.LogDestination,
+                defaultLogDestination);
+
+            var logLevel = Concat.FirstValue(Verbosity, settingsFromFile.Verbosity, LogLevel.Normal);
+            var logFile = Concat.FirstValue(LogFile, settingsFromFile.LogFile, "nukeeper.log");
+
+            _configureLogger.Initialise(logLevel, logDest, logFile);
         }
 
         private SettingsContainer MakeSettings()

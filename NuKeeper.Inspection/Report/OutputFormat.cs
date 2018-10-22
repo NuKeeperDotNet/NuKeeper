@@ -2,7 +2,7 @@ namespace NuKeeper.Inspection.Report
 {
     public enum OutputFormat
     {
-        None,
+        Off,
         Text,
         Csv,
         Metrics,
