@@ -1,12 +1,12 @@
 language: csharp
 mono: none
 dist: trusty
-dotnet: 2.1.402
+dotnet: 2.1.403
 script:
-  - dotnet build -c Release -f netcoreapp2.1 NuKeeper.sln /m:1
-  - dotnet test -c Release -f netcoreapp2.1 NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release -f netcoreapp2.1 NuKeeper.Inspection.Tests/NuKeeper.Inspection.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release -f netcoreapp2.1 NuKeeper.Update.Tests/NuKeeper.Update.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release -f netcoreapp2.1 NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet build -c Release NuKeeper.sln /m:1
+  - dotnet test -c Release NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release NuKeeper.Inspection.Tests/NuKeeper.Inspection.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release NuKeeper.Update.Tests/NuKeeper.Update.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
 
  
