@@ -4,7 +4,6 @@ using LibGit2Sharp;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Abstract.Engine;
-using NuKeeper.Engine;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;

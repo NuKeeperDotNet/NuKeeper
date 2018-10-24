@@ -4,7 +4,6 @@ using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Abstract.Engine;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Github.Engine
 {

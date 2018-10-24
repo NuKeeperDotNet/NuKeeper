@@ -3,7 +3,7 @@ namespace NuKeeper.AzureDevOps.Models
     using System;
     using Newtonsoft.Json;
 
-    public partial class Profile
+    public class AzureProfile
     {
         [JsonProperty("displayName")]
         public string DisplayName { get; set; }

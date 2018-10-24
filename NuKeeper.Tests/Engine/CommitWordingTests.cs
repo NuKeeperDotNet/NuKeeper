@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Engine;
+using NuKeeper.Abstract.Engine;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 

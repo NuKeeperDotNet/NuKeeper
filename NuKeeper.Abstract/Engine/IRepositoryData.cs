@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NuKeeper.Abstract.Engine
+﻿namespace NuKeeper.Abstract.Engine
 {
     public interface IRepositoryData
     {

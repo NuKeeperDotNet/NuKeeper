@@ -1,4 +1,12 @@
+using LibGit2Sharp;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Engine;
+using NuKeeper.Inspection.Files;
+using NuKeeper.Inspection.Formats;
+using NuKeeper.Inspection.Logging;
 using System;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace NuKeeper.AzureDevOps.Engine
@@ -6,14 +14,14 @@ namespace NuKeeper.AzureDevOps.Engine
     public class AzureDevOpsEngine
     {
         private readonly IAzureDevOpsClient _github;
-        private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
+        private readonly IAzureDevopsRepositoryDiscovery _repositoryDiscovery;
         private readonly IRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public AzureDevOpsEngine(
             IAzureDevOpsClient github,
-            IGitHubRepositoryDiscovery repositoryDiscovery,
+            IAzureDevopsRepositoryDiscovery repositoryDiscovery,
             IRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
@@ -29,14 +37,14 @@ namespace NuKeeper.AzureDevOps.Engine
         {
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
+            var azureSettigns = new AzureDevopsAuthSettings(settings.AuthSettings.ApiBase, settings.AuthSettings.Token);
+            _github.Initialise(azureSettigns);
 
-            _github.Initialise(settings.GithubAuthSettings);
-
-            var githubUser = await _github.GetCurrentUser();
+            var githubUser = await _github.GetCurrentUser("id?") as IAccount;
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = settings.GithubAuthSettings.Token
+                Password = settings.AuthSettings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);
@@ -71,7 +79,7 @@ namespace NuKeeper.AzureDevOps.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(Account githubUser)
+        private Identity GetUserIdentity(IAccount githubUser)
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {
@@ -91,6 +99,5 @@ namespace NuKeeper.AzureDevOps.Engine
         {
             return DateFormat.AsUtcIso8601(DateTimeOffset.Now);
         }
-    }
     }
 }

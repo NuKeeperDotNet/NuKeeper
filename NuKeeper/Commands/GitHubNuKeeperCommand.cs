@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
 using NuKeeper.Github.Configuration;
 using NuKeeper.Inspection.Logging;
 

@@ -3,9 +3,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.GitHub;
+using NuKeeper.Github.Engine;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
@@ -18,7 +19,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task SuccessInRepoMode()
         {
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(),
@@ -39,7 +40,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task RepoModeIgnoresIncludesAndExcludes()
         {
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(RepositoryBuilder.MakeRepository(name: "foo")),
@@ -64,7 +65,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task SuccessInOrgMode()
         {
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
@@ -77,13 +78,13 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task OrgModeValidReposAreIncluded()
         {
-            var inputRepos = new List<Repository>
+            var inputRepos = new List<IRepository>
             {
                 RepositoryBuilder.MakeRepository()
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+            IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -97,20 +98,20 @@ namespace NuKeeper.Tests.Engine
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[0].Name));
-            Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
+            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
         }
 
         [Test]
         public async Task OrgModeInvalidReposAreExcluded()
         {
-            var inputRepos = new List<Repository>
+            var inputRepos = new List<IRepository>
             {
                 RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
                 RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+            IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -124,20 +125,20 @@ namespace NuKeeper.Tests.Engine
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
-            Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
         [Test]
         public async Task OrgModeWhenThereAreIncludes_OnlyConsiderMatches()
         {
-            var inputRepos = new List<Repository>
+            var inputRepos = new List<IRepository>
             {
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+            IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -158,14 +159,14 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task OrgModeWhenThereAreExcludes_OnlyConsiderNonMatching()
         {
-            var inputRepos = new List<Repository>
+            var inputRepos = new List<IRepository>
             {
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+            IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
@@ -186,14 +187,14 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task OrgModeWhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
         {
-            var inputRepos = new List<Repository>
+            var inputRepos = new List<IRepository>
             {
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
+            IReadOnlyList<IRepository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             github.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 

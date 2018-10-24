@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Engine;
+using NuKeeper.Github.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
@@ -20,8 +21,8 @@ namespace NuKeeper.Integration.Tests.Engine
             var result =
                 await subject.ContainsDotNetProjects(new RepositorySettings
                 {
-                    RepositoryName = "jquery",
-                    RepositoryOwner = "jquery"
+                    Name = "jquery",
+                    Owner = "jquery"
                 });
             Assert.False(result);
         }
@@ -32,19 +33,19 @@ namespace NuKeeper.Integration.Tests.Engine
             IRepositoryFilter subject = MakeRepositoryFilter();
 
             var result =
-                await subject.ContainsDotNetProjects(new RepositorySettings {RepositoryName = "cli", RepositoryOwner = "dotnet"});
+                await subject.ContainsDotNetProjects(new RepositorySettings {Name = "cli", Owner = "dotnet"});
             Assert.True(result);
         }
 
-        private static RepositoryFilter MakeRepositoryFilter()
+        private static IRepositoryFilter MakeRepositoryFilter()
         {
             const string testKeyWithOnlyPublicAccess = "c13d2ce7774d39ae99ddaad46bd69c3d459b9992";
             var logger = Substitute.For<INuKeeperLogger>();
 
             var gitHubClient = new OctokitClient(logger);
-            gitHubClient.Initialise(new GithubAuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
+            gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
 
-            return new RepositoryFilter(gitHubClient, logger);
+            return new GithubRepositoryFilter(gitHubClient, logger);
         }
     }
 }

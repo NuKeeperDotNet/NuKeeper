@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstract.Configuration;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
