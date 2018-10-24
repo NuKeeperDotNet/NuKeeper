@@ -58,8 +58,8 @@ namespace NuKeeper.Tests.Engine
         private static RepositorySettings MakeSampleRepository()
         {
             return new RepositorySettings
-            {                
-                Name = "sample-repo",
+            {
+                RepositoryName = "sample-repo",
                 Owner = "sample-owner"
             };
         }

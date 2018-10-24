@@ -4,6 +4,7 @@ using NSubstitute;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Abstract.Engine;
 using NuKeeper.Github.Engine;
+using NuKeeper.Github.Mappings;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace NuKeeper.Integration.Tests.Engine
             var result =
                 await subject.ContainsDotNetProjects(new RepositorySettings
                 {
-                    Name = "jquery",
+                    RepositoryName = "jquery",
                     Owner = "jquery"
                 });
             Assert.False(result);
@@ -33,7 +34,7 @@ namespace NuKeeper.Integration.Tests.Engine
             IRepositoryFilter subject = MakeRepositoryFilter();
 
             var result =
-                await subject.ContainsDotNetProjects(new RepositorySettings {Name = "cli", Owner = "dotnet"});
+                await subject.ContainsDotNetProjects(new RepositorySettings { RepositoryName = "cli", Owner = "dotnet"});
             Assert.True(result);
         }
 

@@ -18,6 +18,6 @@ namespace NuKeeper.Abstract.Configuration
         public Uri Uri { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
-        public string RepositoryName { get; }
+        public string RepositoryName { get; set; }
     }
 }

@@ -21,17 +21,11 @@ namespace NuKeeper.Github.Mappings
 
         public new IRepository Parent => AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubRepository>(base.Parent);
 
-        public new string Name => base.Name;
-
         public new Permissions Permissions => AutoMapperConfiguration.GithubMappingConfiguration.Map<Permissions>(base.Permissions);
-
-        public new bool Archived => base.Archived;
 
         public new Uri CloneUrl => new Uri(base.CloneUrl);
 
         public new Uri HtmlUrl => new Uri(base.HtmlUrl);
-
-        public new bool Fork => base.Fork;
 
         public new IAccount Owner => AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubAccount>(base.Owner);
 
