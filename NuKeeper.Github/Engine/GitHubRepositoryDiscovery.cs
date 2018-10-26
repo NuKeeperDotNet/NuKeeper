@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Github.Engine

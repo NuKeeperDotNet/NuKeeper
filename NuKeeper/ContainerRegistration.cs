@@ -4,6 +4,7 @@ using NuKeeper.Abstract.Engine;
 using NuKeeper.Abstract.Engine.Packages;
 using NuKeeper.Abstract.Local;
 using NuKeeper.Engine;
+using NuKeeper.Github.Configuration;
 using NuKeeper.Github.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Update.Selection;
@@ -39,6 +40,7 @@ namespace NuKeeper
             container.Register<ILocalUpdater, LocalUpdater>();
             container.Register<IUpdateSelection, UpdateSelection>();
             container.Register<IFileSettingsCache, FileSettingsCache>();
+            container.Register<ISettingsReader, GitSettingsReader>();
             container.RegisterSingleton<IClient, OctokitClient>();
         }
     }

@@ -1,8 +1,5 @@
 ﻿using System;
-using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
-using NuKeeper.Configuration;
-using Octokit;
 
 namespace NuKeeper.Github.Configuration
 {

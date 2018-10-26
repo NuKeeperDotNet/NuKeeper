@@ -1,10 +1,7 @@
 namespace NuKeeper.AzureDevOps.Models
 {
-    using System.Collections.Generic;
-
-    using System.Globalization;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System.Collections.Generic;
 
     public partial class PullRequest
     {
@@ -21,6 +18,6 @@ namespace NuKeeper.AzureDevOps.Models
         public string Description { get; set; }
 
         [JsonProperty("reviewers")]
-        public Reviewer[] Reviewers { get; set; }
+        public IEnumerable<Reviewer> Reviewers { get; set; }
     }
 }

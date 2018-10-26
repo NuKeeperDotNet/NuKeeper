@@ -4,6 +4,10 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+  
     <ItemGroup>
       <ProjectReference Include="..\NuKeeper.Abstract\NuKeeper.Abstract.csproj" />
     </ItemGroup>

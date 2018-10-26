@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.AzureDevOps.Models;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using Refit;
 
 namespace NuKeeper.AzureDevOps
 {
@@ -11,11 +8,11 @@ namespace NuKeeper.AzureDevOps
     {
         void Initialise(AzureDevopsAuthSettings settings);
 
-        [Get("_apis/profile/profiles/{id}?api-version=5.0-preview.3")]
-        Task<Profile> GetCurrentUser([AliasAs("id")] string id);
+        //[Get("_apis/profile/profiles/{id}?api-version=5.0-preview.3")]
+        Task<AzureProfile> GetCurrentUser(string id);
 
-        [Post("_apis/git/repositories/{repositoryId}/pullrequests?api-version=5.0-preview.1")]
-        Task<GitPullRequest> OpenPullRequest([AliasAs("repositoryId")] string repositoryId, PullRequest request);
+        //[Post("_apis/git/repositories/{repositoryId}/pullrequests?api-version=5.0-preview.1")]
+        Task<GitPullRequest> OpenPullRequest(string repositoryId, PullRequest request);
 
         Task<IReadOnlyList<bool>> GetOrganizations();
 

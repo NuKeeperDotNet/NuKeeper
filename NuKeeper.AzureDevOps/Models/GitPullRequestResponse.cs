@@ -1,6 +1,7 @@
 namespace NuKeeper.AzureDevOps.Models
 {
     using System;
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     public partial class GitPullRequest
@@ -48,7 +49,7 @@ namespace NuKeeper.AzureDevOps.Models
         public LastMergeCommit LastMergeTargetCommit { get; set; }
 
         [JsonProperty("reviewers")]
-        public Reviewer[] Reviewers { get; set; }
+        public IEnumerable<Reviewer> Reviewers { get; set; }
 
         [JsonProperty("url")]
         public Uri Url { get; set; }

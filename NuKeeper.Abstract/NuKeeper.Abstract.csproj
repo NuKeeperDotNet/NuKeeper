@@ -1,18 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
     <ItemGroup>
-      <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
-      <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0054" />
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="LibGit2Sharp, Version=0.26.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333">
-        <HintPath>..\..\..\..\.nuget\packages\libgit2sharp\0.26.0-preview-0054\lib\netstandard2.0\LibGit2Sharp.dll</HintPath>
-      </Reference>
+      <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
+      <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
     </ItemGroup>
 
 </Project>

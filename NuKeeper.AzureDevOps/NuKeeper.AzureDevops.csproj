@@ -1,17 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageTargetFallback>portable-net45+win8+wpa81+wp8</PackageTargetFallback>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
+    <PropertyGroup>
+      <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+  
+    <PropertyGroup>
+      <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.0-alpha" />
-      <PackageReference Include="Refit" Version="4.6.48" />
+      <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NuKeeper.Abstract\NuKeeper.Abstract.csproj" />
       <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     </ItemGroup>
 

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Configuration;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Local;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -10,7 +11,6 @@ using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Sources;
-using NuKeeper.Local;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Local

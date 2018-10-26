@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Engine;
-using NuKeeper.Engine;
-using Octokit;
 
 namespace NuKeeper.Github.Engine
 {

@@ -26,10 +26,4 @@ namespace NuKeeper.AzureDevOps.Models
         [JsonProperty("imageUrl")]
         public Uri ImageUrl { get; set; }
     }
-
-    public partial class Reviewer
-    {
-        [JsonProperty("id")]
-        public Guid Id { get; set; }
-    }
 }
