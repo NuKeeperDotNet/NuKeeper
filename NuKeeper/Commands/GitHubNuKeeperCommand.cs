@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Github.Configuration;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
     internal abstract class GitHubNuKeeperCommand : CommandBase
     {
-        private readonly IGitHubEngine _engine;
+        private readonly IEngine _githubEngine;
 
         [Argument(1, Name = "Token",
             Description = "GitHub personal access token to authorise access to GitHub server.")]
@@ -27,7 +28,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.NoValue, ShortName = "co", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
-        public bool? Consolidate { get; set; } 
+        public bool? Consolidate { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description = "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
@@ -37,10 +38,10 @@ namespace NuKeeper.Commands
             Description = "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         public string GithubApiEndpoint { get; set;  }
 
-        protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :
+        protected GitHubNuKeeperCommand(IEngine githubEngine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :
             base(logger, fileSettingsCache)
         {
-            _engine = engine;
+            _githubEngine = githubEngine;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -73,7 +74,7 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            settings.GithubAuthSettings = new GithubAuthSettings(githubUrl, token);
+            settings.AuthSettings = new AuthSettings(githubUrl, token);
 
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
@@ -95,7 +96,7 @@ namespace NuKeeper.Commands
 
         protected override async Task<int> Run(SettingsContainer settings)
         {
-            await _engine.Run(settings);
+            await _githubEngine.Run(settings);
             return 0;
         }
 

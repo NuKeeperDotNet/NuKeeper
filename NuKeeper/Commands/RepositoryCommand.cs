@@ -1,7 +1,8 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
@@ -9,12 +10,15 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for a single repository on GitHub.")]
     internal class RepositoryCommand : GitHubNuKeeperCommand
     {
+        private readonly ISettingsReader _settingsReader;
+
         [Argument(0, Name = "GitHub repository URI", Description = "The URI of the repository to scan.")]
         public string GitHubRepositoryUri { get; set; }
 
-        public RepositoryCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
+        public RepositoryCommand(IEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
             : base(engine, logger, fileSettingsCache)
         {
+            _settingsReader = settingsReader;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -31,7 +35,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
-            settings.SourceControlServerSettings.Repository = GitSettingsReader.ReadRepositorySettings(repoUri);
+            settings.SourceControlServerSettings.Repository = _settingsReader.ReadRepositorySettings(repoUri);
 
             if (settings.SourceControlServerSettings.Repository == null)
             {

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+  
+    <ItemGroup>
+      <ProjectReference Include="..\NuKeeper.Abstract\NuKeeper.Abstract.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="7.0.1" />
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0054" />
+      <PackageReference Include="Octokit" Version="0.32.0" />
+    </ItemGroup>
+
+</Project>

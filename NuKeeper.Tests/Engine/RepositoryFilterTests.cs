@@ -2,9 +2,11 @@ using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.GitHub;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Engine;
+using NuKeeper.Github.Engine;
+using NuKeeper.Github.Mappings;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
@@ -17,10 +19,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldFilterWhenNoMatchFound()
         {
-            var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0, false, null)));
+            var githubClient = Substitute.For<IClient>();
+            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0, false, null) as ISearchCodeResult));
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -30,10 +32,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenMatchFound()
         {
-            var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1, false, null)));
+            var githubClient = Substitute.For<IClient>();
+            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new GithubSearchCodeResult(1, false, null) as ISearchCodeResult));
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -43,10 +45,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenSearchFails()
         {
-            var githubClient = Substitute.For<IGitHub>();
+            var githubClient = Substitute.For<IClient>();
             githubClient.Search(null).ThrowsForAnyArgs(new Exception());
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -58,7 +60,7 @@ namespace NuKeeper.Tests.Engine
             return new RepositorySettings
             {
                 RepositoryName = "sample-repo",
-                RepositoryOwner = "sample-owner"
+                Owner = "sample-owner"
             };
         }
     }

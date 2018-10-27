@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Local;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
-using NuKeeper.Local;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Commands

@@ -1,6 +1,6 @@
 using System.IO;
 using NSubstitute;
-using NuKeeper.Configuration;
+using NuKeeper.Abstract.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;

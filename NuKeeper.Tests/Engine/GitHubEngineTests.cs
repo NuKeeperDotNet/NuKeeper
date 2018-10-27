@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Engine;
 using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.GitHub;
+using NuKeeper.Github.Engine;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
+using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -100,7 +103,7 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
@@ -123,15 +126,15 @@ namespace NuKeeper.Tests.Engine
             int repoEngineResult,
             List<RepositorySettings> repos)
         {
-            var github = Substitute.For<IGitHub>();
+            var github = Substitute.For<IClient>();
             var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
-            var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
+            var repoEngine = Substitute.For<IRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
             github.GetCurrentUser().Returns(
                 RepositoryBuilder.MakeUser("http://test.user.com"));
 
-            repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
+            repoDiscovery.GetRepositories(Arg.Any<IClient>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
@@ -145,7 +148,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = MakeUserSettings(),
                 SourceControlServerSettings = MakseServerSettings()
             };
@@ -164,9 +167,9 @@ namespace NuKeeper.Tests.Engine
             return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
         }
 
-        private static GithubAuthSettings MakeGitHubAuthSettings()
+        private static AuthSettings MakeGitHubAuthSettings()
         {
-            return new GithubAuthSettings(new Uri("http://foo.com"), "token123");
+            return new AuthSettings(new Uri("http://foo.com"), "token123");
         }
     }
 }

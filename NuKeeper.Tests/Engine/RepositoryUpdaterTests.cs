@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
-using NuKeeper.Configuration;
-using NuKeeper.Engine;
-using NuKeeper.Engine.Packages;
+using NuKeeper.Abstract;
+using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstract.Engine;
+using NuKeeper.Abstract.Engine.Packages;
 using NuKeeper.Git;
-using NuKeeper.GitHub;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -76,7 +74,7 @@ namespace NuKeeper.Tests.Engine
         public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, bool consolidateUpdates, int expectedUpdates, int expectedPrs)
         {
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            var gitHub = Substitute.For<IGitHub>();
+            var gitHub = Substitute.For<IClient>();
             var gitDriver = Substitute.For<IGitDriver>();
             UpdateSelectionAll(updateSelection);
 
@@ -104,7 +102,7 @@ namespace NuKeeper.Tests.Engine
             await gitHub.Received(expectedPrs)
                 .OpenPullRequest(
                     Arg.Any<ForkData>(),
-                    Arg.Any<NewPullRequest>(),
+                    Arg.Any<INewPullRequest>(),
                     Arg.Any<IEnumerable<string>>());
 
             gitDriver.Received(numberOfUpdates)

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0054" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
+      <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
+    </ItemGroup>
+
+</Project>

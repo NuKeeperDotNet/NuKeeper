@@ -1,4 +1,6 @@
 using System;
+using NuKeeper.Abstract;
+using NuKeeper.Github.Mappings;
 using Octokit;
 
 #pragma warning disable CA1054
@@ -14,12 +16,12 @@ namespace NuKeeper.Tests.Engine
         public const string ForkCloneUrl = "http://repos.com/org/repo.git";
         public const string NoMatchUrl = "http://repos.com/org/nomatch";
 
-        public static Repository MakeRepository(bool canPull, bool canPush)
+        public static IRepository MakeRepository(bool canPull, bool canPush)
         {
             return MakeRepository(ForkHtmlUrl, ForkCloneUrl, canPull, canPush);
         }
 
-        public static Repository MakeRepository(
+        public static IRepository MakeRepository(
             string forkHtmlUrl = ForkHtmlUrl,
             string forkCloneUrl = ForkCloneUrl,
             bool canPull = true, bool canPush = true,
@@ -31,10 +33,10 @@ namespace NuKeeper.Tests.Engine
             var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
-            return new Repository(omniUrl, forkHtmlUrl, forkCloneUrl,
+            return new GithubRepository(omniUrl, forkHtmlUrl, forkCloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                owner, name, name, "a test repo", "homepage",
+                (User)owner, name, name, "a test repo", "homepage",
                 "EN", false, true,
                 1, 1, "master",
                 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
@@ -55,16 +57,16 @@ namespace NuKeeper.Tests.Engine
             return new Repository(omniUrl, htmlUrl, cloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
+                (User)owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null,
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, null, null, null,
                 false, false, false, false, 2, 122, true, true, true, false);
         }
 
-        public static User MakeUser(string omniUrl)
+        public static IAccount MakeUser(string omniUrl)
         {
-            return new User(omniUrl, "test user", null, 0, "test inc",
+            return new GithubAccount(omniUrl, "test user", null, 0, "test inc",
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 0, "testuser@test.com", 0, 0,
                 false, omniUrl, 1, 1,
