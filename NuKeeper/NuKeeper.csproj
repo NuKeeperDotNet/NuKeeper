@@ -10,7 +10,7 @@
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0027" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0054" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NuGet.CommandLine" Version="4.7.1" />
     <PackageReference Include="Octokit" Version="0.32.0" />
