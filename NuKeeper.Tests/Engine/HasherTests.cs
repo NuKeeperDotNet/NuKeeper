@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using NuKeeper.Engine;
+using NuKeeper.Abstract.Engine;
 
 namespace NuKeeper.Tests.Engine
 {

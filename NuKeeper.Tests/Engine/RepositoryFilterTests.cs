@@ -20,7 +20,9 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldFilterWhenNoMatchFound()
         {
             var githubClient = Substitute.For<IClient>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0, false, null) as ISearchCodeResult));
+            var searchCodeResult = Substitute.For<ISearchCodeResult>();
+            searchCodeResult.TotalCount.ReturnsForAnyArgs(0);
+            githubClient.Search(null).ReturnsForAnyArgs(searchCodeResult);
 
             IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
@@ -33,7 +35,9 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldNotFilterWhenMatchFound()
         {
             var githubClient = Substitute.For<IClient>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new GithubSearchCodeResult(1, false, null) as ISearchCodeResult));
+            var searchCodeResult = Substitute.For<ISearchCodeResult>();
+            searchCodeResult.TotalCount.ReturnsForAnyArgs(1);
+            githubClient.Search(null).ReturnsForAnyArgs(searchCodeResult);
 
             IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 

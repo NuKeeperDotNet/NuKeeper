@@ -20,13 +20,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Update", "NuKeeper.Update\NuKeeper.Update.csproj", "{E210D6EF-4EC3-44DD-8E18-269A3647688B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Update.Tests", "NuKeeper.Update.Tests\NuKeeper.Update.Tests.csproj", "{1336C9CF-8B90-428B-904B-2C223010FD16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Update.Tests", "NuKeeper.Update.Tests\NuKeeper.Update.Tests.csproj", "{1336C9CF-8B90-428B-904B-2C223010FD16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.AzureDevops", "NuKeeper.AzureDevops\NuKeeper.AzureDevops.csproj", "{A849700F-86EF-421A-AE7A-2357DACFAB14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Abstract", "NuKeeper.Abstract\NuKeeper.Abstract.csproj", "{6A06855E-0A5B-4981-92D4-8031F7AEDC62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Abstract", "NuKeeper.Abstract\NuKeeper.Abstract.csproj", "{6A06855E-0A5B-4981-92D4-8031F7AEDC62}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Github", "NuKeeper.Github\NuKeeper.Github.csproj", "{F320D180-FA1D-4832-9A30-4D77F73C0E85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Github", "NuKeeper.Github\NuKeeper.Github.csproj", "{F320D180-FA1D-4832-9A30-4D77F73C0E85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,10 +60,6 @@ Global
 		{1336C9CF-8B90-428B-904B-2C223010FD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1336C9CF-8B90-428B-904B-2C223010FD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1336C9CF-8B90-428B-904B-2C223010FD16}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A849700F-86EF-421A-AE7A-2357DACFAB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A849700F-86EF-421A-AE7A-2357DACFAB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A849700F-86EF-421A-AE7A-2357DACFAB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A849700F-86EF-421A-AE7A-2357DACFAB14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A06855E-0A5B-4981-92D4-8031F7AEDC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A06855E-0A5B-4981-92D4-8031F7AEDC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A06855E-0A5B-4981-92D4-8031F7AEDC62}.Release|Any CPU.ActiveCfg = Release|Any CPU

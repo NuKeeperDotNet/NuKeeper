@@ -5,6 +5,7 @@ using NSubstitute;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Commands;
 using NuKeeper.Configuration;
+using NuKeeper.Github.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
@@ -225,7 +226,7 @@ namespace NuKeeper.Tests.Commands
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<IGitHubEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
-            var settingsReader = Substitute.For<ISettingsReader>();
+            var settingsReader = Substitute.For<GitSettingsReader>();
 
 
             fileSettings.GetSettings().Returns(settingsIn);

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
@@ -19,7 +15,10 @@ using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
-using Octokit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -63,7 +62,7 @@ namespace NuKeeper.Tests.Engine
             var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
-            await AssertReceivedMakeUpdate(packageUpdater,1);
+            await AssertReceivedMakeUpdate(packageUpdater, 1);
         }
 
         [TestCase(0, true, 0, 0)]
@@ -87,7 +86,7 @@ namespace NuKeeper.Tests.Engine
                 .ToList();
 
             var settings = MakeSettings(consolidateUpdates);
-            
+
             var (repoUpdater, _) = MakeRepositoryUpdater(
                 updateSelection, updates, packageUpdater);
 
@@ -100,9 +99,11 @@ namespace NuKeeper.Tests.Engine
             Assert.That(count, Is.EqualTo(expectedUpdates));
 
             await gitHub.Received(expectedPrs)
-                .OpenPullRequest(
-                    Arg.Any<ForkData>(),
-                    Arg.Any<INewPullRequest>(),
+                .CreatePullRequest(
+                    Arg.Any<IRepositoryData>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
                     Arg.Any<IEnumerable<string>>());
 
             gitDriver.Received(numberOfUpdates)
@@ -191,7 +192,7 @@ namespace NuKeeper.Tests.Engine
 
         private static
             (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
-            IPackageUpdateSelection updateSelection, 
+            IPackageUpdateSelection updateSelection,
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)
         {

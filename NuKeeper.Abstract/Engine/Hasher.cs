@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Abstract.Engine
 {
     public static class Hasher
     {

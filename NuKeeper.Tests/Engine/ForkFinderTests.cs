@@ -7,7 +7,6 @@ using NuKeeper.Abstract.Engine;
 using NuKeeper.Github.Engine;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {

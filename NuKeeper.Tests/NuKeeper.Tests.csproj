@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -13,6 +13,7 @@
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NuKeeper.Abstract\NuKeeper.Abstract.csproj" />
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
     <ProjectReference Include="..\NuKeeper\NuKeeper.csproj" />

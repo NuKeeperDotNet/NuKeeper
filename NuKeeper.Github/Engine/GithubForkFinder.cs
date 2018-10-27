@@ -101,7 +101,7 @@ namespace NuKeeper.Github.Engine
         private async Task<bool> IsPushableRepo(ForkData originFork)
         {
             var originRepo = await _gitHubClient.GetUserRepository(originFork.Owner, originFork.Name);
-            return originRepo != null && originRepo.Permissions.Push;
+            return originRepo != null && originRepo.Permissions != null && originRepo.Permissions.Push;
         }
 
         private async Task<IForkData> TryFindUserFork(string userName, ForkData originFork)

@@ -4,11 +4,12 @@ namespace NuKeeper.Abstract.Configuration
 {
     public class RepositorySettings : IRepositorySettings
     {
-        private readonly IRepository _repository;
-
         public RepositorySettings(IRepository repository)
         {
-            _repository = repository;
+            Uri = repository.HtmlUrl;
+            Name = repository.Name;
+            Owner = repository.Owner.Name;
+            RepositoryName = repository.Name;
         }
 
         public RepositorySettings()
