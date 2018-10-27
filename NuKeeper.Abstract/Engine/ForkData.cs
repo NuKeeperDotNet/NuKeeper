@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace NuKeeper.Abstract.Engine
 {
@@ -26,10 +26,10 @@ namespace NuKeeper.Abstract.Engine
             Name = name;
         }
 
-        public Uri Uri { get; set; }
+        public Uri Uri { get; }
 
-        public string Owner { get; set; }
+        public string Owner { get; }
 
-        public string Name { get; set; }
+        public string Name { get; }
     }
 }
