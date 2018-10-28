@@ -1,4 +1,4 @@
-using NuKeeper.Abstract;
+using NuKeeper.Abstractions;
 
 namespace NuKeeper.Tests.Commands
 {

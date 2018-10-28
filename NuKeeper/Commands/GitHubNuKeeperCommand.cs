@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Github.Configuration;
 using NuKeeper.Inspection.Logging;
 

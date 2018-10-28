@@ -1,6 +1,6 @@
-using NuKeeper.Abstract.Configuration;
 using System;
 using System.Linq;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Github.Configuration
 {

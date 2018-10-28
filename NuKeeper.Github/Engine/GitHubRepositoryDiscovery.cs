@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Github.Engine

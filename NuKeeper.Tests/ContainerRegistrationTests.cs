@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Abstract.Local;
+using NuKeeper.Abstractions.Local;
 using NuKeeper.Commands;
 using NuKeeper.Github.Engine;
 using NUnit.Framework;

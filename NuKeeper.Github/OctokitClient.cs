@@ -1,5 +1,3 @@
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Engine;
 using NuKeeper.Github.Engine;
 using NuKeeper.Github.Mappings;
 using NuKeeper.Inspection;
@@ -10,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Engine;
+using User = NuKeeper.Abstractions.User;
 
 namespace NuKeeper.GitHub
 {
@@ -48,7 +49,7 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<Abstract.User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
             CheckInitialised();
 
@@ -56,7 +57,7 @@ namespace NuKeeper.GitHub
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
 
-            return new Abstract.User(user.Login, user.Name, user.Email);
+            return user != null ? new User(user.Login, user.Name, user.Email) : null;
         }
 
         public async Task CreatePullRequest(IRepositoryData repository, string title, string body, string branchWithChanges,

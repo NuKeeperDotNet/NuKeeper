@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Abstract;
+using NuKeeper.Abstractions;
 
 namespace NuKeeper.Github.Mappings
 {

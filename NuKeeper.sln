@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Update", "NuKeeper
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Update.Tests", "NuKeeper.Update.Tests\NuKeeper.Update.Tests.csproj", "{1336C9CF-8B90-428B-904B-2C223010FD16}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Abstract", "NuKeeper.Abstract\NuKeeper.Abstract.csproj", "{6A06855E-0A5B-4981-92D4-8031F7AEDC62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Abstract", "NuKeeper.Abstractions\NuKeeper.Abstractions.csproj", "{6A06855E-0A5B-4981-92D4-8031F7AEDC62}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Github", "NuKeeper.Github\NuKeeper.Github.csproj", "{F320D180-FA1D-4832-9A30-4D77F73C0E85}"
 EndProject

@@ -1,8 +1,7 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands

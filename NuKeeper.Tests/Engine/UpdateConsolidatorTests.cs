@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Engine;
+using NuKeeper.Abstractions.Engine;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 

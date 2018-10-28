@@ -1,9 +1,8 @@
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
-using NuKeeper.Abstract.Engine;
-using NuKeeper.Abstract.Engine.Packages;
-using NuKeeper.Abstract.Local;
-using NuKeeper.Engine;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Engine;
+using NuKeeper.Abstractions.Engine.Packages;
+using NuKeeper.Abstractions.Local;
 using NuKeeper.Github.Configuration;
 using NuKeeper.Github.Engine;
 using NuKeeper.GitHub;

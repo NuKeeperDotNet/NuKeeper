@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Engine;
+using NuKeeper.Abstractions.Engine.Packages;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
-using NuKeeper.Abstract.Engine.Packages;
-using NuKeeper.Abstract.Engine;
 
 namespace NuKeeper.Tests.Engine
 {

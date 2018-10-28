@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Github.Engine
 {

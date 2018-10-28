@@ -1,6 +1,6 @@
-using NuKeeper.Abstract;
 using System;
 using System.Collections.Generic;
+using NuKeeper.Abstractions;
 
 namespace NuKeeper.Github.Mappings
 {

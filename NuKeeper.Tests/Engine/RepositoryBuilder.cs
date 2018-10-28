@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Abstract;
+using NuKeeper.Abstractions;
 using NuKeeper.Github.Mappings;
 using Octokit;
 

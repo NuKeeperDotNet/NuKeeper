@@ -1,9 +1,4 @@
 using NSubstitute;
-using NuKeeper.Abstract;
-using NuKeeper.Abstract.Configuration;
-using NuKeeper.Abstract.Engine;
-using NuKeeper.Abstract.Engine.Packages;
-using NuKeeper.Git;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -19,6 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Engine;
+using NuKeeper.Abstractions.Engine.Packages;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Tests.Engine
 {

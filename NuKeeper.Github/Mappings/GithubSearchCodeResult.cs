@@ -1,4 +1,4 @@
-using NuKeeper.Abstract;
+using NuKeeper.Abstractions;
 using Octokit;
 
 namespace NuKeeper.Github.Mappings

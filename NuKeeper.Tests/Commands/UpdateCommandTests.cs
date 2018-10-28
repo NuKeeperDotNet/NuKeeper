@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Abstract.Configuration;
-using NuKeeper.Abstract.Local;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Local;
 using NuKeeper.Commands;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;

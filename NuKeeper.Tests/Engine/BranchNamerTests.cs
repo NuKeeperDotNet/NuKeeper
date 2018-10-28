@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using NuKeeper.Abstract.Engine;
+using NuKeeper.Abstractions.Engine;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
