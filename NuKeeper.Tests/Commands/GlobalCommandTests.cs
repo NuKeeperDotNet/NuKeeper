@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Commands;
 using NuKeeper.Inspection.Logging;
@@ -17,7 +18,7 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<IEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
@@ -36,7 +37,7 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndSucceedWithRequiredGithubParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<IEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
@@ -203,7 +204,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
 
             SettingsContainer settingsOut = null;
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<IEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
 

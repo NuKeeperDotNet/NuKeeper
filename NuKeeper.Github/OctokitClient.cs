@@ -167,16 +167,16 @@ namespace NuKeeper.GitHub
         {
             CheckInitialised();
 
-            var re = new RepositoryCollection();
-            foreach (var item in search.Repos)
+            var repositoryCollection = new RepositoryCollection();
+            foreach (var repo in search.Repos)
             {
-                re.Add(item.Key, item.Value);
+                repositoryCollection.Add(repo.Key, repo.Value);
             }
 
             var inQualifiers = new List<Octokit.CodeInQualifier>();
-            foreach (var item in search.SearchIn)
+            foreach (var qualifier in search.SearchIn)
             {
-                if (Enum.TryParse<Octokit.CodeInQualifier>(item.ToString(), out var parsedEnum))
+                if (Enum.TryParse<Octokit.CodeInQualifier>(qualifier.ToString(), out var parsedEnum))
                 {
                     inQualifiers.Add(parsedEnum);
                 }
@@ -184,16 +184,14 @@ namespace NuKeeper.GitHub
 
             var searchCodeRequest = new SearchCodeRequest(search.Term)
             {
-                Repos = re,
+                Repos = repositoryCollection,
                 PerPage = search.PerPage,
                 In = inQualifiers
             };
 
             var result = await _client.Search.SearchCode(searchCodeRequest);
 
-            var mappedResult = new GithubSearchCodeResult(result);
-
-            return mappedResult;
+            return new GithubSearchCodeResult(result);
         }
 
         private async Task AddLabelsToIssue(IForkData target, int issueNumber, IEnumerable<string> labels)

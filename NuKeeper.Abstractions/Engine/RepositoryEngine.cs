@@ -43,7 +43,7 @@ namespace NuKeeper.Abstractions.Engine
                     return 0;
                 }
 
-                if (!await _repositoryFilter.ContainsDotNetProjects(repository).ConfigureAwait(false))
+                if (!await _repositoryFilter.ContainsDotNetProjects(repository))
                 {
                     return 0;
                 }

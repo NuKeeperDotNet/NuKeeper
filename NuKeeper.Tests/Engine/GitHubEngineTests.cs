@@ -45,7 +45,7 @@ namespace NuKeeper.Tests.Engine
         {
             var repos = new List<RepositorySettings>
             {
-                new RepositorySettings("owner","repo2"),
+                new RepositorySettings("owner","repo1"),
                 new RepositorySettings("owner","repo2")
             };
             var engine = MakeGithubEngine(repos);
@@ -60,7 +60,7 @@ namespace NuKeeper.Tests.Engine
         {
             var repos = new List<RepositorySettings>
             {
-                new RepositorySettings("owner","repo2"),
+                new RepositorySettings("owner","repo1"),
                 new RepositorySettings("owner","repo2")
             };
             var engine = MakeGithubEngine(2, repos);
@@ -76,7 +76,7 @@ namespace NuKeeper.Tests.Engine
         {
             var repos = new List<RepositorySettings>
             {
-                new RepositorySettings("owner","repo2"),
+                new RepositorySettings("owner","repo1"),
                 new RepositorySettings("owner","repo2")
             };
             var engine = MakeGithubEngine(0, repos);
@@ -91,7 +91,7 @@ namespace NuKeeper.Tests.Engine
         {
             var repos = new List<RepositorySettings>
             {
-                new RepositorySettings("owner","repo2"),
+                new RepositorySettings("owner","repo1"),
                 new RepositorySettings("owner","repo2"),
                 new RepositorySettings("owner","repo3")
             };
