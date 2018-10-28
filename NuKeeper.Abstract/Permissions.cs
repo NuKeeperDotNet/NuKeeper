@@ -1,9 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace NuKeeper.Abstract
 {
-    [SuppressMessage("ReSharper", "CA1717")]
-    [SuppressMessage("ReSharper", "CA1724")]
     public class Permissions
     {
         public Permissions(bool admin, bool push, bool pull)

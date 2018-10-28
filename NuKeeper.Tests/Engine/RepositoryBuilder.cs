@@ -33,16 +33,18 @@ namespace NuKeeper.Tests.Engine
             var perms = new RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
-            return new GithubRepository(omniUrl, forkHtmlUrl, forkCloneUrl,
+            var repo = new Repository(omniUrl, forkHtmlUrl, forkCloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                (Octokit.User)owner, name, name, "a test repo", "homepage",
+                owner, name, name, "a test repo", "homepage",
                 "EN", false, true,
                 1, 1, "master",
                 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, parent, null, null,
                 false, false, false, false,
                 2, 122, true, true, true, false);
+
+            return new GithubRepository(repo);
         }
 
         private static Repository MakeParentRepo(
@@ -54,14 +56,16 @@ namespace NuKeeper.Tests.Engine
 
             var perms = new RepositoryPermissions(false, true, true);
 
-            return new Repository(omniUrl, htmlUrl, cloneUrl,
+            var repo = new Repository(omniUrl, htmlUrl, cloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                (Octokit.User)owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
+                owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null,
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, null, null, null,
                 false, false, false, false, 2, 122, true, true, true, false);
+
+            return new GithubRepository(repo);
         }
 
         public static Octokit.User MakeUser(string omniUrl)
