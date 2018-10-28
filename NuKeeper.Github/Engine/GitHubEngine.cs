@@ -78,7 +78,7 @@ namespace NuKeeper.Github.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(IAccount githubUser)
+        private Identity GetUserIdentity(User githubUser)
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {

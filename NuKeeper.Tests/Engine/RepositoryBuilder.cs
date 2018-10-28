@@ -36,7 +36,7 @@ namespace NuKeeper.Tests.Engine
             return new GithubRepository(omniUrl, forkHtmlUrl, forkCloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                (User)owner, name, name, "a test repo", "homepage",
+                (Octokit.User)owner, name, name, "a test repo", "homepage",
                 "EN", false, true,
                 1, 1, "master",
                 1, null, DateTimeOffset.Now, DateTimeOffset.Now,
@@ -57,16 +57,16 @@ namespace NuKeeper.Tests.Engine
             return new Repository(omniUrl, htmlUrl, cloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
                 123, "nodeId",
-                (User)owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
+                (Octokit.User)owner, "repoName", "repoName", "a test repo", omniUrl, "EN", false, true,
                 1, 1, "master", 1, null,
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 perms, null, null, null,
                 false, false, false, false, 2, 122, true, true, true, false);
         }
 
-        public static IAccount MakeUser(string omniUrl)
+        public static Octokit.User MakeUser(string omniUrl)
         {
-            return new GithubAccount(omniUrl, "test user", null, 0, "test inc",
+            return new Octokit.User(omniUrl, "test user", null, 0, "test inc",
                 DateTimeOffset.Now, DateTimeOffset.Now,
                 0, "testuser@test.com", 0, 0,
                 false, omniUrl, 1, 1,

@@ -11,6 +11,6 @@ namespace NuKeeper.Abstract
         Uri CloneUrl { get; }
         Uri HtmlUrl { get; }
         bool Fork { get; }
-        IAccount Owner { get; }
+        User Owner { get; }
     }
 }

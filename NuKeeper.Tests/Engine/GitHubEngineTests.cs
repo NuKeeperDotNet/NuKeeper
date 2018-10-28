@@ -10,7 +10,6 @@ using NuKeeper.Github.Engine;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -131,8 +130,7 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            github.GetCurrentUser().Returns(
-                RepositoryBuilder.MakeUser("http://test.user.com"));
+            github.GetCurrentUser().Returns(new User("","",""));
 
             repoDiscovery.GetRepositories(Arg.Any<IClient>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);

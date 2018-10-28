@@ -13,7 +13,7 @@ namespace NuKeeper.Github.Mappings
         }
 
         [SuppressMessage("ReSharper", "CA1054")]
-        public GithubRepository(string url, string htmlUrl, string cloneUrl, string gitUrl, string sshUrl, string svnUrl, string mirrorUrl, long id, string nodeId, User owner, string name, string fullName, string description, string homepage, string language, bool @private, bool fork, int forksCount, int stargazersCount, string defaultBranch, int openIssuesCount, DateTimeOffset? pushedAt, DateTimeOffset createdAt, DateTimeOffset updatedAt, RepositoryPermissions permissions, Repository parent, Repository source, LicenseMetadata license, bool hasIssues, bool hasWiki, bool hasDownloads, bool hasPages, int subscribersCount, long size, bool? allowRebaseMerge, bool? allowSquashMerge, bool? allowMergeCommit, bool archived) : base(
+        public GithubRepository(string url, string htmlUrl, string cloneUrl, string gitUrl, string sshUrl, string svnUrl, string mirrorUrl, long id, string nodeId, Octokit.User owner, string name, string fullName, string description, string homepage, string language, bool @private, bool fork, int forksCount, int stargazersCount, string defaultBranch, int openIssuesCount, DateTimeOffset? pushedAt, DateTimeOffset createdAt, DateTimeOffset updatedAt, RepositoryPermissions permissions, Repository parent, Repository source, LicenseMetadata license, bool hasIssues, bool hasWiki, bool hasDownloads, bool hasPages, int subscribersCount, long size, bool? allowRebaseMerge, bool? allowSquashMerge, bool? allowMergeCommit, bool archived) : base(
             url, htmlUrl, cloneUrl, gitUrl, sshUrl, svnUrl, mirrorUrl, id, nodeId, owner, name, fullName, description, homepage, language, @private, fork, forksCount, stargazersCount, defaultBranch, openIssuesCount, pushedAt, createdAt, updatedAt, permissions, parent, source, license, hasIssues, hasWiki, hasDownloads, hasPages, subscribersCount, size, allowRebaseMerge, allowSquashMerge, allowMergeCommit, archived)
         {
 
@@ -27,7 +27,7 @@ namespace NuKeeper.Github.Mappings
 
         public new Uri HtmlUrl => new Uri(base.HtmlUrl);
 
-        public new IAccount Owner => AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubAccount>(base.Owner);
+        public new Abstract.User Owner => new Abstract.User(base.Owner.Login, base.Owner.Name, base.Owner.Email);
 
     }
 }

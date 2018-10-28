@@ -19,8 +19,7 @@ namespace NuKeeper.Github.Mappings
                 {
                     cfg.CreateMap<RepositoryPermissions, Permissions>();
                     cfg.CreateMap<Repository, GithubRepository>();
-                    cfg.CreateMap<User, GithubAccount>();
-                    cfg.CreateMap<User, GithubAccount>();
+                    cfg.CreateMap<Octokit.User, Abstract.User>();
                     cfg.CreateMap<GithubPullRequest, NewPullRequest>();
                     cfg.CreateMap<GithubSearchCodeRequest, SearchCodeRequest>();
                     cfg.CreateMap<SearchCodeResult, GithubSearchCodeResult>();

@@ -48,7 +48,7 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<IAccount> GetCurrentUser()
+        public async Task<Abstract.User> GetCurrentUser()
         {
             CheckInitialised();
 
@@ -56,7 +56,7 @@ namespace NuKeeper.GitHub
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
 
-            return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubAccount>(user);
+            return new Abstract.User(user.Login,user.Name,user.Email);
         }
 
         public async Task CreatePullRequest(IRepositoryData repository, string title, string body, string branchWithChanges,

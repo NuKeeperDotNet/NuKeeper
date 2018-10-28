@@ -8,7 +8,7 @@ namespace NuKeeper.Abstract
     {
         Task Initialise(IAuthSettings settings);
 
-        Task<IAccount> GetCurrentUser();
+        Task<User> GetCurrentUser();
 
         Task CreatePullRequest(IRepositoryData repository, string title, string body, string branchWithChanges,
             IEnumerable<string> labels);
