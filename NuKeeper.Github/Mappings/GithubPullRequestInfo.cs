@@ -3,7 +3,13 @@ using Octokit;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubPullRequestInfo : PullRequest, IPullRequest
+    public class GithubPullRequestInfo : IPullRequest
     {
+        private readonly PullRequest _pullRequest;
+
+        public GithubPullRequestInfo(PullRequest pullRequest)
+        {
+            _pullRequest = pullRequest;
+        }
     }
 }

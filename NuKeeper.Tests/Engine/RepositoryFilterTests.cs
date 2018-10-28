@@ -59,13 +59,6 @@ namespace NuKeeper.Tests.Engine
             Assert.True(result);
         }
 
-        private static RepositorySettings MakeSampleRepository()
-        {
-            return new RepositorySettings
-            {
-                RepositoryName = "sample-repo",
-                Owner = "sample-owner"
-            };
-        }
+        private static RepositorySettings MakeSampleRepository() => new RepositorySettings("sample-owner", "sample-repo"); 
     }
 }

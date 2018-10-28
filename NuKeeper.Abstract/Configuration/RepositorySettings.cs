@@ -5,20 +5,20 @@ namespace NuKeeper.Abstract.Configuration
     public class RepositorySettings : IRepositorySettings
     {
         public RepositorySettings(IRepository repository)
-        {
-            Uri = repository.HtmlUrl;
-            Name = repository.Name;
-            Owner = repository.Owner.Name;
-            RepositoryName = repository.Name;
-        }
-
-        public RepositorySettings()
+            :this(repository.Owner.Name, repository.Name, repository.HtmlUrl)
         {
         }
 
-        public Uri Uri { get; set; }
-        public string Name { get; set; }
-        public string Owner { get; set; }
-        public string RepositoryName { get; set; }
+        public RepositorySettings(string owner, string repositoryName, Uri uri = null)
+        {
+            Uri = uri;
+            Owner = owner;
+            RepositoryName = repositoryName;
+        }
+
+
+        public Uri Uri { get; }
+        public string Owner { get; }
+        public string RepositoryName { get; }
     }
 }

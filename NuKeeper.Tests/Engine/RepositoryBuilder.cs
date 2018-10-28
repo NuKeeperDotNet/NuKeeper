@@ -30,7 +30,7 @@ namespace NuKeeper.Tests.Engine
             const string omniUrl = "http://somewhere.com/fork";
             var owner = MakeUser(omniUrl);
 
-            var perms = new RepositoryPermissions(false, canPush, canPull);
+            var perms = new Octokit.RepositoryPermissions(false, canPush, canPull);
             var parent = MakeParentRepo();
 
             var repo = new Repository(omniUrl, forkHtmlUrl, forkCloneUrl,
@@ -54,7 +54,7 @@ namespace NuKeeper.Tests.Engine
             const string omniUrl = "http://somewhere.com/parent";
             var owner = MakeUser(omniUrl);
 
-            var perms = new RepositoryPermissions(false, true, true);
+            var perms = new Octokit.RepositoryPermissions(false, true, true);
 
             var repo = new Repository(omniUrl, htmlUrl, cloneUrl,
                 omniUrl, omniUrl, omniUrl, omniUrl,
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests.Engine
                 perms, null, null, null,
                 false, false, false, false, 2, 122, true, true, true, false);
 
-            return new GithubRepository(repo);
+            return repo;
         }
 
         public static Octokit.User MakeUser(string omniUrl)

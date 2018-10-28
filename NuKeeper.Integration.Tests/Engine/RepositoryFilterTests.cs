@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstract;
 using NuKeeper.Abstract.Configuration;
 using NuKeeper.Abstract.Engine;
 using NuKeeper.Github.Engine;
@@ -20,11 +21,7 @@ namespace NuKeeper.Integration.Tests.Engine
             IRepositoryFilter subject = MakeRepositoryFilter();
 
             var result =
-                await subject.ContainsDotNetProjects(new RepositorySettings
-                {
-                    RepositoryName = "jquery",
-                    Owner = "jquery"
-                });
+                await subject.ContainsDotNetProjects(new RepositorySettings("jquery", "jquery"));
             Assert.False(result);
         }
 
@@ -33,8 +30,7 @@ namespace NuKeeper.Integration.Tests.Engine
         {
             IRepositoryFilter subject = MakeRepositoryFilter();
 
-            var result =
-                await subject.ContainsDotNetProjects(new RepositorySettings { RepositoryName = "cli", Owner = "dotnet"});
+            var result =  await subject.ContainsDotNetProjects(new RepositorySettings("dotnet", "cli"));
             Assert.True(result);
         }
 

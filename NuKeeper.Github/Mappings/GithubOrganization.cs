@@ -3,9 +3,16 @@ using Octokit;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubOrganization : Organization, IOrganization
+    public class GithubOrganization: IOrganization
     {
-        public new string Name => base.Name;
-        public new string Login => base.Login;
+        private readonly Organization _organization;
+
+        public GithubOrganization(Organization organization)
+        {
+            _organization = organization;
+        }
+
+        public string Name => _organization.Name;
+        public string Login => _organization.Login;
     }
 }

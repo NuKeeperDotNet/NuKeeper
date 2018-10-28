@@ -1,16 +1,16 @@
 using NuKeeper.Abstract;
 using Octokit;
-using System.Collections.Generic;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubSearchCodeResult : SearchCodeResult, ISearchCodeResult
+    public class GithubSearchCodeResult: ISearchCodeResult
     {
-        public GithubSearchCodeResult(int totalCount, bool incompleteResults, IReadOnlyList<SearchCode> items)
-            : base(totalCount, incompleteResults, items)
-        {
+        private readonly SearchCodeResult _searchCodeResult;
 
+        public GithubSearchCodeResult(SearchCodeResult searchCodeResult)
+        {
+            _searchCodeResult = searchCodeResult;
         }
-        public new int TotalCount => base.TotalCount;
+        public int TotalCount => _searchCodeResult.TotalCount;
     }
 }

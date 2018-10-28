@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.Engine
             var github = Substitute.For<IClient>();
             var settings = new SourceControlServerSettings
             {
-                Repository = new RepositorySettings(),
+                Repository = new RepositorySettings("owner","repo"),
                 Scope = ServerScope.Repository
             };
 

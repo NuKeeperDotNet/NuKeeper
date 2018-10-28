@@ -1,6 +1,6 @@
+using NuKeeper.Abstract.Configuration;
 using System;
 using System.Linq;
-using NuKeeper.Abstract.Configuration;
 
 namespace NuKeeper.Github.Configuration
 {
@@ -28,12 +28,7 @@ namespace NuKeeper.Github.Configuration
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            return new RepositorySettings
-                {
-                    Uri = gitHubRepositoryUri,
-                    Name = repoName,
-                    Owner = repoOwner
-            };
+            return new RepositorySettings(repoOwner, repoName, gitHubRepositoryUri);
         }
 
         public static Uri EnsureTrailingSlash(Uri uri)

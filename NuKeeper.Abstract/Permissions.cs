@@ -1,8 +1,8 @@
 namespace NuKeeper.Abstract
 {
-    public class Permissions
+    public class RepositoryPermissions
     {
-        public Permissions(bool admin, bool push, bool pull)
+        public RepositoryPermissions(bool admin, bool push, bool pull)
         {
             Admin = admin;
             Push = push;

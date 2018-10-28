@@ -29,8 +29,7 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            Uri repoUri;
-            if (!Uri.TryCreate(GitHubRepositoryUri, UriKind.Absolute, out repoUri))
+            if (!Uri.TryCreate(GitHubRepositoryUri, UriKind.Absolute, out Uri repoUri))
             {
                 return ValidationResult.Failure($"Bad GitHub repository URI: '{GitHubRepositoryUri}'");
             }

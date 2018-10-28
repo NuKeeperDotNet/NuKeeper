@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NuKeeper.Abstract;
 using NuKeeper.Abstract.Engine;
 using NuKeeper.Github.Engine;
@@ -10,6 +6,10 @@ using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NuKeeper.GitHub
 {
@@ -56,7 +56,7 @@ namespace NuKeeper.GitHub
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
 
-            return new Abstract.User(user.Login,user.Name,user.Email);
+            return new Abstract.User(user.Login, user.Name, user.Email);
         }
 
         public async Task CreatePullRequest(IRepositoryData repository, string title, string body, string branchWithChanges,
@@ -71,8 +71,9 @@ namespace NuKeeper.GitHub
             {
                 qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
             }
+            var request = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
 
-            var pr = new GithubPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
+            var pr = new GithubPullRequest(request);
 
             await OpenPullRequest(repository.Pull, pr, labels);
         }
@@ -83,7 +84,7 @@ namespace NuKeeper.GitHub
 
             var orgs = await _client.Organization.GetAll();
             _logger.Normal($"Read {orgs.Count} organisations");
-            return AutoMapperConfiguration.GithubMappingConfiguration.Map<IReadOnlyList<GithubOrganization>>(orgs);
+            return orgs.Select(x => new GithubOrganization(x)).ToList();
         }
 
         public async Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName)
@@ -92,7 +93,7 @@ namespace NuKeeper.GitHub
 
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
-            return AutoMapperConfiguration.GithubMappingConfiguration.Map<IReadOnlyList<GithubRepository>>(repos);
+            return repos.Select(x => new GithubRepository(x)).ToList();
         }
 
         public async Task<IRepository> GetUserRepository(string userName, string repositoryName)
@@ -104,7 +105,7 @@ namespace NuKeeper.GitHub
             {
                 var result = await _client.Repository.Get(userName, repositoryName);
                 _logger.Normal($"User fork found at {result.GitUrl} for {result.Owner.Login}");
-                return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubRepository>(result);
+                return new GithubRepository(result);
             }
             catch (NotFoundException)
             {
@@ -122,7 +123,7 @@ namespace NuKeeper.GitHub
             {
                 var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
                 _logger.Normal($"User fork created at {result.GitUrl} for {result.Owner.Login}");
-                return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubRepository>(result);
+                return new GithubRepository(result);
             }
             catch (Exception ex)
             {
@@ -139,7 +140,7 @@ namespace NuKeeper.GitHub
             {
                 var result = await _client.Repository.Branch.Get(userName, repositoryName, branchName);
                 _logger.Detailed($"Branch found for {userName} / {repositoryName} / {branchName}");
-                return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubBranch>(result);
+                return new GithubBranch(result);
             }
             catch (NotFoundException)
             {
@@ -151,30 +152,45 @@ namespace NuKeeper.GitHub
         public async Task<IPullRequest> OpenPullRequest(IForkData target, INewPullRequest request, IEnumerable<string> labels)
         {
             CheckInitialised();
-
-            var githubPullRequest = (GithubPullRequest) request;
-            var newPullRequest = AutoMapperConfiguration.GithubMappingConfiguration.Map<NewPullRequest>(githubPullRequest);
-
+            var newPullRequest = new NewPullRequest(request.Title, request.Head, request.BaseRef);
             _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Detailed($"PR title: {request.Title}");
             var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, newPullRequest);
 
             await AddLabelsToIssue(target, createdPullRequest.Number, labels);
 
-            return AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubPullRequestInfo>(createdPullRequest);
+            return new GithubPullRequestInfo(createdPullRequest);
         }
 
         public async Task<ISearchCodeResult> Search(ISearchCodeRequest search)
         {
             CheckInitialised();
 
-            var request = (GithubSearchCodeRequest) search;
+            var re = new RepositoryCollection();
+            foreach (var item in search.Repos)
+            {
+                re.Add(item.Key, item.Value);
+            }
 
-            var mappedRequest = AutoMapperConfiguration.GithubMappingConfiguration.Map<SearchCodeRequest>(request);
+            var inQualifiers = new List<Octokit.CodeInQualifier>();
+            foreach (var item in search.SearchIn)
+            {
+                if (Enum.TryParse<Octokit.CodeInQualifier>(item.ToString(), out var parsedEnum))
+                {
+                    inQualifiers.Add(parsedEnum);
+                }
+            }
 
-            var result = await _client.Search.SearchCode(mappedRequest);
+            var searchCodeRequest = new SearchCodeRequest(search.Term)
+            {
+                Repos = re,
+                PerPage = search.PerPage,
+                In = inQualifiers
+            };
 
-            var mappedResult = AutoMapperConfiguration.GithubMappingConfiguration.Map<GithubSearchCodeResult>(result);
+            var result = await _client.Search.SearchCode(searchCodeRequest);
+
+            var mappedResult = new GithubSearchCodeResult(result);
 
             return mappedResult;
         }

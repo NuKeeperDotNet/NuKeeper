@@ -46,9 +46,11 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var command = new RepositoryCommand(engine, logger, fileSettings,settingsReader);
-            command.GitHubToken = "abc";
-            command.GitHubRepositoryUri = "http://github.com/abc/abc";
+            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader)
+            {
+                GitHubToken = "abc",
+                GitHubRepositoryUri = "http://github.com/abc/abc"
+            };
 
             var status = await command.OnExecute();
 
@@ -231,9 +233,11 @@ namespace NuKeeper.Tests.Commands
 
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader);
-            command.GitHubToken = "testToken";
-            command.GitHubRepositoryUri = "http://github.com/test/test";
+            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader)
+            {
+                GitHubToken = "testToken",
+                GitHubRepositoryUri = "http://github.com/test/test"
+            };
 
             if (addLabels)
             {

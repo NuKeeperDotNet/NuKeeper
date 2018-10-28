@@ -6,7 +6,7 @@ namespace NuKeeper.Abstract
     {
         IRepository Parent { get; }
         string Name { get; }
-        Permissions Permissions { get; }
+        RepositoryPermissions Permissions { get; }
         bool Archived { get; }
         Uri CloneUrl { get; }
         Uri HtmlUrl { get; }

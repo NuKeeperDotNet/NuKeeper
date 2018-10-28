@@ -1,19 +1,15 @@
-﻿using System;
+using System;
 using NuKeeper.Abstract.Configuration;
 
 namespace NuKeeper.Github.Configuration
 {
     public class GithubRepositorySettings
     {
-        public GithubRepositorySettings()
-        {
-        }
-
         public GithubRepositorySettings(IRepositorySettings repository)
         {
             GithubUri = repository.Uri;
             RepositoryOwner = repository.Owner;
-            RepositoryName = repository.Name;
+            RepositoryName = repository.RepositoryName;
         }
 
         public Uri GithubUri { get; set; }

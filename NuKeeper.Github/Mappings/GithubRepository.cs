@@ -3,28 +3,29 @@ using NuKeeper.Abstract;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubRepository : Octokit.Repository, IRepository
+    public class GithubRepository : IRepository
     {
-        public GithubRepository(int id) : base(id)
-        {
+        private readonly Octokit.Repository _repository;
 
+        public GithubRepository(Octokit.Repository repository)
+        {
+            _repository = repository;
         }
 
-        public GithubRepository(Octokit.Repository repository) : base(
-         repository.Url, repository.HtmlUrl, repository.CloneUrl, repository.GitUrl, repository.SshUrl, repository.SvnUrl, repository.MirrorUrl, repository.Id, repository.NodeId, repository.Owner, repository.Name, repository.FullName, repository.Description, repository.Homepage, repository.Language, repository.Private, repository.Fork, repository.ForksCount, repository.StargazersCount, repository.DefaultBranch, repository.OpenIssuesCount, repository.PushedAt, repository.CreatedAt, repository.UpdatedAt, repository.Permissions, repository.Parent, repository.Source, repository.License, repository.HasIssues, repository.HasWiki, repository.HasDownloads, repository.HasPages, repository.SubscribersCount, repository.Size, repository.AllowRebaseMerge, repository.AllowSquashMerge, repository.AllowMergeCommit, repository.Archived)
-        {
-
-        }
-
-        public new IRepository Parent => new GithubRepository(base.Parent);
+        public IRepository Parent => new GithubRepository(_repository.Parent);
             
-        public new Permissions Permissions => new Permissions(base.Permissions.Admin, base.Permissions.Push, base.Permissions.Pull);
+        public RepositoryPermissions Permissions => new RepositoryPermissions(_repository.Permissions.Admin, _repository.Permissions.Push, _repository.Permissions.Pull);
 
-        public new Uri CloneUrl => new Uri(base.CloneUrl);
+        public Uri CloneUrl => new Uri(_repository.CloneUrl);
 
-        public new Uri HtmlUrl => new Uri(base.HtmlUrl);
+        public Uri HtmlUrl => new Uri(_repository.HtmlUrl);
 
-        public new User Owner => new User(base.Owner.Login, base.Owner.Name, base.Owner.Email);
+        public User Owner => new User(_repository.Owner.Login, _repository.Owner.Name, _repository.Owner.Email);
 
+        public string Name => _repository.Name;
+
+        public bool Archived => _repository.Archived;
+
+        public bool Fork => _repository.Fork;
     }
 }

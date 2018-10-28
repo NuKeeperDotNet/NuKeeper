@@ -22,12 +22,14 @@ namespace NuKeeper.Github.Engine
 
         public async Task<bool> ContainsDotNetProjects(IRepositorySettings repository)
         {
-            var request = new GithubSearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
+            var searchCodeRequest = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
-                Repos = new RepositoryCollection {{repository.Owner, repository.RepositoryName}},
-                In = new []{CodeInQualifier.Path},
+                Repos = new RepositoryCollection { { repository.Owner, repository.RepositoryName } },
+                In = new[] { Octokit.CodeInQualifier.Path },
                 PerPage = 1
             };
+            var request = new GithubSearchCodeRequest(searchCodeRequest);
+
             try
             {
                 var result = await _client.Search(request);
