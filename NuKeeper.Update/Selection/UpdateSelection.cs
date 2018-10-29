@@ -11,7 +11,7 @@ namespace NuKeeper.Update.Selection
     public class UpdateSelection : IUpdateSelection
     {
         private readonly INuKeeperLogger _logger;
-        private IFilterSettings _settings;
+        private FilterSettings _settings;
         private DateTime _maxPublishedDate;
 
         public UpdateSelection(INuKeeperLogger logger)
@@ -22,7 +22,7 @@ namespace NuKeeper.Update.Selection
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(
             IReadOnlyCollection<PackageUpdateSet> candidates,
-            IFilterSettings settings,
+            FilterSettings settings,
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             _settings = settings;

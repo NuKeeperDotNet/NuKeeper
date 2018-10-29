@@ -8,8 +8,8 @@ namespace NuKeeper.Abstractions.Engine.Packages
     public interface IPackageUpdateSelection
     {
         Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
-            IForkData pushFork,
+            ForkData pushFork,
             IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
-            IFilterSettings settings);
+            FilterSettings settings);
     }
 }

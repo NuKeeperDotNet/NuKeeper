@@ -18,7 +18,7 @@ namespace NuKeeper.Github.Engine
             _logger = logger;
         }
 
-        public async Task<IForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork)
+        public async Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork)
         {
             _logger.Detailed($"FindPushFork. Fork Mode is {forkMode}");
 
@@ -38,7 +38,7 @@ namespace NuKeeper.Github.Engine
             }
         }
 
-        private async Task<IForkData> FindUserForkOrUpstream(ForkMode forkMode, string userName, ForkData pullFork)
+        private async Task<ForkData> FindUserForkOrUpstream(ForkMode forkMode, string userName, ForkData pullFork)
         {
             var userFork = await TryFindUserFork(userName, pullFork);
             if (userFork != null)
@@ -58,7 +58,7 @@ namespace NuKeeper.Github.Engine
             return null;
         }
 
-        private async Task<IForkData> FindUpstreamRepoOrUserFork(ForkMode forkMode, string userName, ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOrUserFork(ForkMode forkMode, string userName, ForkData pullFork)
         {
             // prefer to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -104,7 +104,7 @@ namespace NuKeeper.Github.Engine
             return originRepo != null && originRepo.Permissions != null && originRepo.Permissions.Push;
         }
 
-        private async Task<IForkData> TryFindUserFork(string userName, ForkData originFork)
+        private async Task<ForkData> TryFindUserFork(string userName, ForkData originFork)
         {
             var userFork = await _gitHubClient.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
@@ -148,7 +148,7 @@ namespace NuKeeper.Github.Engine
                 string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static IForkData RepositoryToForkData(IRepository repo)
+        private static ForkData RepositoryToForkData(IRepository repo)
         {
             return new ForkData(repo.CloneUrl, repo.Owner.Login, repo.Name);
         }

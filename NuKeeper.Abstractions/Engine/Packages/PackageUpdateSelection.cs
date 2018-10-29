@@ -29,9 +29,9 @@ namespace NuKeeper.Abstractions.Engine.Packages
         }
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
-            IForkData pushFork,
+            ForkData pushFork,
             IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
-            IFilterSettings settings)
+            FilterSettings settings)
         {
             var sorted = _sort.Sort(potentialUpdates)
                 .ToList();

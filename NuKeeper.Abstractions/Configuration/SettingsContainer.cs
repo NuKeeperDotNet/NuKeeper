@@ -6,10 +6,10 @@ namespace NuKeeper.Abstractions.Configuration
     {
         public SourceControlServerSettings SourceControlServerSettings { get; set; }
 
-        public IAuthSettings AuthSettings { get; set; }
+        public AuthSettings AuthSettings { get; set; }
 
         public UserSettings UserSettings { get; set; }
 
-        public IFilterSettings PackageFilters { get; set; }
+        public FilterSettings PackageFilters { get; set; }
     }
 }

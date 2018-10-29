@@ -5,6 +5,6 @@ namespace NuKeeper.Abstractions.Engine
 {
     public interface IForkFinder
     {
-        Task<IForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork);
+        Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork);
     };
 }

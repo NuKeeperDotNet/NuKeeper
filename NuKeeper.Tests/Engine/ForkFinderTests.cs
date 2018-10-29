@@ -233,7 +233,7 @@ namespace NuKeeper.Tests.Engine
             return new ForkData(new Uri(RepositoryBuilder.NoMatchUrl), "testOrg", "someRepo");
         }
 
-        private static void AssertForkMatchesRepo(IForkData fork, IRepository repo)
+        private static void AssertForkMatchesRepo(ForkData fork, IRepository repo)
         {
             Assert.That(fork, Is.Not.Null);
             Assert.That(fork.Name, Is.EqualTo(repo.Name));

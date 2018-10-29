@@ -17,7 +17,7 @@ namespace NuKeeper.Integration.Tests.Engine
         [Test]
         public async Task ShouldFilterOutNonDotnetRepository()
         {
-            IRepositoryFilter subject = MakeRepositoryFilter();
+            var subject = MakeRepositoryFilter();
 
             var result =
                 await subject.ContainsDotNetProjects(new RepositorySettings("jquery", "jquery"));
@@ -27,7 +27,7 @@ namespace NuKeeper.Integration.Tests.Engine
         [Test]
         public async Task ShouldNotFilterOutADotnetRepository()
         {
-            IRepositoryFilter subject = MakeRepositoryFilter();
+            var subject = MakeRepositoryFilter();
 
             var result =  await subject.ContainsDotNetProjects(new RepositorySettings("dotnet", "cli"));
             Assert.True(result);

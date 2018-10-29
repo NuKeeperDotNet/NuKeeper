@@ -1,16 +1,13 @@
 using NuKeeper.Abstractions;
-using Octokit;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubSearchCodeResult: ISearchCodeResult
+    public class GithubSearchCodeResult : SearchCodeResult
     {
-        private readonly SearchCodeResult _searchCodeResult;
 
-        public GithubSearchCodeResult(SearchCodeResult searchCodeResult)
+        public GithubSearchCodeResult(Octokit.SearchCodeResult searchCodeResult)
+        : base(searchCodeResult.TotalCount)
         {
-            _searchCodeResult = searchCodeResult;
         }
-        public int TotalCount => _searchCodeResult.TotalCount;
     }
 }

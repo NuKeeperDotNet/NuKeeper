@@ -4,7 +4,7 @@ namespace NuKeeper.Abstractions.Engine
 {
     public class RepositoryData : IRepositoryData
     {
-        public RepositoryData(IForkData pull, IForkData push)
+        public RepositoryData(ForkData pull, ForkData push)
         {
             if (pull == null)
             {
@@ -20,8 +20,8 @@ namespace NuKeeper.Abstractions.Engine
             Push = push;
         }
 
-        public IForkData Pull { get; }
-        public IForkData Push { get; }
+        public ForkData Pull { get; }
+        public ForkData Push { get; }
         public string DefaultBranch { get; set; }
     }
 }

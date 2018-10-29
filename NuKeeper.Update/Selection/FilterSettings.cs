@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace NuKeeper.Update.Selection
 {
-    public class FilterSettings : IFilterSettings
+    public class FilterSettings
     {
         public TimeSpan MinimumAge { get; set; }
         public int MaxPackageUpdates { get; set; }

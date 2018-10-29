@@ -1,18 +1,13 @@
 using NuKeeper.Abstractions;
-using Octokit;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubOrganization: IOrganization
+    public class GithubOrganization : Organization
     {
-        private readonly Organization _organization;
 
-        public GithubOrganization(Organization organization)
+        public GithubOrganization(Octokit.Organization organization)
+            : base(organization.Name, organization.Login)
         {
-            _organization = organization;
         }
-
-        public string Name => _organization.Name;
-        public string Login => _organization.Login;
     }
 }

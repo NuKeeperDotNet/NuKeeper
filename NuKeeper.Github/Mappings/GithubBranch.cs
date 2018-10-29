@@ -1,15 +1,13 @@
 using NuKeeper.Abstractions;
-using Octokit;
 
 namespace NuKeeper.Github.Mappings
 {
-    public class GithubBranch : IBranch
+    public class GithubBranch : Branch
     {
-        private readonly Branch _branch;
-
-        public GithubBranch(Branch branch)
+        public GithubBranch(Octokit.Branch branch)
         {
-            _branch = branch;
+            var a = branch.Name;
+            //This is just used to see if the branch exists...
         }
     }
 }

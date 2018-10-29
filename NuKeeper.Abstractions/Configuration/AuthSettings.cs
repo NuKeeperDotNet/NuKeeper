@@ -2,7 +2,7 @@ using System;
 
 namespace NuKeeper.Abstractions.Configuration
 {
-    public class AuthSettings : IAuthSettings
+    public class AuthSettings
     {
         public AuthSettings(Uri apiBase, string token)
         {

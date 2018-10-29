@@ -6,10 +6,8 @@ using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Engine;
 using NuKeeper.Github.Engine;
-using NuKeeper.Github.Mappings;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -20,8 +18,8 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldFilterWhenNoMatchFound()
         {
             var githubClient = Substitute.For<IClient>();
-            var searchCodeResult = Substitute.For<ISearchCodeResult>();
-            searchCodeResult.TotalCount.ReturnsForAnyArgs(0);
+            var searchCodeResult = new SearchCodeResult(0);
+            
             githubClient.Search(null).ReturnsForAnyArgs(searchCodeResult);
 
             IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
@@ -35,8 +33,8 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldNotFilterWhenMatchFound()
         {
             var githubClient = Substitute.For<IClient>();
-            var searchCodeResult = Substitute.For<ISearchCodeResult>();
-            searchCodeResult.TotalCount.ReturnsForAnyArgs(1);
+            var searchCodeResult = new SearchCodeResult(1);
+
             githubClient.Search(null).ReturnsForAnyArgs(searchCodeResult);
 
             IRepositoryFilter subject = new GithubRepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());

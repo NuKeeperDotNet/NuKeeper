@@ -1,16 +1,14 @@
-using NuKeeper.Github.Engine;
 using NuKeeper.Github.Mappings;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Engine;
-using User = NuKeeper.Abstractions.User;
 
 namespace NuKeeper.GitHub
 {
@@ -19,7 +17,7 @@ namespace NuKeeper.GitHub
         private readonly INuKeeperLogger _logger;
         private bool _initialised = false;
 
-        private IGitHubClient _client;
+        private Octokit.IGitHubClient _client;
         private Uri _apiBase;
 
         public OctokitClient(INuKeeperLogger logger)
@@ -27,13 +25,13 @@ namespace NuKeeper.GitHub
             _logger = logger;
         }
 
-        public Task Initialise(IAuthSettings settings)
+        public Task Initialise(AuthSettings settings)
         {
             _apiBase = settings.ApiBase;
 
-            _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), _apiBase)
+            _client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("NuKeeper"), _apiBase)
             {
-                Credentials = new Credentials(settings.Token)
+                Credentials = new Octokit.Credentials(settings.Token)
             };
 
             _initialised = true;
@@ -72,14 +70,14 @@ namespace NuKeeper.GitHub
             {
                 qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
             }
-            var request = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
+            var request = new Octokit.NewPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
 
             var pr = new GithubPullRequest(request);
 
             await OpenPullRequest(repository.Pull, pr, labels);
         }
 
-        public async Task<IReadOnlyList<IOrganization>> GetOrganizations()
+        public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
             CheckInitialised();
 
@@ -108,7 +106,7 @@ namespace NuKeeper.GitHub
                 _logger.Normal($"User fork found at {result.GitUrl} for {result.Owner.Login}");
                 return new GithubRepository(result);
             }
-            catch (NotFoundException)
+            catch (Octokit.NotFoundException)
             {
                 _logger.Detailed("User fork not found");
                 return null;
@@ -122,7 +120,7 @@ namespace NuKeeper.GitHub
             _logger.Detailed($"Making user fork for {repositoryName}");
             try
             {
-                var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
+                var result = await _client.Repository.Forks.Create(owner, repositoryName, new Octokit.NewRepositoryFork());
                 _logger.Normal($"User fork created at {result.GitUrl} for {result.Owner.Login}");
                 return new GithubRepository(result);
             }
@@ -133,7 +131,7 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<IBranch> GetRepositoryBranch(string userName, string repositoryName, string branchName)
+        public async Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName)
         {
             CheckInitialised();
 
@@ -143,31 +141,29 @@ namespace NuKeeper.GitHub
                 _logger.Detailed($"Branch found for {userName} / {repositoryName} / {branchName}");
                 return new GithubBranch(result);
             }
-            catch (NotFoundException)
+            catch (Octokit.NotFoundException)
             {
                 _logger.Detailed($"No branch found for {userName} / {repositoryName} / {branchName}");
                 return null;
             }
         }
 
-        public async Task<IPullRequest> OpenPullRequest(IForkData target, INewPullRequest request, IEnumerable<string> labels)
+        public async Task OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels)
         {
             CheckInitialised();
-            var newPullRequest = new NewPullRequest(request.Title, request.Head, request.BaseRef);
+            var newPullRequest = new  Octokit.NewPullRequest(request.Title, request.Head, request.BaseRef);
             _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Detailed($"PR title: {request.Title}");
             var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, newPullRequest);
 
             await AddLabelsToIssue(target, createdPullRequest.Number, labels);
-
-            return new GithubPullRequestInfo(createdPullRequest);
         }
 
-        public async Task<ISearchCodeResult> Search(ISearchCodeRequest search)
+        public async Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             CheckInitialised();
 
-            var repositoryCollection = new RepositoryCollection();
+            var repositoryCollection = new Octokit.RepositoryCollection();
             foreach (var repo in search.Repos)
             {
                 repositoryCollection.Add(repo.Key, repo.Value);
@@ -182,7 +178,7 @@ namespace NuKeeper.GitHub
                 }
             }
 
-            var searchCodeRequest = new SearchCodeRequest(search.Term)
+            var searchCodeRequest = new Octokit.SearchCodeRequest(search.Term)
             {
                 Repos = repositoryCollection,
                 PerPage = search.PerPage,
@@ -194,7 +190,7 @@ namespace NuKeeper.GitHub
             return new GithubSearchCodeResult(result);
         }
 
-        private async Task AddLabelsToIssue(IForkData target, int issueNumber, IEnumerable<string> labels)
+        private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)
         {
             var labelsToApply = labels?
                 .Where(l => !string.IsNullOrWhiteSpace(l))

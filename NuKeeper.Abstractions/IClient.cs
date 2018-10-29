@@ -1,21 +1,22 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Engine;
 
 namespace NuKeeper.Abstractions
 {
     public interface IClient
     {
-        Task Initialise(IAuthSettings settings);
+        Task Initialise(AuthSettings settings);
 
         Task<User> GetCurrentUser();
 
         Task CreatePullRequest(IRepositoryData repository, string title, string body, string branchWithChanges,
             IEnumerable<string> labels);
 
-        Task<IPullRequest> OpenPullRequest(IForkData target, INewPullRequest request, IEnumerable<string> labels);
+        Task OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels);
 
-        Task<IReadOnlyList<IOrganization>> GetOrganizations();
+        Task<IReadOnlyList<Organization>> GetOrganizations();
 
         Task<IReadOnlyList<IRepository>> GetRepositoriesForOrganisation(string organisationName);
 
@@ -23,8 +24,8 @@ namespace NuKeeper.Abstractions
 
         Task<IRepository> MakeUserFork(string owner, string repositoryName);
 
-        Task<IBranch> GetRepositoryBranch(string userName, string repositoryName, string branchName);
+        Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName);
 
-        Task<ISearchCodeResult> Search(ISearchCodeRequest search);
+        Task<SearchCodeResult> Search(SearchCodeRequest search);
     }
 }

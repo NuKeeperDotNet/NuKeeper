@@ -17,7 +17,7 @@ namespace NuKeeper.Abstractions.Engine.Packages
         }
 
         public async Task<bool> CanMakeBranchFor(PackageUpdateSet packageUpdateSet,
-            IForkData pushFork)
+            ForkData pushFork)
         {
             try
             {

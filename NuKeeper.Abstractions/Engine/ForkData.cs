@@ -2,7 +2,7 @@ using System;
 
 namespace NuKeeper.Abstractions.Engine
 {
-    public class ForkData : IForkData
+    public class ForkData
     {
         public ForkData(Uri uri, string owner, string name)
         {

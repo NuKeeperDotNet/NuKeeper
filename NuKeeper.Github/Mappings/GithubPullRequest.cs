@@ -1,20 +1,12 @@
 using NuKeeper.Abstractions;
-using Octokit;
 
-namespace NuKeeper.Github.Engine
+namespace NuKeeper.Github.Mappings
 {
-    public class GithubPullRequest : INewPullRequest
+    public class GithubPullRequest : NewPullRequest
     {
-        private readonly NewPullRequest _newPullRequest;
-        public GithubPullRequest(NewPullRequest newPullRequest)
+        public GithubPullRequest(Octokit.NewPullRequest newPullRequest)
+            : base(newPullRequest.Title, newPullRequest.Head, newPullRequest.Base)
         {
-            _newPullRequest = newPullRequest;
         }
-
-        public string Title => _newPullRequest.Title;
-
-        public string Head => _newPullRequest.Head;
-
-        public string BaseRef => _newPullRequest.Base;
     }
 }

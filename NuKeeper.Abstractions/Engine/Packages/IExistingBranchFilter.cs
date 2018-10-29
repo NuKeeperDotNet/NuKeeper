@@ -7,6 +7,6 @@ namespace NuKeeper.Abstractions.Engine.Packages
     {
         Task<bool> CanMakeBranchFor(
             PackageUpdateSet packageUpdateSet,
-            IForkData pushFork);
+            ForkData pushFork);
     }
 }

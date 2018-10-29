@@ -2,8 +2,8 @@ namespace NuKeeper.Abstractions.Engine
 {
     public interface IRepositoryData
     {
-        IForkData Pull { get; }
-        IForkData Push { get; }
+        ForkData Pull { get; }
+        ForkData Push { get; }
         string DefaultBranch { get; set; }
     }
 }
