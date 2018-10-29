@@ -1,4 +1,4 @@
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public enum ServerScope
     {

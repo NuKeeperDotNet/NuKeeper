@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;

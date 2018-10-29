@@ -1,10 +1,10 @@
 using System;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
-    public class GithubAuthSettings
+    public class AuthSettings
     {
-        public GithubAuthSettings(Uri apiBase, string token)
+        public AuthSettings(Uri apiBase, string token)
         {
             ApiBase = apiBase;
             Token = token;

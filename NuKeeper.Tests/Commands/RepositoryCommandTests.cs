@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Commands;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;

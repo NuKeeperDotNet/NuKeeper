@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;

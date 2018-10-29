@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;

@@ -1,3 +1,4 @@
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
