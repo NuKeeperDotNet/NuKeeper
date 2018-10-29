@@ -1,6 +1,7 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Configuration;
 using NuKeeper.Update.Selection;
 

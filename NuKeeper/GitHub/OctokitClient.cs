@@ -1,13 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Engine;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
 using NuKeeper.Inspection.Logging;
 using Octokit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Organization = NuKeeper.Abstractions.DTOs.Organization;
+using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
+using Repository = NuKeeper.Abstractions.DTOs.Repository;
+using SearchCodeRequest = NuKeeper.Abstractions.DTOs.SearchCodeRequest;
+using SearchCodeResult = NuKeeper.Abstractions.DTOs.SearchCodeResult;
+
 
 namespace NuKeeper.GitHub
 {
@@ -44,14 +50,14 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<Account> GetCurrentUser()
+        public async Task<Abstractions.DTOs.User> GetCurrentUser()
         {
             CheckInitialised();
 
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
-            return user;
+            return new GitHubUser(user);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -60,7 +66,7 @@ namespace NuKeeper.GitHub
 
             var orgs = await _client.Organization.GetAll();
             _logger.Normal($"Read {orgs.Count} organisations");
-            return orgs;
+            return orgs.Select(x => new GitHubOrganization(x)).ToArray();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
@@ -69,7 +75,7 @@ namespace NuKeeper.GitHub
 
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos;
+            return repos.Select(x => new GitHubRepository(x)).ToList();
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
@@ -81,7 +87,7 @@ namespace NuKeeper.GitHub
             {
                 var result = await _client.Repository.Get(userName, repositoryName);
                 _logger.Normal($"User fork found at {result.GitUrl} for {result.Owner.Login}");
-                return result;
+                return new GitHubRepository(result);
             }
             catch (NotFoundException)
             {
@@ -99,7 +105,7 @@ namespace NuKeeper.GitHub
             {
                 var result = await _client.Repository.Forks.Create(owner, repositoryName, new NewRepositoryFork());
                 _logger.Normal($"User fork created at {result.GitUrl} for {result.Owner.Login}");
-                return result;
+                return new GitHubRepository(result);
             }
             catch (Exception ex)
             {
@@ -108,41 +114,51 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName)
+        public async Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName)
         {
             CheckInitialised();
 
             try
             {
-                var result = await _client.Repository.Branch.Get(userName, repositoryName, branchName);
+                await _client.Repository.Branch.Get(userName, repositoryName, branchName);
                 _logger.Detailed($"Branch found for {userName} / {repositoryName} / {branchName}");
-                return result;
+                return true;
             }
             catch (NotFoundException)
             {
                 _logger.Detailed($"No branch found for {userName} / {repositoryName} / {branchName}");
-                return null;
+                return false;
             }
         }
 
-        public async Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels)
+        public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
             CheckInitialised();
 
             _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Detailed($"PR title: {request.Title}");
-            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, request);
+            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, new NewPullRequest(request.Title, request.Head, request.BaseRef));
 
             await AddLabelsToIssue(target, createdPullRequest.Number, labels);
-
-            return createdPullRequest;
         }
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             CheckInitialised();
+            var repos = new RepositoryCollection();
+            foreach (var repo in search.Repos)
+            {
+                repos.Add(repo.owner, repo.name);
+            }
 
-            return await _client.Search.SearchCode(search);
+            var result = await _client.Search.SearchCode(
+                new Octokit.SearchCodeRequest(search.Term)
+                {
+                    Repos = repos,
+                    In = new[] { CodeInQualifier.Path },
+                    PerPage = search.PerPage
+                });
+            return new GitHubSearchCodeResult(result);
         }
 
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)

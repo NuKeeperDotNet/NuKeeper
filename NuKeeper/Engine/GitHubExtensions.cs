@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.GitHub;
 using Octokit;
@@ -25,7 +25,8 @@ namespace NuKeeper.Engine
                 qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
             }
 
-            var pr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
+            var gitHubPr = new NewPullRequest(title, qualifiedBranch, repository.DefaultBranch) { Body = body };
+            var pr = new GitHubPullRequestRequest(gitHubPr);
 
             await gitHub.OpenPullRequest(repository.Pull, pr, labels);
         }
