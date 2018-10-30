@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
@@ -144,7 +144,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = MakeUserSettings(),
                 SourceControlServerSettings = MakseServerSettings()
             };

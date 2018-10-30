@@ -4,7 +4,7 @@ namespace NuKeeper.Abstractions.Configuration
     {
         public SourceControlServerSettings SourceControlServerSettings { get; set; }
 
-        public AuthSettings GithubAuthSettings { get; set; }
+        public AuthSettings AuthSettings { get; set; }
 
         public UserSettings UserSettings { get; set; }
 
