@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
-using NuKeeper.Inspection.Formats;
+using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
