@@ -1,8 +1,7 @@
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using NuKeeper.Abstractions.Configuration;
+using System.Text.RegularExpressions;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class SourceControlServerSettings
     {

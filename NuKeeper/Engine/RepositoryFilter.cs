@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 

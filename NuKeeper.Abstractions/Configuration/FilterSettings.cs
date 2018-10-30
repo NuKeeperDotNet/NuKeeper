@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace NuKeeper.Update.Selection
+namespace NuKeeper.Abstractions.Configuration
 {
     public class FilterSettings
     {

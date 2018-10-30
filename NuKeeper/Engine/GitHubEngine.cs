@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using User = NuKeeper.Abstractions.DTOs.User;
@@ -37,13 +37,13 @@ namespace NuKeeper.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            _github.Initialise(settings.GithubAuthSettings);
+            _github.Initialise(settings.AuthSettings);
 
             var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = settings.GithubAuthSettings.Token
+                Password = settings.AuthSettings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);

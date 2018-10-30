@@ -5,7 +5,6 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Local;
 using NUnit.Framework;

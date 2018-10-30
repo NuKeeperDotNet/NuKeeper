@@ -93,7 +93,7 @@ namespace NuKeeper.Git
             }
         }
 
-        public bool BranchExists(string branchName)
+        private bool BranchExists(string branchName)
         {
             using (var repo = MakeRepo())
             {

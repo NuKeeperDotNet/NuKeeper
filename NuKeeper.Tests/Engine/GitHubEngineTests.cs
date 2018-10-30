@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
@@ -101,7 +100,7 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
@@ -145,7 +144,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = MakeUserSettings(),
                 SourceControlServerSettings = MakseServerSettings()
             };

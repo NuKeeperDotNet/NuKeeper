@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
@@ -70,11 +70,11 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("The required GitHub access token was not found");
             }
 
-            var githubUrl = GitSettingsReader.EnsureTrailingSlash(githubUri);
+            var githubUrl = GitHubSettingsReader.EnsureTrailingSlash(githubUri);
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            settings.GithubAuthSettings = new AuthSettings(githubUrl, token);
+            settings.AuthSettings = new AuthSettings(githubUrl, token);
 
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);

@@ -1,7 +1,6 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 
@@ -30,7 +29,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("Global mode must have an include regex");
             }
 
-            var apiHost = settings.GithubAuthSettings.ApiBase.Host;
+            var apiHost = settings.AuthSettings.ApiBase.Host;
             if (apiHost.EndsWith("github.com", StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Failure("Global mode must not use public github");

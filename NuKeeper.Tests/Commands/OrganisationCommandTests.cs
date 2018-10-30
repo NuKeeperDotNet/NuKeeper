@@ -5,7 +5,6 @@ using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
@@ -63,8 +62,8 @@ namespace NuKeeper.Tests.Commands
             var settings = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
+            Assert.That(settings.AuthSettings, Is.Not.Null);
+            Assert.That(settings.AuthSettings.Token, Is.EqualTo("testToken"));
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Organisation));
@@ -110,9 +109,9 @@ namespace NuKeeper.Tests.Commands
             var settings = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/api/")));
+            Assert.That(settings.AuthSettings, Is.Not.Null);
+            Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
+            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/api/")));
         }
 
         [Test]

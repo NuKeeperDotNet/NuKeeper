@@ -1,7 +1,7 @@
 using System;
 using NuKeeper.Abstractions.DTOs;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class RepositorySettings
     {

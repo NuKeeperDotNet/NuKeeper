@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
+using NuKeeper.Abstractions.Configuration;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.GitHub
 {
-    public static class GitSettingsReader
+    public static class GitHubSettingsReader
     {
         internal static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
         {

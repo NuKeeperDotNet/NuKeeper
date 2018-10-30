@@ -4,9 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.GitHub;
-using Octokit;
 
 namespace NuKeeper.Engine
 {

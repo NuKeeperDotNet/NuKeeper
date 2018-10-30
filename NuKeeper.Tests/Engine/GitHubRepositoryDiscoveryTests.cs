@@ -1,7 +1,6 @@
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;

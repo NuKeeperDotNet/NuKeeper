@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Local;
 
