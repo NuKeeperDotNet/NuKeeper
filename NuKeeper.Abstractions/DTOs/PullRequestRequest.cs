@@ -12,5 +12,6 @@ namespace NuKeeper.Abstractions.DTOs
         public string Head { get; }
         public string Title { get; }
         public string BaseRef { get; set; }
+        public string Body { get; set; }
     }
 }

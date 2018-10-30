@@ -137,7 +137,7 @@ namespace NuKeeper.GitHub
 
             _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
             _logger.Detailed($"PR title: {request.Title}");
-            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, new NewPullRequest(request.Title, request.Head, request.BaseRef));
+            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, new NewPullRequest(request.Title, request.Head, request.BaseRef) { Body = request.Body });
 
             await AddLabelsToIssue(target, createdPullRequest.Number, labels);
         }
