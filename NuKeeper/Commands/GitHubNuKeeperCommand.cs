@@ -74,7 +74,7 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            settings.GithubAuthSettings = new AuthSettings(githubUrl, token);
+            settings.AuthSettings = new AuthSettings(githubUrl, token);
 
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
