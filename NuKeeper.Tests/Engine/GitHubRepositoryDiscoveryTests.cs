@@ -1,15 +1,15 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -43,7 +43,7 @@ namespace NuKeeper.Tests.Engine
             var github = Substitute.For<IGitHub>();
             var settings = new SourceControlServerSettings
             {
-                Repository = new RepositorySettings(RepositoryBuilder.MakeRepository(name: "foo")),
+                Repository = new RepositorySettings(new GitHubRepository(RepositoryBuilder.MakeRepository(name: "foo"))),
                 Scope = ServerScope.Repository,
                 IncludeRepos = new Regex("^foo"),
                 ExcludeRepos = new Regex("^foo")
@@ -80,7 +80,7 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository()
+                new GitHubRepository(RepositoryBuilder.MakeRepository())
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
@@ -98,7 +98,7 @@ namespace NuKeeper.Tests.Engine
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[0].Name));
-            Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
+            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
         }
 
         [Test]
@@ -106,8 +106,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
-                RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
+                new GitHubRepository(RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false)),
+                new GitHubRepository(RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true))
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
@@ -125,7 +125,7 @@ namespace NuKeeper.Tests.Engine
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
-            Assert.That(firstRepo.GithubUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
         [Test]
@@ -133,8 +133,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository(name:"foo"),
-                RepositoryBuilder.MakeRepository(name:"bar")
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"foo")),
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"bar"))
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
@@ -161,8 +161,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository(name:"foo"),
-                RepositoryBuilder.MakeRepository(name:"bar")
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"foo")),
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"bar"))
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
@@ -189,8 +189,8 @@ namespace NuKeeper.Tests.Engine
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository(name:"foo"),
-                RepositoryBuilder.MakeRepository(name:"bar")
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"foo")),
+                new GitHubRepository(RepositoryBuilder.MakeRepository(name:"bar"))
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 

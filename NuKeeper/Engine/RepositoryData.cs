@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine
 {

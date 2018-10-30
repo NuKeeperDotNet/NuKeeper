@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Engine;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
