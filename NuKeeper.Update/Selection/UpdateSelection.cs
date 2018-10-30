@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Update.Selection

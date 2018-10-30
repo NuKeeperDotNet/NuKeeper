@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NuKeeper.Tests
+namespace NuKeeper.Abstractions
 {
     public static class ListHelper
     {

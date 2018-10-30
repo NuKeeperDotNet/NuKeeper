@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
