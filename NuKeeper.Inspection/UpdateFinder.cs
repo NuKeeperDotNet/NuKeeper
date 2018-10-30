@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection
 {

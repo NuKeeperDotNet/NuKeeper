@@ -2,9 +2,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process

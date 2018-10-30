@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

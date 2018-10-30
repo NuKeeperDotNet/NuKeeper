@@ -3,7 +3,8 @@ using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 

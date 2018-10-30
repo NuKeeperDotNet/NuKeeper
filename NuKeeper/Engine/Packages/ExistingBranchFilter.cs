@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages

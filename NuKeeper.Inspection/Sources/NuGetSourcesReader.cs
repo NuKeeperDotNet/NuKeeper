@@ -1,5 +1,6 @@
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Sources
 {

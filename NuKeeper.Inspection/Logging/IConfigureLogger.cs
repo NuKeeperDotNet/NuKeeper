@@ -1,3 +1,5 @@
+using NuKeeper.Abstractions.Logging;
+
 namespace NuKeeper.Inspection.Logging
 {
     public interface IConfigureLogger

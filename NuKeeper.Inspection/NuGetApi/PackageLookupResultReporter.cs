@@ -1,4 +1,5 @@
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

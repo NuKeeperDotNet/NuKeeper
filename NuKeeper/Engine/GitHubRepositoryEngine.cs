@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Engine
 {

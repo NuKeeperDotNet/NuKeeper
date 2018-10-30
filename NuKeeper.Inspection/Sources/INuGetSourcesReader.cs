@@ -1,3 +1,4 @@
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.Sources

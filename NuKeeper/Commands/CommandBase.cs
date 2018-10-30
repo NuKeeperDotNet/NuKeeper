@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
-using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Selection;
 
 namespace NuKeeper.Commands
@@ -97,8 +97,8 @@ namespace NuKeeper.Commands
             var settingsFromFile = FileSettingsCache.GetSettings();
 
             var defaultLogDestination = string.IsNullOrWhiteSpace(LogFile)
-                ? Inspection.Logging.LogDestination.Console
-                : Inspection.Logging.LogDestination.File;
+                ? Abstractions.Logging.LogDestination.Console
+                : Abstractions.Logging.LogDestination.File;
 
             var logDest = Concat.FirstValue(LogDestination, settingsFromFile.LogDestination,
                 defaultLogDestination);
@@ -153,8 +153,8 @@ namespace NuKeeper.Commands
             var settingsFromFile = FileSettingsCache.GetSettings();
 
             var defaultOutputDestination = string.IsNullOrWhiteSpace(OutputFileName)
-                ? Inspection.Report.OutputDestination.Console
-                : Inspection.Report.OutputDestination.File;
+                ? Abstractions.Output.OutputDestination.Console
+                : Abstractions.Output.OutputDestination.File;
 
             settings.UserSettings.OutputDestination =
                 Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
@@ -162,7 +162,7 @@ namespace NuKeeper.Commands
 
             settings.UserSettings.OutputFormat =
                 Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
-                    Inspection.Report.OutputFormat.Text);
+                    Abstractions.Output.OutputFormat.Text);
 
             settings.UserSettings.OutputFileName =
                 Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,

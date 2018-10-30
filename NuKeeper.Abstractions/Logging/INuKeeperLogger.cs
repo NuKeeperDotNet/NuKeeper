@@ -1,9 +1,8 @@
 using System;
 
-#pragma warning disable CA1716
-
-namespace NuKeeper.Inspection.Logging
+namespace NuKeeper.Abstractions.Logging
 {
+#pragma warning disable CA1716 // Identifiers should not match keywords
     public interface INuKeeperLogger
     {
         void Error(string message, Exception ex = null);

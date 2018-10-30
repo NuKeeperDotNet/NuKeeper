@@ -1,4 +1,4 @@
-namespace NuKeeper.Inspection.NuGetApi
+namespace NuKeeper.Abstractions.Configuration
 {
     public enum VersionChange
     {

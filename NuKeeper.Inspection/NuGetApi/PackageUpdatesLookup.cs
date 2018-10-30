@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

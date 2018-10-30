@@ -1,6 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Update.Process
 {

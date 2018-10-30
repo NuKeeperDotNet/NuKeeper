@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Sort

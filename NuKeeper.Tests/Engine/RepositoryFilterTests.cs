@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using Octokit;
 

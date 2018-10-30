@@ -1,5 +1,5 @@
 using NSubstitute;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 

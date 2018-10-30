@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using NSubstitute;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 

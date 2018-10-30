@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NuGet.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Inspection.Sources
 {

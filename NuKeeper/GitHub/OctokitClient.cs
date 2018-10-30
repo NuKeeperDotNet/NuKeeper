@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
-using NuKeeper.Inspection.Logging;
 using Octokit;
 
 namespace NuKeeper.GitHub

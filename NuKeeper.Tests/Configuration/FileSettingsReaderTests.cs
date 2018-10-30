@@ -1,11 +1,9 @@
 using System.IO;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration

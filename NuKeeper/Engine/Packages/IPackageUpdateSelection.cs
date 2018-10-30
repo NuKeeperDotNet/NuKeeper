@@ -1,7 +1,6 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
 using NuKeeper.Update.Selection;
 
 namespace NuKeeper.Engine.Packages

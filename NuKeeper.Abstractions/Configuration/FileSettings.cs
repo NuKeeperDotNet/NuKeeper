@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.Output;
 
 #pragma warning disable CA2227
 
