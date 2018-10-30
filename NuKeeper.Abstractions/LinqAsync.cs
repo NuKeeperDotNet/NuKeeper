@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NuKeeper.Update
+namespace NuKeeper.Abstractions
 {
     public static class LinqAsync
     {

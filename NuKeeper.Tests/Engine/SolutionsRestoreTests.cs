@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
