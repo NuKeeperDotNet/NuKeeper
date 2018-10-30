@@ -1,7 +1,6 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 

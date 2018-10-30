@@ -4,7 +4,6 @@ using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Local;
 using NUnit.Framework;

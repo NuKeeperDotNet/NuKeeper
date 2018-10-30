@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Configuration;
 using NuKeeper.Git;
 using NuKeeper.Inspection.RepositoryInspection;
 

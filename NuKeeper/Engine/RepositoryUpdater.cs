@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Configuration;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
 using NuKeeper.Inspection;

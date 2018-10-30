@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;

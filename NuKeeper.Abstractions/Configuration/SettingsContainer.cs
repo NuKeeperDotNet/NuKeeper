@@ -1,7 +1,4 @@
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Update.Selection;
-
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class SettingsContainer
     {

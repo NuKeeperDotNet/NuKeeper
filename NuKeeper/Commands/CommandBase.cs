@@ -6,9 +6,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.Output;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Update.Selection;
 
 namespace NuKeeper.Commands
 {

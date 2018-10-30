@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Update.Selection

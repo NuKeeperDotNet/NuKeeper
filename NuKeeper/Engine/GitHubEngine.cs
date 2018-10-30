@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using User = NuKeeper.Abstractions.DTOs.User;

@@ -1,6 +1,6 @@
 using LibGit2Sharp;
-using NuKeeper.Configuration;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Engine
 {
