@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Logging;
 using Organization = NuKeeper.Abstractions.DTOs.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.DTOs.Repository;

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
