@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Configuration
 {

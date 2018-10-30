@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Formats;
@@ -24,7 +24,7 @@ namespace NuKeeper.GitHub
             _logger = logger;
         }
 
-        public void Initialise(GithubAuthSettings settings)
+        public void Initialise(AuthSettings settings)
         {
             _apiBase = settings.ApiBase;
 

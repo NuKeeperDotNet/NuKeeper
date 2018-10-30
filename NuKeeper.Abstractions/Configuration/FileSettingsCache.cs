@@ -1,7 +1,6 @@
 using System.IO;
-using NuKeeper.Inspection.Files;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class FileSettingsCache : IFileSettingsCache
     {

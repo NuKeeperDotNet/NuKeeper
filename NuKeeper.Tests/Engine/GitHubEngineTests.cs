@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
@@ -164,9 +165,9 @@ namespace NuKeeper.Tests.Engine
             return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
         }
 
-        private static GithubAuthSettings MakeGitHubAuthSettings()
+        private static AuthSettings MakeGitHubAuthSettings()
         {
-            return new GithubAuthSettings(new Uri("http://foo.com"), "token123");
+            return new AuthSettings(new Uri("http://foo.com"), "token123");
         }
     }
 }

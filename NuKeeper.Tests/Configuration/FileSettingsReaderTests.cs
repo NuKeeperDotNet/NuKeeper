@@ -1,5 +1,6 @@
 using System.IO;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;

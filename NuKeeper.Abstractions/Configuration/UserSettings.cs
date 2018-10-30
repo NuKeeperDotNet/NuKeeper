@@ -1,10 +1,8 @@
-using System;
-using System.Text.RegularExpressions;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Sources;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class UserSettings
     {

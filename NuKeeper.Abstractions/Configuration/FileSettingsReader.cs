@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NuKeeper.Inspection.Logging;
 
-namespace NuKeeper.Configuration
+namespace NuKeeper.Abstractions.Configuration
 {
     public class FileSettingsReader
     {
@@ -18,7 +18,7 @@ namespace NuKeeper.Configuration
         {
             const string fileName = "nukeeper.settings.json";
 
-            var fullPath = Path.Join(folder, fileName);
+            var fullPath = Path.Combine(folder, fileName);
 
             if (File.Exists(fullPath))
             {

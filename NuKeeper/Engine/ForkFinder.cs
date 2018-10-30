@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Configuration;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
