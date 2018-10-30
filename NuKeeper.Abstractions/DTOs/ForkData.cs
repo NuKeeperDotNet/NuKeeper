@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Abstractions.DTOs
 {
     public class ForkData
     {

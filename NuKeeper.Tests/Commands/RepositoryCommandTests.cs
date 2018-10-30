@@ -69,8 +69,8 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Repository));
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.EqualTo(new Uri("http://github.com/test/test")));
+            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.EqualTo(new Uri("http://github.com/test/test")));
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
         }
 

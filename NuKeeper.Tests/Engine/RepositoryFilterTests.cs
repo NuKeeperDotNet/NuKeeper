@@ -2,12 +2,12 @@ using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
+using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
-using Octokit;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -18,7 +18,7 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldFilterWhenNoMatchFound()
         {
             var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0, false, null)));
+            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0)));
 
             IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 
@@ -31,7 +31,7 @@ namespace NuKeeper.Tests.Engine
         public async Task ShouldNotFilterWhenMatchFound()
         {
             var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1, false, null)));
+            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1)));
 
             IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
 

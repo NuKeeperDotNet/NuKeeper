@@ -29,7 +29,7 @@ namespace NuKeeper.Configuration
 
             return new RepositorySettings
                 {
-                    GithubUri = gitHubRepositoryUri,
+                    Uri = gitHubRepositoryUri,
                     RepositoryName = repoName,
                     RepositoryOwner = repoOwner
             };

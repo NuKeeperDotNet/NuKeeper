@@ -129,8 +129,7 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            github.GetCurrentUser().Returns(
-                RepositoryBuilder.MakeUser("http://test.user.com"));
+            github.GetCurrentUser().Returns(new GitHubUser(RepositoryBuilder.MakeUser("http://test.user.com")));
 
             repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);

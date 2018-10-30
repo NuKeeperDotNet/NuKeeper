@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Engine;
-using Octokit;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.GitHub
 {
@@ -10,9 +9,9 @@ namespace NuKeeper.GitHub
     {
         void Initialise(AuthSettings settings);
 
-        Task<Account> GetCurrentUser();
+        Task<User> GetCurrentUser();
 
-        Task<PullRequest> OpenPullRequest(ForkData target, NewPullRequest request, IEnumerable<string> labels);
+        Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels);
 
         Task<IReadOnlyList<Organization>> GetOrganizations();
 
@@ -22,7 +21,7 @@ namespace NuKeeper.GitHub
 
         Task<Repository> MakeUserFork(string owner, string repositoryName);
 
-        Task<Branch> GetRepositoryBranch(string userName, string repositoryName, string branchName);
+        Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName);
 
         Task<SearchCodeResult> Search(SearchCodeRequest search);
     }
