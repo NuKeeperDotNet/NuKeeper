@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

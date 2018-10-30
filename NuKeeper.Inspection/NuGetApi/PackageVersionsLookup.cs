@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol.Core.Types;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

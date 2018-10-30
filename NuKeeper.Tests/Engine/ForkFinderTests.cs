@@ -7,6 +7,7 @@ using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Tests.Engine
 {

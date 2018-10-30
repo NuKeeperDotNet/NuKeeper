@@ -5,7 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

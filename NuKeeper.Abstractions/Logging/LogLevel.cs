@@ -1,4 +1,4 @@
-namespace NuKeeper.Inspection.Logging
+namespace NuKeeper.Abstractions.Logging
 {
     public enum LogLevel
     {

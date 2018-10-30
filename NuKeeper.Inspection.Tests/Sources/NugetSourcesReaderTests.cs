@@ -2,8 +2,9 @@ using System.IO;
 using System.Linq;
 using NSubstitute;
 using NuGet.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 

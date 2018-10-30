@@ -1,4 +1,4 @@
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.NuGet;
 using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.Sources

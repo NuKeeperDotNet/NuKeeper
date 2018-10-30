@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 

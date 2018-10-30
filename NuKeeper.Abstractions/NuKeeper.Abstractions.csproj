@@ -4,12 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
+    <PackageReference Include="NuGet.Protocol" Version="4.8.0" />
+  </ItemGroup>
 
 </Project>

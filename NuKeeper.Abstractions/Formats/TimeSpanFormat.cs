@@ -1,6 +1,6 @@
 using System;
 
-namespace NuKeeper.Inspection.Formats
+namespace NuKeeper.Abstractions.Formats
 {
     public static class TimeSpanFormat
     {

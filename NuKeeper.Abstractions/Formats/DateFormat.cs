@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace NuKeeper.Inspection.Formats
+namespace NuKeeper.Abstractions.Formats
 {
     public static class DateFormat
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Newtonsoft.Json;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Abstractions.Configuration
 {

@@ -1,6 +1,5 @@
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.Output;
 
 namespace NuKeeper.Abstractions.Configuration
 {

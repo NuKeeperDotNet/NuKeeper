@@ -1,6 +1,6 @@
 using NSubstitute;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Files

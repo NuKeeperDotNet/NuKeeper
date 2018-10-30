@@ -1,4 +1,4 @@
-namespace NuKeeper.Inspection.Report
+namespace NuKeeper.Abstractions.Output
 {
     public enum OutputDestination
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.Sort
 {

@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Update.ProcessRunner;
 using NUnit.Framework;
 

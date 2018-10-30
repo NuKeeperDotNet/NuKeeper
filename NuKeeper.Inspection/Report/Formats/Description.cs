@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using NuKeeper.Inspection.Formats;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report.Formats

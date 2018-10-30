@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.Sort;
