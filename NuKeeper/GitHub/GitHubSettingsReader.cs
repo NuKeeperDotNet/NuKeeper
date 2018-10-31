@@ -35,22 +35,5 @@ namespace NuKeeper.GitHub
                     RepositoryOwner = repoOwner
             };
         }
-
-        internal static Uri EnsureTrailingSlash(Uri uri)
-        {
-            if (uri == null)
-            {
-                return null;
-            }
-
-            var path = uri.ToString();
-
-            if (path.EndsWith("/", StringComparison.OrdinalIgnoreCase))
-            {
-                return uri;
-            }
-
-            return new Uri(path + "/");
-        }
     }
 }
