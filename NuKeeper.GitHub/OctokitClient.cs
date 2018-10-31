@@ -59,7 +59,7 @@ namespace NuKeeper.GitHub
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
-            return new User(user?.Login, user?.Name, user?.Email);
+            return new User(user.Login, user.Name, user.Email);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -68,7 +68,7 @@ namespace NuKeeper.GitHub
 
             var orgs = await _client.Organization.GetAll();
             _logger.Normal($"Read {orgs.Count} organisations");
-            return orgs.Select(x => new Organization(x.Name, x.Login)).ToArray();
+            return orgs.Select(gitHubOrg => new Organization(gitHubOrg.Name, gitHubOrg.Login)).ToArray();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
@@ -77,7 +77,7 @@ namespace NuKeeper.GitHub
 
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos.Select(x => new GitHubRepository(x)).ToList();
+            return repos.Select(repo => new GitHubRepository(repo)).ToList();
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
