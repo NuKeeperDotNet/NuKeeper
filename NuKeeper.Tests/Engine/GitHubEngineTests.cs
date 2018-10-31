@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -128,7 +129,8 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            github.GetCurrentUser().Returns(new GitHubUser(RepositoryBuilder.MakeUser("http://test.user.com")));
+            var user = RepositoryBuilder.MakeUser("http://test.user.com");
+            github.GetCurrentUser().Returns(new User(user.Login, user.Name, user.Email));
 
             repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
