@@ -1,6 +1,8 @@
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NUnit.Framework;
@@ -8,8 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationPlatform;
-using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Tests.Engine
 {

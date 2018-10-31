@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {

@@ -1,10 +1,10 @@
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationPlatform;
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Engine
 {
@@ -94,7 +94,7 @@ namespace NuKeeper.Engine
         private static bool RepoIsModifiable(Abstractions.DTOs.Repository repo)
         {
             return
-                ! repo.Archived &&
+                !repo.Archived &&
                 repo.UserPermissions.Pull;
         }
     }

@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {
@@ -23,7 +23,7 @@ namespace NuKeeper.Engine
         {
             var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
-                Repos = new List<(string owner, string name)> {(repository.RepositoryOwner, repository.RepositoryName)},
+                Repos = new List<(string owner, string name)> { (repository.RepositoryOwner, repository.RepositoryName) },
                 PerPage = 1
             };
             try

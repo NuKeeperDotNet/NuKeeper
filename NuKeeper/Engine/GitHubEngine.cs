@@ -1,12 +1,11 @@
-using System;
-using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
+using System;
+using System.Threading.Tasks;
 using User = NuKeeper.Abstractions.DTOs.User;
 
 namespace NuKeeper.Engine

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -20,6 +16,10 @@ using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 
 namespace NuKeeper.Tests.Engine
@@ -64,7 +64,7 @@ namespace NuKeeper.Tests.Engine
             var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
-            await AssertReceivedMakeUpdate(packageUpdater,1);
+            await AssertReceivedMakeUpdate(packageUpdater, 1);
         }
 
         [TestCase(0, true, 0, 0)]
@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Engine
                 .ToList();
 
             var settings = MakeSettings(consolidateUpdates);
-            
+
             var (repoUpdater, _) = MakeRepositoryUpdater(
                 updateSelection, updates, packageUpdater);
 
@@ -192,7 +192,7 @@ namespace NuKeeper.Tests.Engine
 
         private static
             (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
-            IPackageUpdateSelection updateSelection, 
+            IPackageUpdateSelection updateSelection,
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)
         {
