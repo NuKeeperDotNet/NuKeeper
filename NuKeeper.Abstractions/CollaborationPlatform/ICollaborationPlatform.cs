@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 
-namespace NuKeeper.GitHub
+namespace NuKeeper.Abstractions.CollaborationPlatform
 {
-    public interface IGitHub
+    public interface ICollaborationPlatform
     {
         void Initialise(AuthSettings settings);
 

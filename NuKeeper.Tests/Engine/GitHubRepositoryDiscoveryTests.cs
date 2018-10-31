@@ -3,12 +3,12 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Tests.Engine
@@ -19,7 +19,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task SuccessInRepoMode()
         {
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(),
@@ -28,7 +28,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories(github, settings);
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
 
             var repos = reposResponse.ToList();
 
@@ -40,7 +40,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task RepoModeIgnoresIncludesAndExcludes()
         {
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(new GitHubRepository(RepositoryBuilder.MakeRepository(name: "foo"))),
@@ -51,7 +51,7 @@ namespace NuKeeper.Tests.Engine
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories(github, settings);
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
 
             var repos = reposResponse.ToList();
 
@@ -65,11 +65,11 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task SuccessInOrgMode()
         {
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Empty);
@@ -84,13 +84,13 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
-            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -111,13 +111,13 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
-            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -138,15 +138,15 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
-            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
             var settings = OrgModeSettings();
             settings.IncludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -166,15 +166,15 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
-            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
             var settings = OrgModeSettings();
             settings.ExcludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -194,8 +194,8 @@ namespace NuKeeper.Tests.Engine
             };
             IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var github = Substitute.For<IGitHub>();
-            github.GetRepositoriesForOrganisation(Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
                 .Returns(Task.FromResult(readOnlyRepos));
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
@@ -203,7 +203,7 @@ namespace NuKeeper.Tests.Engine
             var settings = OrgModeSettings();
             settings.IncludeRepos = new Regex("^bar");
             settings.ExcludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(github, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos.Count(), Is.EqualTo(0));

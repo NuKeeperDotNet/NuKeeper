@@ -1,21 +1,20 @@
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {
     public class ExistingBranchFilter : IExistingBranchFilter
     {
-        private readonly IGitHub _gitHub;
+        private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
 
-        public ExistingBranchFilter(IGitHub gitHub, INuKeeperLogger logger)
+        public ExistingBranchFilter(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
         {
-            _gitHub = gitHub;
+            _collaborationPlatform = collaborationPlatform;
             _logger = logger;
         }
 
@@ -25,7 +24,7 @@ namespace NuKeeper.Engine.Packages
             try
             {
                 var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet);
-                return await _gitHub.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
+                return await _collaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
             }
             catch(Exception ex)
             {

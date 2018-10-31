@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
@@ -12,20 +13,20 @@ namespace NuKeeper.Engine
 {
     public class GitHubEngine : IGitHubEngine
     {
-        private readonly IGitHub _github;
+        private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
         private readonly IGitHubRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public GitHubEngine(
-            IGitHub github,
+            ICollaborationPlatform collaborationPlatform,
             IGitHubRepositoryDiscovery repositoryDiscovery,
             IGitHubRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
-            _github = github;
+            _collaborationPlatform = collaborationPlatform;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
@@ -37,9 +38,9 @@ namespace NuKeeper.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            _github.Initialise(settings.AuthSettings);
+            _collaborationPlatform.Initialise(settings.AuthSettings);
 
-            var githubUser = await _github.GetCurrentUser();
+            var githubUser = await _collaborationPlatform.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
@@ -48,7 +49,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories(_github, settings.SourceControlServerSettings);
+            var repositories = await _repositoryDiscovery.GetRepositories(_collaborationPlatform, settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 

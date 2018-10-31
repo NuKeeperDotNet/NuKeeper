@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using Organization = NuKeeper.Abstractions.DTOs.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.DTOs.Repository;
@@ -18,7 +19,7 @@ using User = NuKeeper.Abstractions.DTOs.User;
 
 namespace NuKeeper.GitHub
 {
-    public class OctokitClient : IGitHub
+    public class OctokitClient : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
         private bool _initialised = false;
