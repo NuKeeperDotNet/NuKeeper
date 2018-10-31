@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using LibGit2Sharp;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
