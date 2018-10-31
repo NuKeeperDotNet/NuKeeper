@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace NuKeeper.Inspection
+namespace NuKeeper.Abstractions
 {
     [Serializable]
     public class NuKeeperException: Exception

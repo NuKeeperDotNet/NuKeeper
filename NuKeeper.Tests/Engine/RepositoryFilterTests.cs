@@ -1,14 +1,13 @@
-using System;
-using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
-using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -18,10 +17,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldFilterWhenNoMatchFound()
         {
-            var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0)));
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0)));
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -31,10 +30,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenMatchFound()
         {
-            var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1)));
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1)));
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -44,10 +43,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenSearchFails()
         {
-            var githubClient = Substitute.For<IGitHub>();
-            githubClient.Search(null).ThrowsForAnyArgs(new Exception());
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.Search(null).ThrowsForAnyArgs(new Exception());
 
-            IRepositoryFilter subject = new RepositoryFilter(githubClient, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 

@@ -1,29 +1,29 @@
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Git;
-using NuKeeper.GitHub;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Engine.Packages
 {
     public class PackageUpdater : IPackageUpdater
     {
-        private readonly IGitHub _gitHub;
+        private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
-            IGitHub gitHub,
+            ICollaborationPlatform collaborationPlatform,
             IUpdateRunner localUpdater,
             INuKeeperLogger logger)
         {
-            _gitHub = gitHub;
+            _collaborationPlatform = collaborationPlatform;
             _updateRunner = localUpdater;
             _logger = logger;
         }
@@ -97,7 +97,7 @@ namespace NuKeeper.Engine.Packages
 
             var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) { Body = body };
 
-            await _gitHub.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
+            await _collaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
 
 
             git.Checkout(repository.DefaultBranch);

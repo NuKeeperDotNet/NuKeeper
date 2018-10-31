@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace NuKeeper.GitHub
+namespace NuKeeper.Abstractions.CollaborationPlatform
 {
-    public interface IGitHub
+    public interface ICollaborationPlatform
     {
         void Initialise(AuthSettings settings);
 

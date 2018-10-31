@@ -1,23 +1,25 @@
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
-using NuKeeper.Inspection;
+using NuKeeper.Abstractions.Formats;
+using NuKeeper.Abstractions.Logging;
 using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.Formats;
-using NuKeeper.Abstractions.Logging;
 using Organization = NuKeeper.Abstractions.DTOs.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.DTOs.Repository;
 using SearchCodeRequest = NuKeeper.Abstractions.DTOs.SearchCodeRequest;
 using SearchCodeResult = NuKeeper.Abstractions.DTOs.SearchCodeResult;
+using User = NuKeeper.Abstractions.DTOs.User;
 
 
 namespace NuKeeper.GitHub
 {
-    public class OctokitClient : IGitHub
+    public class OctokitClient : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
         private bool _initialised = false;
@@ -50,14 +52,14 @@ namespace NuKeeper.GitHub
             }
         }
 
-        public async Task<Abstractions.DTOs.User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
             CheckInitialised();
 
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
-            return new GitHubUser(user);
+            return new User(user.Login, user.Name, user.Email);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -66,7 +68,7 @@ namespace NuKeeper.GitHub
 
             var orgs = await _client.Organization.GetAll();
             _logger.Normal($"Read {orgs.Count} organisations");
-            return orgs.Select(x => new GitHubOrganization(x)).ToArray();
+            return orgs.Select(gitHubOrg => new Organization(gitHubOrg.Name, gitHubOrg.Login)).ToArray();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
@@ -75,7 +77,7 @@ namespace NuKeeper.GitHub
 
             var repos = await _client.Repository.GetAllForOrg(organisationName);
             _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos.Select(x => new GitHubRepository(x)).ToList();
+            return repos.Select(repo => new GitHubRepository(repo)).ToList();
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
@@ -158,7 +160,7 @@ namespace NuKeeper.GitHub
                     In = new[] { CodeInQualifier.Path },
                     PerPage = search.PerPage
                 });
-            return new GitHubSearchCodeResult(result);
+            return new SearchCodeResult(result.TotalCount);
         }
 
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)

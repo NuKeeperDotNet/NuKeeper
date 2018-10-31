@@ -13,9 +13,9 @@ namespace NuKeeper.GitHub
             new UserPermissions(repository.Permissions.Admin, repository.Permissions.Push, repository.Permissions.Pull),
             new Uri(repository.HtmlUrl),
             new Uri(repository.CloneUrl),
-            new GitHubUser(repository.Owner),
+            new User(repository.Owner.Login, repository.Owner.Name, repository.Owner.Email),
             repository.Fork,
-            repository.Parent != null ? new GitHubRepository(repository.Parent) : null 
+            repository.Parent != null ? new GitHubRepository(repository.Parent) : null
             )
         {
         }

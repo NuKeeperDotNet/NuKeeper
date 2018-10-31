@@ -1,13 +1,14 @@
+using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Engine;
+using NuKeeper.Inspection.Files;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NSubstitute;
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.Engine;
-using NuKeeper.GitHub;
-using NuKeeper.Inspection.Files;
-using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -100,12 +101,12 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                AuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
                 },
-                SourceControlServerSettings = MakseServerSettings()
+                SourceControlServerSettings = MakeServerSettings()
             };
 
             var count = await engine.Run(settings);
@@ -123,19 +124,20 @@ namespace NuKeeper.Tests.Engine
             int repoEngineResult,
             List<RepositorySettings> repos)
         {
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            github.GetCurrentUser().Returns(new GitHubUser(RepositoryBuilder.MakeUser("http://test.user.com")));
+            var user = RepositoryBuilder.MakeUser("http://test.user.com");
+            collaborationPlatform.GetCurrentUser().Returns(new User(user.Login, user.Name, user.Email));
 
-            repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
+            repoDiscovery.GetRepositories(Arg.Any<ICollaborationPlatform>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            var engine = new GitHubEngine(github, repoDiscovery, repoEngine,
+            var engine = new GitHubEngine(collaborationPlatform, repoDiscovery, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }
@@ -144,13 +146,13 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                AuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeAuthSettings(),
                 UserSettings = MakeUserSettings(),
-                SourceControlServerSettings = MakseServerSettings()
+                SourceControlServerSettings = MakeServerSettings()
             };
         }
 
-        private static SourceControlServerSettings MakseServerSettings()
+        private static SourceControlServerSettings MakeServerSettings()
         {
             return new SourceControlServerSettings
             {
@@ -163,7 +165,7 @@ namespace NuKeeper.Tests.Engine
             return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
         }
 
-        private static AuthSettings MakeGitHubAuthSettings()
+        private static AuthSettings MakeAuthSettings()
         {
             return new AuthSettings(new Uri("http://foo.com"), "token123");
         }

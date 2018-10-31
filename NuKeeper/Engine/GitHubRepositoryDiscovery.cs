@@ -1,10 +1,10 @@
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.GitHub;
 
 namespace NuKeeper.Engine
 {
@@ -19,15 +19,15 @@ namespace NuKeeper.Engine
         }
 
         public async Task<IEnumerable<RepositorySettings>> GetRepositories(
-            IGitHub gitHub, SourceControlServerSettings settings)
+            ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings)
         {
             switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    return await ForAllOrgs(gitHub, settings);
+                    return await ForAllOrgs(collaborationPlatform, settings);
 
                 case ServerScope.Organisation:
-                    return await FromOrganisation(gitHub, settings.OrganisationName, settings);
+                    return await FromOrganisation(collaborationPlatform, settings.OrganisationName, settings);
 
                 case ServerScope.Repository:
                     return new[] { settings.Repository };
@@ -39,15 +39,15 @@ namespace NuKeeper.Engine
         }
 
         private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(
-            IGitHub gitHub, SourceControlServerSettings settings)
+            ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings)
         {
-            var allOrgs = await gitHub.GetOrganizations();
+            var allOrgs = await collaborationPlatform.GetOrganizations();
 
             var allRepos = new List<RepositorySettings>();
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(gitHub, org.Name ?? org.Login, settings);
+                var repos = await FromOrganisation(collaborationPlatform, org.Name ?? org.Login, settings);
                 allRepos.AddRange(repos);
             }
 
@@ -55,9 +55,9 @@ namespace NuKeeper.Engine
         }
 
         private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(
-            IGitHub gitHub, string organisationName, SourceControlServerSettings settings)
+            ICollaborationPlatform collaborationPlatform, string organisationName, SourceControlServerSettings settings)
         {
-            var allOrgRepos = await gitHub.GetRepositoriesForOrganisation(organisationName);
+            var allOrgRepos = await collaborationPlatform.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
                 .Where(r => MatchesIncludeExclude(r, settings))
@@ -94,7 +94,7 @@ namespace NuKeeper.Engine
         private static bool RepoIsModifiable(Abstractions.DTOs.Repository repo)
         {
             return
-                ! repo.Archived &&
+                !repo.Archived &&
                 repo.UserPermissions.Pull;
         }
     }

@@ -1,20 +1,20 @@
-using System;
-using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.GitHub;
+using System;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {
-    public class ForkFinder: IForkFinder
+    public class ForkFinder : IForkFinder
     {
-        private readonly IGitHub _gitHub;
+        private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
 
-        public ForkFinder(IGitHub gitHub, INuKeeperLogger logger)
+        public ForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
         {
-            _gitHub = gitHub;
+            _collaborationPlatform = collaborationPlatform;
             _logger = logger;
         }
 
@@ -100,13 +100,13 @@ namespace NuKeeper.Engine
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
         {
-            var originRepo = await _gitHub.GetUserRepository(originFork.Owner, originFork.Name);
+            var originRepo = await _collaborationPlatform.GetUserRepository(originFork.Owner, originFork.Name);
             return originRepo != null && originRepo.UserPermissions.Push;
         }
 
         private async Task<ForkData> TryFindUserFork(string userName, ForkData originFork)
         {
-            var userFork = await _gitHub.GetUserRepository(userName, originFork.Name);
+            var userFork = await _collaborationPlatform.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
                 if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.UserPermissions.Push)
@@ -122,7 +122,7 @@ namespace NuKeeper.Engine
             }
 
             // no user fork exists, try and create it as a fork of the main repo
-            var newFork = await _gitHub.MakeUserFork(originFork.Owner, originFork.Name);
+            var newFork = await _collaborationPlatform.MakeUserFork(originFork.Owner, originFork.Name);
             if (newFork != null)
             {
                 return RepositoryToForkData(newFork);
@@ -133,7 +133,7 @@ namespace NuKeeper.Engine
 
         private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
         {
-            if (! userRepo.Fork)
+            if (!userRepo.Fork)
             {
                 return false;
             }
