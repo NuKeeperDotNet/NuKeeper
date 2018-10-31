@@ -1,5 +1,5 @@
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 

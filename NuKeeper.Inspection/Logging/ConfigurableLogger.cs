@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.Logging
 {
@@ -6,12 +7,8 @@ namespace NuKeeper.Inspection.Logging
     {
         private IInternalLogger _inner;
 
-        public void Initialise(LogLevel logLevel, string filePath)
+        public void Initialise(LogLevel logLevel, LogDestination destination, string filePath)
         {
-            var destination = string.IsNullOrWhiteSpace(filePath) ?
-                LogDestination.Console :
-                LogDestination.File;
-
             _inner = CreateLogger(logLevel, destination, filePath);
         }
 
@@ -58,6 +55,9 @@ namespace NuKeeper.Inspection.Logging
 
                 case LogDestination.File:
                     return new FileLogger(filePath, logLevel);
+
+                case LogDestination.Off:
+                    return new NullLogger();
 
                 default:
                     throw new Exception($"Unknown log destination {destination}");

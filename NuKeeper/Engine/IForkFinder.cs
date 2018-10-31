@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine
 {

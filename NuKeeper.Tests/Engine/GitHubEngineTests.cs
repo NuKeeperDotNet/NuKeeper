@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine
@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
@@ -128,8 +128,7 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            github.GetCurrentUser().Returns(
-                RepositoryBuilder.MakeUser("http://test.user.com"));
+            github.GetCurrentUser().Returns(new GitHubUser(RepositoryBuilder.MakeUser("http://test.user.com")));
 
             repoDiscovery.GetRepositories(Arg.Any<IGitHub>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);
@@ -145,7 +144,7 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                GithubAuthSettings = MakeGitHubAuthSettings(),
+                AuthSettings = MakeGitHubAuthSettings(),
                 UserSettings = MakeUserSettings(),
                 SourceControlServerSettings = MakseServerSettings()
             };
@@ -164,9 +163,9 @@ namespace NuKeeper.Tests.Engine
             return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
         }
 
-        private static GithubAuthSettings MakeGitHubAuthSettings()
+        private static AuthSettings MakeGitHubAuthSettings()
         {
-            return new GithubAuthSettings(new Uri("http://foo.com"), "token123");
+            return new AuthSettings(new Uri("http://foo.com"), "token123");
         }
     }
 }

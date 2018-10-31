@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Commands
@@ -63,14 +62,14 @@ namespace NuKeeper.Tests.Commands
             var settings = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.Token, Is.EqualTo("testToken"));
+            Assert.That(settings.AuthSettings, Is.Not.Null);
+            Assert.That(settings.AuthSettings.Token, Is.EqualTo("testToken"));
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Repository));
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.GithubUri, Is.EqualTo(new Uri("http://github.com/test/test")));
+            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.Not.Null);
+            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.EqualTo(new Uri("http://github.com/test/test")));
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
         }
 
@@ -113,9 +112,9 @@ namespace NuKeeper.Tests.Commands
             var settings = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.GithubAuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/api/")));
+            Assert.That(settings.AuthSettings, Is.Not.Null);
+            Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
+            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/api/")));
         }
 
         [Test]

@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -68,12 +70,12 @@ namespace NuKeeper.Engine
             ForkMode forkMode,
             string userName)
         {
-            var pullFork = new ForkData(repository.GithubUri, repository.RepositoryOwner, repository.RepositoryName);
+            var pullFork = new ForkData(repository.Uri, repository.RepositoryOwner, repository.RepositoryName);
             var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
 
             if (pushFork == null)
             {
-                _logger.Normal($"No pushable fork found for {repository.GithubUri}");
+                _logger.Normal($"No pushable fork found for {repository.Uri}");
                 return null;
             }
 

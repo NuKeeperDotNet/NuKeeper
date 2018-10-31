@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
 

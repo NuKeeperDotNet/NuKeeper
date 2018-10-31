@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -22,8 +24,7 @@ namespace NuKeeper.Engine
         {
             var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
-                Repos = new RepositoryCollection {{repository.RepositoryOwner, repository.RepositoryName}},
-                In = new []{CodeInQualifier.Path},
+                Repos = new List<(string owner, string name)> {(repository.RepositoryOwner, repository.RepositoryName)},
                 PerPage = 1
             };
             try

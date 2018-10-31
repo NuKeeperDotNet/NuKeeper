@@ -4,6 +4,7 @@ using System.Linq;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.NuGetApi;
 
 namespace NuKeeper.Inspection.Tests.NuGetApi

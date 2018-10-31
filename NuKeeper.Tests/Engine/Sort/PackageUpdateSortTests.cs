@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.RepositoryInspection;
 

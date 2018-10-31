@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.Logging
 {
@@ -10,6 +11,11 @@ namespace NuKeeper.Inspection.Logging
 
         public FileLogger(string filePath, LogLevel logLevel)
         {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentException("File logger has no file path", nameof(filePath));
+            }
+
             _filePath = filePath;
             _logLevel = logLevel;
         }

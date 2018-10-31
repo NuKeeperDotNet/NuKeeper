@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Formats;
-using NuKeeper.Inspection.Logging;
-using Octokit;
+using User = NuKeeper.Abstractions.DTOs.User;
 
 namespace NuKeeper.Engine
 {
@@ -37,13 +37,13 @@ namespace NuKeeper.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            _github.Initialise(settings.GithubAuthSettings);
+            _github.Initialise(settings.AuthSettings);
 
             var githubUser = await _github.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = settings.GithubAuthSettings.Token
+                Password = settings.AuthSettings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);
@@ -78,7 +78,7 @@ namespace NuKeeper.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(Account githubUser)
+        private Identity GetUserIdentity(User githubUser)
         {
             if (string.IsNullOrWhiteSpace(githubUser?.Name))
             {

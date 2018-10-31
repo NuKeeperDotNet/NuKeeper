@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Engine
@@ -42,7 +42,7 @@ namespace NuKeeper.Integration.Tests.Engine
             var logger = Substitute.For<INuKeeperLogger>();
 
             var gitHubClient = new OctokitClient(logger);
-            gitHubClient.Initialise(new GithubAuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
+            gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
 
             return new RepositoryFilter(gitHubClient, logger);
         }

@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.Logging
 {

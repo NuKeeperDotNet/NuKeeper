@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Configuration;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
 using NuKeeper.Local;
 using NUnit.Framework;
 
@@ -116,7 +116,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Normal, null);
+                .Initialise(LogLevel.Normal, LogDestination.Console, Arg.Any<string>());
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Minimal, null);
+                .Initialise(LogLevel.Minimal, LogDestination.Console, Arg.Any<string>());
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Detailed, null);
+                .Initialise(LogLevel.Detailed, LogDestination.Console, Arg.Any<string>());
         }
 
         [Test]
@@ -182,7 +182,49 @@ namespace NuKeeper.Tests.Commands
 
             logger
                 .Received(1)
-                .Initialise(LogLevel.Minimal, null);
+                .Initialise(LogLevel.Minimal, LogDestination.Console, Arg.Any<string>());
+        }
+
+        [Test]
+        public async Task LogToFileBySettingFileName()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            var settings = FileSettings.Empty();
+
+            fileSettings.GetSettings().Returns(settings);
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+            command.LogFile = "somefile.log";
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .Initialise(LogLevel.Normal, LogDestination.File, "somefile.log");
+        }
+
+        [Test]
+        public async Task LogToFileBySettingLogDestination()
+        {
+            var engine = Substitute.For<ILocalEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+
+            var settings = FileSettings.Empty();
+
+            fileSettings.GetSettings().Returns(settings);
+
+            var command = new InspectCommand(engine, logger, fileSettings);
+            command.LogDestination = LogDestination.File;
+
+            await command.OnExecute();
+
+            logger
+                .Received(1)
+                .Initialise(LogLevel.Normal, LogDestination.File, "nukeeper.log");
         }
 
         [Test]

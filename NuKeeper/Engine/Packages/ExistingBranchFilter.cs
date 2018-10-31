@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -22,9 +24,8 @@ namespace NuKeeper.Engine.Packages
         {
             try
             {
-                var branchName = BranchNamer.MakeName(packageUpdateSet);
-                var githubBranch = await _gitHub.GetRepositoryBranch(pushFork.Owner, pushFork.Name, branchName);
-                return (githubBranch == null);
+                var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet);
+                return await _gitHub.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
             }
             catch(Exception ex)
             {

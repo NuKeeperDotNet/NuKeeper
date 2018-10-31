@@ -15,8 +15,6 @@ namespace NuKeeper.Git
 
         void CheckoutNewBranch(string branchName);
 
-        bool BranchExists(string branchName);
-
         void Commit(string message);
 
         void Push(string remoteName, string branchName);

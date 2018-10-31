@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NUnit.Framework;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.ProcessRunner;
 

@@ -1,13 +1,14 @@
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Git;
+using NuKeeper.GitHub;
+using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
-using NuKeeper.Git;
-using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Inspection.Sources;
-using NuKeeper.Update;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -67,9 +68,9 @@ namespace NuKeeper.Engine.Packages
             git.Checkout(repository.DefaultBranch);
 
             // branch
-            var branchName = BranchNamer.MakeName(updates);
-            _logger.Detailed($"Using branch name: '{branchName}'");
-            git.CheckoutNewBranch(branchName);
+            var branchWithChanges = BranchNamer.MakeName(updates);
+            _logger.Detailed($"Using branch name: '{branchWithChanges}'");
+            git.CheckoutNewBranch(branchWithChanges);
 
             foreach (var updateSet in updates)
             {
@@ -79,12 +80,25 @@ namespace NuKeeper.Engine.Packages
                 git.Commit(commitMessage);
             }
 
-            git.Push("nukeeper_push", branchName);
+            git.Push("nukeeper_push", branchWithChanges);
 
             var title = CommitWording.MakePullRequestTitle(updates);
             var body = CommitWording.MakeCommitDetails(updates);
-            await _gitHub.CreatePullRequest(repository, title, body, branchName,
-                settings.SourceControlServerSettings.Labels);
+
+            string qualifiedBranch;
+            if (repository.Pull.Owner == repository.Push.Owner)
+            {
+                qualifiedBranch = branchWithChanges;
+            }
+            else
+            {
+                qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
+            }
+
+            var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) { Body = body };
+
+            await _gitHub.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
+
 
             git.Checkout(repository.DefaultBranch);
             return updates.Count;

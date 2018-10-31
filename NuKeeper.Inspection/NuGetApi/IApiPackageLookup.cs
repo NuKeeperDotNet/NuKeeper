@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
-using NuKeeper.Inspection.Sources;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

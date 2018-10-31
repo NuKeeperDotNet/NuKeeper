@@ -2,12 +2,11 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
-using NuKeeper.Inspection.Sources;
-using NuKeeper.Update.Selection;
 
 namespace NuKeeper.Commands
 {
@@ -28,15 +27,7 @@ namespace NuKeeper.Commands
         // ReSharper disable once MemberCanBePrivate.Global
         protected string[] Source { get; }
 
-        protected NuGetSources NuGetSources => Source == null?  null : new NuGetSources(Source);
-
-        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
-            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
-        public LogLevel? Verbosity { get; set; }
-
-        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
-            Description = "Log to the named file")]
-        public string LogFile { get; set; }
+        protected NuGetSources NuGetSources => Source == null ? null : new NuGetSources(Source);
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description = "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
@@ -51,6 +42,18 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exclude",
             Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
+            Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
+        public LogLevel? Verbosity { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "ld", LongName = "logdestination",
+            Description = "Destination for logging.")]
+        public LogDestination? LogDestination { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
+            Description = "Log to the named file.")]
+        public string LogFile { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "om", LongName = "outputformat",
             Description = "Format for output.")]
@@ -89,11 +92,19 @@ namespace NuKeeper.Commands
 
         private void InitialiseLogging()
         {
-            var fileSettings = FileSettingsCache.GetSettings();
-            var logLevel = Concat.FirstValue(Verbosity, fileSettings.Verbosity, LogLevel.Normal);
-            var logFile = Concat.FirstValue(LogFile, fileSettings.LogFile);
+            var settingsFromFile = FileSettingsCache.GetSettings();
 
-            _configureLogger.Initialise(logLevel, logFile);
+            var defaultLogDestination = string.IsNullOrWhiteSpace(LogFile)
+                ? Abstractions.Logging.LogDestination.Console
+                : Abstractions.Logging.LogDestination.File;
+
+            var logDest = Concat.FirstValue(LogDestination, settingsFromFile.LogDestination,
+                defaultLogDestination);
+
+            var logLevel = Concat.FirstValue(Verbosity, settingsFromFile.Verbosity, LogLevel.Normal);
+            var logFile = Concat.FirstValue(LogFile, settingsFromFile.LogFile, "nukeeper.log");
+
+            _configureLogger.Initialise(logLevel, logDest, logFile);
         }
 
         private SettingsContainer MakeSettings()
@@ -140,8 +151,8 @@ namespace NuKeeper.Commands
             var settingsFromFile = FileSettingsCache.GetSettings();
 
             var defaultOutputDestination = string.IsNullOrWhiteSpace(OutputFileName)
-                ? Inspection.Report.OutputDestination.Console
-                : Inspection.Report.OutputDestination.File;
+                ? Abstractions.Output.OutputDestination.Console
+                : Abstractions.Output.OutputDestination.File;
 
             settings.UserSettings.OutputDestination =
                 Concat.FirstValue(OutputDestination, settingsFromFile.OutputDestination,
@@ -149,7 +160,7 @@ namespace NuKeeper.Commands
 
             settings.UserSettings.OutputFormat =
                 Concat.FirstValue(OutputFormat, settingsFromFile.OutputFormat,
-                    Inspection.Report.OutputFormat.Text);
+                    Abstractions.Output.OutputFormat.Text);
 
             settings.UserSettings.OutputFileName =
                 Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,

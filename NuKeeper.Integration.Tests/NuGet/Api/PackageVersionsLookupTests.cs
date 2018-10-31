@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Common;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Sources;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api

@@ -1,5 +1,6 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine.Packages
 {

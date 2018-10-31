@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
@@ -22,6 +26,7 @@ using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
 using Octokit;
+using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -104,7 +109,7 @@ namespace NuKeeper.Tests.Engine
             await gitHub.Received(expectedPrs)
                 .OpenPullRequest(
                     Arg.Any<ForkData>(),
-                    Arg.Any<NewPullRequest>(),
+                    Arg.Any<PullRequestRequest>(),
                     Arg.Any<IEnumerable<string>>());
 
             gitDriver.Received(numberOfUpdates)

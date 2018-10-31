@@ -5,7 +5,7 @@ using System.Linq;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Inspection.Logging;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NUnit.Framework;

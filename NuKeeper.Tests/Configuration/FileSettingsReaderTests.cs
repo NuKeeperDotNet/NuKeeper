@@ -1,10 +1,9 @@
 using System.IO;
 using NSubstitute;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.Output;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.Report;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Configuration
@@ -34,6 +33,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
+            Assert.That(data.LogDestination, Is.Null);
         }
 
         [Test]
@@ -58,6 +58,7 @@ namespace NuKeeper.Tests.Configuration
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
+            Assert.That(data.LogDestination, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -75,7 +76,8 @@ namespace NuKeeper.Tests.Configuration
                ""Change"": ""Minor"",
                ""OutputFormat"": ""Text"",
                ""OutputDestination"": ""Console"",
-               ""OutputFileName"" : ""out_42.txt""
+               ""OutputFileName"" : ""out_42.txt"",
+               ""LogDestination"" : ""file""
 }";
 
         [Test]
@@ -138,8 +140,11 @@ namespace NuKeeper.Tests.Configuration
 
             var data = fsr.Read(path);
 
-            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
+
+            Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
+            Assert.That(data.LogDestination, Is.EqualTo(LogDestination.File));
+
             Assert.That(data.OutputDestination, Is.EqualTo(OutputDestination.Console));
             Assert.That(data.OutputFormat, Is.EqualTo(OutputFormat.Text));
         }

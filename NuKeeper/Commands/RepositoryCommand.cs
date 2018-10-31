@@ -1,7 +1,8 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
@@ -31,7 +32,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad GitHub repository URI: '{GitHubRepositoryUri}'");
             }
 
-            settings.SourceControlServerSettings.Repository = GitSettingsReader.ReadRepositorySettings(repoUri);
+            settings.SourceControlServerSettings.Repository = GitHubSettingsReader.ReadRepositorySettings(repoUri);
 
             if (settings.SourceControlServerSettings.Repository == null)
             {

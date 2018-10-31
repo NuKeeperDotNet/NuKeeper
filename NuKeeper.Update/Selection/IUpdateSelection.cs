@@ -2,6 +2,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Update.Selection
 {

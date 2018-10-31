@@ -6,14 +6,33 @@ namespace NuKeeper.Engine
 {
     public static class BranchNamer
     {
-        public static string MakeName(PackageUpdateSet updateSet)
+        public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            return updates.Count > 1 ?
+                MakeMultiPackageName(updates) :
+                MakeSinglePackageName(updates.First());
+        }
+
+        private static string MakeMultiPackageName(IReadOnlyCollection<PackageUpdateSet> updates)
+        {
+            var updatesHash = Hasher.Hash(PackageVersionStrings(updates));
+
+            return $"nukeeper-update-{updates.Count}-packages-{updatesHash}";
+        }
+
+        public static string MakeSinglePackageName(PackageUpdateSet updateSet)
         {
             return $"nukeeper-update-{updateSet.SelectedId}-to-{updateSet.SelectedVersion}";
         }
 
-        public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates)
+        private static string PackageVersionStrings(IReadOnlyCollection<PackageUpdateSet> updates)
         {
-            return updates.Count > 1 ? "nukeeper-update-packages" : MakeName(updates.First());
+            return string.Join(",", updates.Select(PackageVersionString));
+        }
+
+        private static string PackageVersionString(PackageUpdateSet updateSet)
+        {
+            return $"{updateSet.SelectedId}-v{updateSet.SelectedVersion}";
         }
     }
 }

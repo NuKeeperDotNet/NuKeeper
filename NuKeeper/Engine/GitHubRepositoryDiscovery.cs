@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -75,28 +74,28 @@ namespace NuKeeper.Engine
                 .ToList();
         }
 
-        private static bool MatchesIncludeExclude(Repository repo, SourceControlServerSettings settings)
+        private static bool MatchesIncludeExclude(Abstractions.DTOs.Repository repo, SourceControlServerSettings settings)
         {
             return
                 MatchesInclude(settings.IncludeRepos, repo)
                 && !MatchesExclude(settings.ExcludeRepos, repo);
         }
 
-        private static bool MatchesInclude(Regex regex, Repository repo)
+        private static bool MatchesInclude(Regex regex, Abstractions.DTOs.Repository repo)
         {
             return regex == null || regex.IsMatch(repo.Name);
         }
 
-        private static bool MatchesExclude(Regex regex, Repository repo)
+        private static bool MatchesExclude(Regex regex, Abstractions.DTOs.Repository repo)
         {
             return regex != null && regex.IsMatch(repo.Name);
         }
 
-        private static bool RepoIsModifiable(Repository repo)
+        private static bool RepoIsModifiable(Abstractions.DTOs.Repository repo)
         {
             return
                 ! repo.Archived &&
-                repo.Permissions.Pull;
+                repo.UserPermissions.Pull;
         }
     }
 }

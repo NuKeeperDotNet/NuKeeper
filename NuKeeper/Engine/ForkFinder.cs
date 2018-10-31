@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using NuKeeper.Configuration;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
-using Octokit;
 
 namespace NuKeeper.Engine
 {
@@ -101,7 +101,7 @@ namespace NuKeeper.Engine
         private async Task<bool> IsPushableRepo(ForkData originFork)
         {
             var originRepo = await _gitHub.GetUserRepository(originFork.Owner, originFork.Name);
-            return originRepo != null && originRepo.Permissions.Push;
+            return originRepo != null && originRepo.UserPermissions.Push;
         }
 
         private async Task<ForkData> TryFindUserFork(string userName, ForkData originFork)
@@ -109,7 +109,7 @@ namespace NuKeeper.Engine
             var userFork = await _gitHub.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
-                if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.Permissions.Push)
+                if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.UserPermissions.Push)
                 {
                     // the user has a pushable fork
                     return RepositoryToForkData(userFork);
@@ -138,8 +138,8 @@ namespace NuKeeper.Engine
                 return false;
             }
 
-            return UrlIsMatch(userRepo.Parent?.CloneUrl, parentUrl)
-                || UrlIsMatch(userRepo.Parent?.HtmlUrl, parentUrl);
+            return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl)
+                || UrlIsMatch(userRepo.Parent?.HtmlUrl.ToString(), parentUrl);
         }
 
         private static bool UrlIsMatch(string test, string expected)
@@ -150,7 +150,7 @@ namespace NuKeeper.Engine
 
         private static ForkData RepositoryToForkData(Repository repo)
         {
-            return new ForkData(new Uri(repo.CloneUrl), repo.Owner.Login, repo.Name);
+            return new ForkData(repo.CloneUrl, repo.Owner.Login, repo.Name);
         }
     }
 }
