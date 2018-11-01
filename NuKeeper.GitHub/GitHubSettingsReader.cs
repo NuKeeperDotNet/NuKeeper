@@ -6,7 +6,7 @@ namespace NuKeeper.GitHub
 {
     public static class GitHubSettingsReader
     {
-        internal static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
+        public static RepositorySettings ReadRepositorySettings(Uri gitHubRepositoryUri)
         {
             if (gitHubRepositoryUri == null)
             {
@@ -26,7 +26,7 @@ namespace NuKeeper.GitHub
             }
 
             var repoOwner = pathParts[0];
-            var repoName = pathParts[1].Replace(".git", string.Empty, StringComparison.OrdinalIgnoreCase);
+            var repoName = pathParts[1].Replace(".git", string.Empty);
 
             return new RepositorySettings
                 {
