@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NSubstitute;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
@@ -13,19 +8,18 @@ using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
-using NuKeeper.GitHub;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
-using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
 using NuKeeper.Update.Process;
-using NuKeeper.Update.Selection;
 using NUnit.Framework;
-using Octokit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
 
 namespace NuKeeper.Tests.Engine
@@ -70,7 +64,7 @@ namespace NuKeeper.Tests.Engine
             var count = await repoUpdater.Run(git, repo, MakeSettings());
 
             Assert.That(count, Is.EqualTo(1));
-            await AssertReceivedMakeUpdate(packageUpdater,1);
+            await AssertReceivedMakeUpdate(packageUpdater, 1);
         }
 
         [TestCase(0, true, 0, 0)]
@@ -81,11 +75,11 @@ namespace NuKeeper.Tests.Engine
         public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, bool consolidateUpdates, int expectedUpdates, int expectedPrs)
         {
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            var gitHub = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var gitDriver = Substitute.For<IGitDriver>();
             UpdateSelectionAll(updateSelection);
 
-            var packageUpdater = new PackageUpdater(gitHub,
+            var packageUpdater = new PackageUpdater(collaborationPlatform,
                 Substitute.For<IUpdateRunner>(),
                 Substitute.For<INuKeeperLogger>());
 
@@ -94,7 +88,7 @@ namespace NuKeeper.Tests.Engine
                 .ToList();
 
             var settings = MakeSettings(consolidateUpdates);
-            
+
             var (repoUpdater, _) = MakeRepositoryUpdater(
                 updateSelection, updates, packageUpdater);
 
@@ -106,7 +100,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(count, Is.EqualTo(expectedUpdates));
 
-            await gitHub.Received(expectedPrs)
+            await collaborationPlatform.Received(expectedPrs)
                 .OpenPullRequest(
                     Arg.Any<ForkData>(),
                     Arg.Any<PullRequestRequest>(),
@@ -198,7 +192,7 @@ namespace NuKeeper.Tests.Engine
 
         private static
             (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
-            IPackageUpdateSelection updateSelection, 
+            IPackageUpdateSelection updateSelection,
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)
         {

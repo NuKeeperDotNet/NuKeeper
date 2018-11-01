@@ -1,3 +1,4 @@
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
@@ -38,7 +39,7 @@ namespace NuKeeper
             container.Register<IUpdateSelection, UpdateSelection>();
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
-            container.RegisterSingleton<IGitHub, OctokitClient>();
+            container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
         }
     }
 }

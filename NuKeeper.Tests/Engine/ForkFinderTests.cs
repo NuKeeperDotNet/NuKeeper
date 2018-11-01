@@ -1,13 +1,13 @@
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
-using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -19,7 +19,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var forkFinder = new ForkFinder(Substitute.For<IGitHub>(), Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(Substitute.For<ICollaborationPlatform>(), Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -32,11 +32,11 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
             var fallbackRepoData = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(fallbackRepoData);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -50,11 +50,11 @@ namespace NuKeeper.Tests.Engine
             var fallbackFork = DefaultFork();
             var fallbackRepoData = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(fallbackRepoData);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -68,11 +68,11 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -87,11 +87,11 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -106,11 +106,11 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
@@ -124,17 +124,17 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns((Repository)null);
-            github.MakeUserFork(Arg.Any<string>(), Arg.Any<string>())
+            collaborationPlatform.MakeUserFork(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var actualFork = await forkFinder.FindPushFork(ForkMode.PreferFork, "testUser", fallbackFork);
 
-            await github.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
+            await collaborationPlatform.Received(1).MakeUserFork(Arg.Any<string>(), Arg.Any<string>());
 
             Assert.That(actualFork, Is.Not.Null);
             Assert.That(actualFork, Is.Not.EqualTo(fallbackFork));
@@ -147,11 +147,11 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferSingleRepository, "testUser", fallbackFork);
 
@@ -163,18 +163,18 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
 
             var defaultRepo = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
-            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+            collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            github.GetUserRepository("testUser", fallbackFork.Name)
+            collaborationPlatform.GetUserRepository("testUser", fallbackFork.Name)
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.PreferSingleRepository, "testUser", fallbackFork);
 
@@ -189,11 +189,11 @@ namespace NuKeeper.Tests.Engine
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            var github = Substitute.For<IGitHub>();
-            github.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.SingleRepositoryOnly, "testUser", fallbackFork);
 
@@ -206,18 +206,18 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var github = Substitute.For<IGitHub>();
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
 
             var defaultRepo = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
-            github.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
+            collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
             var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
 
-            github.GetUserRepository("testUser", fallbackFork.Name)
+            collaborationPlatform.GetUserRepository("testUser", fallbackFork.Name)
                 .Returns(userRepo);
 
-            var forkFinder = new ForkFinder(github, Substitute.For<INuKeeperLogger>());
+            var forkFinder = new ForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>());
 
             var fork = await forkFinder.FindPushFork(ForkMode.SingleRepositoryOnly, "testUser", fallbackFork);
 
