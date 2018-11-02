@@ -1,7 +1,6 @@
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Files;
@@ -129,8 +128,8 @@ namespace NuKeeper.Tests.Engine
             var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            var user = RepositoryBuilder.MakeUser("http://test.user.com");
-            collaborationPlatform.GetCurrentUser().Returns(new User(user.Login, user.Name, user.Email));
+            var user = RepositoryBuilder.MakeUser();
+            collaborationPlatform.GetCurrentUser().Returns(user);
 
             repoDiscovery.GetRepositories(Arg.Any<ICollaborationPlatform>(), Arg.Any<SourceControlServerSettings>())
                 .Returns(repos);

@@ -4,7 +4,6 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
-using NuKeeper.GitHub;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsUsedWhenItIsFound()
         {
             var fallbackFork = DefaultFork();
-            var fallbackRepoData = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var fallbackRepoData = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
@@ -48,7 +47,7 @@ namespace NuKeeper.Tests.Engine
         public async Task FallbackForkIsNotUsedWhenItIsNotPushable()
         {
             var fallbackFork = DefaultFork();
-            var fallbackRepoData = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
+            var fallbackRepoData = RepositoryBuilder.MakeRepository(true, false);
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
@@ -66,7 +65,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -85,7 +84,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = new ForkData(new Uri(RepositoryBuilder.ParentHtmlUrl), "testOrg", "someRepo");
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -104,7 +103,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = NoMatchFork();
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -122,7 +121,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -145,7 +144,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -165,11 +164,11 @@ namespace NuKeeper.Tests.Engine
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
 
-            var defaultRepo = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
+            var defaultRepo = RepositoryBuilder.MakeRepository(true, false);
             collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             collaborationPlatform.GetUserRepository("testUser", fallbackFork.Name)
                 .Returns(userRepo);
@@ -187,7 +186,7 @@ namespace NuKeeper.Tests.Engine
         {
             var fallbackFork = DefaultFork();
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
@@ -208,11 +207,11 @@ namespace NuKeeper.Tests.Engine
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
 
-            var defaultRepo = new GitHubRepository(RepositoryBuilder.MakeRepository(true, false));
+            var defaultRepo = RepositoryBuilder.MakeRepository(true, false);
             collaborationPlatform.GetUserRepository(fallbackFork.Owner, fallbackFork.Name)
                 .Returns(defaultRepo);
 
-            var userRepo = new GitHubRepository(RepositoryBuilder.MakeRepository());
+            var userRepo = RepositoryBuilder.MakeRepository();
 
             collaborationPlatform.GetUserRepository("testUser", fallbackFork.Name)
                 .Returns(userRepo);
