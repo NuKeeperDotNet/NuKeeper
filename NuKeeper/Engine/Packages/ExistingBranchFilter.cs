@@ -24,7 +24,8 @@ namespace NuKeeper.Engine.Packages
             try
             {
                 var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet);
-                return await _collaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
+                var branchExists = await _collaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
+                return !branchExists;
             }
             catch (Exception ex)
             {
