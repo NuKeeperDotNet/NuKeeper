@@ -24,11 +24,23 @@ namespace NuKeeper.Tests.Engine
         {
             var fork = new ForkData(new Uri("http://uri.com"), "owner", "name");
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.RepositoryBranchExists(fork.Name, fork.Owner, Arg.Any<string>()).Returns(false);
+            collaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(false);
 
             var filter = new ExistingBranchFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
             var result = await filter.CanMakeBranchFor(MakeUpdateSet(), fork);
             Assert.AreEqual(result, true);
+        }
+
+        [Test]
+        public async Task IfBranchDoesExistDoNotAllowCreation()
+        {
+            var fork = new ForkData(new Uri("http://uri.com"), "owner", "name");
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(true);
+
+            var filter = new ExistingBranchFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            var result = await filter.CanMakeBranchFor(MakeUpdateSet(), fork);
+            Assert.AreEqual(result, false);
         }
 
         private static PackageUpdateSet MakeUpdateSet()
