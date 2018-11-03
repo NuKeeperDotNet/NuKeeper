@@ -7,18 +7,8 @@ namespace NuKeeper.Engine
     {
         public RepositoryData(ForkData pull, ForkData push)
         {
-            if (pull == null)
-            {
-                throw new ArgumentNullException(nameof(pull));
-            }
-
-            if (push == null)
-            {
-                throw new ArgumentNullException(nameof(push));
-            }
-
-            Pull = pull;
-            Push = push;
+            Pull = pull ?? throw new ArgumentNullException(nameof(pull));
+            Push = push ?? throw new ArgumentNullException(nameof(push));
         }
 
         public ForkData Pull { get; }

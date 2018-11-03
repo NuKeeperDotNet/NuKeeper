@@ -3,7 +3,7 @@ using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Engine
 {
-    public interface IGitHubEngine
+    public interface ICollaborationEngine
     {
         Task<int> Run(SettingsContainer settings);
     }

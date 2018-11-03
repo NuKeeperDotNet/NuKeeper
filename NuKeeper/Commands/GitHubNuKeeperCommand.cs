@@ -1,17 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
     internal abstract class GitHubNuKeeperCommand : CommandBase
     {
-        private readonly IGitHubEngine _engine;
+        private readonly ICollaborationEngine _engine;
+        protected readonly ISettingsReader SettingsReader;
 
         [Argument(1, Name = "Token",
             Description = "GitHub personal access token to authorise access to GitHub server.")]
@@ -28,7 +29,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.NoValue, ShortName = "co", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
-        public bool? Consolidate { get; set; } 
+        public bool? Consolidate { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
             Description = "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
@@ -36,12 +37,13 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description = "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
-        public string GithubApiEndpoint { get; set;  }
-
-        protected GitHubNuKeeperCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache) :
+        public string GithubApiEndpoint { get; set; }
+        
+        protected GitHubNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader) :
             base(logger, fileSettingsCache)
         {
             _engine = engine;
+            SettingsReader = settingsReader;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -52,30 +54,22 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            var apiBase = GithubEndpointWithFallback();
+            var authSettings = SettingsReader.AuthSettings(GithubApiEndpoint, GitHubToken);
 
-            if (string.IsNullOrWhiteSpace(apiBase))
+            if (authSettings.ApiBase == null)
             {
-                return ValidationResult.Failure("No GitHub Api base found");
+                return ValidationResult.Failure($"Bad Api base '{GithubApiEndpoint}'");
             }
 
-            if (!Uri.TryCreate(apiBase, UriKind.Absolute, out var githubUri))
+            if (string.IsNullOrWhiteSpace(authSettings.Token))
             {
-                return ValidationResult.Failure($"Bad GitHub Api base '{GithubApiEndpoint}'");
+                return ValidationResult.Failure("The required access token was not found");
             }
 
-            var token = ReadToken();
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                return ValidationResult.Failure("The required GitHub access token was not found");
-            }
+            settings.AuthSettings = authSettings;
 
-            var githubUrl = UriFormats.EnsureTrailingSlash(githubUri);
 
             var fileSettings = FileSettingsCache.GetSettings();
-
-            settings.AuthSettings = new AuthSettings(githubUrl, token);
-
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
@@ -98,29 +92,6 @@ namespace NuKeeper.Commands
         {
             await _engine.Run(settings);
             return 0;
-        }
-
-        private string GithubEndpointWithFallback()
-        {
-            const string defaultGithubApi = "https://api.github.com/";
-            var fileSetting = FileSettingsCache.GetSettings();
-            return Concat.FirstValue(GithubApiEndpoint, fileSetting.Api, defaultGithubApi);
-        }
-
-        private string ReadToken()
-        {
-            if (!string.IsNullOrWhiteSpace(GitHubToken))
-            {
-                return GitHubToken;
-            }
-
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
-            if (!string.IsNullOrWhiteSpace(envToken))
-            {
-                return envToken;
-            }
-
-            return string.Empty;
         }
     }
 }

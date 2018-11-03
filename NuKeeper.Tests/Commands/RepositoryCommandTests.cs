@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
@@ -17,13 +19,14 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<ICollaborationEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
-
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var settingsReader = new GitHubSettingsReader(fileSettings);
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader);
 
             var status = await command.OnExecute();
 
@@ -36,13 +39,14 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndSucceedWithRequiredGithubParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<ICollaborationEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
-
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var settingsReader = new GitHubSettingsReader(fileSettings);
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader);
             command.GitHubToken = "abc";
             command.GitHubRepositoryUri = "http://github.com/abc/abc";
 
@@ -55,7 +59,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task ShouldPopulateGithubSettings()
+        public async Task ShouldPopulateSourceControlServerSettings()
         {
             var fileSettings = FileSettings.Empty();
 
@@ -67,9 +71,6 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Repository));
-            Assert.That(settings.SourceControlServerSettings.Repository, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.Not.Null);
-            Assert.That(settings.SourceControlServerSettings.Repository.Uri, Is.EqualTo(new Uri("http://github.com/test/test")));
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
         }
 
@@ -106,7 +107,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Api = "http://github.contoso.com/api"
+                Api = "http://github.contoso.com/"
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -114,7 +115,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.AuthSettings, Is.Not.Null);
             Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/api/")));
+            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.contoso.com/")));
         }
 
         [Test]
@@ -218,15 +219,14 @@ namespace NuKeeper.Tests.Commands
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(settingsIn);
+            var settingsReader = new GitHubSettingsReader(fileSettings);
 
             SettingsContainer settingsOut = null;
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<ICollaborationEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
-
-            fileSettings.GetSettings().Returns(settingsIn);
-
-            var command = new RepositoryCommand(engine, logger, fileSettings);
+            var command = new RepositoryCommand(engine, logger, fileSettings, settingsReader);
             command.GitHubToken = "testToken";
             command.GitHubRepositoryUri = "http://github.com/test/test";
 

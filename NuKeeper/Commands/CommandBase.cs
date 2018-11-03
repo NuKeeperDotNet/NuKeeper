@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;

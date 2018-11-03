@@ -6,11 +6,10 @@ using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Engine
 {
-    public class GitHubRepositoryEngine: IGitHubRepositoryEngine
+    public class GitRepositoryEngine: IGitRepositoryEngine
     {
         private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly IForkFinder _forkFinder;
@@ -18,7 +17,7 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
 
-        public GitHubRepositoryEngine(
+        public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
             IForkFinder forkFinder,
             IFolderFactory folderFactory,

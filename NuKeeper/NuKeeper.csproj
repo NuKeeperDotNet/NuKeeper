@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
+    <ProjectReference Include="..\NuKeeper.AzureDevOps\NuKeeper.AzureDevOps.csproj" />
     <ProjectReference Include="..\NuKeeper.GitHub\NuKeeper.GitHub.csproj" />
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />

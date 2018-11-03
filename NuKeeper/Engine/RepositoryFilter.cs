@@ -38,7 +38,7 @@ namespace NuKeeper.Engine
             }
             catch (Exception ex)
             {
-                _logger.Error("GitHub Repository search failed.", ex);
+                _logger.Error("Repository search failed.", ex);
             }
 
             return true;

@@ -1,6 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
@@ -20,8 +22,8 @@ namespace NuKeeper.Commands
         public int? AllowedMaxRepositoriesChangedChange { get; set; }
 
 
-        protected MultipleRepositoryCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
-            : base(engine, logger, fileSettingsCache)
+        protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
+            : base(engine, logger, fileSettingsCache, settingsReader)
         {
         }
 
