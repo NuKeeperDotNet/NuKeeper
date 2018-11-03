@@ -14,14 +14,11 @@ namespace NuKeeper.AzureDevOps
     {
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
-        private readonly string _organisation;
 
-        public AzureDevOpsRestClient(HttpClient client, INuKeeperLogger logger, string personalAccessToken, string organisation)
+        public AzureDevOpsRestClient(HttpClient client, INuKeeperLogger logger, string personalAccessToken)
         {
             _client = client;
             _logger = logger;
-            _organisation = organisation;
-            _client.BaseAddress = new Uri($"https://dev.azure.com/");
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:{personalAccessToken}")));
         }
@@ -48,19 +45,19 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
         {
-            var response = await GetResorceOrEmpty<GitRepositories>($"/{_organisation}/{projectName}/_apis/git/repositories");
+            var response = await GetResorceOrEmpty<GitRepositories>($"{projectName}/_apis/git/repositories");
             return response.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName,string repositoryId)
         {
-            var response = await GetResorceOrEmpty<GitRefsResource>($"/{_organisation}/{projectName}/_apis/git/repositories/{repositoryId}/refs");
+            var response = await GetResorceOrEmpty<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
             return response.value.AsEnumerable();
         }
 
         public async Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
         {
-            var response = await _client.PostAsync(BuildAzureDevOpsUri(($"/{_organisation}/{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests")), new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(BuildAzureDevOpsUri(($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests")), new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();

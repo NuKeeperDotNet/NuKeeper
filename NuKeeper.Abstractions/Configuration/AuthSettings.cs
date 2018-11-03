@@ -12,6 +12,5 @@ namespace NuKeeper.Abstractions.Configuration
 
         public Uri ApiBase { get; }
         public string Token { get; }
-        public string AzureDevOpsOrganisation { get; set; }
     }
 }

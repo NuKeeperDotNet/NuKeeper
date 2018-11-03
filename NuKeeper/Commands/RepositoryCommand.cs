@@ -33,7 +33,6 @@ namespace NuKeeper.Commands
             }
 
             settings.SourceControlServerSettings.Repository = SettingsReader.RepositorySettings(repoUri);
-
             if (settings.SourceControlServerSettings.Repository == null)
             {
                 return ValidationResult.Failure($"Could not read repository URI: '{GitHubRepositoryUri}'");

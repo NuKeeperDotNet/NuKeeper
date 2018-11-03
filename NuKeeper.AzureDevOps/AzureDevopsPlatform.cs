@@ -23,7 +23,7 @@ namespace NuKeeper.AzureDevOps
         public void Initialise(AuthSettings settings)
         {
             var httpClient = new HttpClient() { BaseAddress = settings.ApiBase};
-            _client = new AzureDevOpsRestClient(httpClient, _logger, settings.Token, settings.AzureDevOpsOrganisation);
+            _client = new AzureDevOpsRestClient(httpClient, _logger, settings.Token);
         }
 
         public Task<User> GetCurrentUser()
