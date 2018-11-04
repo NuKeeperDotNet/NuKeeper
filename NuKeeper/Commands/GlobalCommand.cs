@@ -1,5 +1,6 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
@@ -9,8 +10,8 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : MultipleRepositoryCommand
     {
-        public GlobalCommand(IGitHubEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
-            : base(engine, logger, fileSettingsCache)
+        public GlobalCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
+            : base(engine, logger, fileSettingsCache, settingsReader)
         {
         }
 

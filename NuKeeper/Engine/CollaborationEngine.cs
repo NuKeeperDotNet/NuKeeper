@@ -6,22 +6,22 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
 using System;
 using System.Threading.Tasks;
-using User = NuKeeper.Abstractions.DTOs.User;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine
 {
-    public class GitHubEngine : IGitHubEngine
+    public class CollaborationEngine : ICollaborationEngine
     {
         private readonly ICollaborationPlatform _collaborationPlatform;
-        private readonly IGitHubRepositoryDiscovery _repositoryDiscovery;
-        private readonly IGitHubRepositoryEngine _repositoryEngine;
+        private readonly IRepositoryDiscovery _repositoryDiscovery;
+        private readonly IGitRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
-        public GitHubEngine(
+        public CollaborationEngine(
             ICollaborationPlatform collaborationPlatform,
-            IGitHubRepositoryDiscovery repositoryDiscovery,
-            IGitHubRepositoryEngine repositoryEngine,
+            IRepositoryDiscovery repositoryDiscovery,
+            IGitRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {

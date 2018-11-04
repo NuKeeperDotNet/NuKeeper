@@ -1,16 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Engine;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace NuKeeper.Tests.Engine
+namespace NuKeeper.GitHub.Tests
 {
     [TestFixture]
     public class GitHubRepositoryDiscoveryTests
@@ -208,7 +207,7 @@ namespace NuKeeper.Tests.Engine
             Assert.That(repos.Count(), Is.EqualTo(0));
         }
 
-        private static IGitHubRepositoryDiscovery MakeGithubRepositoryDiscovery()
+        private static IRepositoryDiscovery MakeGithubRepositoryDiscovery()
         {
             return new GitHubRepositoryDiscovery(Substitute.For<INuKeeperLogger>());
         }

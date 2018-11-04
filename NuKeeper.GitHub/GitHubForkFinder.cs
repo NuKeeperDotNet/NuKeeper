@@ -1,18 +1,19 @@
+using System;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using System;
-using System.Threading.Tasks;
+using NuKeeper.Engine;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.GitHub
 {
-    public class ForkFinder : IForkFinder
+    public class GitHubForkFinder : IForkFinder
     {
         private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
 
-        public ForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
+        public GitHubForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
         {
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;

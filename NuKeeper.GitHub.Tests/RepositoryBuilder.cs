@@ -1,9 +1,9 @@
-using NuKeeper.Abstractions.DTOs;
 using System;
+using NuKeeper.Abstractions.DTOs;
 
 #pragma warning disable CA1054
 
-namespace NuKeeper.Tests.Engine
+namespace NuKeeper.GitHub.Tests
 {
     public static class RepositoryBuilder
     {

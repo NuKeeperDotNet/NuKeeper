@@ -8,16 +8,17 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class GitHubEngineTests
+    public class CollaborationEngineTests
     {
         [Test]
         public async Task SuccessCaseWithNoRepos()
         {
-            var engine = MakeGithubEngine(
+            var engine = MakeCollaborationEngine(
                 new List<RepositorySettings>());
 
             var count = await engine.Run(MakeSettings());
@@ -32,7 +33,7 @@ namespace NuKeeper.Tests.Engine
             {
                 new RepositorySettings()
             };
-            var engine = MakeGithubEngine(oneRepo);
+            var engine = MakeCollaborationEngine(oneRepo);
 
             var count = await engine.Run(MakeSettings());
 
@@ -47,7 +48,7 @@ namespace NuKeeper.Tests.Engine
                 new RepositorySettings(),
                 new RepositorySettings()
             };
-            var engine = MakeGithubEngine(repos);
+            var engine = MakeCollaborationEngine(repos);
 
             var count = await engine.Run(MakeSettings());
 
@@ -62,7 +63,7 @@ namespace NuKeeper.Tests.Engine
                 new RepositorySettings(),
                 new RepositorySettings()
             };
-            var engine = MakeGithubEngine(2, repos);
+            var engine = MakeCollaborationEngine(2, repos);
 
             var count = await engine.Run(MakeSettings());
 
@@ -79,7 +80,7 @@ namespace NuKeeper.Tests.Engine
                 new RepositorySettings(),
                 new RepositorySettings()
             };
-            var engine = MakeGithubEngine(0, repos);
+            var engine = MakeCollaborationEngine(0, repos);
 
             var count = await engine.Run(MakeSettings());
 
@@ -96,7 +97,7 @@ namespace NuKeeper.Tests.Engine
                 new RepositorySettings()
             };
 
-            var engine = MakeGithubEngine(1, repos);
+            var engine = MakeCollaborationEngine(1, repos);
 
             var settings = new SettingsContainer
             {
@@ -113,22 +114,22 @@ namespace NuKeeper.Tests.Engine
             Assert.That(count, Is.EqualTo(1));
         }
 
-        private static GitHubEngine MakeGithubEngine(
+        private static CollaborationEngine MakeCollaborationEngine(
             List<RepositorySettings> repos)
         {
-            return MakeGithubEngine(1, repos);
+            return MakeCollaborationEngine(1, repos);
         }
 
-        private static GitHubEngine MakeGithubEngine(
+        private static CollaborationEngine MakeCollaborationEngine(
             int repoEngineResult,
             List<RepositorySettings> repos)
         {
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            var repoDiscovery = Substitute.For<IGitHubRepositoryDiscovery>();
-            var repoEngine = Substitute.For<IGitHubRepositoryEngine>();
+            var repoDiscovery = Substitute.For<IRepositoryDiscovery>();
+            var repoEngine = Substitute.For<IGitRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
-            var user = RepositoryBuilder.MakeUser();
+            var user = new User("testUser", "Testy", "testuser@test.com");
             collaborationPlatform.GetCurrentUser().Returns(user);
 
             repoDiscovery.GetRepositories(Arg.Any<ICollaborationPlatform>(), Arg.Any<SourceControlServerSettings>())
@@ -136,7 +137,7 @@ namespace NuKeeper.Tests.Engine
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            var engine = new GitHubEngine(collaborationPlatform, repoDiscovery, repoEngine,
+            var engine = new CollaborationEngine(collaborationPlatform, repoDiscovery, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

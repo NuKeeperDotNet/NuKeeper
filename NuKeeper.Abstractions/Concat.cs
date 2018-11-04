@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuKeeper.Commands
+namespace NuKeeper.Abstractions
 {
     public static class Concat
     {

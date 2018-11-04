@@ -14,7 +14,7 @@ namespace NuKeeper.Tests
         {
             var container = ContainerRegistration.Init();
 
-            var engine = container.GetInstance<GitHubEngine>();
+            var engine = container.GetInstance<CollaborationEngine>();
 
             Assert.That(engine, Is.Not.Null);
         }

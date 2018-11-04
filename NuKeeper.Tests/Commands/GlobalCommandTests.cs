@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
+using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Commands
 {
@@ -17,13 +18,14 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<ICollaborationEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
-
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var command = new GlobalCommand(engine, logger, fileSettings);
+            var settingsReader = new GitHubSettingsReader(fileSettings);
+
+            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader);
 
             var status = await command.OnExecute();
 
@@ -36,16 +38,18 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldCallEngineAndSucceedWithRequiredGithubParams()
         {
-            var engine = Substitute.For<IGitHubEngine>();
+            var engine = Substitute.For<ICollaborationEngine>();
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
-
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var command = new GlobalCommand(engine, logger, fileSettings);
+            var settingsReader = new GitHubSettingsReader(fileSettings);
+
+
+            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader);
             command.GitHubToken = "testToken";
             command.Include = "testRepos";
-            command.GithubApiEndpoint = "http://github.contoso.com/api";
+            command.GithubApiEndpoint = "https://contoso.com";
 
             var status = await command.OnExecute();
 
@@ -67,7 +71,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.AuthSettings.Token, Is.EqualTo("testToken"));
 
             Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase.ToString(), Is.EqualTo("http://github.contoso.com/api/"));
+            Assert.That(settings.AuthSettings.ApiBase.ToString(), Is.EqualTo("http://github.contoso.com/"));
 
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Null);
@@ -120,7 +124,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Api = "http://github.fish.com/api"
+                Api = "http://github.fish.com/"
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -128,7 +132,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.AuthSettings, Is.Not.Null);
             Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.fish.com/api/")));
+            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.fish.com/")));
         }
 
         [Test]
@@ -201,26 +205,20 @@ namespace NuKeeper.Tests.Commands
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
-
-            SettingsContainer settingsOut = null;
-            var engine = Substitute.For<IGitHubEngine>();
-            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
-
-
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var command = new GlobalCommand(engine, logger, fileSettings);
-            command.GitHubToken = "testToken";
+            var settingsReader = new GitHubSettingsReader(fileSettings);
 
-            if (string.IsNullOrEmpty(settingsIn.Api))
-            {
-                command.GithubApiEndpoint = "http://github.contoso.com/api";
-            }
+            SettingsContainer settingsOut = null;
+            var engine = Substitute.For<ICollaborationEngine>();
+            await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
-            if (string.IsNullOrEmpty(settingsIn.Include))
+            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader)
             {
-                command.Include = "testRepos";
-            }
+                GitHubToken = "testToken",
+                GithubApiEndpoint = settingsIn.Api ?? "http://github.contoso.com/",
+                Include = settingsIn.Include ?? "testRepos"
+            };
 
             await command.OnExecute();
 
