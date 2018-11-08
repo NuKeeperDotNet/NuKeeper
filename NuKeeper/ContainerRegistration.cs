@@ -42,14 +42,14 @@ namespace NuKeeper
             container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
 
             //GitHub Registrations
-            //container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
-            //container.Register<IForkFinder, GitHubForkFinder>();
-            //container.Register<IRepositoryDiscovery, GitHubRepositoryDiscovery>();
+            container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
+            container.Register<IForkFinder, GitHubForkFinder>();
+            container.Register<IRepositoryDiscovery, GitHubRepositoryDiscovery>();
 
             //Azure Registrations
-            container.RegisterSingleton<ICollaborationPlatform, AzureDevOpsPlatform>();
-            container.Register<IForkFinder, AzureDevOpsForkFinder>();
-            container.Register<IRepositoryDiscovery, AzureDevOpsRepositoryDiscovery>();
+            //container.RegisterSingleton<ICollaborationPlatform, AzureDevOpsPlatform>();
+            //container.Register<IForkFinder, AzureDevOpsForkFinder>();
+            //container.Register<IRepositoryDiscovery, AzureDevOpsRepositoryDiscovery>();
         }
     }
 }
