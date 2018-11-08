@@ -1,17 +1,18 @@
 using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
 using System;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine
 {
     public class CollaborationEngine : ICollaborationEngine
     {
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly IRepositoryDiscovery _repositoryDiscovery;
         private readonly IGitRepositoryEngine _repositoryEngine;
@@ -19,12 +20,14 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
 
         public CollaborationEngine(
+            ICollaborationFactory collaborationFactory,
             ICollaborationPlatform collaborationPlatform,
             IRepositoryDiscovery repositoryDiscovery,
             IGitRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
+            _collaborationFactory = collaborationFactory;
             _collaborationPlatform = collaborationPlatform;
             _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
@@ -36,14 +39,15 @@ namespace NuKeeper.Engine
         {
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
-
-            _collaborationPlatform.Initialise(settings.AuthSettings);
+            _collaborationPlatform.Initialise(
+                new AuthSettings(_collaborationFactory.Settings.BaseApiUrl, _collaborationFactory.Settings.Token)
+            );
 
             var githubUser = await _collaborationPlatform.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,
-                Password = settings.AuthSettings.Token
+                Password = _collaborationFactory.Settings.Token
             };
 
             var userIdentity = GetUserIdentity(githubUser);

@@ -4,6 +4,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,14 +13,15 @@ namespace NuKeeper.Commands
     internal abstract class GitHubNuKeeperCommand : CommandBase
     {
         private readonly ICollaborationEngine _engine;
-        protected readonly ISettingsReader SettingsReader;
+        public readonly ICollaborationFactory CollaborationFactory;
 
         [Argument(1, Name = "Token",
             Description = "GitHub personal access token to authorise access to GitHub server.")]
         public string GitHubToken { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
-            Description = "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
+            Description =
+                "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
         // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
@@ -32,18 +34,21 @@ namespace NuKeeper.Commands
         public bool? Consolidate { get; set; }
 
         [Option(CommandOptionType.MultipleValue, ShortName = "l", LongName = "label",
-            Description = "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
+            Description =
+                "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         public List<string> Label { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
-            Description = "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
+            Description =
+                "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
         public string GithubApiEndpoint { get; set; }
-        
-        protected GitHubNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader) :
+
+        protected GitHubNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger,
+            IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
             base(logger, fileSettingsCache)
         {
             _engine = engine;
-            SettingsReader = settingsReader;
+            CollaborationFactory = collaborationFactory;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -54,22 +59,23 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            var authSettings = SettingsReader.AuthSettings(GithubApiEndpoint, GitHubToken);
+            var fileSettings = FileSettingsCache.GetSettings();
 
-            if (authSettings.ApiBase == null)
+            //Fallback for global and Org commands (for now)
+            var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api ?? "https://api.github.com/"); 
+
+            if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {
-                return ValidationResult.Failure($"Bad Api base '{GithubApiEndpoint}'");
+                return ValidationResult.Failure($"Bad Api Base '{GithubApiEndpoint}'");
             }
 
-            if (string.IsNullOrWhiteSpace(authSettings.Token))
+            CollaborationFactory.Initialise(baseUri, GitHubToken);
+
+            if (CollaborationFactory.Settings.Token == null)
             {
                 return ValidationResult.Failure("The required access token was not found");
             }
 
-            settings.AuthSettings = authSettings;
-
-
-            var fileSettings = FileSettingsCache.GetSettings();
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
@@ -80,7 +86,7 @@ namespace NuKeeper.Commands
 
             settings.UserSettings.ForkMode = ForkMode;
 
-            var defaultLabels = new List<string> { "nukeeper" };
+            var defaultLabels = new List<string> {"nukeeper"};
 
             settings.SourceControlServerSettings.Labels =
                 Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);

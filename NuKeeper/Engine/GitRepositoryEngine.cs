@@ -69,12 +69,12 @@ namespace NuKeeper.Engine
             ForkMode forkMode,
             string userName)
         {
-            var pullFork = new ForkData(repository.Uri, repository.RepositoryOwner, repository.RepositoryName);
+            var pullFork = new ForkData(repository.RepositoryUri, repository.RepositoryOwner, repository.RepositoryName);
             var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
 
             if (pushFork == null)
             {
-                _logger.Normal($"No pushable fork found for {repository.Uri}");
+                _logger.Normal($"No pushable fork found for {repository.RepositoryUri}");
                 return null;
             }
 

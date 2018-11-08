@@ -1,19 +1,23 @@
 using System;
 using System.Linq;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.AzureDevOps
 {
     public class AzureDevOpsSettingsReader : ISettingsReader
     {
-        private readonly FileSettings _fileSettings;
+        public Platform Platform => Platform.AzureDevOps;
 
-        public AzureDevOpsSettingsReader(IFileSettingsCache settingsCache)
+        public bool CanRead(Uri repositoryUri)
         {
-            _fileSettings = settingsCache.GetSettings();
+            // general pattern is either of
+            // https://dev.azure.com/{org}/{project}/_git/{repo}/
+            if (repositoryUri == null || repositoryUri.Host != "dev.azure.com")
+            {
+                return false;
+            }
+            return true;
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri)
@@ -32,32 +36,36 @@ namespace NuKeeper.AzureDevOps
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count < 3)
+            if (pathParts.Count != 4)
             {
                 return null;
             }
 
-            var project = pathParts[0];
-            var repoName = pathParts[2];
+            var project = pathParts[1];
+            var repoName = pathParts[3];
 
             return new RepositorySettings
             {
-                Uri = repositoryUri,
+                RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = project
             };
         }
 
-        public AuthSettings AuthSettings(string apiEndpoint, string accessToken)
+        public AuthSettings AuthSettings(Uri apiEndpoint, string accessToken)
         {
-            const string defaultGithubApi = "https://dev.azure.com/";
-            var api = Concat.FirstValue(apiEndpoint, _fileSettings.Api, defaultGithubApi);
-            if (!Uri.TryCreate(api, UriKind.Absolute, out var baseUri))
+            var path = apiEndpoint.AbsolutePath;
+            var pathParts = path.Split('/')
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToList();
+
+            if (pathParts.Count <= 1)
             {
-                baseUri = null;
+                return null;
             }
 
-            baseUri = UriFormats.EnsureTrailingSlash(baseUri);
+            var org = pathParts[0];
+
             var token = "";
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
@@ -70,7 +78,7 @@ namespace NuKeeper.AzureDevOps
                 token = envToken;
             }
 
-            return new AuthSettings(baseUri, token);
+            return new AuthSettings(new Uri($"https://dev.azure.com/{org}/"), token);
         }
     }
 }

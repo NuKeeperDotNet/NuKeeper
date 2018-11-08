@@ -9,6 +9,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationPlatform;
 
 namespace NuKeeper.Tests.Commands
 {
@@ -23,9 +24,9 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingsReader = new GitHubSettingsReader(fileSettings);
+            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
 
-            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader);
+            var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
 
             var status = await command.OnExecute();
 
@@ -43,13 +44,12 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingsReader = new GitHubSettingsReader(fileSettings);
+            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
 
-
-            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader);
+            var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
             command.GitHubToken = "testToken";
             command.Include = "testRepos";
-            command.GithubApiEndpoint = "https://contoso.com";
+            command.GithubApiEndpoint = "https://github.contoso.com";
 
             var status = await command.OnExecute();
 
@@ -64,15 +64,16 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = FileSettings.Empty();
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, platformSettings) = await CaptureSettings(fileSettings);
+
+            Assert.That(platformSettings, Is.Not.Null);
+            Assert.That(platformSettings.Token, Is.Not.Null);
+            Assert.That(platformSettings.Token, Is.EqualTo("testToken"));
+            Assert.That(platformSettings.BaseApiUrl, Is.Not.Null);
+            Assert.That(platformSettings.BaseApiUrl.ToString(), Is.EqualTo("http://github.contoso.com/"));
+
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.AuthSettings, Is.Not.Null);
-            Assert.That(settings.AuthSettings.Token, Is.EqualTo("testToken"));
-
-            Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase.ToString(), Is.EqualTo("http://github.contoso.com/"));
-
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings.Repository, Is.Null);
             Assert.That(settings.SourceControlServerSettings.OrganisationName, Is.Null);
@@ -83,7 +84,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = FileSettings.Empty();
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.UserSettings, Is.Not.Null);
@@ -99,7 +100,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = FileSettings.Empty();
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
@@ -119,6 +120,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);
         }
 
+
         [Test]
         public async Task WillReadApiFromFile()
         {
@@ -127,12 +129,11 @@ namespace NuKeeper.Tests.Commands
                 Api = "http://github.fish.com/"
             };
 
-            var settings = await CaptureSettings(fileSettings);
+            var (_, platformSettings) = await CaptureSettings(fileSettings);
 
-            Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.AuthSettings, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase, Is.Not.Null);
-            Assert.That(settings.AuthSettings.ApiBase, Is.EqualTo(new Uri("http://github.fish.com/")));
+            Assert.That(platformSettings, Is.Not.Null);
+            Assert.That(platformSettings.BaseApiUrl, Is.Not.Null);
+            Assert.That(platformSettings.BaseApiUrl, Is.EqualTo(new Uri("http://github.fish.com/")));
         }
 
         [Test]
@@ -140,10 +141,10 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new List<string> { "testLabel" }
+                Label = new List<string> {"testLabel"}
             };
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
@@ -161,7 +162,7 @@ namespace NuKeeper.Tests.Commands
                 ExcludeRepos = "bar"
             };
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.SourceControlServerSettings, Is.Not.Null);
@@ -179,7 +180,7 @@ namespace NuKeeper.Tests.Commands
                 MaxPr = 42
             };
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
@@ -194,26 +195,26 @@ namespace NuKeeper.Tests.Commands
                 MaxRepo = 42
             };
 
-            var settings = await CaptureSettings(fileSettings);
+            var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(42));
         }
 
-        public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn)
+        public static async Task<(SettingsContainer settingsContainer, CollaborationPlatformSettings platformSettings)> CaptureSettings(FileSettings settingsIn)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var settingsReader = new GitHubSettingsReader(fileSettings);
+            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ICollaborationEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
-            var command = new GlobalCommand(engine, logger, fileSettings, settingsReader)
+            var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory)
             {
                 GitHubToken = "testToken",
                 GithubApiEndpoint = settingsIn.Api ?? "http://github.contoso.com/",
@@ -222,7 +223,7 @@ namespace NuKeeper.Tests.Commands
 
             await command.OnExecute();
 
-            return settingsOut;
+            return (settingsOut, collaborationFactory.Settings);
         }
     }
 }
