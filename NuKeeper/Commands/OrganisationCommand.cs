@@ -1,4 +1,5 @@
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
@@ -19,6 +20,9 @@ namespace NuKeeper.Commands
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            var fileSettings = FileSettingsCache.GetSettings();
+            GithubApiEndpoint =  Concat.FirstValue(GithubApiEndpoint, fileSettings.Api, "https://api.github.com"); 
+
             var baseResult = base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {

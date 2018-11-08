@@ -61,8 +61,7 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            //Fallback for global and Org commands (for now)
-            var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString(),"https://api.github.com/"); 
+            var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString()); 
 
             if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {
