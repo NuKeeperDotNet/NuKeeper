@@ -5,7 +5,6 @@ using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 using System;
 using System.Collections.Generic;
-using NuKeeper.Abstractions;
 
 namespace NuKeeper.Commands
 {
@@ -29,17 +28,20 @@ namespace NuKeeper.Commands
             {
                 return ValidationResult.Failure($"Bad repository URI: '{GitHubRepositoryUri}'");
             }
-            var fileSettings = FileSettingsCache.GetSettings();
-            var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api);
 
-            RepositorySettings repositorySettings = null;
+            var didRead = false;
             foreach (var reader in _settingsReaders)
             {
                 if (reader.CanRead(repoUri))
                 {
-                    repositorySettings = reader.RepositorySettings(repoUri);
-                    GithubApiEndpoint = endpoint ?? repositorySettings.ApiUri.ToString();
+                    didRead = true;
+                    settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
                 }
+            }
+
+            if (!didRead)
+            {
+                return ValidationResult.Failure($"Unable to work out which platform to use");
             }
 
             var baseResult = base.PopulateSettings(settings);
@@ -48,7 +50,6 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.SourceControlServerSettings.Repository = repositorySettings;
             if (settings.SourceControlServerSettings.Repository == null)
             {
                 return ValidationResult.Failure($"Could not read repository URI: '{GitHubRepositoryUri}'");
