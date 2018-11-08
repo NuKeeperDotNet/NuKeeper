@@ -4,7 +4,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using NuKeeper.Abstractions;
 
 namespace NuKeeper.Commands
@@ -15,9 +15,12 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
         public string GitHubRepositoryUri { get; set; }
 
-        public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
+        private readonly IEnumerable<ISettingsReader> _settingsReaders;
+
+        public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
             : base(engine, logger, fileSettingsCache, collaborationFactory)
         {
+            _settingsReaders = settingsReaders;
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
@@ -29,18 +32,14 @@ namespace NuKeeper.Commands
             var fileSettings = FileSettingsCache.GetSettings();
             var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api);
 
-            if (repoUri.Host == "github.com")
+            RepositorySettings repositorySettings = null;
+            foreach (var reader in _settingsReaders)
             {
-                GithubApiEndpoint = endpoint ?? "https://api.github.com/";
-            }
-
-            if (repoUri.Host == "dev.azure.com")
-            {
-                var path = repoUri.AbsolutePath;
-                var pathParts = path.Split('/')
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .ToList();
-                GithubApiEndpoint = endpoint ?? $"https://dev.azure.com/{pathParts[0]}";
+                if (reader.CanRead(repoUri))
+                {
+                    repositorySettings = reader.RepositorySettings(repoUri);
+                    GithubApiEndpoint = endpoint ?? repositorySettings.ApiUri.ToString();
+                }
             }
 
             var baseResult = base.PopulateSettings(settings);
@@ -49,7 +48,7 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.SourceControlServerSettings.Repository = CollaborationFactory.SettingsReader.RepositorySettings(repoUri);
+            settings.SourceControlServerSettings.Repository = repositorySettings;
             if (settings.SourceControlServerSettings.Repository == null)
             {
                 return ValidationResult.Failure($"Could not read repository URI: '{GitHubRepositoryUri}'");

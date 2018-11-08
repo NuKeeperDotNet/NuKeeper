@@ -9,21 +9,26 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
-        public AuthSettings AuthSettings(Uri uri, string accessToken)
-        {
-            var testUri = uri ?? new Uri("https://api.github.com/");
+        public Platform Platform => Platform.GitHub;
 
-            testUri = UriFormats.EnsureTrailingSlash(testUri);
+        public bool CanRead(Uri repositoryUri)
+        {
+            return repositoryUri.Host.Contains("github");
+        }
+
+        public AuthSettings AuthSettings(Uri apiUri, string accessToken)
+        {
+            if (apiUri == null)
+            {
+                return null;
+            }
+
+            var testUri = UriFormats.EnsureTrailingSlash(apiUri);
 
             if (!testUri.IsWellFormedOriginalString()
                 || (testUri.Scheme != "http" && testUri.Scheme != "https"))
             {
                 return null;
-            }
-
-            if (testUri.Host == "github.com")
-            {
-                testUri = new Uri("https://api.github.com/");
             }
 
             var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
@@ -32,26 +37,9 @@ namespace NuKeeper.GitHub
             return new AuthSettings(testUri, token);
         }
 
-        public Platform Platform => Platform.GitHub;
-
-        public bool CanRead(Uri repositoryUri)
-        {
-            return repositoryUri.Host.Contains("github");
-        }
-
         public RepositorySettings RepositorySettings(Uri repositoryUri)
         {
             if (repositoryUri == null)
-            {
-                return null;
-            }
-
-            Uri apiUrl;
-            if (repositoryUri.Host == "github.com")
-            {
-                apiUrl = new Uri("https://api.github.com/");
-            }
-            else
             {
                 return null;
             }
@@ -68,12 +56,12 @@ namespace NuKeeper.GitHub
                 return null;
             }
 
-
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
             return new RepositorySettings
             {
+                ApiUri = new Uri("https://api.github.com/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner

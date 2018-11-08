@@ -35,16 +35,6 @@ namespace NuKeeper.GitHub.Tests
         }
 
         [Test]
-        public void GetsCorrectSettingFromFallback()
-        {
-            var settings = GitHubSettingsReader.AuthSettings(null, "accessToken");
-
-            Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://api.github.com/");
-            Assert.AreEqual(settings.Token, "accessToken");
-        }
-
-        [Test]
         public void GetsCorrectSettingWithMissingSlash()
         {
             var settings = GitHubSettingsReader.AuthSettings(new Uri("https://api.github.com"), "accessToken");
@@ -54,10 +44,15 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual(settings.Token, "accessToken");
         }
 
+        [DatapointSource]
+        public Uri[] Values = {
+            null,
+            new Uri("htps://missingt.com"),
+        };
         [Theory]
-        public void InvalidUrlReturnsNull()
+        public void InvalidUrlReturnsNull(Uri uri)
         {
-            var settings = GitHubSettingsReader.AuthSettings(new Uri("htps://github.com/"), "accessToken");
+            var settings = GitHubSettingsReader.AuthSettings(uri, "accessToken");
 
             Assert.IsNull(settings);
         }

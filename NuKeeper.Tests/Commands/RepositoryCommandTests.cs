@@ -24,10 +24,11 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = Substitute.For<ICollaborationFactory>();
-            collaborationFactory.SettingsReader.Returns(new GitHubSettingsReader());
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var collaborationFactory = new CollaborationFactory(settingsReaders);
 
-            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory);
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
 
             var status = await command.OnExecute();
 
@@ -45,9 +46,11 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var collaborationFactory = new CollaborationFactory(settingsReaders);
 
-            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory)
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
             {
                 GitHubToken = "abc",
                 GitHubRepositoryUri = "http://github.com/abc/abc"
@@ -223,13 +226,15 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var collaborationFactory = new CollaborationFactory(settingsReaders);
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ICollaborationEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
-            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory);
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
             command.GitHubToken = "testToken";
             command.GitHubRepositoryUri = "http://github.com/test/test";
 
