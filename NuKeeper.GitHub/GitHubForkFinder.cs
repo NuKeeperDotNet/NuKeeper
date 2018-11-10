@@ -4,7 +4,6 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Engine;
 
 namespace NuKeeper.GitHub
 {

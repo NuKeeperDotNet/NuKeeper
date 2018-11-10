@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;

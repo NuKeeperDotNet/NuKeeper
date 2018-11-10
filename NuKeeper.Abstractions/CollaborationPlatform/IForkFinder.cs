@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Abstractions.CollaborationPlatform
 {
     public interface IForkFinder
     {
