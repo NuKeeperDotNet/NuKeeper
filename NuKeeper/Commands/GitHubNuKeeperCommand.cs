@@ -22,7 +22,6 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
             Description =
                 "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly. Defaults to PreferFork.")]
-        // ReSharper disable once MemberCanBePrivate.Global
         protected ForkMode ForkMode { get; } = ForkMode.PreferFork;
 
         [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpr",
@@ -40,8 +39,8 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
-                "GitHub Api Base Url. If you are using an internal GitHub server and not the public one, you must set it to the api url for your GitHub server.")]
-        public string GithubApiEndpoint { get; set; }
+                "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
+        public string ApiEndpoint { get; set; }
 
         protected GitHubNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger,
             IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
@@ -61,7 +60,7 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            var endpoint = Concat.FirstValue(GithubApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString()); 
+            var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString()); 
 
             if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {

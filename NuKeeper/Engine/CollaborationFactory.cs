@@ -32,7 +32,7 @@ namespace NuKeeper.Engine
 
             if (SettingsReader == null)
             {
-                throw new NuKeeperException("Unable to work out platform");
+                throw new NuKeeperException($"Unable to work out platform for uri {apiEndpoint}");
             }
 
             var settings = SettingsReader.AuthSettings(apiEndpoint, token);

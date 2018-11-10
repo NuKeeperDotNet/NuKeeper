@@ -41,7 +41,7 @@ namespace NuKeeper.Commands
 
             if (!didRead)
             {
-                return ValidationResult.Failure($"Unable to work out which platform to use");
+                return ValidationResult.Failure($"Unable to work out which platform to use {GitHubRepositoryUri} could not be matched");
             }
 
             var baseResult = base.PopulateSettings(settings);
