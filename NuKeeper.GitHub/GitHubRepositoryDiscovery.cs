@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.GitHub
@@ -11,23 +12,23 @@ namespace NuKeeper.GitHub
     public class GitHubRepositoryDiscovery : IRepositoryDiscovery
     {
         private readonly INuKeeperLogger _logger;
+        private readonly ICollaborationPlatform _collaborationPlatform;
 
-        public GitHubRepositoryDiscovery(
-            INuKeeperLogger logger)
+        public GitHubRepositoryDiscovery(INuKeeperLogger logger, ICollaborationPlatform collaborationPlatform)
         {
             _logger = logger;
+            _collaborationPlatform = collaborationPlatform;
         }
 
-        public async Task<IEnumerable<RepositorySettings>> GetRepositories(
-            ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings)
+        public async Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
         {
             switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    return await ForAllOrgs(collaborationPlatform, settings);
+                    return await ForAllOrgs(settings);
 
                 case ServerScope.Organisation:
-                    return await FromOrganisation(collaborationPlatform, settings.OrganisationName, settings);
+                    return await FromOrganisation(settings.OrganisationName, settings);
 
                 case ServerScope.Repository:
                     return new[] { settings.Repository };
@@ -38,26 +39,24 @@ namespace NuKeeper.GitHub
             }
         }
 
-        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(
-            ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings)
+        private async Task<IReadOnlyCollection<RepositorySettings>> ForAllOrgs(SourceControlServerSettings settings)
         {
-            var allOrgs = await collaborationPlatform.GetOrganizations();
+            var allOrgs = await _collaborationPlatform.GetOrganizations();
 
             var allRepos = new List<RepositorySettings>();
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(collaborationPlatform, org.Name ?? org.Login, settings);
+                var repos = await FromOrganisation(org.Name ?? org.Login, settings);
                 allRepos.AddRange(repos);
             }
 
             return allRepos;
         }
 
-        private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(
-            ICollaborationPlatform collaborationPlatform, string organisationName, SourceControlServerSettings settings)
+        private async Task<IReadOnlyCollection<RepositorySettings>> FromOrganisation(string organisationName, SourceControlServerSettings settings)
         {
-            var allOrgRepos = await collaborationPlatform.GetRepositoriesForOrganisation(organisationName);
+            var allOrgRepos = await _collaborationPlatform.GetRepositoriesForOrganisation(organisationName);
 
             var usableRepos = allOrgRepos
                 .Where(r => MatchesIncludeExclude(r, settings))
@@ -74,24 +73,24 @@ namespace NuKeeper.GitHub
                 .ToList();
         }
 
-        private static bool MatchesIncludeExclude(Abstractions.DTOs.Repository repo, SourceControlServerSettings settings)
+        private static bool MatchesIncludeExclude(Repository repo, SourceControlServerSettings settings)
         {
             return
                 MatchesInclude(settings.IncludeRepos, repo)
                 && !MatchesExclude(settings.ExcludeRepos, repo);
         }
 
-        private static bool MatchesInclude(Regex regex, Abstractions.DTOs.Repository repo)
+        private static bool MatchesInclude(Regex regex, Repository repo)
         {
             return regex == null || regex.IsMatch(repo.Name);
         }
 
-        private static bool MatchesExclude(Regex regex, Abstractions.DTOs.Repository repo)
+        private static bool MatchesExclude(Regex regex, Repository repo)
         {
             return regex != null && regex.IsMatch(repo.Name);
         }
 
-        private static bool RepoIsModifiable(Abstractions.DTOs.Repository repo)
+        private static bool RepoIsModifiable(Repository repo)
         {
             return
                 !repo.Archived &&

@@ -10,12 +10,22 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Tests.Commands
 {
     [TestFixture]
     public class GlobalCommandTests
     {
+        private static CollaborationFactory GetCollaborationFactory()
+        {
+            return new CollaborationFactory(
+                new ISettingsReader[] {new GitHubSettingsReader()},
+                Substitute.For<ICollaborationPlatform>(),
+                Substitute.For<INuKeeperLogger>()
+            );
+        }
+
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
@@ -24,7 +34,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var collaborationFactory = GetCollaborationFactory();
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
 
@@ -44,7 +54,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var collaborationFactory = GetCollaborationFactory();
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
             command.GitHubToken = "testToken";
@@ -208,7 +218,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var collaborationFactory = GetCollaborationFactory();
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ICollaborationEngine>();

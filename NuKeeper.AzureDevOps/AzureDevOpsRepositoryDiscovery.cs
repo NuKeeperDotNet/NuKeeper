@@ -12,14 +12,12 @@ namespace NuKeeper.AzureDevOps
     {
         private readonly INuKeeperLogger _logger;
 
-        public AzureDevOpsRepositoryDiscovery(
-            INuKeeperLogger logger)
+        public AzureDevOpsRepositoryDiscovery(INuKeeperLogger logger)
         {
             _logger = logger;
         }
 
-        public Task<IEnumerable<RepositorySettings>> GetRepositories(
-            ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings)
+        public Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
         {
             switch (settings.Scope)
             {
