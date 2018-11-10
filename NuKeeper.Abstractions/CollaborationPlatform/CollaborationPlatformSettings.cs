@@ -6,6 +6,5 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
     {
         public Uri BaseApiUrl { get; set; }
         public string Token { get; set; }
-
     }
 }

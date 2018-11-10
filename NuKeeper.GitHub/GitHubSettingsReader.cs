@@ -9,7 +9,8 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
-        public Platform Platform => Platform.GitHub;
+        private const Platform GitHub = Platform.GitHub;
+        public Platform Platform => GitHub;
 
         public bool CanRead(Uri repositoryUri)
         {
@@ -23,10 +24,10 @@ namespace NuKeeper.GitHub
                 return null;
             }
 
-            var testUri = UriFormats.EnsureTrailingSlash(apiUri);
+            apiUri = UriFormats.EnsureTrailingSlash(apiUri);
 
-            if (!testUri.IsWellFormedOriginalString()
-                || (testUri.Scheme != "http" && testUri.Scheme != "https"))
+            if (!apiUri.IsWellFormedOriginalString()
+                || (apiUri.Scheme != "http" && apiUri.Scheme != "https"))
             {
                 return null;
             }
@@ -34,7 +35,7 @@ namespace NuKeeper.GitHub
             var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
             var token = Concat.FirstValue(envToken, accessToken);
 
-            return new AuthSettings(testUri, token);
+            return new AuthSettings(apiUri, token);
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri)

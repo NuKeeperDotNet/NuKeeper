@@ -11,7 +11,8 @@ namespace NuKeeper.AzureDevOps
     // https://dev.azure.com/{org}/{project}/_git/{repo}/
     public class AzureDevOpsSettingsReader : ISettingsReader
     {
-        public Platform Platform => Platform.AzureDevOps;
+        private const Platform AzureDevOps = Platform.AzureDevOps;
+        public Platform Platform => AzureDevOps;
 
         public bool CanRead(Uri repositoryUri)
         {
