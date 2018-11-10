@@ -6,7 +6,10 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
 {
     public interface ISettingsReader
     {
+        Platform Platform { get; }
+        bool CanRead(Uri repositoryUri);
+
         RepositorySettings RepositorySettings(Uri repositoryUri);
-        AuthSettings AuthSettings(string apiEndpoint, string accessToken);
+        AuthSettings AuthSettings(Uri apiUri, string accessToken);
     }
 }

@@ -22,8 +22,8 @@ namespace NuKeeper.Commands
         public int? AllowedMaxRepositoriesChangedChange { get; set; }
 
 
-        protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
-            : base(engine, logger, fileSettingsCache, settingsReader)
+        protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
+            : base(engine, logger, fileSettingsCache, collaborationFactory)
         {
         }
 

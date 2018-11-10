@@ -38,9 +38,9 @@ namespace NuKeeper.AzureDevOps
             var req = new PRRequest
             {
                 title = request.Title,
-                sourceRefName = $"refs/heads/{request.BaseRef}",
+                sourceRefName = $"refs/heads/{request.Head}",
                 description = request.Body,
-                targetRefName = $"refs/heads/{request.Head}"
+                targetRefName = $"refs/heads/{request.BaseRef}"
             };
 
             await _client.CreatePullRequest(req, target.Owner, repo.id);

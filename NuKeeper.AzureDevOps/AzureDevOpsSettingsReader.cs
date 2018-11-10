@@ -9,11 +9,37 @@ namespace NuKeeper.AzureDevOps
 {
     public class AzureDevOpsSettingsReader : ISettingsReader
     {
-        private readonly FileSettings _fileSettings;
+        public Platform Platform => Platform.AzureDevOps;
 
-        public AzureDevOpsSettingsReader(IFileSettingsCache settingsCache)
+        public bool CanRead(Uri repositoryUri)
         {
-            _fileSettings = settingsCache.GetSettings();
+            if (repositoryUri == null || repositoryUri.Host != "dev.azure.com")
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public AuthSettings AuthSettings(Uri apiUri, string accessToken)
+        {
+            if (apiUri == null)
+            {
+                return null;
+            }
+
+            var testUri = UriFormats.EnsureTrailingSlash(apiUri);
+
+            if (!testUri.IsWellFormedOriginalString()
+                || (testUri.Scheme != "http" && testUri.Scheme != "https"))
+            {
+                return null;
+            }
+
+            var envToken = Environment.GetEnvironmentVariable("NuKeeper_azure_devops_token");
+            var token = Concat.FirstValue(envToken, accessToken);
+
+            return new AuthSettings(testUri, token);
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri)
@@ -23,54 +49,29 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
-            // general pattern is either of
-            // https://{org}.visualstudio.com/{project}/_git/{repo}/
+            // URL pattern is
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
-            // from this we extract owner and repo name
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count < 3)
+            if (pathParts.Count != 4)
             {
                 return null;
             }
 
-            var project = pathParts[0];
-            var repoName = pathParts[2];
+            var org = pathParts[0];
+            var project = pathParts[1];
+            var repoName = pathParts[3];
 
             return new RepositorySettings
             {
-                Uri = repositoryUri,
+                ApiUri = new Uri($"https://dev.azure.com/{org}/"),
+                RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = project
             };
-        }
-
-        public AuthSettings AuthSettings(string apiEndpoint, string accessToken)
-        {
-            const string defaultGithubApi = "https://dev.azure.com/";
-            var api = Concat.FirstValue(apiEndpoint, _fileSettings.Api, defaultGithubApi);
-            if (!Uri.TryCreate(api, UriKind.Absolute, out var baseUri))
-            {
-                baseUri = null;
-            }
-
-            baseUri = UriFormats.EnsureTrailingSlash(baseUri);
-            var token = "";
-            if (!string.IsNullOrWhiteSpace(accessToken))
-            {
-                token = accessToken;
-            }
-
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_azure_devops_token");
-            if (!string.IsNullOrWhiteSpace(envToken))
-            {
-                token = envToken;
-            }
-
-            return new AuthSettings(baseUri, token);
         }
     }
 }

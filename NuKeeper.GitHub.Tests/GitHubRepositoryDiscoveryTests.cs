@@ -96,7 +96,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[0].Name));
-            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
-            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
         [Test]
