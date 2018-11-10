@@ -7,8 +7,6 @@ using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.AzureDevOps
 {
-    // URL pattern is
-    // https://dev.azure.com/{org}/{project}/_git/{repo}/
     public class AzureDevOpsSettingsReader : ISettingsReader
     {
         private const Platform AzureDevOps = Platform.AzureDevOps;
@@ -26,7 +24,6 @@ namespace NuKeeper.AzureDevOps
 
         public AuthSettings AuthSettings(Uri apiUri, string accessToken)
         {
-
             if (apiUri == null)
             {
                 return null;
@@ -53,6 +50,8 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
+            // URL pattern is
+            // https://dev.azure.com/{org}/{project}/_git/{repo}/
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
