@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBD0650A-1EAB-479B-B210-A8F63FAC162C}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		Docker\Dockerfile = Docker\Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection", "NuKeeper.Inspection\NuKeeper.Inspection.csproj", "{6EA16D83-81DF-4E55-8761-22ADF468C56B}"
