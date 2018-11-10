@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
@@ -16,6 +17,15 @@ namespace NuKeeper.Tests.Commands
     [TestFixture]
     public class RepositoryCommandTests
     {
+        private static CollaborationFactory GetCollaborationFactory(IEnumerable<ISettingsReader> settingReaders = null)
+        {
+            return new CollaborationFactory(
+                settingReaders ?? new ISettingsReader[] {new GitHubSettingsReader()},
+                Substitute.For<ICollaborationPlatform>(),
+                Substitute.For<INuKeeperLogger>()
+            );
+        }
+
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
@@ -26,7 +36,7 @@ namespace NuKeeper.Tests.Commands
 
             var settingReader = new GitHubSettingsReader();
             var settingsReaders = new List<ISettingsReader> {settingReader};
-            var collaborationFactory = new CollaborationFactory(settingsReaders);
+            var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
 
@@ -48,7 +58,7 @@ namespace NuKeeper.Tests.Commands
 
             var settingReader = new GitHubSettingsReader();
             var settingsReaders = new List<ISettingsReader> {settingReader};
-            var collaborationFactory = new CollaborationFactory(settingsReaders);
+            var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
             {
@@ -228,7 +238,7 @@ namespace NuKeeper.Tests.Commands
 
             var settingReader = new GitHubSettingsReader();
             var settingsReaders = new List<ISettingsReader> {settingReader};
-            var collaborationFactory = new CollaborationFactory(settingsReaders);
+            var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ICollaborationEngine>();

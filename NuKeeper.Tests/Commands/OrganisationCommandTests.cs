@@ -9,6 +9,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Logging;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Tests.Commands
@@ -16,6 +17,15 @@ namespace NuKeeper.Tests.Commands
     [TestFixture]
     public class OrganisationCommandTests
     {
+        private static CollaborationFactory GetCollaborationFactory()
+        {
+            return new CollaborationFactory(
+                new ISettingsReader[] {new GitHubSettingsReader()},
+                Substitute.For<ICollaborationPlatform>(),
+                Substitute.For<INuKeeperLogger>()
+            );
+        }
+
         [Test]
         public async Task ShouldCallEngineAndNotSucceedWithoutParams()
         {
@@ -23,7 +33,7 @@ namespace NuKeeper.Tests.Commands
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var collaborationFactory = GetCollaborationFactory();
 
             var command = new OrganisationCommand(engine, logger, fileSettings, collaborationFactory);
 
@@ -43,7 +53,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+            var collaborationFactory = GetCollaborationFactory();
 
             var command = new OrganisationCommand(engine, logger, fileSettings, collaborationFactory);
             command.GitHubToken = "abc";
@@ -249,9 +259,9 @@ namespace NuKeeper.Tests.Commands
             var engine = Substitute.For<ICollaborationEngine>();
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
-
             fileSettings.GetSettings().Returns(settingsIn);
-            var collaborationFactory = new CollaborationFactory(new ISettingsReader[] {new GitHubSettingsReader()});
+
+            var collaborationFactory = GetCollaborationFactory();
 
             var command = new OrganisationCommand(engine, logger, fileSettings, collaborationFactory);
             command.GitHubToken = "testToken";

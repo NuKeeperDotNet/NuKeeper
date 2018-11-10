@@ -13,20 +13,20 @@ namespace NuKeeper.Engine
     public class GitRepositoryEngine: IGitRepositoryEngine
     {
         private readonly IRepositoryUpdater _repositoryUpdater;
-        private readonly IForkFinder _forkFinder;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
 
         public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
-            IForkFinder forkFinder,
+            ICollaborationFactory collaborationFactory,
             IFolderFactory folderFactory,
             INuKeeperLogger logger,
             IRepositoryFilter repositoryFilter)
         {
             _repositoryUpdater = repositoryUpdater;
-            _forkFinder = forkFinder;
+            _collaborationFactory = collaborationFactory;
             _folderFactory = folderFactory;
             _logger = logger;
             _repositoryFilter = repositoryFilter;
@@ -71,7 +71,7 @@ namespace NuKeeper.Engine
             string userName)
         {
             var pullFork = new ForkData(repository.RepositoryUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
+            var pushFork = await _collaborationFactory.ForkFinder.FindPushFork(forkMode, userName, pullFork);
 
             if (pushFork == null)
             {

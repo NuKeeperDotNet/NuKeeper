@@ -43,12 +43,10 @@ namespace NuKeeper
 
             //GitHub Registrations
             container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
-            container.Register<IForkFinder, GitHubForkFinder>();
             container.Register<IRepositoryDiscovery, GitHubRepositoryDiscovery>();
 
             //Azure Registrations
             //container.RegisterSingleton<ICollaborationPlatform, AzureDevOpsPlatform>();
-            //container.Register<IForkFinder, AzureDevOpsForkFinder>();
             //container.Register<IRepositoryDiscovery, AzureDevOpsRepositoryDiscovery>();
         }
     }
