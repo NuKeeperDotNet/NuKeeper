@@ -72,6 +72,9 @@ namespace NuKeeper.Tests.Engine
 
         private static void AssertAreSameObject(ICollaborationFactory collaborationFactory)
         {
+            var repositoryDiscovery = collaborationFactory.RepositoryDiscovery;
+            Assert.AreSame(repositoryDiscovery, collaborationFactory.RepositoryDiscovery);
+
             var forkFinder = collaborationFactory.ForkFinder;
             Assert.AreSame(forkFinder, collaborationFactory.ForkFinder);
 
@@ -82,12 +85,14 @@ namespace NuKeeper.Tests.Engine
         private static void AssertGithub(ICollaborationFactory collaborationFactory)
         {
             Assert.IsInstanceOf<GitHubForkFinder>(collaborationFactory.ForkFinder);
+            Assert.IsInstanceOf<GitHubRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
         }
 
         private static void AssertAzureDevOps(ICollaborationFactory collaborationFactory)
         {
             Assert.IsInstanceOf<AzureDevOpsForkFinder>(collaborationFactory.ForkFinder);
+            Assert.IsInstanceOf<AzureDevOpsRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
         }
     }

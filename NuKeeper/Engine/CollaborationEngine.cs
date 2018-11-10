@@ -14,7 +14,6 @@ namespace NuKeeper.Engine
     {
         private readonly ICollaborationFactory _collaborationFactory;
         private readonly ICollaborationPlatform _collaborationPlatform;
-        private readonly IRepositoryDiscovery _repositoryDiscovery;
         private readonly IGitRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
@@ -22,14 +21,12 @@ namespace NuKeeper.Engine
         public CollaborationEngine(
             ICollaborationFactory collaborationFactory,
             ICollaborationPlatform collaborationPlatform,
-            IRepositoryDiscovery repositoryDiscovery,
             IGitRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _collaborationFactory = collaborationFactory;
             _collaborationPlatform = collaborationPlatform;
-            _repositoryDiscovery = repositoryDiscovery;
             _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
             _logger = logger;
@@ -52,7 +49,7 @@ namespace NuKeeper.Engine
 
             var userIdentity = GetUserIdentity(githubUser);
 
-            var repositories = await _repositoryDiscovery.GetRepositories(_collaborationPlatform, settings.SourceControlServerSettings);
+            var repositories = await _collaborationFactory.RepositoryDiscovery.GetRepositories(settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 

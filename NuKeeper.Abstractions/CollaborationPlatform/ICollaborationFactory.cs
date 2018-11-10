@@ -8,5 +8,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         ISettingsReader SettingsReader { get; }
         void Initialise(Uri apiUri, string token);
         IForkFinder ForkFinder { get; }
+        IRepositoryDiscovery RepositoryDiscovery { get; }
     }
 }

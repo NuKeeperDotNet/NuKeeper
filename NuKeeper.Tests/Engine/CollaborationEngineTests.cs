@@ -124,7 +124,6 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            var repoDiscovery = Substitute.For<IRepositoryDiscovery>();
             var repoEngine = Substitute.For<IGitRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
@@ -133,13 +132,12 @@ namespace NuKeeper.Tests.Engine
 
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
 
-            repoDiscovery.GetRepositories(Arg.Any<ICollaborationPlatform>(), Arg.Any<SourceControlServerSettings>())
-                .Returns(repos);
+            collaborationFactory.RepositoryDiscovery.GetRepositories(Arg.Any<SourceControlServerSettings>()).Returns(repos);
 
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            var engine = new CollaborationEngine(collaborationFactory, collaborationPlatform, repoDiscovery, repoEngine,
+            var engine = new CollaborationEngine(collaborationFactory, collaborationPlatform, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }

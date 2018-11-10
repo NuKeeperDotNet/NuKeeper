@@ -50,6 +50,7 @@ namespace NuKeeper.Engine
         }
 
         private IForkFinder _forkFinder;
+
         public IForkFinder ForkFinder
         {
             get
@@ -58,11 +59,12 @@ namespace NuKeeper.Engine
                 {
                     return null;
                 }
+
                 if (_forkFinder != null)
                 {
                     return _forkFinder;
                 }
-                
+
                 switch (_platform.Value)
                 {
                     case Platform.AzureDevOps:
@@ -71,11 +73,39 @@ namespace NuKeeper.Engine
                     case Platform.GitHub:
                         _forkFinder = new GitHubForkFinder(_collaborationPlatform, _nuKeeperLogger);
                         break;
-                    default:
-                        return null;
                 }
 
                 return _forkFinder;
+            }
+        }
+
+        private IRepositoryDiscovery _repositoryDiscovery;
+
+        public IRepositoryDiscovery RepositoryDiscovery
+        {
+            get
+            {
+                if (!_platform.HasValue)
+                {
+                    return null;
+                }
+
+                if (_repositoryDiscovery != null)
+                {
+                    return _repositoryDiscovery;
+                }
+
+                switch (_platform.Value)
+                {
+                    case Platform.AzureDevOps:
+                        _repositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
+                        break;
+                    case Platform.GitHub:
+                        _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
+                        break;
+                }
+
+                return _repositoryDiscovery;
             }
         }
     }
