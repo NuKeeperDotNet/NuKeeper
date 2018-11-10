@@ -9,8 +9,7 @@ namespace NuKeeper.AzureDevOps
 {
     public class AzureDevOpsSettingsReader : ISettingsReader
     {
-        private const Platform AzureDevOps = Platform.AzureDevOps;
-        public Platform Platform => AzureDevOps;
+        public Platform Platform => Platform.AzureDevOps;
 
         public bool CanRead(Uri repositoryUri)
         {

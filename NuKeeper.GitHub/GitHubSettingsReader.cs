@@ -9,8 +9,7 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
-        private const Platform GitHub = Platform.GitHub;
-        public Platform Platform => GitHub;
+        public Platform Platform => Platform.GitHub;
 
         public bool CanRead(Uri repositoryUri)
         {
