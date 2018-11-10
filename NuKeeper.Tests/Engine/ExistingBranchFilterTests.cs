@@ -23,10 +23,10 @@ namespace NuKeeper.Tests.Engine
         public async Task IfBranchDoesNotExistAllowCreation()
         {
             var fork = new ForkData(new Uri("http://uri.com"), "owner", "name");
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(false);
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.CollaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(false);
 
-            var filter = new ExistingBranchFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            var filter = new ExistingBranchFilter(collaborationFactory, Substitute.For<INuKeeperLogger>());
             var result = await filter.CanMakeBranchFor(MakeUpdateSet(), fork);
             Assert.AreEqual(result, true);
         }
@@ -35,10 +35,10 @@ namespace NuKeeper.Tests.Engine
         public async Task IfBranchDoesExistDoNotAllowCreation()
         {
             var fork = new ForkData(new Uri("http://uri.com"), "owner", "name");
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(true);
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.CollaborationPlatform.RepositoryBranchExists(fork.Owner, fork.Name, Arg.Any<string>()).Returns(true);
 
-            var filter = new ExistingBranchFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            var filter = new ExistingBranchFilter(collaborationFactory, Substitute.For<INuKeeperLogger>());
             var result = await filter.CanMakeBranchFor(MakeUpdateSet(), fork);
             Assert.AreEqual(result, false);
         }

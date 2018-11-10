@@ -17,10 +17,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldFilterWhenNoMatchFound()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0)));
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.CollaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(0)));
 
-            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationFactory, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -30,10 +30,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenMatchFound()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1)));
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.CollaborationPlatform.Search(null).ReturnsForAnyArgs(Task.FromResult(new SearchCodeResult(1)));
 
-            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationFactory, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
@@ -43,10 +43,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task ShouldNotFilterWhenSearchFails()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.Search(null).ThrowsForAnyArgs(new Exception());
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.CollaborationPlatform.Search(null).ThrowsForAnyArgs(new Exception());
 
-            IRepositoryFilter subject = new RepositoryFilter(collaborationPlatform, Substitute.For<INuKeeperLogger>());
+            IRepositoryFilter subject = new RepositoryFilter(collaborationFactory, Substitute.For<INuKeeperLogger>());
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 

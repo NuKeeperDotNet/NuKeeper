@@ -10,12 +10,12 @@ namespace NuKeeper.Engine
 {
     public class RepositoryFilter : IRepositoryFilter
     {
-        private readonly ICollaborationPlatform _collaborationPlatformClient;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly INuKeeperLogger _logger;
 
-        public RepositoryFilter(ICollaborationPlatform collaborationPlatformClient, INuKeeperLogger logger)
+        public RepositoryFilter(ICollaborationFactory collaborationFactory, INuKeeperLogger logger)
         {
-            _collaborationPlatformClient = collaborationPlatformClient;
+            _collaborationFactory = collaborationFactory;
             _logger = logger;
         }
 
@@ -28,7 +28,7 @@ namespace NuKeeper.Engine
             };
             try
             {
-                var result = await _collaborationPlatformClient.Search(request);
+                var result = await _collaborationFactory.CollaborationPlatform.Search(request);
                 if (result.TotalCount <= 0)
                 {
                     _logger.Detailed(

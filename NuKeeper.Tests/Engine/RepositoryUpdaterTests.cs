@@ -74,11 +74,11 @@ namespace NuKeeper.Tests.Engine
         public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, bool consolidateUpdates, int expectedUpdates, int expectedPrs)
         {
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var gitDriver = Substitute.For<IGitDriver>();
             UpdateSelectionAll(updateSelection);
 
-            var packageUpdater = new PackageUpdater(collaborationPlatform,
+            var packageUpdater = new PackageUpdater(collaborationFactory,
                 Substitute.For<IUpdateRunner>(),
                 Substitute.For<INuKeeperLogger>());
 
@@ -99,7 +99,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(count, Is.EqualTo(expectedUpdates));
 
-            await collaborationPlatform.Received(expectedPrs)
+            await collaborationFactory.CollaborationPlatform.Received(expectedPrs)
                 .OpenPullRequest(
                     Arg.Any<ForkData>(),
                     Arg.Any<PullRequestRequest>(),

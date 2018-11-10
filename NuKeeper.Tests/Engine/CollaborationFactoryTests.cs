@@ -33,8 +33,7 @@ namespace NuKeeper.Tests.Engine
 
             var readers = new List<ISettingsReader> {settingReader1, settingReader2};
             var logger = Substitute.For<INuKeeperLogger>();
-            var platform = Substitute.For<ICollaborationPlatform>();
-            return new CollaborationFactory(readers, platform, logger);
+            return new CollaborationFactory(readers, logger);
         }
 
         [Test]
@@ -72,6 +71,9 @@ namespace NuKeeper.Tests.Engine
 
         private static void AssertAreSameObject(ICollaborationFactory collaborationFactory)
         {
+            var collaborationPlatform = collaborationFactory.CollaborationPlatform;
+            Assert.AreSame(collaborationPlatform, collaborationFactory.CollaborationPlatform);
+
             var repositoryDiscovery = collaborationFactory.RepositoryDiscovery;
             Assert.AreSame(repositoryDiscovery, collaborationFactory.RepositoryDiscovery);
 
@@ -86,6 +88,7 @@ namespace NuKeeper.Tests.Engine
         {
             Assert.IsInstanceOf<GitHubForkFinder>(collaborationFactory.ForkFinder);
             Assert.IsInstanceOf<GitHubRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
+            Assert.IsInstanceOf<OctokitClient>(collaborationFactory.CollaborationPlatform);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
         }
 
@@ -93,6 +96,7 @@ namespace NuKeeper.Tests.Engine
         {
             Assert.IsInstanceOf<AzureDevOpsForkFinder>(collaborationFactory.ForkFinder);
             Assert.IsInstanceOf<AzureDevOpsRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
+            Assert.IsInstanceOf<AzureDevOpsPlatform>(collaborationFactory.CollaborationPlatform);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
         }
     }

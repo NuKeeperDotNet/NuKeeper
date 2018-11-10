@@ -21,7 +21,6 @@ namespace NuKeeper.Tests.Commands
         {
             return new CollaborationFactory(
                 new ISettingsReader[] {new GitHubSettingsReader()},
-                Substitute.For<ICollaborationPlatform>(),
                 Substitute.For<INuKeeperLogger>()
             );
         }
