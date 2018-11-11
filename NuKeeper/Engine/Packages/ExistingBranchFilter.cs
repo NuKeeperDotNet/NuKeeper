@@ -9,12 +9,12 @@ namespace NuKeeper.Engine.Packages
 {
     public class ExistingBranchFilter : IExistingBranchFilter
     {
-        private readonly ICollaborationPlatform _collaborationPlatform;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly INuKeeperLogger _logger;
 
-        public ExistingBranchFilter(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
+        public ExistingBranchFilter(ICollaborationFactory collaborationFactory, INuKeeperLogger logger)
         {
-            _collaborationPlatform = collaborationPlatform;
+            _collaborationFactory = collaborationFactory;
             _logger = logger;
         }
 
@@ -24,7 +24,7 @@ namespace NuKeeper.Engine.Packages
             try
             {
                 var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet);
-                var branchExists = await _collaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
+                var branchExists = await _collaborationFactory.CollaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
                 return !branchExists;
             }
             catch (Exception ex)

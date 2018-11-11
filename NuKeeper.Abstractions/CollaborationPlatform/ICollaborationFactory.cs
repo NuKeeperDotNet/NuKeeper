@@ -9,5 +9,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         void Initialise(Uri apiUri, string token);
         IForkFinder ForkFinder { get; }
         IRepositoryDiscovery RepositoryDiscovery { get; }
+        ICollaborationPlatform CollaborationPlatform { get; }
     }
 }

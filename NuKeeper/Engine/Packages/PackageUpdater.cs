@@ -14,16 +14,16 @@ namespace NuKeeper.Engine.Packages
 {
     public class PackageUpdater : IPackageUpdater
     {
-        private readonly ICollaborationPlatform _collaborationPlatform;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly INuKeeperLogger _logger;
         private readonly IUpdateRunner _updateRunner;
 
         public PackageUpdater(
-            ICollaborationPlatform collaborationPlatform,
+            ICollaborationFactory collaborationFactory,
             IUpdateRunner localUpdater,
             INuKeeperLogger logger)
         {
-            _collaborationPlatform = collaborationPlatform;
+            _collaborationFactory = collaborationFactory;
             _updateRunner = localUpdater;
             _logger = logger;
         }
@@ -97,7 +97,7 @@ namespace NuKeeper.Engine.Packages
 
             var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) { Body = body };
 
-            await _collaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
+            await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
 
 
             git.Checkout(repository.DefaultBranch);

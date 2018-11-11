@@ -13,20 +13,17 @@ namespace NuKeeper.Engine
     public class CollaborationEngine : ICollaborationEngine
     {
         private readonly ICollaborationFactory _collaborationFactory;
-        private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly IGitRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public CollaborationEngine(
             ICollaborationFactory collaborationFactory,
-            ICollaborationPlatform collaborationPlatform,
             IGitRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
             _collaborationFactory = collaborationFactory;
-            _collaborationPlatform = collaborationPlatform;
             _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
             _logger = logger;
@@ -36,11 +33,8 @@ namespace NuKeeper.Engine
         {
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
-            _collaborationPlatform.Initialise(
-                new AuthSettings(_collaborationFactory.Settings.BaseApiUrl, _collaborationFactory.Settings.Token)
-            );
 
-            var githubUser = await _collaborationPlatform.GetCurrentUser();
+            var githubUser = await _collaborationFactory.CollaborationPlatform.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
                 Username = githubUser.Login,

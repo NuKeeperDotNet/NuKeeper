@@ -40,12 +40,6 @@ namespace NuKeeper
 
             container.RegisterSingleton<ICollaborationFactory,CollaborationFactory>();
             container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
-
-            //GitHub Registrations
-            container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
-
-            //Azure Registrations
-            //container.RegisterSingleton<ICollaborationPlatform, AzureDevOpsPlatform>();
         }
     }
 }
