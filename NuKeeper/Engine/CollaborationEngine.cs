@@ -34,14 +34,14 @@ namespace NuKeeper.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            var githubUser = await _collaborationFactory.CollaborationPlatform.GetCurrentUser();
+            var user = await _collaborationFactory.CollaborationPlatform.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
-                Username = githubUser.Login,
+                Username = user.Login,
                 Password = _collaborationFactory.Settings.Token
             };
 
-            var userIdentity = GetUserIdentity(githubUser);
+            var userIdentity = GetUserIdentity(user);
 
             var repositories = await _collaborationFactory.RepositoryDiscovery.GetRepositories(settings.SourceControlServerSettings);
 
@@ -73,20 +73,20 @@ namespace NuKeeper.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(User githubUser)
+        private Identity GetUserIdentity(User user)
         {
-            if (string.IsNullOrWhiteSpace(githubUser?.Name))
+            if (string.IsNullOrWhiteSpace(user?.Name))
             {
-                _logger.Minimal("GitHub user name missing from profile, falling back to .gitconfig");
+                _logger.Minimal("User name missing from profile, falling back to .gitconfig");
                 return null;
             }
-            if (string.IsNullOrWhiteSpace(githubUser?.Email))
+            if (string.IsNullOrWhiteSpace(user?.Email))
             {
-                _logger.Minimal("GitHub public email missing from profile, falling back to .gitconfig");
+                _logger.Minimal("Email missing from profile, falling back to .gitconfig");
                 return null;
             }
 
-            return new Identity(githubUser.Name, githubUser.Email);
+            return new Identity(user.Name, user.Email);
         }
 
         private static string Now()

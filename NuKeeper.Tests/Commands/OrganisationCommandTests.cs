@@ -55,7 +55,7 @@ namespace NuKeeper.Tests.Commands
             var collaborationFactory = GetCollaborationFactory();
 
             var command = new OrganisationCommand(engine, logger, fileSettings, collaborationFactory);
-            command.GitHubToken = "abc";
+            command.PersonalAccessToken = "abc";
             command.GithubOrganisationName = "testOrg";
 
             var status = await command.OnExecute();
@@ -263,7 +263,7 @@ namespace NuKeeper.Tests.Commands
             var collaborationFactory = GetCollaborationFactory();
 
             var command = new OrganisationCommand(engine, logger, fileSettings, collaborationFactory);
-            command.GitHubToken = "testToken";
+            command.PersonalAccessToken = "testToken";
             command.GithubOrganisationName = "testOrg";
 
             if (addCommandRepoInclude)
