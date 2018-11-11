@@ -1,7 +1,6 @@
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 using System;
 using System.Linq;
 
@@ -13,28 +12,19 @@ namespace NuKeeper.GitHub
 
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri.Host.Contains("github");
+            return repositoryUri != null && repositoryUri.Host.Contains("github");
         }
 
-        public AuthSettings AuthSettings(Uri apiUri, string accessToken)
+        public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            if (apiUri == null)
-            {
-                return null;
-            }
+            UpdateTokenSettings(settings);
+            settings.ForkMode = ForkMode.PreferFork;
+        }
 
-            apiUri = UriFormats.EnsureTrailingSlash(apiUri);
-
-            if (!apiUri.IsWellFormedOriginalString()
-                || (apiUri.Scheme != "http" && apiUri.Scheme != "https"))
-            {
-                return null;
-            }
-
+        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
+        {
             var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
-            var token = Concat.FirstValue(envToken, accessToken);
-
-            return new AuthSettings(apiUri, token);
+            settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri)

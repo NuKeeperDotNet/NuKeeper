@@ -13,7 +13,6 @@ namespace NuKeeper.Abstractions.Configuration
 
         public VersionChange AllowedChange { get; set; }
 
-        public ForkMode ForkMode { get; set; }
 
         public OutputFormat OutputFormat { get; set; }
         public OutputDestination OutputDestination { get; set; }

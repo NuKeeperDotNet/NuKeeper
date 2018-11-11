@@ -10,7 +10,7 @@ using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Engine
 {
-    public class GitRepositoryEngine: IGitRepositoryEngine
+    public class GitRepositoryEngine : IGitRepositoryEngine
     {
         private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly ICollaborationFactory _collaborationFactory;
@@ -39,7 +39,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, settings.UserSettings.ForkMode, gitCreds.Username);
+                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
                 {
                     return 0;
@@ -67,11 +67,10 @@ namespace NuKeeper.Engine
 
         private async Task<RepositoryData> BuildGitRepositorySpec(
             RepositorySettings repository,
-            ForkMode forkMode,
             string userName)
         {
             var pullFork = new ForkData(repository.RepositoryUri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _collaborationFactory.ForkFinder.FindPushFork(forkMode, userName, pullFork);
+            var pushFork = await _collaborationFactory.ForkFinder.FindPushFork(userName, pullFork);
 
             if (pushFork == null)
             {

@@ -3,7 +3,6 @@ using System.Linq;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.AzureDevOps
 {
@@ -21,25 +20,16 @@ namespace NuKeeper.AzureDevOps
             return true;
         }
 
-        public AuthSettings AuthSettings(Uri apiUri, string accessToken)
+        public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            if (apiUri == null)
-            {
-                return null;
-            }
+            UpdateTokenSettings(settings);
+            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
+        }
 
-            var testUri = UriFormats.EnsureTrailingSlash(apiUri);
-
-            if (!testUri.IsWellFormedOriginalString()
-                || (testUri.Scheme != "http" && testUri.Scheme != "https"))
-            {
-                return null;
-            }
-
+        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
+        {
             var envToken = Environment.GetEnvironmentVariable("NuKeeper_azure_devops_token");
-            var token = Concat.FirstValue(envToken, accessToken);
-
-            return new AuthSettings(testUri, token);
+            settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri)

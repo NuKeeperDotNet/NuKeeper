@@ -23,13 +23,10 @@ namespace NuKeeper.Tests.Engine
             var settingReader1 = Substitute.For<ISettingsReader>();
             settingReader1.CanRead(azureUri).Returns(true);
             settingReader1.Platform.Returns(Platform.AzureDevOps);
-            settingReader1.AuthSettings(Arg.Any<Uri>(), Arg.Any<string>()).Returns(new AuthSettings(azureUri, "token"));
 
             var settingReader2 = Substitute.For<ISettingsReader>();
             settingReader2.CanRead(gitHubUri).Returns(true);
             settingReader2.Platform.Returns(Platform.GitHub);
-            settingReader2.AuthSettings(Arg.Any<Uri>(), Arg.Any<string>()).Returns(new AuthSettings(gitHubUri, "token"));
-
 
             var readers = new List<ISettingsReader> {settingReader1, settingReader2};
             var logger = Substitute.For<INuKeeperLogger>();
@@ -56,6 +53,7 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
             collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token");
+            collaborationFactory.Settings.ForkMode = ForkMode.PreferSingleRepository;
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
         }
@@ -65,6 +63,7 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
             collaborationFactory.Initialise(new Uri("https://api.github.com"), "token");
+            collaborationFactory.Settings.ForkMode = ForkMode.PreferFork;
             AssertGithub(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
         }

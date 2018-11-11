@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform
 {
@@ -6,5 +7,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
     {
         public Uri BaseApiUrl { get; set; }
         public string Token { get; set; }
+        public ForkMode? ForkMode { get; set; }
     }
 }
