@@ -22,7 +22,7 @@ namespace NuKeeper.Commands
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
             Description =
                 "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly.")]
-        protected ForkMode? ForkMode { get; set; }
+        public ForkMode? ForkMode { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpr",
             Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
@@ -82,7 +82,7 @@ namespace NuKeeper.Commands
             settings.PackageFilters.MaxPackageUpdates =
                 Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);
 
-            CollaborationFactory.Settings.ForkMode = ForkMode;
+            CollaborationFactory.Settings.ForkMode = ForkMode ?? CollaborationFactory.Settings.ForkMode;
 
             var defaultLabels = new List<string> {"nukeeper"};
 

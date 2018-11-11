@@ -232,6 +232,16 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
+        public async Task CommandLineWillOverrideForkMode()
+        {
+            var (_, platformSettings) = await CaptureSettings(FileSettings.Empty(), false, false, null, ForkMode.PreferSingleRepository);
+
+            Assert.That(platformSettings, Is.Not.Null);
+            Assert.That(platformSettings.ForkMode, Is.Not.Null);
+            Assert.That(platformSettings.ForkMode, Is.EqualTo(ForkMode.PreferSingleRepository));
+        }
+
+        [Test]
         public async Task CommandLineWillOverrideMaxRepo()
         {
             var fileSettings = new FileSettings
@@ -249,7 +259,8 @@ namespace NuKeeper.Tests.Commands
             FileSettings settingsIn,
             bool addCommandRepoInclude = false,
             bool addCommandRepoExclude = false,
-            int? maxRepo = null)
+            int? maxRepo = null,
+            ForkMode? forkMode = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -274,6 +285,11 @@ namespace NuKeeper.Tests.Commands
             if (addCommandRepoExclude)
             {
                 command.ExcludeRepos = "ExcludeFromCommand";
+            }
+
+            if (forkMode != null)
+            {
+                command.ForkMode = forkMode;
             }
 
             command.AllowedMaxRepositoriesChangedChange = maxRepo;
