@@ -15,29 +15,23 @@ namespace NuKeeper.AzureDevOps
 
         public AzureDevOpsForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger, ForkMode forkMode)
         {
+            if (forkMode != ForkMode.SingleRepositoryOnly)
+            {
+                throw new ArgumentOutOfRangeException(nameof(forkMode), $"{_forkMode} has not yet been implemented");
+            }
+
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;
             _forkMode = forkMode;
+
+            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
         }
 
         public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
-            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
-
-            switch (_forkMode)
-            {
-                case ForkMode.PreferFork:
-                case ForkMode.PreferSingleRepository:
-                    _logger.Error($"{_forkMode} not yet implemented");
-                    throw new NotImplementedException();
-
-                case ForkMode.SingleRepositoryOnly:
-                    return await FindUpstreamRepoOnly(fallbackFork);
-
-                default:
-                    throw new ArgumentOutOfRangeException($"Unknown fork mode: {_forkMode}");
-            }
+            return await FindUpstreamRepoOnly(fallbackFork);
         }
+
         private async Task<ForkData> FindUpstreamRepoOnly(ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.

@@ -18,11 +18,12 @@ namespace NuKeeper.GitHub
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;
             _forkMode = forkMode;
+
+            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
         }
 
         public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
-            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
 
             switch (_forkMode)
             {

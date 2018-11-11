@@ -53,7 +53,7 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
             collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token");
-            collaborationFactory.Settings.ForkMode = ForkMode.PreferSingleRepository;
+            collaborationFactory.Settings.ForkMode = ForkMode.SingleRepositoryOnly;
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
         }
