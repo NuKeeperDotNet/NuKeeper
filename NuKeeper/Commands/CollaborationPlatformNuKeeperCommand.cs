@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
-    internal abstract class GitHubNuKeeperCommand : CommandBase
+    internal abstract class CollaborationPlatformNuKeeperCommand : CommandBase
     {
         private readonly ICollaborationEngine _engine;
         public readonly ICollaborationFactory CollaborationFactory;
 
         [Argument(1, Name = "Token",
-            Description = "GitHub personal access token to authorise access to GitHub server.")]
-        public string GitHubToken { get; set; }
+            Description = "Personal access token to authorise access to server.")]
+        public string PersonalAccessToken { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",
             Description =
@@ -42,7 +42,7 @@ namespace NuKeeper.Commands
                 "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
         public string ApiEndpoint { get; set; }
 
-        protected GitHubNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger,
+        protected CollaborationPlatformNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger,
             IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
             base(logger, fileSettingsCache)
         {
@@ -67,7 +67,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad Api Base '{endpoint}'");
             }
 
-            CollaborationFactory.Initialise(baseUri, GitHubToken);
+            CollaborationFactory.Initialise(baseUri, PersonalAccessToken);
 
             if (CollaborationFactory.Settings.Token == null)
             {

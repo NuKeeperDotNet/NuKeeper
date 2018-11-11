@@ -56,7 +56,7 @@ namespace NuKeeper.Tests.Commands
             var collaborationFactory = GetCollaborationFactory();
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
-            command.GitHubToken = "testToken";
+            command.PersonalAccessToken = "testToken";
             command.Include = "testRepos";
             command.ApiEndpoint = "https://github.contoso.com";
 
@@ -225,7 +225,7 @@ namespace NuKeeper.Tests.Commands
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory)
             {
-                GitHubToken = "testToken",
+                PersonalAccessToken = "testToken",
                 ApiEndpoint = settingsIn.Api ?? "http://github.contoso.com/",
                 Include = settingsIn.Include ?? "testRepos"
             };

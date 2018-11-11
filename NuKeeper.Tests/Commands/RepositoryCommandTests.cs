@@ -61,8 +61,8 @@ namespace NuKeeper.Tests.Commands
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
             {
-                GitHubToken = "abc",
-                GitHubRepositoryUri = "http://github.com/abc/abc"
+                PersonalAccessToken = "abc",
+                RepositoryUri = "http://github.com/abc/abc"
             };
 
             var status = await command.OnExecute();
@@ -244,8 +244,8 @@ namespace NuKeeper.Tests.Commands
             await engine.Run(Arg.Do<SettingsContainer>(x => settingsOut = x));
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
-            command.GitHubToken = "testToken";
-            command.GitHubRepositoryUri = "http://github.com/test/test";
+            command.PersonalAccessToken = "testToken";
+            command.RepositoryUri = "http://github.com/test/test";
 
             if (addLabels)
             {

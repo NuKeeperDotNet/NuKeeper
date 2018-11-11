@@ -9,10 +9,10 @@ using System.Collections.Generic;
 namespace NuKeeper.Commands
 {
     [Command(Description = "Performs version checks and generates pull requests for a single repository.")]
-    internal class RepositoryCommand : GitHubNuKeeperCommand
+    internal class RepositoryCommand : CollaborationPlatformNuKeeperCommand
     {
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
-        public string GitHubRepositoryUri { get; set; }
+        public string RepositoryUri { get; set; }
 
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
@@ -24,9 +24,9 @@ namespace NuKeeper.Commands
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            if (!Uri.TryCreate(GitHubRepositoryUri, UriKind.Absolute, out var repoUri))
+            if (!Uri.TryCreate(RepositoryUri, UriKind.Absolute, out var repoUri))
             {
-                return ValidationResult.Failure($"Bad repository URI: '{GitHubRepositoryUri}'");
+                return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
 
             var didRead = false;
@@ -41,7 +41,7 @@ namespace NuKeeper.Commands
 
             if (!didRead)
             {
-                return ValidationResult.Failure($"Unable to work out which platform to use {GitHubRepositoryUri} could not be matched");
+                return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
             var baseResult = base.PopulateSettings(settings);
@@ -52,7 +52,7 @@ namespace NuKeeper.Commands
 
             if (settings.SourceControlServerSettings.Repository == null)
             {
-                return ValidationResult.Failure($"Could not read repository URI: '{GitHubRepositoryUri}'");
+                return ValidationResult.Failure($"Could not read repository URI: '{RepositoryUri}'");
             }
 
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
