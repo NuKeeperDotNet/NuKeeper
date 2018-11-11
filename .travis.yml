@@ -9,6 +9,6 @@ script:
   - dotnet test -c Release NuKeeper.Update.Tests/NuKeeper.Update.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release NuKeeper.GitHub.Tests/NuKeeper.GitHub.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.AzuredevOps.Tests/NuKeeper.AzureDevOps.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release Nukeeper.AzureDevOps.Tests/Nukeeper.AzureDevOps.Tests.csproj --filter "TestCategory!=WindowsOnly"
 
  
