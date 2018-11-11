@@ -54,7 +54,7 @@ namespace NuKeeper.Engine
             if (!Settings.BaseApiUrl.IsWellFormedOriginalString()
                 || (Settings.BaseApiUrl.Scheme != "http" && Settings.BaseApiUrl.Scheme != "https"))
             {
-                throw new NuKeeperException($"Api if not of correct format {Settings.BaseApiUrl}");
+                throw new NuKeeperException($"Api is not of correct format {Settings.BaseApiUrl}");
             }
         }
 
