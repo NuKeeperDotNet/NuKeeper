@@ -11,8 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Integration.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBD0650A-1EAB-479B-B210-A8F63FAC162C}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		Docker\Dockerfile = Docker\Dockerfile
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection", "NuKeeper.Inspection\NuKeeper.Inspection.csproj", "{6EA16D83-81DF-4E55-8761-22ADF468C56B}"
@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.GitHub", "NuKeeper
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.AzureDevOps", "NuKeeper.AzureDevOps\NuKeeper.AzureDevOps.csproj", "{FB9A6AB2-C591-45E3-95B4-C0D32272F62A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.GitHub.Tests", "NuKeeper.GitHub.Tests\NuKeeper.GitHub.Tests.csproj", "{4B8DA068-2620-45F1-815B-A4436E814912}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.GitHub.Tests", "NuKeeper.GitHub.Tests\NuKeeper.GitHub.Tests.csproj", "{4B8DA068-2620-45F1-815B-A4436E814912}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nukeeper.AzureDevOps.Tests", "Nukeeper.AzureDevOps.Tests\Nukeeper.AzureDevOps.Tests.csproj", "{DDB95A74-6576-439B-9614-BEBF528914BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{4B8DA068-2620-45F1-815B-A4436E814912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B8DA068-2620-45F1-815B-A4436E814912}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B8DA068-2620-45F1-815B-A4436E814912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDB95A74-6576-439B-9614-BEBF528914BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB95A74-6576-439B-9614-BEBF528914BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB95A74-6576-439B-9614-BEBF528914BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB95A74-6576-439B-9614-BEBF528914BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
