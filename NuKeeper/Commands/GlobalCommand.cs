@@ -10,8 +10,8 @@ namespace NuKeeper.Commands
     [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : MultipleRepositoryCommand
     {
-        public GlobalCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
-            : base(engine, logger, fileSettingsCache, settingsReader)
+        public GlobalCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
+            : base(engine, logger, fileSettingsCache, collaborationFactory)
         {
         }
 
@@ -30,7 +30,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("Global mode must have an include regex");
             }
 
-            var apiHost = settings.AuthSettings.ApiBase.Host;
+            var apiHost = CollaborationFactory.Settings.BaseApiUrl.Host;
             if (apiHost.EndsWith("github.com", StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Failure("Global mode must not use public github");

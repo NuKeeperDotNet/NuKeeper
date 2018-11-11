@@ -9,7 +9,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
-    internal abstract class MultipleRepositoryCommand : GitHubNuKeeperCommand
+    internal abstract class MultipleRepositoryCommand : CollaborationPlatformNuKeeperCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "ir", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
         public string IncludeRepos { get; set;  }
@@ -22,8 +22,8 @@ namespace NuKeeper.Commands
         public int? AllowedMaxRepositoriesChangedChange { get; set; }
 
 
-        protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
-            : base(engine, logger, fileSettingsCache, settingsReader)
+        protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
+            : base(engine, logger, fileSettingsCache, collaborationFactory)
         {
         }
 

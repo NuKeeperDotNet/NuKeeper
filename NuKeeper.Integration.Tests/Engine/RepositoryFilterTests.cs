@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
@@ -41,10 +42,12 @@ namespace NuKeeper.Integration.Tests.Engine
             const string testKeyWithOnlyPublicAccess = "c13d2ce7774d39ae99ddaad46bd69c3d459b9992";
             var logger = Substitute.For<INuKeeperLogger>();
 
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var gitHubClient = new OctokitClient(logger);
             gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
+            collaborationFactory.CollaborationPlatform.Returns(gitHubClient);
 
-            return new RepositoryFilter(gitHubClient, logger);
+            return new RepositoryFilter(collaborationFactory, logger);
         }
     }
 }

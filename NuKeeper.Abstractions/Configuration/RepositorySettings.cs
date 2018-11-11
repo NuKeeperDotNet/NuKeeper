@@ -11,15 +11,17 @@ namespace NuKeeper.Abstractions.Configuration
 
         public RepositorySettings(Repository repository)
         {
-            Uri = repository.HtmlUrl;
+            RepositoryUri = repository.HtmlUrl;
             RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;
         }
 
-        public Uri Uri { get; set; }
+        public Uri RepositoryUri { get; set; }
 
         public string RepositoryOwner { get; set; }
 
         public string RepositoryName { get; set; }
+        
+        public Uri ApiUri { get; set; }
     }
 }

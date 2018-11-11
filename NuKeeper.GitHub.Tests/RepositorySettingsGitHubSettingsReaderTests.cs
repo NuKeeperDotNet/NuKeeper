@@ -1,6 +1,4 @@
 using System;
-using NSubstitute;
-using NuKeeper.Abstractions.Configuration;
 using NUnit.Framework;
 
 namespace NuKeeper.GitHub.Tests
@@ -9,15 +7,7 @@ namespace NuKeeper.GitHub.Tests
     public class RepositorySettingsGitHubSettingsReaderTests
     {
 #pragma warning disable CA1051 // Do not declare visible instance fields
-        private static GitHubSettingsReader GitHubSettingsReader
-        {
-            get
-            {
-                var settingsCache = Substitute.For<IFileSettingsCache>();
-                settingsCache.GetSettings().Returns(FileSettings.Empty());
-                return new GitHubSettingsReader(settingsCache);
-            }
-        }
+        private static GitHubSettingsReader GitHubSettingsReader => new GitHubSettingsReader();
 
         [Test]
         public void RepositorySettings_GetsCorrectSettings()
@@ -25,7 +15,7 @@ namespace NuKeeper.GitHub.Tests
             var settings = GitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
 
             Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.Uri, "https://github.com/owner/reponame.git");
+            Assert.AreEqual(settings.RepositoryUri, "https://github.com/owner/reponame.git");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "owner");
         }

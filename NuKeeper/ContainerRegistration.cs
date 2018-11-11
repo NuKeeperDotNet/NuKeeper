@@ -38,17 +38,8 @@ namespace NuKeeper
             container.Register<IUpdateSelection, UpdateSelection>();
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
-            //GitHub Registrations
-            container.RegisterSingleton<ICollaborationPlatform, OctokitClient>();
-            container.Register<ISettingsReader, GitHubSettingsReader>();
-            container.Register<IForkFinder, GitHubForkFinder>();
-            container.Register<IRepositoryDiscovery, GitHubRepositoryDiscovery>();
-
-            //Azure Registrations
-            //container.RegisterSingleton<ICollaborationPlatform, AzureDevOpsPlatform>();
-            //container.Register<ISettingsReader, AzureDevOpsSettingsReader>();
-            //container.Register<IForkFinder, AzureDevOpsForkFinder>();
-            //container.Register<IRepositoryDiscovery, AzureDevOpsRepositoryDiscovery>();
+            container.RegisterSingleton<ICollaborationFactory,CollaborationFactory>();
+            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
         }
     }
 }

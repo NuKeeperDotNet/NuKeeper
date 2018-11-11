@@ -1,5 +1,5 @@
 using System;
-using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NUnit.Framework;
 
@@ -8,88 +8,58 @@ namespace NuKeeper.GitHub.Tests
     [TestFixture]
     public class AuthSettingsGitHubSettingsReaderTests
     {
-#pragma warning disable CA1054 // Uri parameters should not be strings
-#pragma warning disable CA1051 // Do not declare visible instance fields
+        private static GitHubSettingsReader GitHubSettingsReader => new GitHubSettingsReader();
 
-        private static GitHubSettingsReader GitHubSettingsReader
+        [Test]
+        public void ReturnsCorrectPlatform()
         {
-            get
-            {
-                var settingsCache = Substitute.For<IFileSettingsCache>();
-                settingsCache.GetSettings().Returns(FileSettings.Empty());
-                return new GitHubSettingsReader(settingsCache);
-            }
+            var platform = GitHubSettingsReader.Platform;
+            Assert.IsNotNull(platform);
+            Assert.AreEqual(platform, Platform.GitHub);
         }
 
         [Test]
-        public void AuthSettings_GetsCorrectSettings()
+        public void UpdateSettings_UpdatesSettings()
         {
-            var settings = GitHubSettingsReader.AuthSettings("https://github.custom.com/", "accessToken");
+            var settings = new CollaborationPlatformSettings
+            {
+                Token = "accessToken",
+                BaseApiUrl = new Uri("https://github.custom.com/")
+            };
+            GitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://github.custom.com/");
+            Assert.AreEqual(settings.BaseApiUrl, "https://github.custom.com/");
             Assert.AreEqual(settings.Token, "accessToken");
+            Assert.AreEqual(settings.ForkMode, ForkMode.PreferFork);
         }
 
         [Test]
         public void AuthSettings_GetsCorrectSettingsFromEnvironment()
         {
-            Environment.SetEnvironmentVariable("NuKeeper_github_token","envToken");
-            var settings = GitHubSettingsReader.AuthSettings("https://github.custom.com/", "accessToken");
-            Environment.SetEnvironmentVariable("NuKeeper_github_token",null);
+            var settings = new CollaborationPlatformSettings
+            {
+                Token = "accessToken",
+            };
+            Environment.SetEnvironmentVariable("NuKeeper_github_token", "envToken");
+            GitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
+            Environment.SetEnvironmentVariable("NuKeeper_github_token", null);
 
-            Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://github.custom.com/");
             Assert.AreEqual(settings.Token, "envToken");
-
         }
 
-        [Test]
-        public void GetsCorrectSettingsFromFile()
+#pragma warning disable CA1051 // Do not declare visible instance fields
+        [DatapointSource] public Uri[] Values =
         {
-            var settingsCache = Substitute.For<IFileSettingsCache>();
-            settingsCache.GetSettings().Returns(new FileSettings { Api = "https://github.fromfile.com/" });
-            var gitHubSettingsReader = new GitHubSettingsReader(settingsCache);
-
-            var settings = gitHubSettingsReader.AuthSettings(null, "accessToken");
-
-            Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://github.fromfile.com/");
-            Assert.AreEqual(settings.Token, "accessToken");
-        }
-
-        [Test]
-        public void GetsCorrectSettingFromFallback()
-        {
-            var settings = GitHubSettingsReader.AuthSettings(null, "accessToken");
-
-            Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://api.github.com/");
-            Assert.AreEqual(settings.Token, "accessToken");
-        }
-
-        [Test]
-        public void GetsCorrectSettingWithMissingSlash()
-        {
-            var settings = GitHubSettingsReader.AuthSettings("https://api.github.com", "accessToken");
-
-            Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiBase, "https://api.github.com/");
-            Assert.AreEqual(settings.Token, "accessToken");
-        }
-
-        [DatapointSource]
-        public string[] AuthSettingBadUrlValues = {
-            "https://github.com/owner/",
-            "htps://github.com/"
+            null,
+            new Uri("htps://missingt.com"),
         };
         [Theory]
-        public void InvalidUrlReturnsNull(string uri)
+        public void InvalidUrlReturnsNull(Uri uri)
         {
-            var settings = GitHubSettingsReader.AuthSettings(uri, "accessToken");
+            var canRead = GitHubSettingsReader.CanRead(uri);
 
-            Assert.IsNull(settings);
+            Assert.IsFalse(canRead);
         }
     }
-
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using GitCommands = LibGit2Sharp.Commands;
 
@@ -127,7 +126,7 @@ namespace NuKeeper.Git
             if (repoSignature == null)
             {
                 throw new NuKeeperException(
-                    "Failed to build signature, did not get valid git user identity from github token or from repo config");
+                    "Failed to build signature, did not get valid git user identity from token or from repo config");
             }
 
             return repoSignature;

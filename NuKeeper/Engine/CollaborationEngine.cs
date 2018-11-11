@@ -1,32 +1,29 @@
 using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
 using System;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine
 {
     public class CollaborationEngine : ICollaborationEngine
     {
-        private readonly ICollaborationPlatform _collaborationPlatform;
-        private readonly IRepositoryDiscovery _repositoryDiscovery;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly IGitRepositoryEngine _repositoryEngine;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
 
         public CollaborationEngine(
-            ICollaborationPlatform collaborationPlatform,
-            IRepositoryDiscovery repositoryDiscovery,
+            ICollaborationFactory collaborationFactory,
             IGitRepositoryEngine repositoryEngine,
             IFolderFactory folderFactory,
             INuKeeperLogger logger)
         {
-            _collaborationPlatform = collaborationPlatform;
-            _repositoryDiscovery = repositoryDiscovery;
+            _collaborationFactory = collaborationFactory;
             _repositoryEngine = repositoryEngine;
             _folderFactory = folderFactory;
             _logger = logger;
@@ -37,18 +34,16 @@ namespace NuKeeper.Engine
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 
-            _collaborationPlatform.Initialise(settings.AuthSettings);
-
-            var githubUser = await _collaborationPlatform.GetCurrentUser();
+            var user = await _collaborationFactory.CollaborationPlatform.GetCurrentUser();
             var gitCreds = new UsernamePasswordCredentials
             {
-                Username = githubUser.Login,
-                Password = settings.AuthSettings.Token
+                Username = user.Login,
+                Password = _collaborationFactory.Settings.Token
             };
 
-            var userIdentity = GetUserIdentity(githubUser);
+            var userIdentity = GetUserIdentity(user);
 
-            var repositories = await _repositoryDiscovery.GetRepositories(_collaborationPlatform, settings.SourceControlServerSettings);
+            var repositories = await _collaborationFactory.RepositoryDiscovery.GetRepositories(settings.SourceControlServerSettings);
 
             var reposUpdated = 0;
 
@@ -78,20 +73,20 @@ namespace NuKeeper.Engine
             return reposUpdated;
         }
 
-        private Identity GetUserIdentity(User githubUser)
+        private Identity GetUserIdentity(User user)
         {
-            if (string.IsNullOrWhiteSpace(githubUser?.Name))
+            if (string.IsNullOrWhiteSpace(user?.Name))
             {
-                _logger.Minimal("GitHub user name missing from profile, falling back to .gitconfig");
+                _logger.Minimal("User name missing from profile, falling back to .gitconfig");
                 return null;
             }
-            if (string.IsNullOrWhiteSpace(githubUser?.Email))
+            if (string.IsNullOrWhiteSpace(user?.Email))
             {
-                _logger.Minimal("GitHub public email missing from profile, falling back to .gitconfig");
+                _logger.Minimal("Email missing from profile, falling back to .gitconfig");
                 return null;
             }
 
-            return new Identity(githubUser.Name, githubUser.Email);
+            return new Identity(user.Name, user.Email);
         }
 
         private static string Now()

@@ -5,7 +5,6 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Files;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.DTOs;
@@ -101,7 +100,6 @@ namespace NuKeeper.Tests.Engine
 
             var settings = new SettingsContainer
             {
-                AuthSettings = MakeAuthSettings(),
                 UserSettings = new UserSettings
                 {
                     MaxRepositoriesChanged = 1
@@ -124,20 +122,21 @@ namespace NuKeeper.Tests.Engine
             int repoEngineResult,
             List<RepositorySettings> repos)
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            var repoDiscovery = Substitute.For<IRepositoryDiscovery>();
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var repoEngine = Substitute.For<IGitRepositoryEngine>();
             var folders = Substitute.For<IFolderFactory>();
 
             var user = new User("testUser", "Testy", "testuser@test.com");
-            collaborationPlatform.GetCurrentUser().Returns(user);
+            collaborationFactory.CollaborationPlatform.GetCurrentUser().Returns(user);
 
-            repoDiscovery.GetRepositories(Arg.Any<ICollaborationPlatform>(), Arg.Any<SourceControlServerSettings>())
-                .Returns(repos);
+            collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
+
+            collaborationFactory.RepositoryDiscovery.GetRepositories(Arg.Any<SourceControlServerSettings>()).Returns(repos);
+
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
-            var engine = new CollaborationEngine(collaborationPlatform, repoDiscovery, repoEngine,
+            var engine = new CollaborationEngine(collaborationFactory, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
             return engine;
         }
@@ -146,7 +145,6 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                AuthSettings = MakeAuthSettings(),
                 UserSettings = MakeUserSettings(),
                 SourceControlServerSettings = MakeServerSettings()
             };
@@ -162,12 +160,7 @@ namespace NuKeeper.Tests.Engine
 
         private static UserSettings MakeUserSettings()
         {
-            return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
-        }
-
-        private static AuthSettings MakeAuthSettings()
-        {
-            return new AuthSettings(new Uri("http://foo.com"), "token123");
+            return new UserSettings {MaxRepositoriesChanged = int.MaxValue};
         }
     }
 }

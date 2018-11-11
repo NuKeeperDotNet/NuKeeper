@@ -17,7 +17,6 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public async Task SuccessInRepoMode()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(),
@@ -26,7 +25,7 @@ namespace NuKeeper.GitHub.Tests
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(settings);
 
             var repos = reposResponse.ToList();
 
@@ -38,7 +37,6 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public async Task RepoModeIgnoresIncludesAndExcludes()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             var settings = new SourceControlServerSettings
             {
                 Repository = new RepositorySettings(RepositoryBuilder.MakeRepository(name: "foo")),
@@ -49,7 +47,7 @@ namespace NuKeeper.GitHub.Tests
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var reposResponse = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(settings);
 
             var repos = reposResponse.ToList();
 
@@ -63,11 +61,9 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public async Task SuccessInOrgMode()
         {
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
 
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Empty);
@@ -80,15 +76,10 @@ namespace NuKeeper.GitHub.Tests
             {
                 RepositoryBuilder.MakeRepository()
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
-                .Returns(Task.FromResult(readOnlyRepos));
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
 
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
-
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -96,7 +87,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[0].Name));
-            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
         }
 
         [Test]
@@ -107,15 +98,10 @@ namespace NuKeeper.GitHub.Tests
                 RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
                 RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
-                .Returns(Task.FromResult(readOnlyRepos));
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
 
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
-
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, OrgModeSettings());
+            var repos = await githubRepositoryDiscovery.GetRepositories(OrgModeSettings());
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -123,7 +109,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
-            Assert.That(firstRepo.Uri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
         }
 
         [Test]
@@ -134,17 +120,12 @@ namespace NuKeeper.GitHub.Tests
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
-                .Returns(Task.FromResult(readOnlyRepos));
-
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
 
             var settings = OrgModeSettings();
             settings.IncludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -162,17 +143,12 @@ namespace NuKeeper.GitHub.Tests
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
-                .Returns(Task.FromResult(readOnlyRepos));
-
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
 
             var settings = OrgModeSettings();
             settings.ExcludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos, Is.Not.Empty);
@@ -190,26 +166,24 @@ namespace NuKeeper.GitHub.Tests
                 RepositoryBuilder.MakeRepository(name:"foo"),
                 RepositoryBuilder.MakeRepository(name:"bar")
             };
-            IReadOnlyList<Repository> readOnlyRepos = inputRepos.AsReadOnly();
 
-            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
-            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
-                .Returns(Task.FromResult(readOnlyRepos));
-
-            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
 
             var settings = OrgModeSettings();
             settings.IncludeRepos = new Regex("^bar");
             settings.ExcludeRepos = new Regex("^bar");
-            var repos = await githubRepositoryDiscovery.GetRepositories(collaborationPlatform, settings);
+            var repos = await githubRepositoryDiscovery.GetRepositories(settings);
 
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos.Count(), Is.EqualTo(0));
         }
 
-        private static IRepositoryDiscovery MakeGithubRepositoryDiscovery()
+        private static IRepositoryDiscovery MakeGithubRepositoryDiscovery(IReadOnlyList<Repository> repositories = null)
         {
-            return new GitHubRepositoryDiscovery(Substitute.For<INuKeeperLogger>());
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetRepositoriesForOrganisation(Arg.Any<string>())
+                .Returns(Task.FromResult(repositories ?? new List<Repository>()));
+            return new GitHubRepositoryDiscovery(Substitute.For<INuKeeperLogger>(), collaborationPlatform);
         }
 
         private static SourceControlServerSettings OrgModeSettings()

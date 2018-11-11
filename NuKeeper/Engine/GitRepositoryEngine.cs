@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
@@ -9,23 +10,23 @@ using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Engine
 {
-    public class GitRepositoryEngine: IGitRepositoryEngine
+    public class GitRepositoryEngine : IGitRepositoryEngine
     {
         private readonly IRepositoryUpdater _repositoryUpdater;
-        private readonly IForkFinder _forkFinder;
+        private readonly ICollaborationFactory _collaborationFactory;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
 
         public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
-            IForkFinder forkFinder,
+            ICollaborationFactory collaborationFactory,
             IFolderFactory folderFactory,
             INuKeeperLogger logger,
             IRepositoryFilter repositoryFilter)
         {
             _repositoryUpdater = repositoryUpdater;
-            _forkFinder = forkFinder;
+            _collaborationFactory = collaborationFactory;
             _folderFactory = folderFactory;
             _logger = logger;
             _repositoryFilter = repositoryFilter;
@@ -38,7 +39,7 @@ namespace NuKeeper.Engine
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, settings.UserSettings.ForkMode, gitCreds.Username);
+                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
                 {
                     return 0;
@@ -66,15 +67,14 @@ namespace NuKeeper.Engine
 
         private async Task<RepositoryData> BuildGitRepositorySpec(
             RepositorySettings repository,
-            ForkMode forkMode,
             string userName)
         {
-            var pullFork = new ForkData(repository.Uri, repository.RepositoryOwner, repository.RepositoryName);
-            var pushFork = await _forkFinder.FindPushFork(forkMode, userName, pullFork);
+            var pullFork = new ForkData(repository.RepositoryUri, repository.RepositoryOwner, repository.RepositoryName);
+            var pushFork = await _collaborationFactory.ForkFinder.FindPushFork(userName, pullFork);
 
             if (pushFork == null)
             {
-                _logger.Normal($"No pushable fork found for {repository.Uri}");
+                _logger.Normal($"No pushable fork found for {repository.RepositoryUri}");
                 return null;
             }
 

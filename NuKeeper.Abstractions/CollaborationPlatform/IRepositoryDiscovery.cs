@@ -6,6 +6,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
 {
     public interface IRepositoryDiscovery
     {
-        Task<IEnumerable<RepositorySettings>> GetRepositories(ICollaborationPlatform collaborationPlatform, SourceControlServerSettings settings);
+        Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings);
     }
 }

@@ -1,4 +1,5 @@
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
@@ -12,13 +13,16 @@ namespace NuKeeper.Commands
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
         public string GithubOrganisationName { get; set; }
 
-        public OrganisationCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ISettingsReader settingsReader)
-            : base(engine, logger, fileSettingsCache, settingsReader)
+        public OrganisationCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
+            : base(engine, logger, fileSettingsCache, collaborationFactory)
         {
         }
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            var fileSettings = FileSettingsCache.GetSettings();
+            ApiEndpoint =  Concat.FirstValue(ApiEndpoint, fileSettings.Api, "https://api.github.com"); 
+
             var baseResult = base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {
