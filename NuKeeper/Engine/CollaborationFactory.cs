@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NuKeeper.GitHub;
@@ -14,15 +15,15 @@ namespace NuKeeper.Engine
         private readonly IEnumerable<ISettingsReader> _settingReaders;
         private readonly INuKeeperLogger _nuKeeperLogger;
         private Platform? _platform;
+        private ISettingsReader _settingsReader;
 
-        public ISettingsReader SettingsReader { get; private set; }
         public CollaborationPlatformSettings Settings { get; }
 
         public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders, INuKeeperLogger nuKeeperLogger)
         {
             _settingReaders = settingReaders;
             _nuKeeperLogger = nuKeeperLogger;
-            SettingsReader = null;
+            _settingsReader = null;
             Settings = new CollaborationPlatformSettings();
         }
 
@@ -32,19 +33,29 @@ namespace NuKeeper.Engine
             {
                 if (settingReader.CanRead(apiEndpoint))
                 {
-                    SettingsReader = settingReader;
+                    _settingsReader = settingReader;
                     _platform = settingReader.Platform;
                 }
             }
 
-            if (SettingsReader == null)
+            if (_settingsReader == null)
             {
                 throw new NuKeeperException($"Unable to work out platform for uri {apiEndpoint}");
             }
 
-            var settings = SettingsReader.AuthSettings(apiEndpoint, token);
-            Settings.BaseApiUrl = settings.ApiBase;
-            Settings.Token = settings.Token;
+            Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
+            Settings.Token = token;
+            _settingsReader.UpdateCollaborationPlatformSettings(Settings);
+            ValidateSettings();
+        }
+
+        private void ValidateSettings()
+        {
+            if (!Settings.BaseApiUrl.IsWellFormedOriginalString()
+                || (Settings.BaseApiUrl.Scheme != "http" && Settings.BaseApiUrl.Scheme != "https"))
+            {
+                throw new NuKeeperException($"Api is not of correct format {Settings.BaseApiUrl}");
+            }
         }
 
         private IForkFinder _forkFinder;
@@ -63,13 +74,18 @@ namespace NuKeeper.Engine
                     return _forkFinder;
                 }
 
+                if (!Settings.ForkMode.HasValue)
+                {
+                    return null;
+                }
+
                 switch (_platform.Value)
                 {
                     case Platform.AzureDevOps:
-                        _forkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger);
+                        _forkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
                         break;
                     case Platform.GitHub:
-                        _forkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger);
+                        _forkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
                         break;
                 }
 

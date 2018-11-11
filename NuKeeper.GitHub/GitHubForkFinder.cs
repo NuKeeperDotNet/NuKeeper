@@ -11,34 +11,37 @@ namespace NuKeeper.GitHub
     {
         private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
+        private readonly ForkMode _forkMode;
 
-        public GitHubForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
+        public GitHubForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger, ForkMode forkMode)
         {
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;
+            _forkMode = forkMode;
+
+            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
         }
 
-        public async Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork)
+        public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
-            _logger.Detailed($"FindPushFork. Fork Mode is {forkMode}");
 
-            switch (forkMode)
+            switch (_forkMode)
             {
                 case ForkMode.PreferFork:
-                    return await FindUserForkOrUpstream(forkMode, userName, fallbackFork);
+                    return await FindUserForkOrUpstream(userName, fallbackFork);
 
                 case ForkMode.PreferSingleRepository:
-                    return await FindUpstreamRepoOrUserFork(forkMode, userName, fallbackFork);
+                    return await FindUpstreamRepoOrUserFork(userName, fallbackFork);
 
                 case ForkMode.SingleRepositoryOnly:
-                    return await FindUpstreamRepoOnly(forkMode, fallbackFork);
+                    return await FindUpstreamRepoOnly(fallbackFork);
 
                 default:
-                    throw new ArgumentOutOfRangeException($"Unknown fork mode: {forkMode}");
+                    throw new ArgumentOutOfRangeException($"Unknown fork mode: {_forkMode}");
             }
         }
 
-        private async Task<ForkData> FindUserForkOrUpstream(ForkMode forkMode, string userName, ForkData pullFork)
+        private async Task<ForkData> FindUserForkOrUpstream(string userName, ForkData pullFork)
         {
             var userFork = await TryFindUserFork(userName, pullFork);
             if (userFork != null)
@@ -54,11 +57,11 @@ namespace NuKeeper.GitHub
                 return pullFork;
             }
 
-            NoPushableForkFound(forkMode, pullFork.Name);
+            NoPushableForkFound(pullFork.Name);
             return null;
         }
 
-        private async Task<ForkData> FindUpstreamRepoOrUserFork(ForkMode forkMode, string userName, ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOrUserFork(string userName, ForkData pullFork)
         {
             // prefer to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -75,11 +78,11 @@ namespace NuKeeper.GitHub
                 return userFork;
             }
 
-            NoPushableForkFound(forkMode, pullFork.Name);
+            NoPushableForkFound(pullFork.Name);
             return null;
         }
 
-        private async Task<ForkData> FindUpstreamRepoOnly(ForkMode forkMode, ForkData pullFork)
+        private async Task<ForkData> FindUpstreamRepoOnly(ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -89,13 +92,13 @@ namespace NuKeeper.GitHub
                 return pullFork;
             }
 
-            NoPushableForkFound(forkMode, pullFork.Name);
+            NoPushableForkFound(pullFork.Name);
             return null;
         }
 
-        private void NoPushableForkFound(ForkMode forkMode, string name)
+        private void NoPushableForkFound(string name)
         {
-            _logger.Error($"No pushable fork found for {name} in mode {forkMode}");
+            _logger.Error($"No pushable fork found for {name} in mode {_forkMode}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)
@@ -139,13 +142,13 @@ namespace NuKeeper.GitHub
             }
 
             return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl)
-                || UrlIsMatch(userRepo.Parent?.HtmlUrl.ToString(), parentUrl);
+                   || UrlIsMatch(userRepo.Parent?.HtmlUrl.ToString(), parentUrl);
         }
 
         private static bool UrlIsMatch(string test, string expected)
         {
             return !string.IsNullOrWhiteSpace(test) &&
-                string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
+                   string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)

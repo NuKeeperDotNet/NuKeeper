@@ -11,32 +11,28 @@ namespace NuKeeper.AzureDevOps
     {
         private readonly ICollaborationPlatform _collaborationPlatform;
         private readonly INuKeeperLogger _logger;
+        private readonly ForkMode _forkMode;
 
-        public AzureDevOpsForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger)
+        public AzureDevOpsForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger, ForkMode forkMode)
         {
+            if (forkMode != ForkMode.SingleRepositoryOnly)
+            {
+                throw new ArgumentOutOfRangeException(nameof(forkMode), $"{_forkMode} has not yet been implemented");
+            }
+
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;
+            _forkMode = forkMode;
+
+            _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
         }
 
-        public async Task<ForkData> FindPushFork(ForkMode forkMode, string userName, ForkData fallbackFork)
+        public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
-            _logger.Detailed($"FindPushFork. Fork Mode is {forkMode}");
-
-            switch (forkMode)
-            {
-                case ForkMode.PreferFork:
-                case ForkMode.PreferSingleRepository:
-                    _logger.Error($"{forkMode} not yet implemented");
-                    throw new NotImplementedException();
-
-                case ForkMode.SingleRepositoryOnly:
-                    return await FindUpstreamRepoOnly(forkMode, fallbackFork);
-
-                default:
-                    throw new ArgumentOutOfRangeException($"Unknown fork mode: {forkMode}");
-            }
+            return await FindUpstreamRepoOnly(fallbackFork);
         }
-        private async Task<ForkData> FindUpstreamRepoOnly(ForkMode forkMode, ForkData pullFork)
+
+        private async Task<ForkData> FindUpstreamRepoOnly(ForkData pullFork)
         {
             // Only want to pull and push from the same origin repo.
             var canUseOriginRepo = await IsPushableRepo(pullFork);
@@ -46,13 +42,13 @@ namespace NuKeeper.AzureDevOps
                 return pullFork;
             }
 
-            NoPushableForkFound(forkMode, pullFork.Name);
+            NoPushableForkFound(pullFork.Name);
             return null;
         }
 
-        private void NoPushableForkFound(ForkMode forkMode, string name)
+        private void NoPushableForkFound(string name)
         {
-            _logger.Error($"No pushable fork found for {name} in mode {forkMode}");
+            _logger.Error($"No pushable fork found for {name} in mode {_forkMode}");
         }
 
         private async Task<bool> IsPushableRepo(ForkData originFork)

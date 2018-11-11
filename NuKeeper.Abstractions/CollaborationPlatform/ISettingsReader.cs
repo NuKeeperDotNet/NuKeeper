@@ -10,6 +10,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         bool CanRead(Uri repositoryUri);
 
         RepositorySettings RepositorySettings(Uri repositoryUri);
-        AuthSettings AuthSettings(Uri apiUri, string accessToken);
+        void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings);
     }
 }
