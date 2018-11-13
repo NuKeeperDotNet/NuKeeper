@@ -5,6 +5,14 @@
 [![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
 [![NuGet](https://img.shields.io/nuget/v/NuKeeper.svg?maxAge=3600)](https://www.nuget.org/packages/NuKeeper/)   
 
+<p align="center">
+  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki">NuKeeper Wiki</a> •
+  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Getting-Started#getting-nukeeper">Installation</a> •
+  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Getting-Started">Getting started</a> •
+  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Recipes">Recipes</a> •
+</p>
+
+
 ### NuKeeper, Automagically update NuGet packages in .NET projects.
 
 NuKeeper will help you to solve package hell. When working on a .NET codebase you'll probably have multiple projects and 1 or more solutions. These project(s) contain NuGet packages which get outdated and might differ between projects. 
