@@ -11,11 +11,9 @@
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Recipes">Recipes</a> •
 </p>
 
-### NuKeeper, Automagically update NuGet packages in .NET projects.
+### NuKeeper, 
 
-NuKeeper will help you to solve the NuGet package hell. When working on a .NET codebase you'll probably have multiple projects and 1 or more solutions. These project(s) contain NuGet packages which get outdated and you may also experience different versions between projects.
-
-NuKeeper solves this issue by checking which versions are used and it can then update in multiple projects and cross-solution so that they are even. There are lots of options for you to specify how you want this process to be done. [Please have a look at the docs in the Wiki to know how.](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
+Automagically update NuGet packages in all .NET projects.
 
 ### Installation
 
