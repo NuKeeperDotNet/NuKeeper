@@ -15,15 +15,15 @@ NuKeeper solves this issue by checking which versions are used and it can then u
 
 NuKeeper works for .NET Framework and for .NET Core projects. It also has the ability to target private NuGet feeds.
 
-| .NET Framework   |     .NET Core      |    Private Feed    |
-|------------------|:------------------:|:------------------:| 
-|:heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: |
+| .NET Framework     |     .NET Core      |    Private Nuget Feed    |
+|--------------------|:------------------:|:------------------------:| 
+| :heavy_check_mark: | :heavy_check_mark: |     :heavy_check_mark:   |
 
 The intergration for the following platforms is supported:
 
-| Github  |     AzureDevOps      |    BitBucket    |    GitLab    |
-|------------------|:------------------:|:------------------:| :------------------:| 
-|:heavy_check_mark:| :heavy_check_mark: | :heavy_check_mark: |:heavy_check_mark: |
+|     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |
+|--------------------|:------------------:|:------------------:| :------------------:| 
+| :heavy_check_mark: | :heavy_check_mark: |        :x:         |         :x:         |
 
 ### Install
 
