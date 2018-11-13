@@ -33,7 +33,7 @@ The intergration for the following platforms is supported.
 
 ### Commands
 
-NuKeeper has different command and options. 
+NuKeeper has different command and options which can be utilized. Below you'll find a summary of all the commands and what they do.
 
 ```
 Options:
