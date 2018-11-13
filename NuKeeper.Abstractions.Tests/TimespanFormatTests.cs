@@ -2,7 +2,7 @@ using System;
 using NuKeeper.Abstractions.Formats;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests
+namespace NuKeeper.Abstractions.Tests
 {
     [TestFixture]
     public class TimespanFormatTests
