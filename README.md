@@ -9,9 +9,9 @@
 
 NuKeeper will help you to solve package hell. When working on a .NET codebase you'll probably have multiple projects and 1 or more solutions. These project(s) contain NuGet packages which get outdated and might differ between projects. 
 
-NuKeeper solves this issue by checking which versions are used and it can then update in multiple projects and cross-solution so that they are even. There are lots of options for you to specify how you want this process to be done. [Please have a look at the docs to know how](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
+NuKeeper solves this issue by checking which versions are used and it can then update in multiple projects and cross-solution so that they are even. There are lots of options for you to specify how you want this process to be done. [Please have a look at the docs in the Wiki to know how](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
 
-#### Install
+### Installation
 
 Installation is very easy. Just run this command and the tool will be installed. 
 
@@ -49,6 +49,11 @@ Commands:
 ```
 
 [For detailed information about the command please checkout the wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
+
+
+### Documentation
+
+[For more information about what NuKeeper can do please check at the documentation in the Wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
 
 ### Licensing
 
