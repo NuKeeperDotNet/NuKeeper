@@ -61,7 +61,7 @@ NuKeeper is licensed under the [Apache License](http://opensource.org/licenses/a
 * Git automation by [LibGit2Sharp](https://github.com/libgit2/libgit2sharp/) which is licensend under MIT  
 * Github client by [Octokit](https://github.com/octokit/octokit.net) licensend under MIT  
 * NuGet protocol [NuGet.Protocol](https://github.com/NuGet/NuGet.Client) under Apache License Version 2.0
-* NuGet ommandLine [NuGet commandLine](https://github.com/NuGet/NuGet.Client) under Apache License Version 2.0
+* NuGet CommandLine [NuGet commandLine](https://github.com/NuGet/NuGet.Client) under Apache License Version 2.0
 * Command line parsing by [McMaster.Extensions.CommandLineUtils](https://github.com/natemcmaster/CommandLineUtils) under Apache License Version 2.0
 
 ### Acknowledgements
