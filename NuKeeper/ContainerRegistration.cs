@@ -1,6 +1,7 @@
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.AzureDevOps;
+using NuKeeper.BitBucket;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.GitHub;
@@ -39,7 +40,7 @@ namespace NuKeeper
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
             container.RegisterSingleton<ICollaborationFactory,CollaborationFactory>();
-            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
+            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader), typeof(BitbucketSettingsReader));
         }
     }
 }
