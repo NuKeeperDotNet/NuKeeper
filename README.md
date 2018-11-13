@@ -52,7 +52,7 @@ Commands:
   update        Applies relevant updates to a local project.
 ```
 
-[For detailed information about the command please checkout the wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
+[For detailed information about the commands, please check out the wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
 
 ### Licensing
 
