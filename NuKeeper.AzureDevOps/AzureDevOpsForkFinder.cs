@@ -38,7 +38,7 @@ namespace NuKeeper.AzureDevOps
             var canUseOriginRepo = await IsPushableRepo(pullFork);
             if (canUseOriginRepo)
             {
-                _logger.Normal($"Using upstream fork as push, for user {pullFork.Owner} at {pullFork.Uri}");
+                _logger.Normal($"Using upstream fork as push, for project {pullFork.Owner} at {pullFork.Uri}");
                 return pullFork;
             }
 
