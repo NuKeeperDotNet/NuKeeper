@@ -1,7 +1,7 @@
 using NuKeeper.Abstractions.NuGet;
 using NUnit.Framework;
 
-namespace NuKeeper.Inspection.Tests.Sources
+namespace NuKeeper.Abstractions.Tests.NuGet
 {
     [TestFixture]
     public class NuGetSourcesTests
