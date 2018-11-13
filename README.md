@@ -13,7 +13,7 @@
 
 ### NuKeeper, Automagically update NuGet packages in .NET projects.
 
-NuKeeper will help you to solve package hell. When working on a .NET codebase you'll probably have multiple projects and 1 or more solutions. These project(s) contain NuGet packages which get outdated and might differ between projects. 
+NuKeeper will help you to solve the NuGet package hell. When working on a .NET codebase you'll probably have multiple projects and 1 or more solutions. These project(s) contain NuGet packages which get outdated and you may also experience different versions between projects.
 
 NuKeeper solves this issue by checking which versions are used and it can then update in multiple projects and cross-solution so that they are even. There are lots of options for you to specify how you want this process to be done. [Please have a look at the docs in the Wiki to know how](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
 
