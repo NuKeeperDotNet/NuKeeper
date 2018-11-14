@@ -5,9 +5,17 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-      <NoWarn>1701;1702;CA2007;CA1051;CA1707;CA2227;CA1056;</NoWarn>
+      <NoWarn>1701;1702;CA1051;CA1707;CA2227;CA1056;</NoWarn>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <NoWarn>1701;1702;CA1051;CA1707;CA2227;CA1056;</NoWarn>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
     </ItemGroup>
