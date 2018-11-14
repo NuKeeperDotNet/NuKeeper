@@ -16,6 +16,5 @@ namespace NuKeeper.Abstractions.Formats
             var utcValue = source.Value.ToUniversalTime();
             return string.Concat(utcValue.ToString(Iso8601Format, CultureInfo.InvariantCulture), "Z");
         }
-
     }
 }
