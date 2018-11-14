@@ -1,6 +1,7 @@
 using NuKeeper.Abstractions.CollaborationPlatform;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -20,7 +21,8 @@ namespace NuKeeper.Engine
 
         public CollaborationPlatformSettings Settings { get; }
 
-        public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders, INuKeeperLogger nuKeeperLogger)
+        public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders,
+            INuKeeperLogger nuKeeperLogger)
         {
             _settingReaders = settingReaders;
             _nuKeeperLogger = nuKeeperLogger;
@@ -30,19 +32,17 @@ namespace NuKeeper.Engine
 
         public void Initialise(Uri apiEndpoint, string token)
         {
-            foreach (var settingReader in _settingReaders)
-            {
-                if (settingReader.CanRead(apiEndpoint))
-                {
-                    _settingsReader = settingReader;
-                    _platform = settingReader.Platform;
-                }
-            }
+            _settingsReader = _settingReaders
+                .FirstOrDefault(s => s.CanRead(apiEndpoint));
 
             if (_settingsReader == null)
             {
-                throw new NuKeeperException($"Unable to work out platform for uri {apiEndpoint}");
+                throw new NuKeeperException($"Unable to find collaboration platform for uri {apiEndpoint}");
             }
+
+            _platform = _settingsReader.Platform;
+
+            _nuKeeperLogger.Normal($"Matched collaboration platform {_platform} to uri {apiEndpoint}");
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
@@ -165,6 +165,5 @@ namespace NuKeeper.Engine
                 return _collaborationPlatform;
             }
         }
-
     }
 }

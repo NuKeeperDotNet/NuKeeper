@@ -5,6 +5,7 @@ dotnet: 2.1.403
 script:
   - dotnet build -c Release NuKeeper.sln /m:1
   - dotnet test -c Release NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
+  - dotnet test -c Release NuKeeper.Abstractions.Tests/NuKeeper.Abstractions.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release NuKeeper.Inspection.Tests/NuKeeper.Inspection.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release NuKeeper.Update.Tests/NuKeeper.Update.Tests.csproj --filter "TestCategory!=WindowsOnly"
   - dotnet test -c Release NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"

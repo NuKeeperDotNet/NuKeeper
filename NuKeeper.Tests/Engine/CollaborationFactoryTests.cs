@@ -40,12 +40,13 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void UnknownApiReturnsUnableToWorkOutPlatform()
+        public void UnknownApiReturnsUnableToFindPlatform()
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            var exception = Assert.Throws<NuKeeperException>(() => collaborationFactory.Initialise(new Uri("https://unknown.com/"), null));
-            Assert.AreEqual(exception.Message, "Unable to work out platform for uri https://unknown.com/");
+            var exception = Assert.Throws<NuKeeperException>(
+                () => collaborationFactory.Initialise(new Uri("https://unknown.com/"), null));
+            Assert.AreEqual(exception.Message, "Unable to find collaboration platform for uri https://unknown.com/");
         }
 
         [Test]

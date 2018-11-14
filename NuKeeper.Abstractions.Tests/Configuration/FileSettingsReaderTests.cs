@@ -1,12 +1,13 @@
+using System;
+using System.Globalization;
 using System.IO;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
-using NuKeeper.Inspection.Files;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Configuration
+namespace NuKeeper.Abstractions.Tests.Configuration
 {
     [TestFixture]
     public class FileSettingsReaderTests
@@ -18,7 +19,7 @@ namespace NuKeeper.Tests.Configuration
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
 
-            var data = fsr.Read(folder.FullPath);
+            var data = fsr.Read(folder);
 
             Assert.That(data, Is.Not.Null);
             Assert.That(data.Age, Is.Null);
@@ -207,15 +208,20 @@ namespace NuKeeper.Tests.Configuration
         private static string MakeTestFile(string contents)
         {
             var folder = TemporaryFolder();
-            var path = Path.Join(folder.FullPath, "nukeeper.settings.json");
+            var path = Path.Join(folder, "nukeeper.settings.json");
             File.WriteAllText(path, contents);
-            return folder.FullPath;
+            return folder;
         }
 
-        private static IFolder TemporaryFolder()
+        private static string TemporaryFolder()
         {
-            var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
-            return ff.UniqueTemporaryFolder();
+            var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
+            var folder = Path.Combine(Path.GetTempPath(), "NuKeeper", uniqueName);
+
+            var tempDir = new DirectoryInfo(folder);
+            tempDir.Create();
+
+            return folder;
         }
     }
 }
