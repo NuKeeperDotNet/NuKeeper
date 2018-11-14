@@ -13,7 +13,7 @@
     <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0054" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NuGet.CommandLine" Version="4.7.1" />
-    <PackageReference Include="SimpleInjector" Version="4.3.0" />
+    <PackageReference Include="SimpleInjector" Version="4.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
