@@ -28,13 +28,13 @@ namespace NuKeeper.BitBucket.Models
         public ValueLinks Links { get; set; }
 
         [JsonProperty("default_merge_strategy")]
-        public MergeStrategy DefaultMergeStrategy { get; set; }
+        public string DefaultMergeStrategy { get; set; }
 
         [JsonProperty("merge_strategies")]
-        public List<MergeStrategy> MergeStrategies { get; set; }
+        public List<string> MergeStrategies { get; set; }
 
         [JsonProperty("type")]
-        public ValueType Type { get; set; }
+        public string Type { get; set; }
 
         [JsonProperty("target")]
         public Target Target { get; set; }
@@ -82,7 +82,7 @@ namespace NuKeeper.BitBucket.Models
         public string Message { get; set; }
 
         [JsonProperty("type")]
-        public ParentType Type { get; set; }
+        public string Type { get; set; }
     }
 
     public partial class UserLinks
@@ -120,15 +120,4 @@ namespace NuKeeper.BitBucket.Models
         [JsonProperty("statuses")]
         public Commits Statuses { get; set; }
     }
-
-
-    public enum MergeStrategy { FastForward, MergeCommit, Squash };
-
-    public enum AuthorType { Author };
-
-    public enum ParentType { Commit };
-
-    public enum RepositoryType { Repository };
-
-    public enum ValueType { Branch };
 }

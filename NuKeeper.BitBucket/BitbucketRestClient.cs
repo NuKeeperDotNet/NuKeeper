@@ -58,7 +58,7 @@ namespace NuKeeper.BitBucket
         public async Task<PullRequest> CreatePullRequest(PullRequest request, string account, string reponame)
         {
             var response = await _client.PostAsync(($"repositories/{account}/{reponame}/pullrequests"),
-                new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+                new StringContent(JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), Encoding.UTF8, "application/json"));
 
             var result = await response.Content.ReadAsStringAsync();
             var resource = JsonConvert.DeserializeObject<PullRequest>(result);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -30,7 +31,7 @@ namespace NuKeeper.BitBucket
 
         public Task<NuKeeper.Abstractions.DTOs.User> GetCurrentUser()
         {
-            return Task.FromResult(new NuKeeper.Abstractions.DTOs.User("user@email.com", "", ""));
+            return Task.FromResult(new NuKeeper.Abstractions.DTOs.User("MarcBruinsXpirit", "", ""));
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
@@ -44,14 +45,14 @@ namespace NuKeeper.BitBucket
                 {
                     branch = new Branch()
                     {
-                        name =   $"refs/heads/{request.Head}"
+                        name = request.Head
                     }
                 },
                 destination = new Source()
                 {
                     branch = new Branch()
                     {
-                        name =    $"refs/heads/{request.BaseRef}"
+                        name = request.BaseRef
                     }
                 },
                 description = request.Body
@@ -70,14 +71,14 @@ namespace NuKeeper.BitBucket
         {
             var repos = await _client.GetGitRepositories(projectName);
             return repos.Select(x =>
-                new NuKeeper.Abstractions.DTOs.Repository(x.name, false, new UserPermissions(true, true, true), new Uri(x.links.link.href), new Uri(x.links.link.href), null, false, null))
+                new NuKeeper.Abstractions.DTOs.Repository(x.name, false, new UserPermissions(true, true, true), new Uri(x.links.clone.First().href), new Uri(x.links.clone.First().href), null, false, null))
                 .ToList();
         }
 
         public async Task<NuKeeper.Abstractions.DTOs.Repository> GetUserRepository(string projectName, string repositoryName)
         {
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name == repositoryName);
+            return repos.Single(x => x.Name.ToUpperInvariant() == repositoryName.ToUpperInvariant());
         }
 
         public Task<NuKeeper.Abstractions.DTOs.Repository> MakeUserFork(string owner, string repositoryName)
@@ -88,9 +89,9 @@ namespace NuKeeper.BitBucket
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
             var repos = await _client.GetGitRepositories(projectName);
-            var repo = repos.Single(x => x.name == repositoryName);
+            var repo = repos.Single(x => x.name.ToUpperInvariant() == repositoryName.ToUpperInvariant());
             var refs = await _client.GetRepositoryRefs(projectName, repo.name);
-            var count = refs.Count(x => x.Name == branchName);
+            var count = refs.Count(x => x.Name.ToUpperInvariant() == branchName.ToUpperInvariant());
             if (count > 0)
             {
                 _logger.Detailed($"Branch found for {projectName} / {repositoryName} / {branchName}");

@@ -14,7 +14,7 @@ namespace NuKeeper.BitBucket
         
         public bool CanRead(Uri repositoryUri)
         {
-            if (repositoryUri == null || repositoryUri.Host != "api.bitbucket.org")
+            if (repositoryUri == null || !repositoryUri.ToString().Contains("bitbucket.org"))
             {
                 return false;
             }
@@ -47,17 +47,17 @@ namespace NuKeeper.BitBucket
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count != 4)
+            if (pathParts.Count != 2)
             {
                 return null;
             }
 
-            Username = pathParts[2];
-            var repoName = pathParts[3];
+            Username = pathParts[0];
+            var repoName = pathParts[1];
 
             return new RepositorySettings
             {
-                ApiUri = new Uri($"https://api.bitbucket.org/2.0"),
+                ApiUri = new Uri($"https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = Username
