@@ -1,19 +1,15 @@
 using System;
 using System.Linq;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.AzureDevOps
 {
-    public class AzureDevOpsSettingsReader : BaseSettingsReader
+    public class VstsSettingsReader : BaseSettingsReader
     {
         public override bool CanRead(Uri repositoryUri)
         {
-            if (repositoryUri == null || repositoryUri.Host != "dev.azure.com")
-            {
-                return false;
-            }
-
-            return true;
+            return repositoryUri?.Host.ContainsOrdinal("visualstudio.com") == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
@@ -24,25 +20,25 @@ namespace NuKeeper.AzureDevOps
             }
 
             // URL pattern is
-            // https://dev.azure.com/{org}/{project}/_git/{repo}/
+            // https://{org}.visualstudio.com/{project}/_git/{repo}
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count != 4)
+            if (pathParts.Count != 3)
             {
                 return null;
             }
 
-            var org = pathParts[0];
-            var project = pathParts[1];
-            var repoName = pathParts[3];
+            var org = repositoryUri.Host.Split('.')[0];
+            var project = pathParts[0];
+            var repoName = pathParts[2];
 
             return new RepositorySettings
             {
                 ApiUri = new Uri($"https://dev.azure.com/{org}/"),
-                RepositoryUri = repositoryUri,
+                RepositoryUri = new Uri($"https://dev.azure.com/{org}/{project}/_git/{repoName}/"),
                 RepositoryName = repoName,
                 RepositoryOwner = project
             };
