@@ -17,7 +17,7 @@ namespace NuKeeper.Abstractions.Formats
 
         public static bool ContainsOrdinal(this string value, string substring)
         {
-            if (value ==null)
+            if (value == null)
             {
                 return false;
             }
