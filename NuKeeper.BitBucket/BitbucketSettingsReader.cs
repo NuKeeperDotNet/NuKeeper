@@ -14,7 +14,7 @@ namespace NuKeeper.BitBucket
         
         public bool CanRead(Uri repositoryUri)
         {
-            if (repositoryUri == null || !repositoryUri.ToString().Contains("bitbucket.org"))
+            if (repositoryUri == null || !repositoryUri.ToString().ToUpperInvariant().Contains("bitbucket.org".ToUpperInvariant()))
             {
                 return false;
             }
