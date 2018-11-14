@@ -12,6 +12,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [TestCase("FoObAr", "foo")]
         [TestCase("foobar", "bar")]
         [TestCase("foobar", "ob")]
+        [TestCase("", "")]
         public void DoesContainOrdinal(string value, string substring)
         {
             Assert.That(value.ContainsOrdinal(substring));
@@ -20,6 +21,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [TestCase("foobar", "x")]
         [TestCase("", "bar")]
         [TestCase(null, "a")]
+        [TestCase("", "a")]
         [TestCase("foobar", "foobarfish")]
         public void DoesNotContainOrdinal(string value, string substring)
         {

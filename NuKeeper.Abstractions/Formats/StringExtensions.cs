@@ -19,7 +19,7 @@ namespace NuKeeper.Abstractions.Formats
         {
             if (string.IsNullOrEmpty(value))
             {
-                return false;
+                return (value == substring);
             }
 
             if (substring == null)
