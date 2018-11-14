@@ -15,19 +15,19 @@ namespace NuKeeper.Abstractions.Formats
             return values == null ? string.Empty : string.Join(separator, values);
         }
 
-        public static bool ContainsOrdinal(this string str, string substr)
+        public static bool ContainsOrdinal(this string value, string substring)
         {
-            if (string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(value))
             {
                 return false;
             }
 
-            if (substr == null)
+            if (substring == null)
             {
-                throw new ArgumentNullException(nameof(substr));
+                throw new ArgumentNullException(nameof(substring));
             }
 
-            return str.IndexOf(substr, StringComparison.OrdinalIgnoreCase) >= 0;
+            return value.IndexOf(substring, StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }
