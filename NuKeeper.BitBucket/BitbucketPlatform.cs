@@ -17,7 +17,8 @@ namespace NuKeeper.BitBucket
     {
         private readonly INuKeeperLogger _logger;
         private BitbucketRestClient _client;
-
+        private AuthSettings _settings;
+        
         public BitbucketPlatform(INuKeeperLogger logger)
         {
             _logger = logger;
@@ -25,13 +26,15 @@ namespace NuKeeper.BitBucket
 
         public void Initialise(AuthSettings settings)
         {
+            _settings = settings;
             var httpClient = new HttpClient() { BaseAddress = settings.ApiBase};
             _client = new BitbucketRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
         public Task<NuKeeper.Abstractions.DTOs.User> GetCurrentUser()
         {
-            return Task.FromResult(new NuKeeper.Abstractions.DTOs.User("MarcBruinsXpirit", "", ""));
+            
+            return Task.FromResult(new NuKeeper.Abstractions.DTOs.User(_settings.Username, "", ""));
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
