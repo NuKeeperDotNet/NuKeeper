@@ -66,15 +66,15 @@ namespace NuKeeper.BitBucket
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
-            var projects = await _client.GetProjects(""); //we need an account here
+            var projects = await _client.GetProjects(_settings.Username);
             return projects.Select(project => new Organization("", "")).ToList();
         }
 
         public async Task<IReadOnlyList<NuKeeper.Abstractions.DTOs.Repository>> GetRepositoriesForOrganisation(string projectName)
         {
             var repos = await _client.GetGitRepositories(projectName);
-            return repos.Select(x =>
-                new NuKeeper.Abstractions.DTOs.Repository(x.name, false, new UserPermissions(true, true, true), new Uri(x.links.clone.First().href), new Uri(x.links.clone.First().href), null, false, null))
+            return repos.Select(repo =>
+                new NuKeeper.Abstractions.DTOs.Repository(repo.name, false, new UserPermissions(true, true, true), new Uri(repo.links.clone.First().href), new Uri(repo.links.clone.First().href), null, false, null))
                 .ToList();
         }
 
