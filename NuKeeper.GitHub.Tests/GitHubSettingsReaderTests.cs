@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace NuKeeper.GitHub.Tests
 {
     [TestFixture]
-    public class AuthSettingsGitHubSettingsReaderTests
+    public class GitHubSettingsReaderTests
     {
         private static GitHubSettingsReader GitHubSettingsReader => new GitHubSettingsReader();
 
@@ -48,18 +48,36 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual(settings.Token, "envToken");
         }
 
-#pragma warning disable CA1051 // Do not declare visible instance fields
-        [DatapointSource] public Uri[] Values =
+        [TestCase(null)]
+        [TestCase("htps://missingt.com")]
+        public void InvalidUrlReturnsNull(string value)
         {
-            null,
-            new Uri("htps://missingt.com"),
-        };
-        [Theory]
-        public void InvalidUrlReturnsNull(Uri uri)
-        {
-            var canRead = GitHubSettingsReader.CanRead(uri);
+            var testUri = value == null ? null : new Uri(value);
+            var canRead = GitHubSettingsReader.CanRead(testUri);
 
             Assert.IsFalse(canRead);
+        }
+
+        [Test]
+        public void RepositorySettings_GetsCorrectSettings()
+        {
+            var settings = GitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
+
+            Assert.IsNotNull(settings);
+            Assert.AreEqual(settings.RepositoryUri, "https://github.com/owner/reponame.git");
+            Assert.AreEqual(settings.RepositoryName, "reponame");
+            Assert.AreEqual(settings.RepositoryOwner, "owner");
+        }
+
+        [TestCase(null)]
+        [TestCase("https://github.com/owner/badpart/reponame.git")]
+        [TestCase("https://github.com/reponame.git")]
+        public void RepositorySettings_InvalidUrlReturnsNull(string value)
+        {
+            var testUri = value == null ? null : new Uri(value);
+            var settings = GitHubSettingsReader.RepositorySettings(testUri);
+
+            Assert.IsNull(settings);
         }
     }
 }
