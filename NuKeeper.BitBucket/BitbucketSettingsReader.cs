@@ -18,6 +18,7 @@ namespace NuKeeper.BitBucket
             {
                 return false;
             }
+            
 
             return true;
         }
