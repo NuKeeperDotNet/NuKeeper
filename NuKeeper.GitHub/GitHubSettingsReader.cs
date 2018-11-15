@@ -3,6 +3,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using System;
 using System.Linq;
+using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.GitHub
 {
@@ -12,7 +13,7 @@ namespace NuKeeper.GitHub
 
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri != null && repositoryUri.Host.Contains("github");
+            return repositoryUri?.Host.ContainsOrdinal("github") == true;
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)

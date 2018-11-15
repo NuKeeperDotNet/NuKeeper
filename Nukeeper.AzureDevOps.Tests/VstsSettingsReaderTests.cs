@@ -7,14 +7,14 @@ using NUnit.Framework;
 namespace Nukeeper.AzureDevOps.Tests
 {
     [TestFixture]
-    public class AzureDevOpsSettingsReaderTests
+    public class VstsSettingsReaderTests
     {
-        private static ISettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader();
+        private static ISettingsReader AzureSettingsReader => new VstsSettingsReader();
 
         [Test]
         public void ReturnsTrueIfCanRead()
         {
-            var canRead = AzureSettingsReader.CanRead(new Uri("https://dev.azure.com/org"));
+            var canRead = AzureSettingsReader.CanRead(new Uri("https://org.visualstudio.com"));
             Assert.IsTrue(canRead);
         }
 
@@ -57,7 +57,7 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [TestCase(null)]
-        [TestCase("htps://org.visualstudio.com")]
+        [TestCase("htps://dev.azure.com")]
         public void InvalidUrlReturnsNull(string value)
         {
             var uriToTest = value == null ? null : new Uri(value);
@@ -69,11 +69,11 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void RepositorySettings_GetsCorrectSettings()
         {
-            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
+            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/org/");
-            Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame");
+            Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame/");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
         }
@@ -88,7 +88,7 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void RepositorySettings_PathTooLong()
         {
-            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/"));
+            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/"));
             Assert.IsNull(settings);
         }
     }
