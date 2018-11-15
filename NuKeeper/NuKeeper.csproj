@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
     <ProjectReference Include="..\NuKeeper.AzureDevOps\NuKeeper.AzureDevOps.csproj" />
+    <ProjectReference Include="..\NuKeeper.BitBucket\NuKeeper.BitBucket.csproj" />
     <ProjectReference Include="..\NuKeeper.GitHub\NuKeeper.GitHub.csproj" />
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />

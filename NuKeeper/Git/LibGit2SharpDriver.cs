@@ -35,6 +35,7 @@ namespace NuKeeper.Git
             _gitCredentials = gitCredentials;
             _identity = userIdentity;
         }
+        
         public void Clone(Uri pullEndpoint)
         {
             _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");

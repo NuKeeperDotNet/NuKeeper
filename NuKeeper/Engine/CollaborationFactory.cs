@@ -7,6 +7,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
+using NuKeeper.BitBucket;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Engine
@@ -87,6 +88,9 @@ namespace NuKeeper.Engine
                     case Platform.GitHub:
                         _forkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
                         break;
+                    case Platform.Bitbucket:
+                        _forkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
+                        break;
                 }
 
                 return _forkFinder;
@@ -116,6 +120,9 @@ namespace NuKeeper.Engine
                         break;
                     case Platform.GitHub:
                         _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
+                        break;
+                    case Platform.Bitbucket:
+                        _repositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                         break;
                 }
 
@@ -147,9 +154,12 @@ namespace NuKeeper.Engine
                     case Platform.GitHub:
                         _collaborationPlatform = new OctokitClient(_nuKeeperLogger);
                         break;
+                    case Platform.Bitbucket:
+                        _collaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                        break;
                 }
                 _collaborationPlatform?.Initialise(
-                    new AuthSettings(Settings.BaseApiUrl, Settings.Token)
+                    new AuthSettings(Settings.BaseApiUrl, Settings.Token, Settings.Username)
                 );
 
                 return _collaborationPlatform;

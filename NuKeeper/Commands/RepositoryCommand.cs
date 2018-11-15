@@ -28,7 +28,7 @@ namespace NuKeeper.Commands
             {
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
-
+            
             var didRead = false;
             foreach (var reader in _settingsReaders)
             {

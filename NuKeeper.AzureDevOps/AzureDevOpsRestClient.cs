@@ -23,7 +23,7 @@ namespace NuKeeper.AzureDevOps
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:{personalAccessToken}")));
         }
 
-        private async Task<T> GetResorceOrEmpty<T>(string url)
+        private async Task<T> GetResourceOrEmpty<T>(string url)
         {
             var fullUrl = BuildAzureDevOpsUri(url);
             var response = await _client.GetAsync(fullUrl);
@@ -39,19 +39,19 @@ namespace NuKeeper.AzureDevOps
         }
         public async Task<IEnumerable<Project>> GetProjects()
         {
-            var response = await GetResorceOrEmpty<ProjectResource>($"/_apis/projects");
+            var response = await GetResourceOrEmpty<ProjectResource>($"/_apis/projects");
             return response.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
         {
-            var response = await GetResorceOrEmpty<GitRepositories>($"{projectName}/_apis/git/repositories");
+            var response = await GetResourceOrEmpty<GitRepositories>($"{projectName}/_apis/git/repositories");
             return response.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName,string repositoryId)
         {
-            var response = await GetResorceOrEmpty<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
+            var response = await GetResourceOrEmpty<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
             return response.value.AsEnumerable();
         }
 
