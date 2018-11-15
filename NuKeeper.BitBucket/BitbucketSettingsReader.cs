@@ -11,7 +11,7 @@ namespace NuKeeper.BitBucket
     {
         public Platform Platform => Platform.Bitbucket;
 
-        private static string Username { get; set; }
+        private string Username { get; set; }
         
         public bool CanRead(Uri repositoryUri)
         {
