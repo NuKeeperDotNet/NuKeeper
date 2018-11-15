@@ -1,6 +1,6 @@
 using System;
 
-namespace NuKeeper
+namespace NuKeeper.Abstractions.Formats
 {
     public static class DurationParser
     {

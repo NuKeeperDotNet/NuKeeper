@@ -1,6 +1,9 @@
+using System.Linq;
+using System.Reflection;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.AzureDevOps;
+using NuKeeper.BitBucket;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.GitHub;
@@ -39,7 +42,24 @@ namespace NuKeeper
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
             container.RegisterSingleton<ICollaborationFactory,CollaborationFactory>();
-            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
+            
+            var settingsRegistration = RegisterMultipleSingletons<ISettingsReader>(container, new[]
+            {
+                typeof(GitHubSettingsReader).Assembly,
+                typeof(AzureDevOpsSettingsReader).Assembly,
+                typeof(BitbucketSettingsReader).Assembly,
+            });
+            
+            container.Collection.Register<ISettingsReader>(settingsRegistration);
+        }
+
+        private static Registration[] RegisterMultipleSingletons<T>(Container container, Assembly[] assemblies)
+        {
+            var types = container.GetTypesToRegister(typeof(T), assemblies);
+
+            return (from type in types
+                    select Lifestyle.Singleton.CreateRegistration(type, container)
+            ).ToArray(); 
         }
     }
 }

@@ -1,11 +1,13 @@
 using NuKeeper.Abstractions.CollaborationPlatform;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
+using NuKeeper.BitBucket;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Engine
@@ -19,7 +21,8 @@ namespace NuKeeper.Engine
 
         public CollaborationPlatformSettings Settings { get; }
 
-        public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders, INuKeeperLogger nuKeeperLogger)
+        public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders,
+            INuKeeperLogger nuKeeperLogger)
         {
             _settingReaders = settingReaders;
             _nuKeeperLogger = nuKeeperLogger;
@@ -29,19 +32,17 @@ namespace NuKeeper.Engine
 
         public void Initialise(Uri apiEndpoint, string token)
         {
-            foreach (var settingReader in _settingReaders)
-            {
-                if (settingReader.CanRead(apiEndpoint))
-                {
-                    _settingsReader = settingReader;
-                    _platform = settingReader.Platform;
-                }
-            }
+            _settingsReader = _settingReaders
+                .FirstOrDefault(s => s.CanRead(apiEndpoint));
 
             if (_settingsReader == null)
             {
-                throw new NuKeeperException($"Unable to work out platform for uri {apiEndpoint}");
+                throw new NuKeeperException($"Unable to find collaboration platform for uri {apiEndpoint}");
             }
+
+            _platform = _settingsReader.Platform;
+
+            _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
@@ -87,6 +88,9 @@ namespace NuKeeper.Engine
                     case Platform.GitHub:
                         _forkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
                         break;
+                    case Platform.Bitbucket:
+                        _forkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
+                        break;
                 }
 
                 return _forkFinder;
@@ -116,6 +120,9 @@ namespace NuKeeper.Engine
                         break;
                     case Platform.GitHub:
                         _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
+                        break;
+                    case Platform.Bitbucket:
+                        _repositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                         break;
                 }
 
@@ -147,14 +154,16 @@ namespace NuKeeper.Engine
                     case Platform.GitHub:
                         _collaborationPlatform = new OctokitClient(_nuKeeperLogger);
                         break;
+                    case Platform.Bitbucket:
+                        _collaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                        break;
                 }
                 _collaborationPlatform?.Initialise(
-                    new AuthSettings(Settings.BaseApiUrl, Settings.Token)
+                    new AuthSettings(Settings.BaseApiUrl, Settings.Token, Settings.Username)
                 );
 
                 return _collaborationPlatform;
             }
         }
-
     }
 }

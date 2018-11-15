@@ -1,16 +1,12 @@
 using System;
 using System.Linq;
-using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.AzureDevOps
 {
-    public class AzureDevOpsSettingsReader : ISettingsReader
+    public class AzureDevOpsSettingsReader : BaseSettingsReader
     {
-        public Platform Platform => Platform.AzureDevOps;
-
-        public bool CanRead(Uri repositoryUri)
+        public override bool CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null || repositoryUri.Host != "dev.azure.com")
             {
@@ -20,19 +16,7 @@ namespace NuKeeper.AzureDevOps
             return true;
         }
 
-        public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
-        {
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
-        }
-
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_azure_devops_token");
-            settings.Token = Concat.FirstValue(envToken, settings.Token);
-        }
-
-        public RepositorySettings RepositorySettings(Uri repositoryUri)
+        public override RepositorySettings RepositorySettings(Uri repositoryUri)
         {
             if (repositoryUri == null)
             {

@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.GitHub.Tests", "Nu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nukeeper.AzureDevOps.Tests", "Nukeeper.AzureDevOps.Tests\Nukeeper.AzureDevOps.Tests.csproj", "{DDB95A74-6576-439B-9614-BEBF528914BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.BitBucket", "NuKeeper.BitBucket\NuKeeper.BitBucket.csproj", "{0300E3F0-6441-4C1D-8D92-10060A4BDD1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{DDB95A74-6576-439B-9614-BEBF528914BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDB95A74-6576-439B-9614-BEBF528914BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDB95A74-6576-439B-9614-BEBF528914BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0300E3F0-6441-4C1D-8D92-10060A4BDD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0300E3F0-6441-4C1D-8D92-10060A4BDD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0300E3F0-6441-4C1D-8D92-10060A4BDD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0300E3F0-6441-4C1D-8D92-10060A4BDD1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
