@@ -42,7 +42,7 @@ namespace NuKeeper.Engine
 
             _platform = _settingsReader.Platform;
 
-            _nuKeeperLogger.Normal($"Matched collaboration platform {_platform} to uri {apiEndpoint}");
+            _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
