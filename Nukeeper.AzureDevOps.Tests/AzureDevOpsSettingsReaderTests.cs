@@ -6,9 +6,10 @@ using NUnit.Framework;
 
 namespace Nukeeper.AzureDevOps.Tests
 {
+    [TestFixture]
     public class AzureDevOpsSettingsReaderTests
     {
-        private static AzureDevOpsSettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader();
+        private static ISettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader();
 
         [Test]
         public void ReturnsTrueIfCanRead()
@@ -55,17 +56,12 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.Token, "envToken");
         }
 
-#pragma warning disable CA1051 // Do not declare visible instance fields
-        [DatapointSource] public Uri[] Values =
+        [TestCase(null)]
+        [TestCase("htps://org.visualstudio.com")]
+        public void InvalidUrlReturnsNull(string value)
         {
-            null,
-            new Uri("htps://org.visualstudio.com"),
-        };
-
-        [Theory]
-        public void InvalidUrlReturnsNull(Uri uri)
-        {
-            var canRead = AzureSettingsReader.CanRead(uri);
+            var uriToTest = value == null ? null : new Uri(value);
+            var canRead = AzureSettingsReader.CanRead(uriToTest);
 
             Assert.IsFalse(canRead);
         }
