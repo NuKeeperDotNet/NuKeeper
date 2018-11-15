@@ -39,7 +39,7 @@ namespace NuKeeper
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
             container.RegisterSingleton<ICollaborationFactory,CollaborationFactory>();
-            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader));
+            container.Collection.Register<ISettingsReader>(typeof(GitHubSettingsReader), typeof(AzureDevOpsSettingsReader), typeof(VstsSettingsReader));
         }
     }
 }
