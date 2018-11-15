@@ -3,6 +3,7 @@ using System.Linq;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.BitBucket
 {
@@ -14,12 +15,11 @@ namespace NuKeeper.BitBucket
         
         public bool CanRead(Uri repositoryUri)
         {
-            if (repositoryUri == null || !repositoryUri.ToString().ToUpperInvariant().Contains("bitbucket.org".ToUpperInvariant()))
+            if (repositoryUri == null || !repositoryUri.ToString().ContainsOrdinal("bitbucket.org"))
             {
                 return false;
             }
             
-
             return true;
         }
 
