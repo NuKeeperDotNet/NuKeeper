@@ -81,7 +81,7 @@ namespace NuKeeper.BitBucket
         public async Task<NuKeeper.Abstractions.DTOs.Repository> GetUserRepository(string projectName, string repositoryName)
         {
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase);
+            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
         }
 
         public Task<NuKeeper.Abstractions.DTOs.Repository> MakeUserFork(string owner, string repositoryName)
@@ -92,9 +92,9 @@ namespace NuKeeper.BitBucket
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
             var repos = await _client.GetGitRepositories(projectName);
-            var repo = repos.Single(x => x.name.Equals(repositoryName.ToUpperInvariant(), StringComparison.OrdinalIgnoreCase);
+            var repo = repos.Single(x => x.name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
             var refs = await _client.GetRepositoryRefs(projectName, repo.name);
-            var count = refs.Count(x => x.Name.Equals(branchName.ToUpperInvariant(), StringComparison.OrdinalIgnoreCase);
+            var count = refs.Count(x => x.Name.Equals(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
             {
                 _logger.Detailed($"Branch found for {projectName} / {repositoryName} / {branchName}");
