@@ -9,7 +9,7 @@ namespace Nukeeper.AzureDevOps.Tests
     [TestFixture]
     public class VstsSettingsReaderTests
     {
-        private static ISettingsReader AzureSettingsReader => new VstsSettingsReader();
+        private static ISettingsReader AzureSettingsReader => new VstsSettingsReader(new MockedGitDiscoveryDriver());
 
         [Test]
         public void ReturnsTrueIfCanRead()
@@ -72,8 +72,8 @@ namespace Nukeeper.AzureDevOps.Tests
             var settings = AzureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"));
 
             Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/org/");
-            Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame/");
+            Assert.AreEqual("https://org.visualstudio.com/", settings.ApiUri.ToString());
+            Assert.AreEqual("https://org.visualstudio.com/project/_git/reponame/", settings.RepositoryUri.ToString());
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
         }

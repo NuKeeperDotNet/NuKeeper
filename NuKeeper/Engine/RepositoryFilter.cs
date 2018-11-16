@@ -21,6 +21,7 @@ namespace NuKeeper.Engine
 
         public async Task<bool> ContainsDotNetProjects(RepositorySettings repository)
         {
+            // TODO check if local repo, then we already have the source so we can do a directory scan
             var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
             {
                 Repos = new List<(string owner, string name)> { (repository.RepositoryOwner, repository.RepositoryName) },
@@ -39,6 +40,7 @@ namespace NuKeeper.Engine
             catch (Exception ex)
             {
                 _logger.Error("Repository search failed.", ex);
+                // TODO fail the contains
             }
 
             return true;

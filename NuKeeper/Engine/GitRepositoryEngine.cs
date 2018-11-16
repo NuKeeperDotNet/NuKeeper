@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
@@ -50,12 +52,27 @@ namespace NuKeeper.Engine
                     return 0;
                 }
 
-                var tempFolder = _folderFactory.UniqueTemporaryFolder();
-                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
+                IFolder folder = null;
+                if (repository.IsLocalRepo)
+                {
+                    folder = new Folder(_logger, new DirectoryInfo(repository.LocalRepositoryUri.AbsolutePath));
+                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.WorkingFolder.AbsolutePath));
+                    repo.DefaultBranch = repository.BranchName;
+                    repo.Remote = repository.RemoteName;
+                }
+                else
+                {
+                    folder = _folderFactory.UniqueTemporaryFolder();
+                    settings.WorkingFolder = folder;
+                }
+
+                var git = new LibGit2SharpDriver(_logger, folder, gitCreds, userIdentity);
 
                 var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 
-                tempFolder.TryDelete();
+                if (!repository.IsLocalRepo)
+                    folder.TryDelete();
+
                 return updatesDone;
             }
             catch (Exception ex)

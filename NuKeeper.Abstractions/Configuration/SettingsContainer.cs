@@ -1,3 +1,6 @@
+using System;
+using NuKeeper.Abstractions.Inspections.Files;
+
 namespace NuKeeper.Abstractions.Configuration
 {
     public class SettingsContainer
@@ -7,5 +10,7 @@ namespace NuKeeper.Abstractions.Configuration
         public UserSettings UserSettings { get; set; }
 
         public FilterSettings PackageFilters { get; set; }
+
+        public IFolder WorkingFolder { get; set; }
     }
 }

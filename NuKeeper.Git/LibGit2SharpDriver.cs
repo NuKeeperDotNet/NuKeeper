@@ -2,8 +2,9 @@ using System;
 using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Inspection.Files;
 using GitCommands = LibGit2Sharp.Commands;
 
 namespace NuKeeper.Git
@@ -39,7 +40,7 @@ namespace NuKeeper.Git
         public void Clone(Uri pullEndpoint)
         {
             _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
-
+          
             Repository.Clone(pullEndpoint.ToString(), WorkingFolder.FullPath,
                 new CloneOptions
                 {

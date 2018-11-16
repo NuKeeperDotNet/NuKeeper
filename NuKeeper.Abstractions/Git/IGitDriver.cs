@@ -1,7 +1,7 @@
 using System;
-using NuKeeper.Inspection.Files;
+using NuKeeper.Abstractions.Inspections.Files;
 
-namespace NuKeeper.Git
+namespace NuKeeper.Abstractions.Git
 {
     public interface IGitDriver
     {
@@ -20,5 +20,6 @@ namespace NuKeeper.Git
         void Push(string remoteName, string branchName);
 
         string GetCurrentHead();
+
     }
 }

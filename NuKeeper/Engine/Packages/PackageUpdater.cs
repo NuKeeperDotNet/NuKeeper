@@ -9,6 +9,7 @@ using NuKeeper.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -80,7 +81,7 @@ namespace NuKeeper.Engine.Packages
                 git.Commit(commitMessage);
             }
 
-            git.Push("nukeeper_push", branchWithChanges);
+            git.Push(repository.Remote, branchWithChanges);
 
             var title = CommitWording.MakePullRequestTitle(updates);
             var body = CommitWording.MakeCommitDetails(updates);

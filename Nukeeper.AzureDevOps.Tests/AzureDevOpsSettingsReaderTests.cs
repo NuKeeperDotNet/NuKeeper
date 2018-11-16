@@ -1,6 +1,7 @@
 using System;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.AzureDevOps;
 using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace Nukeeper.AzureDevOps.Tests
     [TestFixture]
     public class AzureDevOpsSettingsReaderTests
     {
-        private static ISettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader();
+        private static ISettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader(new MockedGitDiscoveryDriver());
 
         [Test]
         public void ReturnsTrueIfCanRead()

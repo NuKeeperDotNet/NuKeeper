@@ -1,4 +1,5 @@
 using NSubstitute;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Files;
 using NUnit.Framework;
