@@ -20,10 +20,8 @@ namespace NuKeeper.AzureDevOps
         public override bool CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null)
-            {
                 return false;
-            }
-
+            
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
