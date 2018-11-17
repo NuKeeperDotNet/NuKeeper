@@ -12,4 +12,8 @@
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
 </Project>

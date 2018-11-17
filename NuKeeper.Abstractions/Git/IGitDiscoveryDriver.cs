@@ -26,10 +26,4 @@ namespace NuKeeper.Abstractions.Git
 
         GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost);
     }
-
-    public class GitRemote
-    {
-        public string Name { get; set; }
-        public Uri Url { get; set; }
-    }
 }
