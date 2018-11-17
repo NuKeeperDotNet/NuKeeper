@@ -1,7 +1,6 @@
 using System;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.AzureDevOps;
 using NUnit.Framework;
 

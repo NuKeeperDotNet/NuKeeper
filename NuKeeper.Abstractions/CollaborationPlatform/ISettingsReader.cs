@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform

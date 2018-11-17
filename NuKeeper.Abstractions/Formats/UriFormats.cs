@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats

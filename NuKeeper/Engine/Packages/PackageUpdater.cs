@@ -3,7 +3,6 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Git;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update;
 using System;
