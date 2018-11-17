@@ -47,9 +47,12 @@ namespace NuKeeper.Engine
                     return 0;
                 }
 
-                if (!await _repositoryFilter.ContainsDotNetProjects(repository))
+                if (!repository.IsLocalRepo) // The updaters will do the check for the local files, and they know what file types they can handle.
                 {
-                    return 0;
+                    if (!await _repositoryFilter.ContainsDotNetProjects(repository))
+                    {
+                        return 0;
+                    }
                 }
 
                 IFolder folder = null;
@@ -78,7 +81,7 @@ namespace NuKeeper.Engine
             catch (Exception ex)
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-                return 0;
+                return 1;
             }
         }
 
