@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NUnit.Framework;
 

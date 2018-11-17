@@ -1,6 +1,6 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Engine.Packages
 {

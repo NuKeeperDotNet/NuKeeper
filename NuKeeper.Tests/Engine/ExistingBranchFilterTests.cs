@@ -4,7 +4,6 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.NuGetApi;
@@ -13,6 +12,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Tests.Engine
 {

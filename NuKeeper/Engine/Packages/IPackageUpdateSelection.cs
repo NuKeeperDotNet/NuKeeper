@@ -1,8 +1,8 @@
 using NuKeeper.Inspection.RepositoryInspection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 
 namespace NuKeeper.Engine.Packages
 {

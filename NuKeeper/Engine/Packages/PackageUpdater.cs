@@ -1,6 +1,5 @@
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -8,6 +7,7 @@ using NuKeeper.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Engine.Packages

@@ -2,11 +2,11 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.AzureDevOps;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 
 namespace Nukeeper.AzureDevOps.Tests
 {

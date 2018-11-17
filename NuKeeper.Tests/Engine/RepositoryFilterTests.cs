@@ -2,12 +2,12 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Tests.Engine
 {

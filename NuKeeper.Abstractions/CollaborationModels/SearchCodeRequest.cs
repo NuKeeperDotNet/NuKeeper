@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NuKeeper.Abstractions.DTOs
+namespace NuKeeper.Abstractions.CollaborationModels
 {
     public class SearchCodeRequest
     {

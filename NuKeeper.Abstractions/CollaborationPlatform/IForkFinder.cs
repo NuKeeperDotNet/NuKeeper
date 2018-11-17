@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform
 {

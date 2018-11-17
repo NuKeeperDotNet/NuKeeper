@@ -7,7 +7,7 @@ using NuKeeper.Inspection.Files;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Tests.Engine
 {

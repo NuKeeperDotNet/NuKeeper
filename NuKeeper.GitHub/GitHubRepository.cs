@@ -1,10 +1,10 @@
-using NuKeeper.Abstractions.DTOs;
 using System;
-using Repository = NuKeeper.Abstractions.DTOs.Repository;
+using NuKeeper.Abstractions.CollaborationModels;
+using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 
 namespace NuKeeper.GitHub
 {
-    public class GitHubRepository : Repository
+    public class GitHubRepository : Abstractions.CollaborationModels.Repository
     {
         public GitHubRepository(Octokit.Repository repository)
         : base(
