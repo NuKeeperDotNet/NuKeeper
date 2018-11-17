@@ -54,7 +54,7 @@ namespace NuKeeper.BitBucket
         private async Task<bool> IsPushableRepo(ForkData originFork)
         {
             var originRepo = await _collaborationPlatform.GetUserRepository(originFork.Owner, originFork.Name);
-            return originRepo != null && originRepo.UserPermissions.Push;
+            return originRepo?.UserPermissions.Push == true;
         }
     }
 }

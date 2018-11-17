@@ -53,7 +53,7 @@ namespace NuKeeper.BitBucket
 
             return new RepositorySettings
             {
-                ApiUri = new Uri($"https://api.bitbucket.org/2.0/"),
+                ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = Username

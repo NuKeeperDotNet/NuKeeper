@@ -10,7 +10,7 @@ namespace NuKeeper.BitBucket
 {
     public class BitbucketRepositoryDiscovery : IRepositoryDiscovery
     {
-        public readonly INuKeeperLogger _logger;
+        private readonly INuKeeperLogger _logger;
 
         public BitbucketRepositoryDiscovery(INuKeeperLogger logger)
         {

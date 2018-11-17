@@ -27,7 +27,10 @@ namespace NuKeeper.BitBucket
         public void Initialise(AuthSettings settings)
         {
             _settings = settings;
-            var httpClient = new HttpClient() { BaseAddress = settings.ApiBase};
+            var httpClient = new HttpClient
+            {
+                BaseAddress = settings.ApiBase
+            };
             _client = new BitbucketRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
@@ -44,16 +47,16 @@ namespace NuKeeper.BitBucket
             var req = new PullRequest
             {
                 title = request.Title,
-                source = new Source()
+                source = new Source
                 {
-                    branch = new Branch()
+                    branch = new Branch
                     {
                         name = request.Head
                     }
                 },
-                destination = new Source()
+                destination = new Source
                 {
-                    branch = new Branch()
+                    branch = new Branch
                     {
                         name = request.BaseRef
                     }
@@ -74,7 +77,11 @@ namespace NuKeeper.BitBucket
         {
             var repos = await _client.GetGitRepositories(projectName);
             return repos.Select(repo =>
-                new Repository(repo.name, false, new UserPermissions(true, true, true), new Uri(repo.links.clone.First().href), new Uri(repo.links.clone.First().href), null, false, null))
+                new Repository(repo.name, false,
+                    new UserPermissions(true, true, true),
+                    new Uri(repo.links.clone.First().href),
+                    new Uri(repo.links.clone.First().href),
+                    null, false, null))
                 .ToList();
         }
 
