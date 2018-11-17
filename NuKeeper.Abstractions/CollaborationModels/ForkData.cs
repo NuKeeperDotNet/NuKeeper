@@ -1,6 +1,6 @@
 using System;
 
-namespace NuKeeper.Abstractions.DTOs
+namespace NuKeeper.Abstractions.CollaborationModels
 {
     public class ForkData
     {

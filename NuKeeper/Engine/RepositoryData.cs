@@ -1,5 +1,5 @@
 using System;
-using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Engine
 {

@@ -1,7 +1,6 @@
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using Octokit;
@@ -9,12 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Organization = NuKeeper.Abstractions.DTOs.Organization;
-using PullRequestRequest = NuKeeper.Abstractions.DTOs.PullRequestRequest;
-using Repository = NuKeeper.Abstractions.DTOs.Repository;
-using SearchCodeRequest = NuKeeper.Abstractions.DTOs.SearchCodeRequest;
-using SearchCodeResult = NuKeeper.Abstractions.DTOs.SearchCodeResult;
-using User = NuKeeper.Abstractions.DTOs.User;
+using NuKeeper.Abstractions.CollaborationModels;
+using Organization = NuKeeper.Abstractions.CollaborationModels.Organization;
+using PullRequestRequest = NuKeeper.Abstractions.CollaborationModels.PullRequestRequest;
+using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
+using SearchCodeRequest = NuKeeper.Abstractions.CollaborationModels.SearchCodeRequest;
+using SearchCodeResult = NuKeeper.Abstractions.CollaborationModels.SearchCodeResult;
+using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 
 namespace NuKeeper.GitHub

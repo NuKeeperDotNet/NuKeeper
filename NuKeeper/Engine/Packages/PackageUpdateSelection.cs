@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.RepositoryInspection;

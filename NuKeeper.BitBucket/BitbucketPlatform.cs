@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucket.Models;
+using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
+using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 namespace NuKeeper.BitBucket
 {
@@ -29,10 +31,10 @@ namespace NuKeeper.BitBucket
             _client = new BitbucketRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
-        public Task<NuKeeper.Abstractions.DTOs.User> GetCurrentUser()
+        public Task<User> GetCurrentUser()
         {
             
-            return Task.FromResult(new NuKeeper.Abstractions.DTOs.User(_settings.Username, "", ""));
+            return Task.FromResult(new User(_settings.Username, "", ""));
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
@@ -68,21 +70,21 @@ namespace NuKeeper.BitBucket
             return projects.Select(project => new Organization("", "")).ToList();
         }
 
-        public async Task<IReadOnlyList<NuKeeper.Abstractions.DTOs.Repository>> GetRepositoriesForOrganisation(string projectName)
+        public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
             var repos = await _client.GetGitRepositories(projectName);
             return repos.Select(repo =>
-                new NuKeeper.Abstractions.DTOs.Repository(repo.name, false, new UserPermissions(true, true, true), new Uri(repo.links.clone.First().href), new Uri(repo.links.clone.First().href), null, false, null))
+                new Repository(repo.name, false, new UserPermissions(true, true, true), new Uri(repo.links.clone.First().href), new Uri(repo.links.clone.First().href), null, false, null))
                 .ToList();
         }
 
-        public async Task<NuKeeper.Abstractions.DTOs.Repository> GetUserRepository(string projectName, string repositoryName)
+        public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
             var repos = await GetRepositoriesForOrganisation(projectName);
             return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<NuKeeper.Abstractions.DTOs.Repository> MakeUserFork(string owner, string repositoryName)
+        public Task<Repository> MakeUserFork(string owner, string repositoryName)
         {
             throw new NotImplementedException();
         }
