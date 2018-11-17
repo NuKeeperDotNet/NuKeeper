@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.AzureDevOps;
@@ -86,10 +87,11 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void RepositorySettings_PathTooLong()
+        public void RepositorySettings_InvalidFormat()
         {
-            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/"));
-            Assert.IsNull(settings);
+            Assert.Throws<NuKeeperException>(() =>
+                AzureSettingsReader.RepositorySettings(
+                    new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/")));
         }
     }
 }

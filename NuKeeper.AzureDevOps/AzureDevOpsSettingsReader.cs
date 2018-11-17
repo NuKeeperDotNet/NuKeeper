@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.AzureDevOps
@@ -8,7 +10,8 @@ namespace NuKeeper.AzureDevOps
     public class AzureDevOpsSettingsReader : BaseSettingsReader
     {
         private readonly IGitDiscoveryDriver _gitDriver;
-
+        private bool _isLocalGitRepo;
+        
         public AzureDevOpsSettingsReader(IGitDiscoveryDriver gitDriver)
         {
             _gitDriver = gitDriver;
@@ -24,42 +27,49 @@ namespace NuKeeper.AzureDevOps
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
-                if (_gitDriver.IsGitRepo(repositoryUri))
-                {
-                    // Check the origin remotes
-                    var remotes = _gitDriver.GetRemotes(repositoryUri);
-                    var origin = remotes.FirstOrDefault(a =>
-                        a.Name.Equals("origin", StringComparison.OrdinalIgnoreCase));
-
-                    if (origin != null)
-                        repositoryUri = origin.Url;
-                }
-
+                _isLocalGitRepo = true;
+                repositoryUri.SetUriFromLocalRepo(_gitDriver);
             }
 
             // Did we specify a Azure DevOps?
-            if (repositoryUri == null || repositoryUri.Host != "dev.azure.com")
-            {
-                return false;
-            }
-
-            return true;
+            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
         {
-          
             if (repositoryUri == null)
             {
                 return null;
             }
 
+            return _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+        }
 
-            Uri localRepositoryUri =null;
-            Uri workingFolder = repositoryUri;
-            string branchName = string.Empty;
-            string remoteName = string.Empty;
+        private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        {
+            // URL pattern is
+            // https://dev.azure.com/{org}/{project}/_git/{repo}/
+            var path = repositoryUri.AbsolutePath;
+            var pathParts = path.Split('/')
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToList();
 
+            if (pathParts.Count != 4)
+            {
+                return null;
+            }
+
+            var org = pathParts[0];
+            var project = pathParts[1];
+            var repoName = pathParts[3];
+
+            return CreateRepositorySettings(org, repositoryUri, project, repoName);
+        }
+        
+        private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri)
+        {
+            RemoteInfo remoteInfo = new RemoteInfo();
+            
             if (_gitDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
@@ -69,10 +79,10 @@ namespace NuKeeper.AzureDevOps
 
                 if (origin != null)
                 {
-                    localRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
+                    remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
-                    branchName = _gitDriver.GetCurrentHead(localRepositoryUri);
-                    remoteName = origin.Name;
+                    remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
+                    remoteInfo.RemoteName = origin.Name;
                 }
 
             }
@@ -93,17 +103,16 @@ namespace NuKeeper.AzureDevOps
             var project = pathParts[1];
             var repoName = pathParts[3];
 
-            return new RepositorySettings
-            {
-                ApiUri = new Uri($"https://dev.azure.com/{org}/"),
-                RepositoryUri = repositoryUri,
-                RepositoryName = repoName,
-                RepositoryOwner = project,
-                LocalRepositoryUri = localRepositoryUri,
-                WorkingFolder = workingFolder,
-                BranchName = branchName,
-                RemoteName = remoteName
-            };
+            return CreateRepositorySettings(org, repositoryUri, project, repoName, remoteInfo);
         }
+        
+        private RepositorySettings CreateRepositorySettings (string org, Uri repositoryUri, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
+        {
+            ApiUri = new Uri($"https://dev.azure.com/{org}/"),
+            RepositoryUri = repositoryUri,
+            RepositoryName = repoName,
+            RepositoryOwner = project,
+            RemoteInfo = remoteInfo
+        };
     }
 }

@@ -27,7 +27,7 @@ namespace NuKeeper.Engine
             {
                 // if local repo, then we already have the source so we can do a directory scan
                 var ext = new List<string> { ".csproj", ".fsproj", ".vbproj" };
-                var files = Directory.GetFiles(repository.WorkingFolder.AbsolutePath, "*.*", SearchOption.AllDirectories)
+                var files = Directory.GetFiles(repository.RemoteInfo.WorkingFolder.AbsolutePath, "*.*", SearchOption.AllDirectories)
                     .Where(s => ext.Contains(Path.GetExtension(s)) || Path.GetFileName(s).Equals( "packages.config",StringComparison.OrdinalIgnoreCase));
                  return files.Any();
             }

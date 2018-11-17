@@ -55,10 +55,10 @@ namespace NuKeeper.Engine
                 IFolder folder = null;
                 if (repository.IsLocalRepo)
                 {
-                    folder = new Folder(_logger, new DirectoryInfo(repository.LocalRepositoryUri.AbsolutePath));
-                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.WorkingFolder.AbsolutePath));
-                    repo.DefaultBranch = repository.BranchName;
-                    repo.Remote = repository.RemoteName;
+                    folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
+                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
+                    repo.DefaultBranch = repository.RemoteInfo.BranchName;
+                    repo.Remote = repository.RemoteInfo.RemoteName;
                 }
                 else
                 {
