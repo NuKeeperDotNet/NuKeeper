@@ -1,5 +1,6 @@
 using System.Text;
 using NuGet.Common;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using SimpleInjector;
 using NuKeeper.Inspection;

@@ -4,6 +4,8 @@ using NuKeeper.Abstractions.DTOs;
 using NuKeeper.Abstractions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
@@ -35,6 +37,8 @@ namespace NuKeeper.Engine
                         $"Repository {repository.RepositoryOwner}/{repository.RepositoryName} contains no .NET code on the default branch, skipping.");
                     return false;
                 }
+                
+                return true;
             }
             catch (Exception ex)
             {
@@ -42,6 +46,7 @@ namespace NuKeeper.Engine
             }
 
             return true;
+
         }
     }
 }

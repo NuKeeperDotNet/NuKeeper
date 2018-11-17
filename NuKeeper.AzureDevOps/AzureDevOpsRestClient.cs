@@ -33,6 +33,7 @@ namespace NuKeeper.AzureDevOps
             var responseBody = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(responseBody);
         }
+        
         private static Uri BuildAzureDevOpsUri(string relativePath)
         {
             return new Uri($"{relativePath}?api-version=4.1", UriKind.Relative);

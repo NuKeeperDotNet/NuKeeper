@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Tests.Engine
 {

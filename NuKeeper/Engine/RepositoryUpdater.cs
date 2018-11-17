@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Engine.Packages;
@@ -46,14 +47,15 @@ namespace NuKeeper.Engine
             RepositoryData repository,
             SettingsContainer settings)
         {
-            GitInit(git, repository);
+            if (string.IsNullOrEmpty(repository.DefaultBranch))
+                GitInit(git, repository);
 
             var userSettings = settings.UserSettings;
 
-            var sources = _nugetSourcesReader.Read(git.WorkingFolder, userSettings.NuGetSources);
+            var sources = _nugetSourcesReader.Read(settings.WorkingFolder ?? git.WorkingFolder, userSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                git.WorkingFolder, sources, userSettings.AllowedChange);
+                settings.WorkingFolder ?? git.WorkingFolder, sources, userSettings.AllowedChange);
 
             _reporter.Report(
                 userSettings.OutputDestination,
@@ -87,7 +89,7 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            await _solutionsRestore.CheckRestore(targetUpdates, git.WorkingFolder, sources);
+            await _solutionsRestore.CheckRestore(targetUpdates, settings.WorkingFolder ?? git.WorkingFolder, sources);
 
             var updatesDone = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings);
 
@@ -107,7 +109,7 @@ namespace NuKeeper.Engine
         {
             git.Clone(repository.Pull.Uri);
             repository.DefaultBranch = git.GetCurrentHead();
-            git.AddRemote("nukeeper_push", repository.Push.Uri);
+            git.AddRemote(repository.Remote, repository.Push.Uri);
         }
     }
 }

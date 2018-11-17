@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
 {
@@ -21,5 +23,18 @@ namespace NuKeeper.Abstractions.Formats
             return new Uri(path + "/");
         }
 
+        public static Uri GetRemoteUriFromLocalRepo(this Uri repositoryUri, IGitDiscoveryDriver discoveryDriver, string shouldMatchTo)
+        {
+            if (discoveryDriver.IsGitRepo(repositoryUri))
+            {
+                // Check the origin remotes
+                var origin = discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
+                
+                if (origin != null)
+                    return origin.Url;
+            }
+            
+            return repositoryUri;
+        }
     }
 }

@@ -23,5 +23,9 @@ namespace NuKeeper.Abstractions.Configuration
         public string RepositoryName { get; set; }
         
         public Uri ApiUri { get; set; }
+
+        public bool IsLocalRepo => RemoteInfo?.LocalRepositoryUri != null;
+
+        public RemoteInfo RemoteInfo { get; set; }
     }
 }

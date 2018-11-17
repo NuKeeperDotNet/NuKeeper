@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.DTOs;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
@@ -45,23 +47,41 @@ namespace NuKeeper.Engine
                     return 0;
                 }
 
-                if (!await _repositoryFilter.ContainsDotNetProjects(repository))
+                if (!repository.IsLocalRepo) // The updaters will do the check for the local files, and they know what file types they can handle.
                 {
-                    return 0;
+                    if (!await _repositoryFilter.ContainsDotNetProjects(repository))
+                    {
+                        return 0;
+                    }
                 }
 
-                var tempFolder = _folderFactory.UniqueTemporaryFolder();
-                var git = new LibGit2SharpDriver(_logger, tempFolder, gitCreds, userIdentity);
+                IFolder folder = null;
+                if (repository.IsLocalRepo)
+                {
+                    folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
+                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
+                    repo.DefaultBranch = repository.RemoteInfo.BranchName;
+                    repo.Remote = repository.RemoteInfo.RemoteName;
+                }
+                else
+                {
+                    folder = _folderFactory.UniqueTemporaryFolder();
+                    settings.WorkingFolder = folder;
+                }
+
+                var git = new LibGit2SharpDriver(_logger, folder, gitCreds, userIdentity);
 
                 var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 
-                tempFolder.TryDelete();
+                if (!repository.IsLocalRepo)
+                    folder.TryDelete();
+
                 return updatesDone;
             }
             catch (Exception ex)
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-                return 0;
+                return 1;
             }
         }
 
