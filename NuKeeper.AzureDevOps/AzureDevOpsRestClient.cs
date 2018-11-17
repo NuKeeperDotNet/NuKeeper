@@ -40,7 +40,7 @@ namespace NuKeeper.AzureDevOps
         }
         public async Task<IEnumerable<Project>> GetProjects()
         {
-            var response = await GetResourceOrEmpty<ProjectResource>($"/_apis/projects");
+            var response = await GetResourceOrEmpty<ProjectResource>("/_apis/projects");
             return response.value.AsEnumerable();
         }
 
