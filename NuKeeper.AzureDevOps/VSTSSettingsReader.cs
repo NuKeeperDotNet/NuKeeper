@@ -9,6 +9,8 @@ namespace NuKeeper.AzureDevOps
 {
     public class VstsSettingsReader : BaseSettingsReader
     {
+        public const string PlatformHost = "visualstudio.com";
+        
         private readonly IGitDiscoveryDriver _gitDriver;
         private bool _isFromLocalGitRepo;
         
@@ -25,11 +27,11 @@ namespace NuKeeper.AzureDevOps
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
-                repositoryUri.SetUriFromLocalRepo(_gitDriver);
+                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
                 _isFromLocalGitRepo = true;
             }
        
-            return repositoryUri?.Host.ContainsOrdinal("visualstudio.com") == true;
+            return repositoryUri?.Host.ContainsOrdinal(PlatformHost) == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
@@ -70,6 +72,7 @@ namespace NuKeeper.AzureDevOps
         {
             RemoteInfo remoteInfo = new RemoteInfo();
 
+            var localFolder = repositoryUri;
             if (_gitDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
@@ -83,6 +86,7 @@ namespace NuKeeper.AzureDevOps
                     repositoryUri = origin.Url;
                     remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = "origin";
+                    remoteInfo.WorkingFolder = localFolder;
                 }
             }
             else
@@ -101,7 +105,17 @@ namespace NuKeeper.AzureDevOps
             var org = repositoryUri.Host.Split('.')[0];
             string repoName, project;
 
-            if (pathParts.Count == 2)
+            if (pathParts.Count == 3)
+            {
+                project = pathParts[0];
+                repoName = pathParts[2];
+            }
+            else if (pathParts.Count == 4)
+            {
+                project = pathParts[1];
+                repoName = pathParts[3];
+            }
+            else if (pathParts.Count == 2)
             {
                 project = pathParts[1];
                 repoName = pathParts[1];

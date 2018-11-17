@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NuKeeper.Abstractions.Git;
 
 namespace Nukeeper.AzureDevOps.Tests
@@ -28,6 +29,11 @@ namespace Nukeeper.AzureDevOps.Tests
         public string GetCurrentHead(Uri repositoryUri)
         {
             return "master";
+        }
+
+        public GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost)
+        {
+            return GetRemotes(repositoryUri).First();
         }
     }
 }

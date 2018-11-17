@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
@@ -26,7 +25,7 @@ namespace NuKeeper.AzureDevOps
             if (repositoryUri.IsFile)
             {
                 _isLocalGitRepo = true;
-                repositoryUri.SetUriFromLocalRepo(_gitDriver);
+                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, "dev.azure.com");
             }
 
             // Did we specify a Azure DevOps?
@@ -79,6 +78,7 @@ namespace NuKeeper.AzureDevOps
                 {
                     remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
+                    remoteInfo.WorkingFolder = repositoryUri;
                     remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = origin.Name;
                 }

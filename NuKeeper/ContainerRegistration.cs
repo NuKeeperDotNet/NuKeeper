@@ -51,6 +51,7 @@ namespace NuKeeper
             {
                 typeof(GitHubSettingsReader).Assembly,
                 typeof(AzureDevOpsSettingsReader).Assembly,
+                typeof(VstsSettingsReader).Assembly,
                 typeof(BitbucketSettingsReader).Assembly,
             });
 

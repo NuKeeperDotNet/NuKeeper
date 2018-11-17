@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Abstractions.Git
 {
@@ -22,6 +23,8 @@ namespace NuKeeper.Abstractions.Git
         Uri DiscoverRepo(Uri repositoryUri);
 
         string GetCurrentHead(Uri repositoryUri);
+
+        GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost);
     }
 
     public class GitRemote

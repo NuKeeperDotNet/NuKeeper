@@ -50,7 +50,7 @@ namespace NuKeeper.Tests.Engine
 
             var result = await subject.ContainsDotNetProjects(MakeSampleRepository());
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         private static RepositorySettings MakeSampleRepository()

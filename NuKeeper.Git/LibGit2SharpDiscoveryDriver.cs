@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Git
@@ -52,6 +53,13 @@ namespace NuKeeper.Git
             {
                 return repo.Branches.Single(b => b.IsCurrentRepositoryHead).FriendlyName;
             }
+        }
+
+        public GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost)
+        {
+            var remotes = GetRemotes(repositoryUri);
+            var origin = remotes.FirstOrDefault(rm => rm.Url.Host.ContainsOrdinal(platformHost) == true);
+            return origin;
         }
     }
 
