@@ -6,7 +6,6 @@ using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection;
-using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;

@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using NuKeeper.Abstractions.Inspections.Files;
-using NuKeeper.Inspection.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

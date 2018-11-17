@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Inspection;
 
 namespace NuKeeper.Update.ProcessRunner
 {

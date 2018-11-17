@@ -1,4 +1,3 @@
-using System;
 using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Abstractions.Configuration
