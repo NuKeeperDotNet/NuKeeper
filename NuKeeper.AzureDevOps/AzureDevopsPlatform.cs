@@ -22,7 +22,10 @@ namespace NuKeeper.AzureDevOps
 
         public void Initialise(AuthSettings settings)
         {
-            var httpClient = new HttpClient() { BaseAddress = settings.ApiBase};
+            var httpClient = new HttpClient
+            {
+                BaseAddress = settings.ApiBase
+            };
             _client = new AzureDevOpsRestClient(httpClient, _logger, settings.Token);
         }
 
@@ -56,7 +59,10 @@ namespace NuKeeper.AzureDevOps
         {
             var repos = await _client.GetGitRepositories(projectName);
             return repos.Select(x =>
-                new Repository(x.name, false, new UserPermissions(true, true, true), new Uri(x.url), new Uri(x.remoteUrl), null, false, null))
+                new Repository(x.name, false,
+                    new UserPermissions(true, true, true),
+                    new Uri(x.url), new Uri(x.remoteUrl),
+                    null, false, null))
                 .ToList();
         }
 

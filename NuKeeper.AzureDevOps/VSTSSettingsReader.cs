@@ -22,7 +22,9 @@ namespace NuKeeper.AzureDevOps
         public override bool CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null)
+            {
                 return false;
+            }
             
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
@@ -37,7 +39,9 @@ namespace NuKeeper.AzureDevOps
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
         {
             if (repositoryUri == null)
+            {
                 return null;
+            }
 
             return _isFromLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
         }
@@ -70,7 +74,7 @@ namespace NuKeeper.AzureDevOps
 
         private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri)
         {
-            RemoteInfo remoteInfo = new RemoteInfo();
+            var remoteInfo = new RemoteInfo();
 
             var localFolder = repositoryUri;
             if (_gitDriver.IsGitRepo(repositoryUri))
