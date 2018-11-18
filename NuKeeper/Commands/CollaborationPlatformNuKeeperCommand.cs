@@ -67,7 +67,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad Api Base '{endpoint}'");
             }
 
-            CollaborationFactory.Initialise(baseUri, PersonalAccessToken);
+            CollaborationFactory.Initialise(baseUri, PersonalAccessToken, ForkMode);
 
             if (CollaborationFactory.Settings.Token == null)
             {
@@ -80,8 +80,6 @@ namespace NuKeeper.Commands
             const int defaultMaxPullRequests = 3;
             settings.PackageFilters.MaxPackageUpdates =
                 Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);
-
-            CollaborationFactory.Settings.ForkMode = ForkMode ?? CollaborationFactory.Settings.ForkMode;
 
             var defaultLabels = new List<string> {"nukeeper"};
 

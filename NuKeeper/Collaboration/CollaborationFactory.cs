@@ -60,7 +60,7 @@ namespace NuKeeper.Collaboration
             Settings = new CollaborationPlatformSettings();
         }
 
-        public void Initialise(Uri apiEndpoint, string token)
+        public void Initialise(Uri apiEndpoint, string token, ForkMode? forkModeFromSettings)
         {
             var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
 
@@ -70,6 +70,7 @@ namespace NuKeeper.Collaboration
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
+            Settings.ForkMode = forkModeFromSettings;
             platformSettingsReader.UpdateCollaborationPlatformSettings(Settings);
 
             ValidateSettings();
