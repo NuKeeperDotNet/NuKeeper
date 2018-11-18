@@ -28,7 +28,6 @@ namespace NuKeeper.Collaboration
         {
             get
             {
-                CheckCreate();
                 return _forkFinder;
             }
         }
@@ -37,7 +36,6 @@ namespace NuKeeper.Collaboration
         {
             get
             {
-                CheckCreate();
                 return _repositoryDiscovery;
 
             }
@@ -47,7 +45,6 @@ namespace NuKeeper.Collaboration
         {
             get
             {
-                CheckCreate();
                 return _collaborationPlatform;
             }
         }
@@ -74,6 +71,7 @@ namespace NuKeeper.Collaboration
             platformSettingsReader.UpdateCollaborationPlatformSettings(Settings);
 
             ValidateSettings();
+            CreateForPlatform();
         }
 
         private ISettingsReader SettingsReaderForPlatform(Uri apiEndpoint)
@@ -89,16 +87,6 @@ namespace NuKeeper.Collaboration
             return platformSettingsReader;
         }
 
-        private void CheckCreate()
-        {
-            if (_forkFinder == null ||
-                _repositoryDiscovery == null ||
-                _collaborationPlatform == null)
-            {
-                CreateForPlatform();
-            }
-        }
-
         private void ValidateSettings()
         {
             if (!Settings.BaseApiUrl.IsWellFormedOriginalString()
@@ -106,19 +94,20 @@ namespace NuKeeper.Collaboration
             {
                 throw new NuKeeperException($"Api is not of correct format {Settings.BaseApiUrl}");
             }
-        }
 
-        private void CreateForPlatform()
-        {
             if (!Settings.ForkMode.HasValue)
             {
                 throw new NuKeeperException("Fork Mode was not set");
             }
+
             if (!_platform.HasValue)
             {
                 throw new NuKeeperException("Platform was not set");
             }
+        }
 
+        private void CreateForPlatform()
+        {
             var forkMode = Settings.ForkMode.Value;
 
             switch (_platform.Value)
