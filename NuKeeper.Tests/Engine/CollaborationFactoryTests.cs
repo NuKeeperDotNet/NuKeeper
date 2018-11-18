@@ -34,10 +34,32 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void NoInitialiseReturnsEmptyProps()
+        public void UnitialisedForkFinderIsNotValid()
         {
-            Assert.IsNull(GetCollaborationFactory().ForkFinder);
+            Assert.Throws<NuKeeperException>(() =>
+            {
+                var f = GetCollaborationFactory().ForkFinder;
+            });
         }
+
+        [Test]
+        public void UnitialisedCollaborationPlatformIsNotValid()
+        {
+            Assert.Throws<NuKeeperException>(() =>
+            {
+                var f = GetCollaborationFactory().CollaborationPlatform;
+            });
+        }
+
+        [Test]
+        public void UnitialisedRepositoryDiscoveryIsNotValid()
+        {
+            Assert.Throws<NuKeeperException>(() =>
+            {
+                var f = GetCollaborationFactory().RepositoryDiscovery;
+            });
+        }
+
 
         [Test]
         public void UnknownApiReturnsUnableToFindPlatform()

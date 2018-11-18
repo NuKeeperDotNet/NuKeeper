@@ -77,7 +77,6 @@ namespace NuKeeper.Commands
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
-
             const int defaultMaxPullRequests = 3;
             settings.PackageFilters.MaxPackageUpdates =
                 Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);

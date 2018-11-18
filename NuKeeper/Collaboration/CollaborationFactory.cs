@@ -17,37 +17,85 @@ namespace NuKeeper.Collaboration
         private readonly IEnumerable<ISettingsReader> _settingReaders;
         private readonly INuKeeperLogger _nuKeeperLogger;
         private Platform? _platform;
-        private ISettingsReader _settingsReader;
+
+        private IForkFinder _forkFinder;
+        private IRepositoryDiscovery _repositoryDiscovery;
+        private ICollaborationPlatform _collaborationPlatform;
 
         public CollaborationPlatformSettings Settings { get; }
+
+        public IForkFinder ForkFinder
+        {
+            get
+            {
+                CheckCreate();
+                return _forkFinder;
+            }
+        }
+
+        public IRepositoryDiscovery RepositoryDiscovery
+        {
+            get
+            {
+                CheckCreate();
+                return _repositoryDiscovery;
+
+            }
+        }
+
+        public ICollaborationPlatform CollaborationPlatform
+        {
+            get
+            {
+                CheckCreate();
+                return _collaborationPlatform;
+            }
+        }
 
         public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders,
             INuKeeperLogger nuKeeperLogger)
         {
             _settingReaders = settingReaders;
             _nuKeeperLogger = nuKeeperLogger;
-            _settingsReader = null;
             Settings = new CollaborationPlatformSettings();
         }
 
         public void Initialise(Uri apiEndpoint, string token)
         {
-            _settingsReader = _settingReaders
-                .FirstOrDefault(s => s.CanRead(apiEndpoint));
+            var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
 
-            if (_settingsReader == null)
-            {
-                throw new NuKeeperException($"Unable to find collaboration platform for uri {apiEndpoint}");
-            }
-
-            _platform = _settingsReader.Platform;
+            _platform = platformSettingsReader.Platform;
 
             _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
-            _settingsReader.UpdateCollaborationPlatformSettings(Settings);
+            platformSettingsReader.UpdateCollaborationPlatformSettings(Settings);
+
             ValidateSettings();
+        }
+
+        private ISettingsReader SettingsReaderForPlatform(Uri apiEndpoint)
+        {
+            var platformSettingsReader = _settingReaders
+                .FirstOrDefault(s => s.CanRead(apiEndpoint));
+
+            if (platformSettingsReader == null)
+            {
+                throw new NuKeeperException($"Unable to find collaboration platform for uri {apiEndpoint}");
+            }
+
+            return platformSettingsReader;
+        }
+
+        private void CheckCreate()
+        {
+            if (_forkFinder == null ||
+                _repositoryDiscovery == null ||
+                _collaborationPlatform == null)
+            {
+                CreateForPlatform();
+            }
         }
 
         private void ValidateSettings()
@@ -59,110 +107,51 @@ namespace NuKeeper.Collaboration
             }
         }
 
-        private IForkFinder _forkFinder;
-
-        public IForkFinder ForkFinder
+        private void CreateForPlatform()
         {
-            get
+            if (!Settings.ForkMode.HasValue)
             {
-                if (!_platform.HasValue)
-                {
-                    return null;
-                }
-
-                if (_forkFinder != null)
-                {
-                    return _forkFinder;
-                }
-
-                if (!Settings.ForkMode.HasValue)
-                {
-                    return null;
-                }
-
-                switch (_platform.Value)
-                {
-                    case Platform.AzureDevOps:
-                        _forkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
-                        break;
-                    case Platform.GitHub:
-                        _forkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
-                        break;
-                    case Platform.Bitbucket:
-                        _forkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, Settings.ForkMode.Value);
-                        break;
-                }
-
-                return _forkFinder;
+                throw new NuKeeperException("Fork Mode was not set");
             }
-        }
-
-        private IRepositoryDiscovery _repositoryDiscovery;
-
-        public IRepositoryDiscovery RepositoryDiscovery
-        {
-            get
+            if (!_platform.HasValue)
             {
-                if (!_platform.HasValue)
-                {
-                    return null;
-                }
-
-                if (_repositoryDiscovery != null)
-                {
-                    return _repositoryDiscovery;
-                }
-
-                switch (_platform.Value)
-                {
-                    case Platform.AzureDevOps:
-                        _repositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
-                        break;
-                    case Platform.GitHub:
-                        _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
-                        break;
-                    case Platform.Bitbucket:
-                        _repositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
-                        break;
-                }
-
-                return _repositoryDiscovery;
+                throw new NuKeeperException("Platform was not set");
             }
-        }
 
-        private ICollaborationPlatform _collaborationPlatform;
+            var forkMode = Settings.ForkMode.Value;
 
-        public ICollaborationPlatform CollaborationPlatform
-        {
-            get
+            switch (_platform.Value)
             {
-                if (!_platform.HasValue)
-                {
-                    return null;
-                }
+                case Platform.AzureDevOps:
+                    _collaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
+                    _repositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
+                    _forkFinder = new AzureDevOpsForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
 
-                if (_collaborationPlatform != null)
-                {
-                    return _collaborationPlatform;
-                }
+                case Platform.GitHub:
+                    _collaborationPlatform = new OctokitClient(_nuKeeperLogger);
+                    _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
+                    _forkFinder = new GitHubForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
 
-                switch (_platform.Value)
-                {
-                    case Platform.AzureDevOps:
-                        _collaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
-                        break;
-                    case Platform.GitHub:
-                        _collaborationPlatform = new OctokitClient(_nuKeeperLogger);
-                        break;
-                    case Platform.Bitbucket:
-                        _collaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
-                        break;
-                }
-                _collaborationPlatform?.Initialise(
-                    new AuthSettings(Settings.BaseApiUrl, Settings.Token, Settings.Username)
-                );
+                case Platform.Bitbucket:
+                    _collaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                    _repositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
+                    _forkFinder = new BitbucketForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
 
-                return _collaborationPlatform;
+                default:
+                    throw new NuKeeperException($"Unknown platform: {_platform}");
+            }
+
+            var auth = new AuthSettings(Settings.BaseApiUrl, Settings.Token, Settings.Username);
+            _collaborationPlatform.Initialise(auth);
+
+            if (_forkFinder == null ||
+                _repositoryDiscovery == null ||
+                _collaborationPlatform == null)
+            {
+                throw new NuKeeperException($"Platform {_platform} could not be initialised");
             }
         }
     }

@@ -70,7 +70,6 @@ namespace NuKeeper.Tests.Engine
             Assert.That(count, Is.EqualTo(2));
         }
 
-
         [Test]
         public async Task CountIsNotIncrementedWhenRepoEngineFails()
         {
@@ -133,7 +132,6 @@ namespace NuKeeper.Tests.Engine
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
 
             collaborationFactory.RepositoryDiscovery.GetRepositories(Arg.Any<SourceControlServerSettings>()).Returns(repos);
-
 
             repoEngine.Run(null, null, null, null).ReturnsForAnyArgs(repoEngineResult);
 
