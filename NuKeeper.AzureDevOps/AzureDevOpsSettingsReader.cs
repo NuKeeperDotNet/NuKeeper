@@ -30,8 +30,8 @@ namespace NuKeeper.AzureDevOps
                 repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, "dev.azure.com");
             }
 
-            // Did we specify a Azure DevOps?
-            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") ?? false;
+            // Did we specify a Azure DevOps url?
+            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
