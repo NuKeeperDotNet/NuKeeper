@@ -2,7 +2,7 @@ using System;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Engine;
+using NuKeeper.Collaboration;
 using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands

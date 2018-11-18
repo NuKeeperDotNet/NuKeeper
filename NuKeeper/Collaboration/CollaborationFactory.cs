@@ -1,8 +1,8 @@
-using NuKeeper.Abstractions.CollaborationPlatform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
@@ -10,7 +10,7 @@ using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
 using NuKeeper.GitHub;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Collaboration
 {
     public class CollaborationFactory : ICollaborationFactory
     {

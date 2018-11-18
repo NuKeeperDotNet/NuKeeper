@@ -2,7 +2,6 @@ using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Collaboration;
 
 namespace NuKeeper.Tests.Commands
 {

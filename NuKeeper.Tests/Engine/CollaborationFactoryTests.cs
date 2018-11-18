@@ -6,7 +6,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
-using NuKeeper.Engine;
+using NuKeeper.Collaboration;
 using NuKeeper.GitHub;
 using NUnit.Framework;
 
