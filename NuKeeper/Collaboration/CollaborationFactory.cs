@@ -22,32 +22,13 @@ namespace NuKeeper.Collaboration
         private IRepositoryDiscovery _repositoryDiscovery;
         private ICollaborationPlatform _collaborationPlatform;
 
+        public IForkFinder ForkFinder => _forkFinder;
+
+        public IRepositoryDiscovery RepositoryDiscovery => _repositoryDiscovery;
+
+        public ICollaborationPlatform CollaborationPlatform => _collaborationPlatform;
+
         public CollaborationPlatformSettings Settings { get; }
-
-        public IForkFinder ForkFinder
-        {
-            get
-            {
-                return _forkFinder;
-            }
-        }
-
-        public IRepositoryDiscovery RepositoryDiscovery
-        {
-            get
-            {
-                return _repositoryDiscovery;
-
-            }
-        }
-
-        public ICollaborationPlatform CollaborationPlatform
-        {
-            get
-            {
-                return _collaborationPlatform;
-            }
-        }
 
         public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders,
             INuKeeperLogger nuKeeperLogger)
