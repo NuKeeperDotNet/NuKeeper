@@ -18,15 +18,11 @@ namespace NuKeeper.Collaboration
         private readonly INuKeeperLogger _nuKeeperLogger;
         private Platform? _platform;
 
-        private IForkFinder _forkFinder;
-        private IRepositoryDiscovery _repositoryDiscovery;
-        private ICollaborationPlatform _collaborationPlatform;
+        public IForkFinder ForkFinder { get; private set; }
 
-        public IForkFinder ForkFinder => _forkFinder;
+        public IRepositoryDiscovery RepositoryDiscovery { get; private set; }
 
-        public IRepositoryDiscovery RepositoryDiscovery => _repositoryDiscovery;
-
-        public ICollaborationPlatform CollaborationPlatform => _collaborationPlatform;
+        public ICollaborationPlatform CollaborationPlatform { get; private set; }
 
         public CollaborationPlatformSettings Settings { get; }
 
@@ -81,6 +77,11 @@ namespace NuKeeper.Collaboration
                 throw new NuKeeperException("Fork Mode was not set");
             }
 
+            if (string.IsNullOrWhiteSpace(Settings.Token))
+            {
+                throw new NuKeeperException("Token was not set");
+            }
+
             if (!_platform.HasValue)
             {
                 throw new NuKeeperException("Platform was not set");
@@ -94,21 +95,21 @@ namespace NuKeeper.Collaboration
             switch (_platform.Value)
             {
                 case Platform.AzureDevOps:
-                    _collaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
-                    _repositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
-                    _forkFinder = new AzureDevOpsForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
+                    RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
+                    ForkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 case Platform.GitHub:
-                    _collaborationPlatform = new OctokitClient(_nuKeeperLogger);
-                    _repositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, _collaborationPlatform);
-                    _forkFinder = new GitHubForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    CollaborationPlatform = new OctokitClient(_nuKeeperLogger);
+                    RepositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
+                    ForkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 case Platform.Bitbucket:
-                    _collaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
-                    _repositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
-                    _forkFinder = new BitbucketForkFinder(_collaborationPlatform, _nuKeeperLogger, forkMode);
+                    CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                    RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
+                    ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 default:
@@ -116,11 +117,11 @@ namespace NuKeeper.Collaboration
             }
 
             var auth = new AuthSettings(Settings.BaseApiUrl, Settings.Token, Settings.Username);
-            _collaborationPlatform.Initialise(auth);
+            CollaborationPlatform.Initialise(auth);
 
-            if (_forkFinder == null ||
-                _repositoryDiscovery == null ||
-                _collaborationPlatform == null)
+            if (ForkFinder == null ||
+                RepositoryDiscovery == null ||
+                CollaborationPlatform == null)
             {
                 throw new NuKeeperException($"Platform {_platform} could not be initialised");
             }

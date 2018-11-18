@@ -67,7 +67,14 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad Api Base '{endpoint}'");
             }
 
-            CollaborationFactory.Initialise(baseUri, PersonalAccessToken, ForkMode);
+            try
+            {
+                CollaborationFactory.Initialise(baseUri, PersonalAccessToken, ForkMode);
+            }
+            catch (Exception ex)
+            {
+                return ValidationResult.Failure(ex.Message);
+            }
 
             if (CollaborationFactory.Settings.Token == null)
             {
