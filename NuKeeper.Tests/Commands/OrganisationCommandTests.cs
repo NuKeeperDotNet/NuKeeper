@@ -3,13 +3,13 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Commands;
-using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Collaboration;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Tests.Commands

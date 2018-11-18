@@ -31,7 +31,7 @@ namespace NuKeeper.AzureDevOps
             }
 
             // Did we specify a Azure DevOps?
-            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") == true;
+            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") ?? false;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)

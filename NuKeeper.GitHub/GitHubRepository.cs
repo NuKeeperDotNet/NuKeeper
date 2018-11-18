@@ -1,6 +1,5 @@
 using System;
 using NuKeeper.Abstractions.CollaborationModels;
-using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 
 namespace NuKeeper.GitHub
 {

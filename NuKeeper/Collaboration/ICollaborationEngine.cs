@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 
-namespace NuKeeper.Engine
+namespace NuKeeper.Collaboration
 {
     public interface ICollaborationEngine
     {

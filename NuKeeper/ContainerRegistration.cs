@@ -5,6 +5,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
+using NuKeeper.Collaboration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;

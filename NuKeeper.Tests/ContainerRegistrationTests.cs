@@ -1,7 +1,7 @@
 using System;
+using NuKeeper.Collaboration;
 using NuKeeper.Commands;
 using NUnit.Framework;
-using NuKeeper.Engine;
 using NuKeeper.Local;
 
 namespace NuKeeper.Tests
