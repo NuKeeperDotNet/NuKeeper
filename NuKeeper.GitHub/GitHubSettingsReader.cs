@@ -19,7 +19,7 @@ namespace NuKeeper.GitHub
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
             UpdateTokenSettings(settings);
-            settings.ForkMode = ForkMode.PreferFork;
+            settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
         }
 
         private static void UpdateTokenSettings(CollaborationPlatformSettings settings)

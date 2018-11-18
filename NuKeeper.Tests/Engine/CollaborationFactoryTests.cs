@@ -34,10 +34,16 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
-        public void NoInitialiseReturnsEmptyProps()
+        public void UnitialisedFactoryHasNulls()
         {
-            Assert.IsNull(GetCollaborationFactory().ForkFinder);
+            var f = GetCollaborationFactory();
+
+            Assert.That(f, Is.Not.Null);
+            Assert.That(f.CollaborationPlatform, Is.Null);
+            Assert.That(f.ForkFinder, Is.Null);
+            Assert.That(f.RepositoryDiscovery, Is.Null);
         }
+
 
         [Test]
         public void UnknownApiReturnsUnableToFindPlatform()
@@ -45,7 +51,9 @@ namespace NuKeeper.Tests.Engine
             var collaborationFactory = GetCollaborationFactory();
 
             var exception = Assert.Throws<NuKeeperException>(
-                () => collaborationFactory.Initialise(new Uri("https://unknown.com/"), null));
+                () => collaborationFactory.Initialise(
+                    new Uri("https://unknown.com/"), null, ForkMode.SingleRepositoryOnly));
+
             Assert.AreEqual(exception.Message, "Unable to find collaboration platform for uri https://unknown.com/");
         }
 
@@ -53,8 +61,9 @@ namespace NuKeeper.Tests.Engine
         public void AzureDevOpsUrlReturnsAzureDevOps()
         {
             var collaborationFactory = GetCollaborationFactory();
-            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token");
-            collaborationFactory.Settings.ForkMode = ForkMode.SingleRepositoryOnly;
+
+            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token", ForkMode.SingleRepositoryOnly);
+
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
         }
@@ -63,8 +72,9 @@ namespace NuKeeper.Tests.Engine
         public void GithubUrlReturnsGitHub()
         {
             var collaborationFactory = GetCollaborationFactory();
-            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token");
-            collaborationFactory.Settings.ForkMode = ForkMode.PreferFork;
+
+            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token", ForkMode.PreferFork);
+
             AssertGithub(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
         }
