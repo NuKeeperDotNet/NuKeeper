@@ -9,8 +9,7 @@ namespace NuKeeper.AzureDevOps
 {
     public class VstsSettingsReader : BaseSettingsReader
     {
-        public const string PlatformHost = "visualstudio.com";
-        
+        private const string PlatformHost = "visualstudio.com";
         private readonly IGitDiscoveryDriver _gitDriver;
         private bool _isFromLocalGitRepo;
         
@@ -80,16 +79,14 @@ namespace NuKeeper.AzureDevOps
             if (_gitDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
-                var remotes = _gitDriver.GetRemotes(repositoryUri);
-                var origin = remotes.FirstOrDefault(a =>
-                    a.Name.Equals("origin", StringComparison.OrdinalIgnoreCase));
+                var origin = _gitDriver.GetRemoteForPlatform(repositoryUri, PlatformHost);
 
                 if (origin != null)
                 {
                     remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
                     remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
-                    remoteInfo.RemoteName = "origin";
+                    remoteInfo.RemoteName = origin.Name;
                     remoteInfo.WorkingFolder = localFolder;
                 }
             }
