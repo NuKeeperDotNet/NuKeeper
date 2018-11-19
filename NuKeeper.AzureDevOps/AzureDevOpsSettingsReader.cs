@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
@@ -8,6 +9,7 @@ namespace NuKeeper.AzureDevOps
 {
     public class AzureDevOpsSettingsReader : BaseSettingsReader
     {
+        private const string PlatformHost = "dev.azure.com";
         private readonly IGitDiscoveryDriver _gitDriver;
         private bool _isLocalGitRepo;
         
@@ -27,11 +29,11 @@ namespace NuKeeper.AzureDevOps
             if (repositoryUri.IsFile)
             {
                 _isLocalGitRepo = true;
-                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, "dev.azure.com");
+                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
             }
 
             // Did we specify a Azure DevOps url?
-            return repositoryUri?.Host.ContainsOrdinal("dev.azure.com") == true;
+            return repositoryUri?.Host.ContainsOrdinal(PlatformHost) == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
@@ -68,23 +70,25 @@ namespace NuKeeper.AzureDevOps
         private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri)
         {
             var remoteInfo = new RemoteInfo();
-            
+
+            var localCopy = repositoryUri;
             if (_gitDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
-                var remotes = _gitDriver.GetRemotes(repositoryUri);
-                var origin = remotes.FirstOrDefault(a =>
-                    a.Name.Equals("origin", StringComparison.OrdinalIgnoreCase));
+                var origin = _gitDriver.GetRemoteForPlatform(repositoryUri, PlatformHost);
 
                 if (origin != null)
                 {
-                    remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
+                    remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(localCopy); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
-                    remoteInfo.WorkingFolder = repositoryUri;
+                    remoteInfo.WorkingFolder = localCopy;
                     remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = origin.Name;
                 }
-
+            }
+            else
+            {
+                throw new NuKeeperException("No git repository found");
             }
 
             // URL pattern is
