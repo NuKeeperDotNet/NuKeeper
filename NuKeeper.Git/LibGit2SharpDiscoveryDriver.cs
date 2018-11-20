@@ -71,7 +71,7 @@ namespace NuKeeper.Git
         {
             var remotes = GetRemotes(repositoryUri);
             return remotes
-                .FirstOrDefault(rm => rm?.Url?.Host.ContainsOrdinal(platformHost) == true);
+                .FirstOrDefault(rm => rm.Url.Host.ContainsOrdinal(platformHost));
         }
     }
 
