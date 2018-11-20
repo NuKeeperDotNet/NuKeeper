@@ -70,7 +70,9 @@ namespace NuKeeper.BitBucket
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
             var projects = await _client.GetProjects(_settings.Username);
-            return projects.Select(project => new Organization("", "")).ToList();
+            return projects
+                .Select(project => new Organization(project.name))
+                .ToList();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
