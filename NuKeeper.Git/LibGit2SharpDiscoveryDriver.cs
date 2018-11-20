@@ -70,8 +70,8 @@ namespace NuKeeper.Git
         public GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost)
         {
             var remotes = GetRemotes(repositoryUri);
-            var origin = remotes.FirstOrDefault(rm => rm.Url.Host.ContainsOrdinal(platformHost) == true);
-            return origin;
+            return remotes
+                .FirstOrDefault(rm => rm?.Url?.Host.ContainsOrdinal(platformHost) == true);
         }
     }
 

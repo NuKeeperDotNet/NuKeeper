@@ -66,9 +66,12 @@ namespace NuKeeper.GitHub
         {
             CheckInitialised();
 
-            var orgs = await _client.Organization.GetAll();
-            _logger.Normal($"Read {orgs.Count} organisations");
-            return orgs.Select(gitHubOrg => new Organization(gitHubOrg.Name, gitHubOrg.Login)).ToArray();
+            var githubOrgs = await _client.Organization.GetAll();
+            _logger.Normal($"Read {githubOrgs.Count} organisations");
+
+            return githubOrgs
+                .Select(org => new Organization(org.Name ?? org.Login))
+                .ToList();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)

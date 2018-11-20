@@ -47,7 +47,7 @@ namespace NuKeeper.GitHub
 
             foreach (var org in allOrgs)
             {
-                var repos = await FromOrganisation(org.Name ?? org.Login, settings);
+                var repos = await FromOrganisation(org.Name, settings);
                 allRepos.AddRange(repos);
             }
 

@@ -47,12 +47,13 @@ namespace NuKeeper.AzureDevOps
             };
 
             await _client.CreatePullRequest(req, target.Owner, repo.id);
-        }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
             var projects = await _client.GetProjects();
-            return projects.Select(project => new Organization(project.name, "")).ToList();
+            return projects
+                .Select(project => new Organization(project.name))
+                .ToList();
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
