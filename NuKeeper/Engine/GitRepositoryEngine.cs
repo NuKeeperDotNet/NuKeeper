@@ -41,6 +41,9 @@ namespace NuKeeper.Engine
         {
             try
             {
+                //Workaround for https://github.com/libgit2/libgit2sharp/issues/1596
+                repository.RepositoryUri = new Uri(repository.RepositoryUri.ToString().Replace("--PasswordToReplace--", gitCreds.Password, StringComparison.InvariantCulture));
+
                 var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
                 {
@@ -55,7 +58,7 @@ namespace NuKeeper.Engine
                     }
                 }
 
-                IFolder folder = null;
+                IFolder folder;
                 if (repository.IsLocalRepo)
                 {
                     folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
