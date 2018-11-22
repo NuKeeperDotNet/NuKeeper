@@ -52,7 +52,7 @@ namespace NuKeeper.Update.Selection
 
             if (filteredLocally.Count < filteredByInOut.Count)
             {
-                _logger.Normal($"Filtered by time {_settings.MinimumAge} from {filteredByInOut.Count} to {filteredLocally.Count}");
+                _logger.Normal($"Filtered by minimum package age {_settings.MinimumAge} from {filteredByInOut.Count} to {filteredLocally.Count}");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
