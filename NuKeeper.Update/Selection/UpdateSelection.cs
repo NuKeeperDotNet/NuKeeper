@@ -44,24 +44,50 @@ namespace NuKeeper.Update.Selection
             IReadOnlyCollection<PackageUpdateSet> all,
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
-            var filteredLocally = all
-                .Where(MatchesIncludeExclude)
+            var filteredByInOut = FilteredByIncludeExclude(all);
+
+            var filteredLocally = filteredByInOut
                 .Where(MatchesMinAge)
                 .ToList();
 
-            if (filteredLocally.Count < all.Count)
+            if (filteredLocally.Count < filteredByInOut.Count)
             {
-                _logger.Detailed($"Filtered by rules from {all.Count} to {filteredLocally.Count}");
+                _logger.Normal($"Filtered by minimum package age {_settings.MinimumAge} from {filteredByInOut.Count} to {filteredLocally.Count}");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
 
             if (remoteFiltered.Count < filteredLocally.Count)
             {
-                _logger.Detailed($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
+                _logger.Normal($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
             }
 
             return remoteFiltered;
+        }
+
+        private IReadOnlyCollection<PackageUpdateSet> FilteredByIncludeExclude(IReadOnlyCollection<PackageUpdateSet> all)
+        {
+            var filteredByIncludeExclude = all
+                .Where(MatchesIncludeExclude)
+                .ToList();
+
+            if (filteredByIncludeExclude.Count < all.Count)
+            {
+                var filterDesc = string.Empty;
+                if (_settings.Excludes != null)
+                {
+                    filterDesc += $"Exclude '{_settings.Excludes}'";
+                }
+
+                if (_settings.Includes != null)
+                {
+                    filterDesc += $"Include '{_settings.Includes}'";
+                }
+
+                _logger.Normal($"Filtered by {filterDesc} from {all.Count} to {filteredByIncludeExclude.Count}");
+            }
+
+            return filteredByIncludeExclude;
         }
 
         public static async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyRemoteFilter(
