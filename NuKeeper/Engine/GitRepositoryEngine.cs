@@ -41,9 +41,6 @@ namespace NuKeeper.Engine
         {
             try
             {
-                //Workaround for https://github.com/libgit2/libgit2sharp/issues/1596
-                repository.RepositoryUri = new Uri(repository.RepositoryUri.ToString().Replace("--PasswordToReplace--", gitCreds.Password, StringComparison.InvariantCulture));
-
                 var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
                 if (repo == null)
                 {
