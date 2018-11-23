@@ -38,8 +38,8 @@ namespace NuKeeper.AzureDevOps
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            var tfsInPath = pathParts.Count > 0 && pathParts[0].ContainsOrdinal(PlatformHost);
-            var tfsInHost = repositoryUri.Host.ContainsOrdinal(PlatformHost);
+            var tfsInPath = pathParts.Count > 0 && pathParts[0].Contains(PlatformHost, StringComparison.OrdinalIgnoreCase);
+            var tfsInHost = repositoryUri.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase);
             return tfsInPath || tfsInHost;
         }
 

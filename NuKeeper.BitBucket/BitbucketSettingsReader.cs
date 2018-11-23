@@ -15,7 +15,7 @@ namespace NuKeeper.BitBucket
         
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.ContainsOrdinal("bitbucket.org") == true;
+            return repositoryUri?.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
