@@ -33,7 +33,7 @@ namespace NuKeeper.AzureDevOps
             }
 
             // Did we specify a Azure DevOps url?
-            return repositoryUri?.Host.ContainsOrdinal(PlatformHost) == true;
+            return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)

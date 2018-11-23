@@ -1,3 +1,4 @@
+using System;
 using NuKeeper.Abstractions.Formats;
 using NUnit.Framework;
 
@@ -15,17 +16,23 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [TestCase("", "")]
         public void DoesContainOrdinal(string value, string substring)
         {
-            Assert.That(value.ContainsOrdinal(substring));
+            Assert.That(value.Contains(substring, StringComparison.OrdinalIgnoreCase));
         }
 
         [TestCase("foobar", "x")]
         [TestCase("", "bar")]
-        [TestCase(null, "a")]
         [TestCase("", "a")]
         [TestCase("foobar", "foobarfish")]
         public void DoesNotContainOrdinal(string value, string substring)
         {
-            Assert.That(value.ContainsOrdinal(substring), Is.False);
+            Assert.That(value.Contains(substring, StringComparison.OrdinalIgnoreCase), Is.False);
+        }
+
+        [Test]
+        public void ShouldThrowOnNull()
+        {
+            Assert.Throws<NullReferenceException>(
+                () => ((string) null).Contains("sth", StringComparison.CurrentCulture));
         }
     }
 }

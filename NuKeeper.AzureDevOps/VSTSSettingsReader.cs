@@ -32,7 +32,7 @@ namespace NuKeeper.AzureDevOps
                 _isFromLocalGitRepo = true;
             }
        
-            return repositoryUri?.Host.ContainsOrdinal(PlatformHost) == true;
+            return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public override RepositorySettings RepositorySettings(Uri repositoryUri)
