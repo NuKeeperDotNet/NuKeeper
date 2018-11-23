@@ -4,8 +4,8 @@ namespace NuKeeper.Inspection.RepositoryInspection
 {
     public interface IPackageReferenceFinder
     {
-        IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath);
+        IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath);
 
-        IEnumerable<string> GetFilePatterns();
+        IReadOnlyCollection<string> GetFilePatterns();
     }
 }

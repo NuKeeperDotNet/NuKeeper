@@ -19,7 +19,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             _logger = logger;
         }
 
-        public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
+        public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
             var filePath = Path.Combine(baseDirectory, relativePath);
             try
@@ -35,12 +35,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
             }
         }
 
-        public IEnumerable<string> GetFilePatterns()
+        public IReadOnlyCollection<string> GetFilePatterns()
         {
             return new[] {"*.csproj", "*.vbproj", "*.fsproj" };
         }
 
-        public IEnumerable<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)
+        public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)
         {
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
@@ -51,7 +51,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
             if (project == null)
             {
-                return Enumerable.Empty<PackageInProject>();
+                return Array.Empty<PackageInProject>();
             }
 
             var itemGroups = project
