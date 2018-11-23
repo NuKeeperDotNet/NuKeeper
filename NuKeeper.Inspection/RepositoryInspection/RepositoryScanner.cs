@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
@@ -45,7 +46,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             var rootDirWithSeparator = rootDir.EndsWith(separatorChar, StringComparison.OrdinalIgnoreCase)
                 ? rootDir
                 : rootDir + Path.DirectorySeparatorChar;
-            return fileName.Replace(rootDirWithSeparator, string.Empty);
+            return fileName.ReplaceOrdinal(rootDirWithSeparator, string.Empty);
         }
     }
 }
