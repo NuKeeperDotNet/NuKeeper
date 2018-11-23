@@ -22,18 +22,23 @@ namespace NuKeeper.Update.Process
         public Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
-            using (var nuspecContents = File.Open(currentPackage.Path.FullName, FileMode.Open, FileAccess.ReadWrite))
+            XDocument xml;
+            using (var xmlInput = File.OpenRead(currentPackage.Path.FullName))
             {
-                UpdateNuspec(nuspecContents, newVersion, currentPackage);
-                return Task.CompletedTask;
+                xml = XDocument.Load(xmlInput);
             }
+
+            using (var xmlOutput = File.Open(currentPackage.Path.FullName, FileMode.Truncate))
+            {
+                UpdateNuspec(xmlOutput, newVersion, currentPackage, xml);
+            }
+
+            return Task.CompletedTask;
         }
 
-        private void UpdateNuspec(FileStream fileContents, NuGetVersion newVersion,
-            PackageInProject currentPackage)
+        private void UpdateNuspec(Stream fileContents, NuGetVersion newVersion,
+            PackageInProject currentPackage, XDocument xml)
         {
-            var xml = XDocument.Load(fileContents);
-
             var packagesNode = xml.Element("package")?.Element("metadata")?.Element("dependencies");
             if (packagesNode == null)
             {
@@ -50,8 +55,6 @@ namespace NuKeeper.Update.Process
                 dependencyToUpdate.Attribute("version").Value = newVersion.ToString();
             }
 
-            fileContents.Seek(0, SeekOrigin.Begin);
-            
             xml.Save(fileContents);
         }
     }
