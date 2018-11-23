@@ -46,7 +46,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             var rootDirWithSeparator = rootDir.EndsWith(separatorChar, StringComparison.OrdinalIgnoreCase)
                 ? rootDir
                 : rootDir + Path.DirectorySeparatorChar;
-            return fileName.ReplaceOrdinal(rootDirWithSeparator, string.Empty);
+            return fileName.ReplaceIgnoreCase(rootDirWithSeparator, string.Empty);
         }
     }
 }

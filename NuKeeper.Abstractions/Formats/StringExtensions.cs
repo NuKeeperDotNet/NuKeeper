@@ -31,7 +31,7 @@ namespace NuKeeper.Abstractions.Formats
             return value.IndexOf(substring, StringComparison.OrdinalIgnoreCase) >= 0;
         }
         
-        public static string ReplaceOrdinal(this string value, string targetValue, string replaceValue)
+        public static string ReplaceIgnoreCase(this string value, string targetValue, string replaceValue)
         {
             return Regex.Replace(value, targetValue, replaceValue, RegexOptions.IgnoreCase);
         }
