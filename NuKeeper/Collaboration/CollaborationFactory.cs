@@ -96,7 +96,7 @@ namespace NuKeeper.Collaboration
             {
                 case Platform.AzureDevOps:
                     CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
-                    RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger);
+                    RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger, Settings.Token);
                     ForkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 

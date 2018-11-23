@@ -11,10 +11,12 @@ namespace NuKeeper.AzureDevOps
     public class AzureDevOpsRepositoryDiscovery : IRepositoryDiscovery
     {
         private readonly INuKeeperLogger _logger;
+        private readonly string _token;
 
-        public AzureDevOpsRepositoryDiscovery(INuKeeperLogger logger)
+        public AzureDevOpsRepositoryDiscovery(INuKeeperLogger logger, string token)
         {
             _logger = logger;
+            _token = token;
         }
 
         public Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
@@ -27,6 +29,8 @@ namespace NuKeeper.AzureDevOps
                     throw new NotImplementedException();
 
                 case ServerScope.Repository:
+                    //Workaround for https://github.com/libgit2/libgit2sharp/issues/1596
+                    settings.Repository.RepositoryUri = new Uri(settings.Repository.RepositoryUri.ToString().Replace("--PasswordToReplace--", _token));
                     return Task.FromResult(new List<RepositorySettings> { settings.Repository }.AsEnumerable());
 
                 default:

@@ -18,7 +18,7 @@ namespace Nukeeper.AzureDevOps.Tests
         {
             var settings = new SourceControlServerSettings
             {
-                Repository = new RepositorySettings(),
+                Repository = new RepositorySettings {RepositoryUri = new Uri("https://repo/")},
                 Scope = ServerScope.Repository
             };
 
@@ -31,6 +31,27 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.That(repos, Is.Not.Null);
             Assert.That(repos.Count, Is.EqualTo(1));
             Assert.That(repos[0], Is.EqualTo(settings.Repository));
+        }
+
+        [Test]
+        public async Task SuccessInRepoModeReplacesToken()
+        {
+            var settings = new SourceControlServerSettings
+            {
+                Repository = new RepositorySettings {RepositoryUri = new Uri("https://user:--PasswordToReplace--@repo/")},
+                Scope = ServerScope.Repository
+            };
+
+            var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
+
+            var reposResponse = await githubRepositoryDiscovery.GetRepositories(settings);
+
+            var repos = reposResponse.ToList();
+
+            Assert.That(repos, Is.Not.Null);
+            Assert.That(repos.Count, Is.EqualTo(1));
+            Assert.That(repos[0], Is.EqualTo(settings.Repository));
+            Assert.That(repos[0].RepositoryUri.ToString(), Is.EqualTo("https://user:token@repo/"));
         }
 
         [Test]
@@ -73,7 +94,7 @@ namespace Nukeeper.AzureDevOps.Tests
 
         private static IRepositoryDiscovery MakeGithubRepositoryDiscovery()
         {
-            return new AzureDevOpsRepositoryDiscovery(Substitute.For<INuKeeperLogger>());
+            return new AzureDevOpsRepositoryDiscovery(Substitute.For<INuKeeperLogger>(),"token");
         }
     }
 }
