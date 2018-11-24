@@ -20,30 +20,35 @@ namespace NuKeeper.Git
             return Repository.IsValid(discovered.AbsolutePath);
         }
 
-        public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
+        public IReadOnlyCollection<GitRemote> GetRemotes(Uri repositoryUri)
         {
             if (! IsGitRepo(repositoryUri))
             {
-                return Enumerable.Empty<GitRemote>();
+                return Array.Empty<GitRemote>();
             }
             
             var discover = Repository.Discover(repositoryUri.AbsolutePath);
 
             var repo = new Repository(discover);
-            
-            var gitRemotes = new List<GitRemote>();
 
-            foreach (var remote in repo.Network.Remotes)
+            return repo.Network.Remotes
+                .Select(ReadRemote)
+                .ToList();
+        }
+
+        private GitRemote ReadRemote(Remote remote)
+        {
+            var url = remote.Url;
+            if (url.StartsWith("git@", StringComparison.OrdinalIgnoreCase))
             {
-                var gitRemote = new GitRemote
-                {
-                    Name = remote.Name,
-                    Url = new Uri(remote.Url)
-                };
-                gitRemotes.Add(gitRemote);
+                url = "ssh:" + url;
             }
-            
-            return gitRemotes;
+
+            return new GitRemote
+            {
+                Name = remote.Name,
+                Url = new Uri(url)
+            };
         }
 
         public Uri DiscoverRepo(Uri repositoryUri)

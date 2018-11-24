@@ -16,7 +16,7 @@ namespace NuKeeper.Abstractions.Git
         /// Get all the configured remotes
         /// </summary>
         /// <param name="repositoryUri"></param>
-        IEnumerable<GitRemote> GetRemotes(Uri repositoryUri);
+        IReadOnlyCollection<GitRemote> GetRemotes(Uri repositoryUri);
 
         Uri DiscoverRepo(Uri repositoryUri);
 
