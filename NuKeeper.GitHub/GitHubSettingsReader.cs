@@ -4,16 +4,36 @@ using NuKeeper.Abstractions.Configuration;
 using System;
 using System.Linq;
 using NuKeeper.Abstractions.Formats;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
+        private const string PlatformHost = "github";
+        private readonly IGitDiscoveryDriver _gitDriver;
+
+        public GitHubSettingsReader(IGitDiscoveryDriver gitDriver)
+        {
+            _gitDriver = gitDriver;
+        }
+
         public Platform Platform => Platform.GitHub;
 
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.Contains("github", StringComparison.OrdinalIgnoreCase) == true;
+            if (repositoryUri == null)
+            {
+                return false;
+            }
+
+            // Is the specified folder already a git repository?
+            if (repositoryUri.IsFile)
+            {
+                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
+            }
+
+            return UriFormats.MatchesHost(repositoryUri, PlatformHost);
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)

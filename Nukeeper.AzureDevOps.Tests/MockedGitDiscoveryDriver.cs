@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Git;
 
 namespace Nukeeper.AzureDevOps.Tests
@@ -12,13 +13,15 @@ namespace Nukeeper.AzureDevOps.Tests
             return repositoryUri.IsFile == false;
         }
 
-        public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
+        public IReadOnlyCollection<GitRemote> GetRemotes(Uri repositoryUri)
         {
-          return new List<GitRemote>(){ new GitRemote
-          {
-              Name="origin",
-              Url = repositoryUri
-          }};
+            var origin = new GitRemote
+            {
+                Name = "origin",
+                Url = repositoryUri
+            };
+
+          return origin.InList();
         }
 
         public Uri DiscoverRepo(Uri repositoryUri)

@@ -1,6 +1,8 @@
 using System;
+using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NUnit.Framework;
 
 namespace NuKeeper.GitHub.Tests
@@ -8,7 +10,8 @@ namespace NuKeeper.GitHub.Tests
     [TestFixture]
     public class GitHubSettingsReaderTests
     {
-        private static GitHubSettingsReader GitHubSettingsReader => new GitHubSettingsReader();
+        private static GitHubSettingsReader GitHubSettingsReader =>
+            new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>());
 
         [Test]
         public void ReturnsCorrectPlatform()

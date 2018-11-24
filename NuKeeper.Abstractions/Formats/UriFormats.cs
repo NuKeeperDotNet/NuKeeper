@@ -37,5 +37,21 @@ namespace NuKeeper.Abstractions.Formats
             
             return repositoryUri;
         }
+
+        public static bool MatchesHost(Uri uri, string host)
+        {
+            if (uri == null)
+            {
+                return false;
+            }
+
+            if (uri.Scheme.Equals("ssh", StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrEmpty(uri.Host))
+            {
+                return uri.AbsolutePath.Contains(host, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return uri.Host.Contains(host, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

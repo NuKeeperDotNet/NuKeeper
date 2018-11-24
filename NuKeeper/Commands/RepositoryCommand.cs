@@ -36,6 +36,7 @@ namespace NuKeeper.Commands
                 {
                     didRead = true;
                     settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
+                    break;
                 }
             }
 

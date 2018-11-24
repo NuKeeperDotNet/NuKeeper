@@ -8,6 +8,8 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Collaboration;
 using NuKeeper.GitHub;
@@ -19,8 +21,11 @@ namespace NuKeeper.Tests.Commands
     {
         private static CollaborationFactory GetCollaborationFactory()
         {
+            var githubReader = new GitHubSettingsReader(
+                Substitute.For<IGitDiscoveryDriver>());
+
             return new CollaborationFactory(
-                new ISettingsReader[] {new GitHubSettingsReader()},
+                githubReader.InList(),
                 Substitute.For<INuKeeperLogger>()
             );
         }

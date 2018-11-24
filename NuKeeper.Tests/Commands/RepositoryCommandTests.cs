@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Collaboration;
@@ -19,8 +21,11 @@ namespace NuKeeper.Tests.Commands
     {
         private static CollaborationFactory GetCollaborationFactory(IEnumerable<ISettingsReader> settingReaders = null)
         {
-            return new CollaborationFactory(
-                settingReaders ?? new ISettingsReader[] {new GitHubSettingsReader()},
+            settingReaders = settingReaders ??
+             new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>())
+               .InList();
+
+            return new CollaborationFactory(settingReaders,
                 Substitute.For<INuKeeperLogger>()
             );
         }
@@ -33,7 +38,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingReader = new GitHubSettingsReader();
+            var settingReader = new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>());
             var settingsReaders = new List<ISettingsReader> {settingReader};
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
@@ -55,7 +60,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingReader = new GitHubSettingsReader();
+            var settingReader = new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>());
             var settingsReaders = new List<ISettingsReader> {settingReader};
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
@@ -235,7 +240,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var settingReader = new GitHubSettingsReader();
+            var settingReader = new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>());
             var settingsReaders = new List<ISettingsReader> {settingReader};
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
