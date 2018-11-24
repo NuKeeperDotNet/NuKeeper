@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -23,37 +25,67 @@ namespace NuKeeper.AzureDevOps
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:{personalAccessToken}")));
         }
 
-        private async Task<T> GetResourceOrEmpty<T>(string url)
+        private async Task<T> GetResourceOrEmpty<T>(string url, [CallerMemberName] string caller = null)
         {
             var fullUrl = BuildAzureDevOpsUri(url);
             var response = await _client.GetAsync(fullUrl);
+            string msg;
 
-            if (!response.IsSuccessStatusCode) return default;
+            if (!response.IsSuccessStatusCode)
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        msg = $"{caller}: Unauthorised, ensure PAT has appropriate permissions";
+                        _logger.Error(msg);
+                        throw new Exception(msg);
+
+                    case HttpStatusCode.Forbidden:
+                        msg = $"{caller}: Forbidden, ensure PAT has appropriate permissions";
+                        _logger.Error(msg);
+                        throw new Exception(msg);
+
+                    default:
+                        _logger.Error($"{caller}: Error {response.StatusCode}");
+                        return default;
+                }
+            }
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(responseBody);
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(responseBody);
+            }
+            catch (Exception)
+            {
+                msg = $"{caller}: Json exception - malformed PAT?";
+                _logger.Error(msg);
+                throw new Exception(msg);
+            }
         }
         
         private static Uri BuildAzureDevOpsUri(string relativePath)
         {
             return new Uri($"{relativePath}?api-version=4.1", UriKind.Relative);
         }
+
         public async Task<IEnumerable<Project>> GetProjects()
         {
             var response = await GetResourceOrEmpty<ProjectResource>("/_apis/projects");
-            return response.value.AsEnumerable();
+            return response?.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
         {
             var response = await GetResourceOrEmpty<GitRepositories>($"{projectName}/_apis/git/repositories");
-            return response.value.AsEnumerable();
+            return response?.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName,string repositoryId)
         {
             var response = await GetResourceOrEmpty<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
-            return response.value.AsEnumerable();
+            return response?.value.AsEnumerable();
         }
 
         public async Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
