@@ -62,6 +62,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
 
             var package = packages.FirstOrDefault();
 
+            Assert.That(package, Is.Not.Null);
             Assert.That(package.Id, Is.EqualTo("foo"));
             Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
             Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.Nuspec));

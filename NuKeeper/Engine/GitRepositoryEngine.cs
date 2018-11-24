@@ -55,7 +55,7 @@ namespace NuKeeper.Engine
                     }
                 }
 
-                IFolder folder = null;
+                IFolder folder;
                 if (repository.IsLocalRepo)
                 {
                     folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));

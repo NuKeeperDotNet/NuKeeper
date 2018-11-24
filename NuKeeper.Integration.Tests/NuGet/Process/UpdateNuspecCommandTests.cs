@@ -29,8 +29,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
         private static async Task ExecuteValidUpdateTest(string testProjectContents, [CallerMemberName] string memberName = "")
         {
-            const string oldPackageVersion = "5.2.3";
-            const string newPackageVersion = "5.2.4";
+            const string oldPackageVersion = "5.2.31";
+            const string newPackageVersion = "5.3.4";
             const string expectedPackageString =
                 "<dependency id=\"foo\" version=\"{packageVersion}\" />";
 

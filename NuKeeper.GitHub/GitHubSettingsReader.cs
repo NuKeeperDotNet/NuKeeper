@@ -13,7 +13,7 @@ namespace NuKeeper.GitHub
 
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.ContainsOrdinal("github") == true;
+            return repositoryUri?.Host.Contains("github", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)

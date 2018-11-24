@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using NuGet.Configuration;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
 
@@ -18,21 +20,25 @@ namespace NuKeeper.Update.Process
             var projectsToUpdate = new Stack<string>();
             projectsToUpdate.Push(currentPackage.Path.FullName);
 
-            while(projectsToUpdate.Count > 0)
+            while (projectsToUpdate.Count > 0)
             {
                 var currentProject = projectsToUpdate.Pop();
+
+                XDocument xml;
                 using (var projectContents = File.Open(currentProject, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    var projectsToCheck = UpdateConditionsOnProjects(projectContents);
+                    xml = XDocument.Load(projectContents);
+                }
 
-                    foreach (var potentialProject in projectsToCheck)
+                var projectsToCheck = UpdateConditionsOnProjects(xml, currentProject);
+
+                foreach (var potentialProject in projectsToCheck)
+                {
+                    var fullPath =
+                        Path.GetFullPath(Path.Combine(Path.GetDirectoryName(currentProject), potentialProject));
+                    if (File.Exists(fullPath))
                     {
-                        var fullPath =
-                            Path.GetFullPath(Path.Combine(Path.GetDirectoryName(currentProject), potentialProject));
-                        if (File.Exists(fullPath))
-                        {
-                            projectsToUpdate.Push(fullPath);
-                        }
+                        projectsToUpdate.Push(fullPath);
                     }
                 }
             }
@@ -40,9 +46,8 @@ namespace NuKeeper.Update.Process
             return Task.CompletedTask;
         }
 
-        private static IEnumerable<string> UpdateConditionsOnProjects(Stream fileContents)
+        private static IEnumerable<string> UpdateConditionsOnProjects(XDocument xml, string savePath)
         {
-            var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
 
             var project = xml.Element(ns + "Project");
@@ -54,7 +59,7 @@ namespace NuKeeper.Update.Process
 
             var imports = project.Elements(ns + "Import");
             var importsWithToolsPath = imports
-                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)")))
+                .Where(i => i.Attributes("Project").Any(a => a.Value.Contains("$(VSToolsPath)", StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
             var importsWithoutCondition = importsWithToolsPath.Where(i => !i.Attributes("Condition").Any());
@@ -70,8 +75,10 @@ namespace NuKeeper.Update.Process
 
             if (saveRequired)
             {
-                fileContents.Seek(0, SeekOrigin.Begin);
-                xml.Save(fileContents);
+                using (var xmlOutput = File.Open(savePath, FileMode.Truncate))
+                {
+                    xml.Save(xmlOutput);
+                }
             }
 
             return FindProjectReferences(project, ns);

@@ -17,7 +17,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             _logger = logger;
         }
 
-        public IEnumerable<PackageInProject> ReadFile(string baseDirectory, string relativePath)
+        public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
         {
             var packagePath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.Nuspec);
             try
@@ -33,19 +33,19 @@ namespace NuKeeper.Inspection.RepositoryInspection
             }
         }
 
-        public IEnumerable<string> GetFilePatterns()
+        public IReadOnlyCollection<string> GetFilePatterns()
         {
             return new[] {"*.nuspec"};
         }
 
-        public IEnumerable<PackageInProject> Read(Stream fileContents, PackagePath path)
+        public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, PackagePath path)
         {
             var xml = XDocument.Load(fileContents);
 
             var packagesNode = xml.Element("package")?.Element("metadata")?.Element("dependencies");
             if (packagesNode == null)
             {
-                return Enumerable.Empty<PackageInProject>();
+                return Array.Empty<PackageInProject>();
             }
 
             var packageNodeList = packagesNode.Elements()

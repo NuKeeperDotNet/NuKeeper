@@ -15,19 +15,13 @@ namespace NuKeeper.Abstractions.Formats
             return values == null ? string.Empty : string.Join(separator, values);
         }
 
-        public static bool ContainsOrdinal(this string value, string substring)
+        // copied from netcoreapp2.1 profile
+        public static bool Contains(
+            this string subject,
+            string value,
+            StringComparison comparisonType)
         {
-            if (value == null)
-            {
-                return false;
-            }
-
-            if (substring == null)
-            {
-                throw new ArgumentNullException(nameof(substring));
-            }
-
-            return value.IndexOf(substring, StringComparison.OrdinalIgnoreCase) >= 0;
+            return subject.IndexOf(value, 0, subject.Length, comparisonType) >= 0;
         }
     }
 }
