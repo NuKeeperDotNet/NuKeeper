@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.AzureDevOps
@@ -27,9 +29,16 @@ namespace NuKeeper.AzureDevOps
 
         private async Task<T> GetResourceOrEmpty<T>(string url, [CallerMemberName] string caller = null)
         {
-            var fullUrl = BuildAzureDevOpsUri(url);
-            var response = await _client.GetAsync(fullUrl);
             string msg;
+
+            var fullUrl = BuildAzureDevOpsUri(url);
+
+            _logger.Detailed($"{caller}: Requesting {fullUrl}");
+
+            var response = await _client.GetAsync(fullUrl);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            _logger.Detailed(responseBody);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -38,20 +47,18 @@ namespace NuKeeper.AzureDevOps
                     case HttpStatusCode.Unauthorized:
                         msg = $"{caller}: Unauthorised, ensure PAT has appropriate permissions";
                         _logger.Error(msg);
-                        throw new Exception(msg);
+                        throw new NuKeeperException(msg);
 
                     case HttpStatusCode.Forbidden:
                         msg = $"{caller}: Forbidden, ensure PAT has appropriate permissions";
                         _logger.Error(msg);
-                        throw new Exception(msg);
+                        throw new NuKeeperException(msg);
 
                     default:
                         _logger.Error($"{caller}: Error {response.StatusCode}");
                         return default;
                 }
             }
-
-            var responseBody = await response.Content.ReadAsStringAsync();
 
             try
             {
@@ -61,7 +68,7 @@ namespace NuKeeper.AzureDevOps
             {
                 msg = $"{caller}: Json exception - malformed PAT?";
                 _logger.Error(msg);
-                throw new Exception(msg);
+                throw new NuKeeperException(msg);
             }
         }
         
