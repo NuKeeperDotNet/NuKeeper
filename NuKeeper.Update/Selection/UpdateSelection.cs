@@ -6,6 +6,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Update.Selection
@@ -52,7 +53,8 @@ namespace NuKeeper.Update.Selection
 
             if (filteredLocally.Count < filteredByInOut.Count)
             {
-                _logger.Normal($"Filtered by minimum package age {_settings.MinimumAge} from {filteredByInOut.Count} to {filteredLocally.Count}");
+                var agoFormat = TimeSpanFormat.Ago(_settings.MinimumAge);
+                _logger.Normal($"Filtered from {filteredByInOut.Count} to {filteredLocally.Count} by minimum package age '{agoFormat}'");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
