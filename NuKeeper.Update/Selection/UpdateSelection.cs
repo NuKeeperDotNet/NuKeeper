@@ -54,7 +54,7 @@ namespace NuKeeper.Update.Selection
             if (filteredLocally.Count < filteredByInOut.Count)
             {
                 var agoFormat = TimeSpanFormat.Ago(_settings.MinimumAge);
-                _logger.Normal($"Filtered by minimum package age '{agoFormat}' from {filteredByInOut.Count} to {filteredLocally.Count}");
+                _logger.Normal($"Filtered from {filteredByInOut.Count} to {filteredLocally.Count} by minimum package age '{agoFormat}'");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
