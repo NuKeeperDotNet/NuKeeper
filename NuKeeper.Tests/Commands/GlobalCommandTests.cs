@@ -8,6 +8,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
@@ -24,9 +25,8 @@ namespace NuKeeper.Tests.Commands
                 Substitute.For<IGitDiscoveryDriver>());
 
             return new CollaborationFactory(
-                new ISettingsReader[] { githubReader },
-                Substitute.For<INuKeeperLogger>()
-            );
+                githubReader.InList(),
+                Substitute.For<INuKeeperLogger>());
         }
 
         [Test]

@@ -34,8 +34,8 @@ namespace NuKeeper.Commands
             {
                 if (reader.CanRead(repoUri))
                 {
-                    didRead = true;
                     settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
+                    didRead = true;
                     break;
                 }
             }

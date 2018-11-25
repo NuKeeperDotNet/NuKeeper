@@ -26,8 +26,7 @@ namespace NuKeeper.Tests.Commands
 
             return new CollaborationFactory(
                 githubReader.InList(),
-                Substitute.For<INuKeeperLogger>()
-            );
+                Substitute.For<INuKeeperLogger>());
         }
 
         [Test]

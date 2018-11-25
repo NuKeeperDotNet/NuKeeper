@@ -25,9 +25,9 @@ namespace NuKeeper.Tests.Commands
              new GitHubSettingsReader(Substitute.For<IGitDiscoveryDriver>())
                .InList();
 
-            return new CollaborationFactory(settingReaders,
-                Substitute.For<INuKeeperLogger>()
-            );
+            return new CollaborationFactory(
+                settingReaders,
+                Substitute.For<INuKeeperLogger>());
         }
 
         [Test]
