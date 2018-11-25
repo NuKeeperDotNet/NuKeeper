@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 
@@ -27,15 +26,28 @@ namespace NuKeeper.AzureDevOps
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:{personalAccessToken}")));
         }
 
-        private async Task<T> GetResourceOrEmpty<T>(string url, [CallerMemberName] string caller = null)
+        private async Task<T> PostResource<T>(string url, HttpContent content, [CallerMemberName] string caller = null)
         {
-            string msg;
-
             var fullUrl = BuildAzureDevOpsUri(url);
+            _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
+            var response = await _client.PostAsync(fullUrl, content);
+            return await HandleResponse<T>(response, caller);
+        }
+
+        private async Task<T> GetResource<T>(string url, [CallerMemberName] string caller = null)
+        {
+            var fullUrl = BuildAzureDevOpsUri(url);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
             var response = await _client.GetAsync(fullUrl);
+            return await HandleResponse<T>(response, caller);
+        }
+
+        private async Task<T> HandleResponse<T>(HttpResponseMessage response, [CallerMemberName] string caller = null)
+        {
+            string msg;
+
             var responseBody = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
@@ -55,8 +67,9 @@ namespace NuKeeper.AzureDevOps
                         throw new NuKeeperException(msg);
 
                     default:
+                        msg = $"{caller}: Error {response.StatusCode}";
                         _logger.Error($"{caller}: Error {response.StatusCode}");
-                        return default;
+                        throw new NuKeeperException(msg);
                 }
             }
 
@@ -71,7 +84,7 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException(msg);
             }
         }
-        
+
         private static Uri BuildAzureDevOpsUri(string relativePath)
         {
             return new Uri($"{relativePath}?api-version=4.1", UriKind.Relative);
@@ -79,36 +92,26 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<IEnumerable<Project>> GetProjects()
         {
-            var response = await GetResourceOrEmpty<ProjectResource>("/_apis/projects");
+            var response = await GetResource<ProjectResource>("/_apis/projects");
             return response?.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
         {
-            var response = await GetResourceOrEmpty<GitRepositories>($"{projectName}/_apis/git/repositories");
+            var response = await GetResource<GitRepositories>($"{projectName}/_apis/git/repositories");
             return response?.value.AsEnumerable();
         }
 
         public async Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName,string repositoryId)
         {
-            var response = await GetResourceOrEmpty<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
+            var response = await GetResource<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
             return response?.value.AsEnumerable();
         }
 
         public async Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
         {
-            var response = await _client.PostAsync(BuildAzureDevOpsUri(($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests")), new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                var pullRequestErrorResource = JsonConvert.DeserializeObject<PullRequestErrorResource>(error);
-                _logger.Error(pullRequestErrorResource.message);
-                return null;
-            }
-
-            var result = await response.Content.ReadAsStringAsync();
-            var resource = JsonConvert.DeserializeObject<PullRequest>(result);
-            return resource;
+            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            return await PostResource<PullRequest>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests", content);
         }
     }
 }
