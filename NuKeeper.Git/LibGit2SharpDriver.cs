@@ -53,7 +53,7 @@ namespace NuKeeper.Git
 
         private bool OnTransferProgress(TransferProgress progress)
         {
-            if (progress.ReceivedObjects % (progress.TotalObjects / 10) == 0 && !_fetchFinished)
+            if (progress.ReceivedObjects % (Math.Max(progress.TotalObjects / 10, 1)) == 0 && !_fetchFinished)
             {
                 _logger.Detailed($"{progress.ReceivedObjects} / {progress.TotalObjects}");
                 _fetchFinished = progress.ReceivedObjects == progress.TotalObjects;
