@@ -58,7 +58,6 @@ namespace NuKeeper.AzureDevOps
         public int PullRequestId { get; set; }
         public int CodeReviewId { get; set; }
         public string Status { get; set; }
-        // public CreatedBy CreatedBy { get; set; }
         public DateTime CreationDate { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -66,14 +65,14 @@ namespace NuKeeper.AzureDevOps
         public string TargetRefName { get; set; }
         public string MergeStatus { get; set; }
         public string MergeId { get; set; }
-
-        // public Lastmergesourcecommit LastMergeSourceCommit { get; set; }
-        // public Lastmergetargetcommit LastMergeTargetCommit { get; set; }
-        //public Lastmergecommit LastMergeCommit { get; set; }
-        // public IEnumerable<Reviewer> Reviewers { get; set; }
-#pragma warning disable CA1056 // Uri properties should not be strings
         public string Url { get; set; }
         public bool SupportsIterations { get; set; }
+
+        // public CreatedBy CreatedBy { get; set; }
+        // public Lastmergesourcecommit LastMergeSourceCommit { get; set; }
+        // public Lastmergetargetcommit LastMergeTargetCommit { get; set; }
+        // public Lastmergecommit LastMergeCommit { get; set; }
+        // public IEnumerable<Reviewer> Reviewers { get; set; }
     }
     public class ProjectResource
     {
@@ -82,6 +81,7 @@ namespace NuKeeper.AzureDevOps
     }
     public class Project
     {
+        public string description  { get; set; }
         public string id { get; set; }
         public string name { get; set; }
         public string url { get; set; }
