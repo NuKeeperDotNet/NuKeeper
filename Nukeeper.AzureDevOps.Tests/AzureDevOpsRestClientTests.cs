@@ -231,7 +231,7 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task CreatesPullRequest()
         {
-           var pullRequest = new PullRequest
+            var pullRequest = new PullRequest
             {
                 AzureRepository = new AzureRepository
                 {
@@ -252,7 +252,7 @@ namespace Nukeeper.AzureDevOps.Tests
                 PullRequestId = 22,
                 CodeReviewId = 22,
                 Status = "active",
-                CreationDate = new DateTime(2016,11,01,16,30,31),
+                CreationDate = new DateTime(2016, 11, 01, 16, 30, 31),
                 Title = "A new feature",
                 Description = "Adding a new feature",
                 SourceRefName = "refs/heads/npaulk/my_work",
@@ -264,9 +264,31 @@ namespace Nukeeper.AzureDevOps.Tests
             };
 
             var restClient = GetFakeClient(pullRequest);
-            var request = new PRRequest { title = "A Pr"};
-            var createdPullRequest = await restClient.CreatePullRequest(request,"ProjectName", "RepoId");
+            var request = new PRRequest {title = "A Pr"};
+            var createdPullRequest = await restClient.CreatePullRequest(request, "ProjectName", "RepoId");
             Assert.IsNotNull(createdPullRequest);
+        }
+
+        [Test]
+        public async Task CreatesPullRequestLabel()
+        {
+            var labelResource = new LabelResource
+            {
+                value = new List<Label>
+                {
+                    new Label
+                    {
+                        active = true,
+                        id = "id",
+                        name = "nukeeper"
+                    }
+                }
+            };
+
+            var restClient = GetFakeClient(labelResource);
+            var request = new LabelRequest {name = "nukeeper"};
+            var pullRequestLabel = await restClient.CreatePullRequestLabel(request, "ProjectName", "RepoId", 100);
+            Assert.IsNotNull(pullRequestLabel);
         }
 
         private static AzureDevOpsRestClient GetFakeClient(object returnObject)
