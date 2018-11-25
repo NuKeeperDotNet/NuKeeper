@@ -46,7 +46,12 @@ namespace NuKeeper.AzureDevOps
                 targetRefName = $"refs/heads/{request.BaseRef}"
             };
 
-            await _client.CreatePullRequest(req, target.Owner, repo.id);
+            var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
+
+            foreach (var label in labels)
+            {
+                await _client.CreatePullRequestLabel(new LabelRequest { name = label }, target.Owner, repo.id, pullRequest.PullRequestId);
+            }
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -61,10 +66,10 @@ namespace NuKeeper.AzureDevOps
         {
             var repos = await _client.GetGitRepositories(projectName);
             return repos.Select(x =>
-                new Repository(x.name, false,
-                    new UserPermissions(true, true, true),
-                    new Uri(x.url), new Uri(x.remoteUrl),
-                    null, false, null))
+                    new Repository(x.name, false,
+                        new UserPermissions(true, true, true),
+                        new Uri(x.url), new Uri(x.remoteUrl),
+                        null, false, null))
                 .ToList();
         }
 
@@ -90,6 +95,7 @@ namespace NuKeeper.AzureDevOps
                 _logger.Detailed($"Branch found for {projectName} / {repositoryName} / {branchName}");
                 return true;
             }
+
             _logger.Detailed($"No branch found for {projectName} / {repositoryName} / {branchName}");
             return false;
         }

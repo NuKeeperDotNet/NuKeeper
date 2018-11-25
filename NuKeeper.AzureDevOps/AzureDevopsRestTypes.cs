@@ -113,4 +113,23 @@ namespace NuKeeper.AzureDevOps
         public IEnumerable<AzureRepository> value { get; set; }
         public int count { get; set; }
     }
+
+    public class LabelRequest
+    {
+        public string name { get; set; }
+    }
+
+    public class Label
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public bool active { get; set; }
+        public string url { get; set; }
+    }
+
+    public class LabelResource
+    {
+        public int count { get; set; }
+        public IEnumerable<Label> value { get; set; }
+    }
 }
