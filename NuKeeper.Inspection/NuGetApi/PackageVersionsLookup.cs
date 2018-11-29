@@ -51,6 +51,11 @@ namespace NuKeeper.Inspection.NuGetApi
             catch (Exception ex)
             {
                 _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
+                if (ex.InnerException != null)
+                {
+                    _nuKeeperLogger.Error("Inner Exception", ex.InnerException);
+                }
+
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
         }
