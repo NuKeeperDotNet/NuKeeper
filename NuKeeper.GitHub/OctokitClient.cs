@@ -150,20 +150,38 @@ namespace NuKeeper.GitHub
         public async Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             CheckInitialised();
+            var forksCount = 0;
+
             var repos = new RepositoryCollection();
             foreach (var repo in search.Repos)
             {
-                repos.Add(repo.owner, repo.name);
+                var repoData = await GetUserRepository(repo.owner, repo.name);
+                if (repoData?.Fork == true)
+                {
+                    _logger.Detailed($"Repo '{repo.owner}/{repo.name}' is a fork, github search will not give results here");
+                    forksCount++;
+                }
+                else
+                {
+                    repos.Add(repo.owner, repo.name);
+                }
             }
 
-            var result = await _client.Search.SearchCode(
-                new Octokit.SearchCodeRequest(search.Term)
+            int searchCount = 0;
+            if (repos.Count > 0)
+            {
+                var request = new Octokit.SearchCodeRequest(search.Term)
                 {
                     Repos = repos,
                     In = new[] { CodeInQualifier.Path },
                     PerPage = search.PerPage
-                });
-            return new SearchCodeResult(result.TotalCount);
+                };
+
+                var result = await _client.Search.SearchCode(request);
+                searchCount = result.TotalCount;
+            }
+
+            return new SearchCodeResult(searchCount + forksCount);
         }
 
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)
