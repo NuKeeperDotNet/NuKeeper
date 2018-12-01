@@ -1,4 +1,4 @@
-namespace NuKeeper.Commands
+namespace NuKeeper.Abstractions.Configuration
 {
     public class ValidationResult
     {

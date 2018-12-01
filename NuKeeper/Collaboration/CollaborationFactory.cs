@@ -34,7 +34,7 @@ namespace NuKeeper.Collaboration
             Settings = new CollaborationPlatformSettings();
         }
 
-        public void Initialise(Uri apiEndpoint, string token, ForkMode? forkModeFromSettings)
+        public ValidationResult Initialise(Uri apiEndpoint, string token, ForkMode? forkModeFromSettings)
         {
             var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
 
@@ -47,8 +47,15 @@ namespace NuKeeper.Collaboration
             Settings.ForkMode = forkModeFromSettings;
             platformSettingsReader.UpdateCollaborationPlatformSettings(Settings);
 
-            ValidateSettings();
+            var result = ValidateSettings();
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
             CreateForPlatform();
+
+            return ValidationResult.Success;
         }
 
         private ISettingsReader SettingsReaderForPlatform(Uri apiEndpoint)
@@ -64,28 +71,31 @@ namespace NuKeeper.Collaboration
             return platformSettingsReader;
         }
 
-        private void ValidateSettings()
+        private ValidationResult ValidateSettings()
         {
             if (!Settings.BaseApiUrl.IsWellFormedOriginalString()
                 || (Settings.BaseApiUrl.Scheme != "http" && Settings.BaseApiUrl.Scheme != "https"))
             {
-                throw new NuKeeperException($"Api is not of correct format {Settings.BaseApiUrl}");
+                return ValidationResult.Failure(
+                    $"Api is not of correct format {Settings.BaseApiUrl}");
             }
 
             if (!Settings.ForkMode.HasValue)
             {
-                throw new NuKeeperException("Fork Mode was not set");
+                return ValidationResult.Failure("Fork Mode was not set");
             }
 
             if (string.IsNullOrWhiteSpace(Settings.Token))
             {
-                throw new NuKeeperException("Token was not set");
+                return ValidationResult.Failure("Token was not set");
             }
 
             if (!_platform.HasValue)
             {
-                throw new NuKeeperException("Platform was not set");
+                return ValidationResult.Failure("Platform was not set");
             }
+
+            return ValidationResult.Success;
         }
 
         private void CreateForPlatform()
