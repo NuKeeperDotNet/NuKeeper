@@ -17,7 +17,7 @@ namespace NuKeeper.Tests.Commands
     [TestFixture]
     public class RepositoryCommandTests
     {
-        private static CollaborationFactory GetCollaborationFactory(IEnumerable<ISettingsReader> settingReaders = null)
+        private static ICollaborationFactory GetCollaborationFactory(IEnumerable<ISettingsReader> settingReaders = null)
         {
             return new CollaborationFactory(
                 settingReaders ?? new ISettingsReader[] {new GitHubSettingsReader()},
@@ -71,6 +71,70 @@ namespace NuKeeper.Tests.Commands
             await engine
                 .Received(1)
                 .Run(Arg.Any<SettingsContainer>());
+        }
+
+        [Test]
+        public async Task ShouldInitialiseCollaborationFactory()
+        {
+            var engine = Substitute.For<ICollaborationEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
+
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> { settingReader };
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
+            {
+                PersonalAccessToken = "abc",
+                RepositoryUri = "http://github.com/abc/abc",
+                ForkMode = ForkMode.PreferSingleRepository
+            };
+
+            await command.OnExecute();
+
+            collaborationFactory
+                .Received(1)
+                .Initialise(
+                    Arg.Is(new Uri("https://api.github.com")),
+                    Arg.Is("abc"),
+                    Arg.Is<ForkMode?>(ForkMode.PreferSingleRepository));
+        }
+
+        [Test]
+        public async Task ShouldInitialiseForkModeFromFile()
+        {
+            var engine = Substitute.For<ICollaborationEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(
+                new FileSettings
+                {
+                    ForkMode = ForkMode.PreferFork
+                });
+
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> { settingReader };
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
+            {
+                PersonalAccessToken = "abc",
+                RepositoryUri = "http://github.com/abc/abc",
+                ForkMode = null
+            };
+
+            await command.OnExecute();
+
+            collaborationFactory
+                .Received(1)
+                .Initialise(
+                    Arg.Is(new Uri("https://api.github.com")),
+                    Arg.Is("abc"),
+                    Arg.Is<ForkMode?>(ForkMode.PreferFork));
         }
 
         [Test]
