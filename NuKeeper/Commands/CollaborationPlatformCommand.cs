@@ -60,19 +60,21 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString()); 
+            var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString());
+            var forkMode = ForkMode ?? fileSettings.ForkMode;
 
             if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {
                 return ValidationResult.Failure($"Bad Api Base '{endpoint}'");
             }
 
-
-            var initResult =  CollaborationFactory.Initialise(baseUri, PersonalAccessToken, ForkMode);
-
-            if (!initResult.IsSuccess)
+            try
             {
-                return initResult;
+                CollaborationFactory.Initialise(baseUri, PersonalAccessToken, forkMode);
+            }
+            catch (Exception ex)
+            {
+                return ValidationResult.Failure(ex.Message);
             }
 
             if (CollaborationFactory.Settings.Token == null)
