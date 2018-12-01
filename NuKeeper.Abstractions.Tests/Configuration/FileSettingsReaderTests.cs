@@ -31,6 +31,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
+            Assert.That(data.ForkMode, Is.Null);
+
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
@@ -56,6 +58,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
+            Assert.That(data.ForkMode, Is.Null);
+
             Assert.That(data.OutputDestination, Is.Null);
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
@@ -75,6 +79,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
                ""Change"": ""Minor"",
+               ""ForkMode"": ""PreferFork"",
                ""OutputFormat"": ""Text"",
                ""OutputDestination"": ""Console"",
                ""OutputFileName"" : ""out_42.txt"",
@@ -142,6 +147,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             var data = fsr.Read(path);
 
             Assert.That(data.Change, Is.EqualTo(VersionChange.Minor));
+            Assert.That(data.ForkMode, Is.EqualTo(ForkMode.PreferFork));
 
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Detailed));
             Assert.That(data.LogDestination, Is.EqualTo(LogDestination.File));
