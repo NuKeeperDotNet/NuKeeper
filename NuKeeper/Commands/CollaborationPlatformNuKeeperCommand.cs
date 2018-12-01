@@ -60,7 +60,8 @@ namespace NuKeeper.Commands
 
             var fileSettings = FileSettingsCache.GetSettings();
 
-            var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString()); 
+            var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString());
+            var forkMode = ForkMode ?? fileSettings.ForkMode;
 
             if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {
@@ -69,7 +70,7 @@ namespace NuKeeper.Commands
 
             try
             {
-                CollaborationFactory.Initialise(baseUri, PersonalAccessToken, ForkMode);
+                CollaborationFactory.Initialise(baseUri, PersonalAccessToken, forkMode);
             }
             catch (Exception ex)
             {
