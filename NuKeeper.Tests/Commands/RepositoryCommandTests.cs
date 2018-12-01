@@ -227,7 +227,8 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Not.Contain("testLabel"));
         }
 
-        public static async Task<(SettingsContainer settingsContainer, CollaborationPlatformSettings platformSettings)> CaptureSettings(FileSettings settingsIn,
+        public static async Task<(SettingsContainer settingsContainer, CollaborationPlatformSettings platformSettings)> CaptureSettings(
+            FileSettings settingsIn,
             bool addLabels = false,
             int? maxPr = null)
         {
