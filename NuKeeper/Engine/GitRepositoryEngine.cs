@@ -47,9 +47,14 @@ namespace NuKeeper.Engine
                     return 0;
                 }
 
-                if (!repository.IsLocalRepo) // The updaters will do the check for the local files, and they know what file types they can handle.
+                // should perform the remote check for "is this a .NET repo"
+                // (and also not a github fork)
+                // only when we have multiple remote repos
+                // otherwise it's ok to work locally, and check there
+                if (!(settings.SourceControlServerSettings.Scope == ServerScope.Repository || repository.IsLocalRepo))
                 {
-                    if (!await _repositoryFilter.ContainsDotNetProjects(repository))
+                    var remoteRepoContainsDotNet = await _repositoryFilter.ContainsDotNetProjects(repository);
+                    if (!remoteRepoContainsDotNet)
                     {
                         return 0;
                     }
@@ -74,7 +79,9 @@ namespace NuKeeper.Engine
                 var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 
                 if (!repository.IsLocalRepo)
+                {
                     folder.TryDelete();
+                }
 
                 return updatesDone;
             }
