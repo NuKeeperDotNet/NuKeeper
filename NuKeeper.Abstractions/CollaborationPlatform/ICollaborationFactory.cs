@@ -5,7 +5,7 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
 {
     public interface ICollaborationFactory
     {
-        void Initialise(Uri apiUri, string token, ForkMode? forkModeFromSettings);
+        ValidationResult Initialise(Uri apiUri, string token, ForkMode? forkModeFromSettings);
 
         CollaborationPlatformSettings Settings { get; }
         IForkFinder ForkFinder { get; }

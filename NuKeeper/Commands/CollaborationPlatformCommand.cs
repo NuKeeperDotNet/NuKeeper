@@ -10,7 +10,7 @@ using NuKeeper.Collaboration;
 
 namespace NuKeeper.Commands
 {
-    internal abstract class CollaborationPlatformNuKeeperCommand : CommandBase
+    internal abstract class CollaborationPlatformCommand : CommandBase
     {
         private readonly ICollaborationEngine _engine;
         public readonly ICollaborationFactory CollaborationFactory;
@@ -42,7 +42,7 @@ namespace NuKeeper.Commands
                 "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
         public string ApiEndpoint { get; set; }
 
-        protected CollaborationPlatformNuKeeperCommand(ICollaborationEngine engine, IConfigureLogger logger,
+        protected CollaborationPlatformCommand(ICollaborationEngine engine, IConfigureLogger logger,
             IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
             base(logger, fileSettingsCache)
         {
