@@ -16,7 +16,7 @@ namespace NuKeeper.Inspection.Logging
         {
             CheckLoggerCreated();
             _inner.LogError(message, ex);
-            if (ex.InnerException != null)
+            if (ex?.InnerException != null)
             {
                 Error("Inner Exception", ex.InnerException);
             }
