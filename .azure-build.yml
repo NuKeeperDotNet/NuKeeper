@@ -10,10 +10,19 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
+    command: build
+    projects: 'NuKeeper.sln'
+    arguments: '--configuration Release'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: test
-    projects: '*.Tests'
-    arguments: '--configuration Release --collect "Code coverage"'
+    projects: 'NuKeeper.sln'
+    arguments: '--configuration Release'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop for master'
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
