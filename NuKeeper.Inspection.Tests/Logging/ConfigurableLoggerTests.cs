@@ -14,8 +14,7 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogMessage(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
             logger.Detailed("test message");
         }
@@ -26,8 +25,7 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogMinimal(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
             logger.Minimal("test message");
         }
@@ -38,8 +36,7 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogNormal(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
             logger.Normal("test message");
         }
@@ -50,10 +47,9 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogError(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
-            logger.Error("test message", null);
+            logger.Error("test message");
         }
 
         [TestCase(LogLevel.Detailed)]
@@ -62,8 +58,7 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogErrorWithException(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
             logger.Error("test message", new ArgumentException("test"));
         }
@@ -74,12 +69,17 @@ namespace NuKeeper.Inspection.Tests.Logging
         [TestCase(LogLevel.Quiet)]
         public void CanLogErrorWithInnerException(LogLevel loggerLevel)
         {
-            var logger = new ConfigurableLogger();
-            logger.Initialise(loggerLevel, LogDestination.Console, string.Empty);
+            var logger = MakeLogger(loggerLevel);
 
             logger.Error("test message", new InvalidOperationException("op test",
                 new ArgumentException("arg test")));
         }
 
+        private static INuKeeperLogger MakeLogger(LogLevel logLevel)
+        {
+            var logger = new ConfigurableLogger();
+            logger.Initialise(logLevel, LogDestination.Console, string.Empty);
+            return logger;
+        }
     }
 }
