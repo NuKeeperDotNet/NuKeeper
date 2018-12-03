@@ -16,4 +16,4 @@ steps:
   inputs:
     command: test
     projects: '*.Tests'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration Release --collect "Code coverage"'
