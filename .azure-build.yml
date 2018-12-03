@@ -1,5 +1,7 @@
 queue:
   name: Hosted VS2017
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 steps:
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core sdk 2.1.500'
@@ -14,3 +16,4 @@ steps:
   inputs:
     command: test
     projects: '*.Tests'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
