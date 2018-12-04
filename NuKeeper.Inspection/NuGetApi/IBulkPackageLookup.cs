@@ -11,6 +11,7 @@ namespace NuKeeper.Inspection.NuGetApi
         Task<IDictionary<string, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
             NuGetSources sources,
-            VersionChange allowedChange);
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease);
     }
 }

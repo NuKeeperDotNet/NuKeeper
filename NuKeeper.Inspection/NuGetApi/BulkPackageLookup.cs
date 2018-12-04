@@ -24,14 +24,15 @@ namespace NuKeeper.Inspection.NuGetApi
         public async Task<IDictionary<string, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
             NuGetSources sources,
-            VersionChange allowedChange)
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease)
         {
             var latestOfEach = packages
                 .GroupBy(pi => pi.Id.ToUpperInvariant())
                 .Select(HighestVersion);
 
             var lookupTasks = latestOfEach
-                .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange))
+                .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange, usePrerelease))
                 .ToList();
 
             await Task.WhenAll(lookupTasks);

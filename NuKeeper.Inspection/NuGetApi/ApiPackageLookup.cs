@@ -17,9 +17,21 @@ namespace NuKeeper.Inspection.NuGetApi
         public async Task<PackageLookupResult> FindVersionUpdate(
             PackageIdentity package,
             NuGetSources sources,
-            VersionChange allowedChange)
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease)
         {
-            var allowBetas = package.Version.IsPrerelease;
+            bool allowBetas;
+
+            switch (usePrerelease)
+            {
+                case UsePrerelease.Always: allowBetas = true;
+                    break;
+                case UsePrerelease.Never: allowBetas = false;
+                    break;
+                default: allowBetas = package.Version.IsPrerelease;
+                    break;
+            }
+
             var foundVersions = await _packageVersionsLookup.Lookup(package.Id, allowBetas, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }

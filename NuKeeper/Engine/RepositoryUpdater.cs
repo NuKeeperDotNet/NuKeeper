@@ -54,7 +54,7 @@ namespace NuKeeper.Engine
             var sources = _nugetSourcesReader.Read(settings.WorkingFolder ?? git.WorkingFolder, userSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                settings.WorkingFolder ?? git.WorkingFolder, sources, userSettings.AllowedChange);
+                settings.WorkingFolder ?? git.WorkingFolder, sources, userSettings.AllowedChange, userSettings.UsePrerelease);
 
             _reporter.Report(
                 userSettings.OutputDestination,

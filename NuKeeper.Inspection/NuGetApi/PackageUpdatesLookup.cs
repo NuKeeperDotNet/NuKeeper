@@ -19,14 +19,15 @@ namespace NuKeeper.Inspection.NuGetApi
         public async Task<IReadOnlyCollection<PackageUpdateSet>> FindUpdatesForPackages(
             IReadOnlyCollection<PackageInProject> packages,
             NuGetSources sources,
-            VersionChange allowedChange)
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease)
         {
             var packageIds = packages
                 .Select(p => p.Identity)
                 .Distinct();
 
             var latestVersions = await _bulkPackageLookup.FindVersionUpdates(
-                packageIds, sources, allowedChange);
+                packageIds, sources, allowedChange, usePrerelease);
 
             var results = new List<PackageUpdateSet>();
 
