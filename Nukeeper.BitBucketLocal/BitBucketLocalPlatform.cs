@@ -41,7 +41,7 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
-            var repositories = await _client.GetGitRepositories(target.Owner).ConfigureAwait(false);
+            var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
             var pullReq = new PullRequest
@@ -58,12 +58,12 @@ namespace NuKeeper.BitBucketLocal
                 }
             };
 
-            await _client.CreatePullRequest(pullReq, target.Owner, targetRepository.Name).ConfigureAwait(false);
+            await _client.CreatePullRequest(pullReq, target.Owner, targetRepository.Name);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
-            var projects = await _client.GetProjects().ConfigureAwait(false);
+            var projects = await _client.GetProjects();
             return projects
                 .Select(project => new Organization(project.Name))
                 .ToList();
@@ -71,7 +71,7 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
-            var repos = await _client.GetGitRepositories(projectName).ConfigureAwait(false);
+            var repos = await _client.GetGitRepositories(projectName);
 
             return repos.Select(repo =>
                     new Repository(repo.Name, false,
@@ -84,7 +84,7 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
-            var repos = await GetRepositoriesForOrganisation(projectName).ConfigureAwait(false);
+            var repos = await GetRepositoriesForOrganisation(projectName);
             return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -95,7 +95,7 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
-            var branches = await _client.GetGitRepositoryBranches(projectName, repositoryName).ConfigureAwait(false);
+            var branches = await _client.GetGitRepositoryBranches(projectName, repositoryName);
 
             var count = branches.Count(x => x.DisplayId.Equals(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
@@ -113,7 +113,7 @@ namespace NuKeeper.BitBucketLocal
             var repositoryFileNames = new List<string>();
             foreach (var repo in searchRequest.Repos)
             {
-                repositoryFileNames.AddRange(await _client.GetGitRepositoryFileNames(repo.owner, repo.name).ConfigureAwait(false)); 
+                repositoryFileNames.AddRange(await _client.GetGitRepositoryFileNames(repo.owner, repo.name)); 
             }
 
             var searchStrings = searchRequest.Term.Replace("\"", string.Empty).Split(new string[] { "OR" }, StringSplitOptions.None);

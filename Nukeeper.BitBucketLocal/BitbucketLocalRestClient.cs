@@ -33,7 +33,7 @@ namespace NuKeeper.BitBucketLocal
 
         private async Task<T> GetResourceOrEmpty<T>(string url, [CallerMemberName] string caller = null)
         {
-            var response = await _client.GetAsync(url).ConfigureAwait(false);
+            var response = await _client.GetAsync(url);
             return await HandleResponse<T>(response, caller);      
         }
 
@@ -83,26 +83,26 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<IEnumerable<Repository>> GetProjects([CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>("projects?limit=999", caller).ConfigureAwait(false);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>("projects?limit=999", caller);
             return response.Values;
         }
 
 
         public async Task<IEnumerable<Repository>> GetGitRepositories(string projectName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($"projects/{projectName}/repos?limit=999", caller).ConfigureAwait(false);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($"projects/{projectName}/repos?limit=999", caller);
             return response.Values;
         }
 
         public async Task<IEnumerable<string>> GetGitRepositoryFileNames(string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<string>>($"projects/{projectName}/repos/{repositoryName}/files?limit=9999", caller).ConfigureAwait(false);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<string>>($"projects/{projectName}/repos/{repositoryName}/files?limit=9999", caller);
             return response.Values;
         }
 
         public async Task<IEnumerable<Branch>> GetGitRepositoryBranches(string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Branch>>($"projects/{projectName}/repos/{repositoryName}/branches", caller).ConfigureAwait(false);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Branch>>($"projects/{projectName}/repos/{repositoryName}/branches", caller);
             return  response.Values;
         }
 
@@ -111,7 +111,7 @@ namespace NuKeeper.BitBucketLocal
             var requestJson = JsonConvert.SerializeObject(pullReq, Formatting.None, new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore});
             var requestBody = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
-            var response = await _client.PostAsync($@"projects/{projectName}/repos/{repositoryName}/pull-requests", requestBody).ConfigureAwait(false);
+            var response = await _client.PostAsync($@"projects/{projectName}/repos/{repositoryName}/pull-requests", requestBody);
 
             return await HandleResponse<PullRequest>(response, caller);
         }
