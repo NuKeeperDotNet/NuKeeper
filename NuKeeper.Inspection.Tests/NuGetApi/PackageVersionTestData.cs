@@ -11,30 +11,56 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 {
     public static class PackageVersionTestData
     {
+        public const string PrereleaseLabel = "prerelease";
+
         public static List<PackageSearchMedatadata> VersionsFor(VersionChange change)
         {
             switch (change)
             {
                 case VersionChange.Major:
                     return NewMajorVersion()
+                        .Concat(ConvertToPrerelease(NewMajorVersion()))
                         .Concat(MinorVersions())
+                        .Concat(ConvertToPrerelease(MinorVersions()))
                         .Concat(PatchVersions())
+                        .Concat(ConvertToPrerelease(PatchVersions()))
                         .ToList();
 
                 case VersionChange.Minor:
                     return MinorVersions()
+                        .Concat(ConvertToPrerelease(MinorVersions()))
                         .Concat(PatchVersions())
+                        .Concat(ConvertToPrerelease(PatchVersions()))
                         .ToList();
 
                 case VersionChange.Patch:
-                    return PatchVersions();
+                    return PatchVersions()
+                        .Concat(ConvertToPrerelease(PatchVersions()))
+                        .ToList();
 
                 case VersionChange.None:
-                    return CurrentVersionOnly();
+                    return CurrentVersionOnly()
+                        .Concat(ConvertToPrerelease(CurrentVersionOnly()))
+                        .ToList();
 
                 default:
                     throw new ArgumentOutOfRangeException($"Invalid version change {change}");
             }
+        }
+
+        private static List<PackageSearchMedatadata> ConvertToPrerelease(List<PackageSearchMedatadata> packages)
+        {
+            var toReturn = new List<PackageSearchMedatadata>();
+
+            foreach (var package in packages)
+            {
+                toReturn.Add(PackageVersion(package.Identity.Version.Major,
+                    package.Identity.Version.Minor,
+                    package.Identity.Version.Patch,
+                    PrereleaseLabel));
+            }
+
+            return toReturn;
         }
 
         private static List<PackageSearchMedatadata> NewMajorVersion()
@@ -83,9 +109,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
         }
 
-        public static PackageSearchMedatadata PackageVersion(int major, int minor, int patch)
+        public static PackageSearchMedatadata PackageVersion(int major, int minor, int patch, string releaseLabel = "")
         {
-            var version = new NuGetVersion(major, minor, patch);
+            var version = new NuGetVersion(major, minor, patch, releaseLabel);
             var metadata = new PackageIdentity("TestPackage", version);
             return new PackageSearchMedatadata(metadata, new PackageSource("http://none"), DateTimeOffset.Now, null);
         }
