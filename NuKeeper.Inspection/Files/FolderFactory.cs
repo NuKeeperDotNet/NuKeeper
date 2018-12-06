@@ -10,10 +10,12 @@ namespace NuKeeper.Inspection.Files
     public class FolderFactory : IFolderFactory
     {
         private readonly INuKeeperLogger _logger;
+        private readonly string _systemTempPath;
 
         public FolderFactory(INuKeeperLogger logger)
         {
             _logger = logger;
+            _systemTempPath = Path.GetTempPath();
         }
 
         public IFolder UniqueTemporaryFolder()
@@ -23,12 +25,12 @@ namespace NuKeeper.Inspection.Files
             return new Folder(_logger, tempDir);
         }
 
-        private static string NuKeeperTempFilesPath()
+        private string NuKeeperTempFilesPath()
         {
-            return Path.Combine(Path.GetTempPath(), "NuKeeper");
+            return Path.Combine(_systemTempPath, "NuKeeper");
         }
 
-        private static string GetUniqueTemporaryPath()
+        private string GetUniqueTemporaryPath()
         {
             var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
             return Path.Combine(NuKeeperTempFilesPath(), uniqueName);

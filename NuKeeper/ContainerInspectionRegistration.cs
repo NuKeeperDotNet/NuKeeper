@@ -24,7 +24,7 @@ namespace NuKeeper
             container.Register<ILogger, NuGetLogger>();
 
             container.Register<IFolder, Folder>();
-            container.Register<IFolderFactory, FolderFactory>();
+            container.RegisterSingleton<IFolderFactory, FolderFactory>();
 
             container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
