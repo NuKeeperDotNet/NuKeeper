@@ -11,14 +11,14 @@ namespace NuKeeper.Abstractions
                 && !IsExcluded(target, exclude);
         }
 
-        private static bool IsIncluded(string target, Regex regex)
+        private static bool IsIncluded(string target, Regex include)
         {
-            return regex == null || regex.IsMatch(target);
+            return include == null || include.IsMatch(target);
         }
 
-        private static bool IsExcluded(string target, Regex regex)
+        private static bool IsExcluded(string target, Regex exclude)
         {
-            return regex != null && regex.IsMatch(target);
+            return exclude != null && exclude.IsMatch(target);
         }
     }
 }
