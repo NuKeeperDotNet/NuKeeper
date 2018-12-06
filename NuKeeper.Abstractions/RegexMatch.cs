@@ -20,6 +20,5 @@ namespace NuKeeper.Abstractions
         {
             return regex != null && regex.IsMatch(target);
         }
-
     }
 }
