@@ -234,6 +234,38 @@ namespace NuKeeper.Update.Tests
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
+        [Test]
+        public async Task WhenThePackageIsFromTheFuture()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(TimeSpan.FromMinutes(-5))
+            };
+
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
+
+            var results = await target.Filter(updateSets, settings, Pass);
+
+            Assert.That(results.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task WhenMinAgeIsZeroAndThePackageIsFromTheFuture()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(TimeSpan.FromMinutes(-5))
+            };
+
+            var target = CreateUpdateSelection();
+            var settings = MinAgeTargetSelection(TimeSpan.FromDays(0));
+
+            var results = await target.Filter(updateSets, settings, Pass);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+        }
+
         private static PackageUpdateSet UpdateFoobarFromOneVersion()
         {
             var newPackage = LatestVersionOfPackageFoobar();
