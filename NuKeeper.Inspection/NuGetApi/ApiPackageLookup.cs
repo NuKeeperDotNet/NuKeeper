@@ -20,20 +20,23 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange,
             UsePrerelease usePrerelease)
         {
-            bool allowBetas;
-
-            switch (usePrerelease)
-            {
-                case UsePrerelease.Always: allowBetas = true;
-                    break;
-                case UsePrerelease.Never: allowBetas = false;
-                    break;
-                default: allowBetas = package.Version.IsPrerelease;
-                    break;
-            }
+            var allowBetas = ShouldAllowBetas(package, usePrerelease);
 
             var foundVersions = await _packageVersionsLookup.Lookup(package.Id, allowBetas, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
+        }
+
+        private static bool ShouldAllowBetas(PackageIdentity package, UsePrerelease usePrerelease)
+        {
+            switch (usePrerelease)
+            {
+                case UsePrerelease.Always:
+                    return true;
+                case UsePrerelease.Never:
+                    return false;
+                default:
+                    return package.Version.IsPrerelease;
+            }
         }
     }
 }

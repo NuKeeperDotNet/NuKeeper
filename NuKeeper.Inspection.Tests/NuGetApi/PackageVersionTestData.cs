@@ -50,17 +50,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
         private static List<PackageSearchMedatadata> ConvertToPrerelease(List<PackageSearchMedatadata> packages)
         {
-            var toReturn = new List<PackageSearchMedatadata>();
+            return packages.Select(p =>
+                PackageVersion(p.Identity.Version.Major, p.Identity.Version.Minor, p.Identity.Version.Patch, PrereleaseLabel))
+                .ToList();
 
-            foreach (var package in packages)
-            {
-                toReturn.Add(PackageVersion(package.Identity.Version.Major,
-                    package.Identity.Version.Minor,
-                    package.Identity.Version.Patch,
-                    PrereleaseLabel));
-            }
-
-            return toReturn;
         }
 
         private static List<PackageSearchMedatadata> NewMajorVersion()
