@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -70,20 +71,7 @@ namespace NuKeeper.BitBucketLocal
 
         private static bool MatchesIncludeExclude(Repository repo, SourceControlServerSettings settings)
         {
-            return
-                MatchesInclude(settings.IncludeRepos, repo)
-                && !MatchesExclude(settings.ExcludeRepos, repo);
+            return RegexMatch.IncludeExclude(repo.Name, settings.IncludeRepos, settings.ExcludeRepos);
         }
-
-        private static bool MatchesInclude(Regex regex, Repository repo)
-        {
-            return regex == null || regex.IsMatch(repo.Name);
-        }
-
-        private static bool MatchesExclude(Regex regex, Repository repo)
-        {
-            return regex != null && regex.IsMatch(repo.Name);
-        }
-
     }
 }
