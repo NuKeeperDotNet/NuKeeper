@@ -15,7 +15,17 @@ namespace NuKeeper.Inspection.Files
         public FolderFactory(INuKeeperLogger logger)
         {
             _logger = logger;
-            _systemTempPath = Path.GetTempPath();
+            _systemTempPath = GetSystemTempPath();
+        }
+
+        private static string GetSystemTempPath()
+        {
+            var tempFromEnv = Environment.GetEnvironmentVariable("temp");
+            if (!string.IsNullOrWhiteSpace(tempFromEnv) && Directory.Exists(tempFromEnv))
+            {
+                return tempFromEnv;
+            }
+            return Path.GetTempPath();
         }
 
         public IFolder UniqueTemporaryFolder()
