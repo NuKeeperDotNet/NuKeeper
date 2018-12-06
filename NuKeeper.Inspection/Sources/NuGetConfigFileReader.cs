@@ -21,9 +21,9 @@ namespace NuKeeper.Inspection.Sources
         {
             var settings = Settings.LoadDefaultSettings(workingFolder.FullPath);
 
-            foreach (var file in settings.Priority)
+            foreach (var file in settings.GetConfigFilePaths())
             {
-                _logger.Detailed($"Reading file {Path.Combine(file.Root, file.FileName)} for package sources");
+                _logger.Detailed($"Reading file {file} for package sources");
             }
 
             var enabledSources = SettingsUtility.GetEnabledSources(settings).ToList();
@@ -36,7 +36,7 @@ namespace NuKeeper.Inspection.Sources
             foreach (var source in sources)
             {
                 _logger.Detailed(
-                    $"Read [{source.Name}] : {source.SourceUri} from file: {Path.Combine(source.Origin.Root, source.Origin.FileName)}");
+                    $"Read [{source.Name}] : {source.SourceUri} from file: {source.Source}");
             }
 
             return new NuGetSources(sources);
