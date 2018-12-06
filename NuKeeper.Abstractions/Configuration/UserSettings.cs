@@ -13,6 +13,8 @@ namespace NuKeeper.Abstractions.Configuration
 
         public VersionChange AllowedChange { get; set; }
 
+        public UsePrerelease UsePrerelease { get; set; }
+
 
         public OutputFormat OutputFormat { get; set; }
         public OutputDestination OutputDestination { get; set; }

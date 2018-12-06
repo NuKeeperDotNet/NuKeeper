@@ -46,7 +46,11 @@ namespace NuKeeper.Local
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
 
-            var sortedUpdates = await GetSortedUpdates(folder, sources, settings.UserSettings.AllowedChange);
+            var sortedUpdates = await GetSortedUpdates(
+                folder,
+                sources,
+                settings.UserSettings.AllowedChange,
+                settings.UserSettings.UsePrerelease);
 
             Report(settings.UserSettings, sortedUpdates);
 
@@ -59,10 +63,11 @@ namespace NuKeeper.Local
         private async Task<IReadOnlyCollection<PackageUpdateSet>> GetSortedUpdates(
             IFolder folder,
             NuGetSources sources,
-            VersionChange allowedChange)
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease)
         {
             var updates = await _updateFinder.FindPackageUpdateSets(
-                folder, sources, allowedChange);
+                folder, sources, allowedChange, usePrerelease);
 
             return _sorter.Sort(updates)
                 .ToList();

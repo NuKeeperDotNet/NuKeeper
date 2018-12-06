@@ -15,6 +15,8 @@ namespace NuKeeper.Abstractions.Configuration
         public LogLevel? Verbosity { get; set; }
         public VersionChange? Change { get; set; }
 
+        public UsePrerelease? UsePrerelease { get; set; }
+
         public ForkMode? ForkMode { get; set; }
 
         public string IncludeRepos { get; set; }

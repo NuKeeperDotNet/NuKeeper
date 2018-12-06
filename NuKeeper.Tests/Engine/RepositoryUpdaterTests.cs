@@ -203,7 +203,8 @@ namespace NuKeeper.Tests.Engine
             updateFinder.FindPackageUpdateSets(
                     Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
-                    Arg.Any<VersionChange>())
+                    Arg.Any<VersionChange>(),
+                    Arg.Any<UsePrerelease>())
                 .Returns(updates);
 
             if (packageUpdater == null)

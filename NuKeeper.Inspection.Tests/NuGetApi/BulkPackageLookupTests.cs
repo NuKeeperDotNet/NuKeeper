@@ -26,13 +26,14 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var results = await bulkLookup.FindVersionUpdates(
                 Enumerable.Empty<PackageIdentity>(),
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
 
             await apiLookup.DidNotReceive().FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
         }
 
         [Test]
@@ -51,7 +52,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Not.Empty);
@@ -75,10 +77,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             await apiLookup.Received(1).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
         }
 
         [Test]
@@ -99,7 +102,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.ContainsKey("foo"), Is.True);
@@ -125,10 +129,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             await apiLookup.Received(2).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
         }
 
         [Test]
@@ -148,13 +153,14 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             await apiLookup.Received(1).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
             await apiLookup.Received(1).FindVersionUpdate(Arg.Is<PackageIdentity>(
                 pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)),
-                Arg.Any<NuGetSources>(), Arg.Any<VersionChange>());
+                Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.ContainsKey("foo"), Is.True);
@@ -168,7 +174,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 DateTimeOffset.Now, null);
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName),
-                    Arg.Any<NuGetSources>(), Arg.Any<VersionChange>())
+                    Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>())
                 .Returns(new PackageLookupResult(VersionChange.Major, responseMetaData, responseMetaData, responseMetaData));
         }
 

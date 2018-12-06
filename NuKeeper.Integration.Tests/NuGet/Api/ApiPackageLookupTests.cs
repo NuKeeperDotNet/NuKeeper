@@ -22,7 +22,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var package = await lookup.FindVersionUpdate(Current("AWSSDK"),
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -42,7 +43,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(
                 Current(Guid.NewGuid().ToString()),
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Null);
@@ -57,7 +59,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(
                 Current("Newtonsoft.Json"),
                 NuGetSources.GlobalFeed,
-                VersionChange.Major);
+                VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -80,7 +83,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(
                 new PackageIdentity("Newtonsoft.Json", new NuGetVersion(8, 0, 1)),
                 NuGetSources.GlobalFeed,
-                VersionChange.Minor);
+                VersionChange.Minor,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -110,7 +114,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(
                 new PackageIdentity("libgit2sharp", new NuGetVersion(0, 26, 0, "preview-0017")),
                 NuGetSources.GlobalFeed,
-                VersionChange.Minor);
+                VersionChange.Minor,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Selected(), Is.Not.Null);
