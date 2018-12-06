@@ -120,19 +120,8 @@ namespace NuKeeper.Update.Selection
 
         private bool MatchesIncludeExclude(PackageUpdateSet packageUpdateSet)
         {
-            return 
-                MatchesInclude(_settings.Includes, packageUpdateSet)
-                && ! MatchesExclude(_settings.Excludes, packageUpdateSet);
-        }
-
-        private static bool MatchesInclude(Regex regex, PackageUpdateSet packageUpdateSet)
-        {
-            return regex == null || regex.IsMatch(packageUpdateSet.SelectedId);
-        }
-
-        private static bool MatchesExclude(Regex regex, PackageUpdateSet packageUpdateSet)
-        {
-            return regex != null && regex.IsMatch(packageUpdateSet.SelectedId);
+            return RegexMatch.IncludeExclude(packageUpdateSet.SelectedId,
+                _settings.Includes, _settings.Excludes);
         }
 
         private bool MatchesMinAge(PackageUpdateSet packageUpdateSet)
