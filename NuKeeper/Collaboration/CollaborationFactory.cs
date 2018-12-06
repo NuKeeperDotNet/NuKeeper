@@ -125,7 +125,7 @@ namespace NuKeeper.Collaboration
 
                 case Platform.BitbucketLocal:
                     CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
-                    RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
+                    RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
