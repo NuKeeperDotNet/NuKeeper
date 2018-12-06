@@ -32,7 +32,7 @@ namespace NuKeeper.BitBucketLocal
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            Username = repositoryUri.UserInfo;
+            Username = Concat.FirstValue(repositoryUri.UserInfo, Environment.UserName);
 
             if (pathParts.Count < 2)
             {
@@ -53,7 +53,7 @@ namespace NuKeeper.BitBucketLocal
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            settings.Username = Username;
+            settings.Username = Concat.FirstValue(Username, Environment.UserName); 
             UpdateTokenSettings(settings);
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
