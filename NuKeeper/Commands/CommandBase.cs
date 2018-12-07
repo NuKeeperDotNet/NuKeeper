@@ -22,6 +22,10 @@ namespace NuKeeper.Commands
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
         public VersionChange? AllowedChange { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "up", LongName = "useprerelease",
+            Description = "Allowed prerelease: Always, Never, FromPrerelease. Defaults to FromPrerelease.")]
+        public UsePrerelease? UsePrerelease { get; set; }
+
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",
             Description =
                 "Specifies a NuGet package source to use during the operation. This setting overrides all of the sources specified in the NuGet.config files. Multiple sources can be provided by specifying this option multiple times.")]
@@ -113,6 +117,8 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.GetSettings();
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
+            var usePrerelease =
+                Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
 
             var settings = new SettingsContainer
             {
@@ -121,6 +127,7 @@ namespace NuKeeper.Commands
                 UserSettings = new UserSettings
                 {
                     AllowedChange = allowedChange,
+                    UsePrerelease = usePrerelease,
                     NuGetSources = NuGetSources
                 }
             };

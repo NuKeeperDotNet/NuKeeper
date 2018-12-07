@@ -8,6 +8,7 @@ using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
+using NuKeeper.BitBucketLocal;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Collaboration
@@ -119,6 +120,12 @@ namespace NuKeeper.Collaboration
                 case Platform.Bitbucket:
                     CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
+                    ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
+
+                case Platform.BitbucketLocal:
+                    CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
+                    RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 

@@ -10,13 +10,14 @@
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NuGet.CommandLine" Version="4.7.1" />
     <PackageReference Include="SimpleInjector" Version="4.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
     <ProjectReference Include="..\NuKeeper.AzureDevOps\NuKeeper.AzureDevOps.csproj" />
+    <ProjectReference Include="..\Nukeeper.BitBucketLocal\NuKeeper.BitBucketLocal.csproj" />
     <ProjectReference Include="..\NuKeeper.BitBucket\NuKeeper.BitBucket.csproj" />
     <ProjectReference Include="..\NuKeeper.GitHub\NuKeeper.GitHub.csproj" />
     <ProjectReference Include="..\NuKeeper.Git\NuKeeper.Git.csproj" />

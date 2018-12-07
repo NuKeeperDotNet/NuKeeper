@@ -25,7 +25,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+                packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -44,7 +45,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+                packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
@@ -64,7 +66,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+                packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -83,7 +86,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+                packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -95,7 +99,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                Enumerable.Empty<PackageIdentity>(), NuGetSources.GlobalFeed, VersionChange.Major);
+                Enumerable.Empty<PackageIdentity>(), NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -115,7 +120,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var lookup = BuildBulkPackageLookup();
 
             var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major);
+                packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                UsePrerelease.FromPrerelease);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));

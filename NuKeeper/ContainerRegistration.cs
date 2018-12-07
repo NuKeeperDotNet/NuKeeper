@@ -5,6 +5,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
+using NuKeeper.BitBucketLocal;
 using NuKeeper.Collaboration;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
@@ -54,6 +55,7 @@ namespace NuKeeper
                 typeof(AzureDevOpsSettingsReader).Assembly,
                 typeof(VstsSettingsReader).Assembly,
                 typeof(BitbucketSettingsReader).Assembly,
+                typeof(BitBucketLocalSettingsReader).Assembly,
             });
 
             container.Collection.Register<ISettingsReader>(settingsRegistration);
