@@ -1,7 +1,6 @@
 using System;
 using NuKeeper.Abstractions.Formats;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace NuKeeper.Abstractions.Tests.Formats
 {

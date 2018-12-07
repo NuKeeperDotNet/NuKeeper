@@ -4,7 +4,6 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Collaboration;
 
@@ -14,7 +13,7 @@ namespace NuKeeper.Commands
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
-        public string RepositoryUri { get; set; } 
+        public string RepositoryUri { get; set; }
         
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
