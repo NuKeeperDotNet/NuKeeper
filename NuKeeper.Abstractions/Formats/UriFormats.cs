@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
@@ -32,6 +33,22 @@ namespace NuKeeper.Abstractions.Formats
                 if (origin != null)
                     return origin.Url;
             }
+            
+            return repositoryUri;
+        }
+
+        public static Uri ToUri(this string test)
+        {
+            var calledFrom = Environment.CurrentDirectory;
+            
+            var repositoryUri = new Uri(test, UriKind.RelativeOrAbsolute);
+
+            if (repositoryUri.IsAbsoluteUri) return repositoryUri;
+            
+            var absoluteUri = Path.Combine(calledFrom, repositoryUri.OriginalString);
+            
+            if (!Directory.Exists(absoluteUri))
+                throw new NuKeeperException($"Local uri doesn't exist: {absoluteUri}");
             
             return repositoryUri;
         }

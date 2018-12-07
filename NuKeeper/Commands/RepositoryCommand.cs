@@ -4,6 +4,8 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Collaboration;
 
 namespace NuKeeper.Commands
@@ -12,8 +14,8 @@ namespace NuKeeper.Commands
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
-        public string RepositoryUri { get; set; }
-
+        public string RepositoryUri { get; set; } 
+        
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -24,7 +26,13 @@ namespace NuKeeper.Commands
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
-            if (!Uri.TryCreate(RepositoryUri, UriKind.Absolute, out var repoUri))
+            Uri repoUri;
+            
+            try
+            {
+                repoUri = RepositoryUri.ToUri();
+            }
+            catch
             {
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
@@ -32,11 +40,10 @@ namespace NuKeeper.Commands
             var didRead = false;
             foreach (var reader in _settingsReaders)
             {
-                if (reader.CanRead(repoUri))
-                {
-                    didRead = true;
-                    settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
-                }
+                if (!reader.CanRead(repoUri)) continue;
+                
+                didRead = true;
+                settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
             }
 
             if (!didRead)
