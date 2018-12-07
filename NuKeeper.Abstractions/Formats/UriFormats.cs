@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using NuGet.Common;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
@@ -50,7 +51,7 @@ namespace NuKeeper.Abstractions.Formats
             if (!Directory.Exists(absoluteUri))
                 throw new NuKeeperException($"Local uri doesn't exist: {absoluteUri}");
             
-            return repositoryUri;
+            return new Uri(absoluteUri);
         }
     }
 }

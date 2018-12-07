@@ -30,7 +30,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [Test]
         public void IsLocalUri()
         {
-            var input = "./";
+            var input = ".";
             var output = input.ToUri();
 
             Assert.That(output.IsFile, Is.EqualTo(true));
