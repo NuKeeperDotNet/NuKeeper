@@ -39,10 +39,11 @@ namespace NuKeeper.Commands
             var didRead = false;
             foreach (var reader in _settingsReaders)
             {
-                if (!reader.CanRead(repoUri)) continue;
-                
-                didRead = true;
-                settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
+                if (reader.CanRead(repoUri))
+                {
+                    didRead = true;
+                    settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
+                }
             }
 
             if (!didRead)
