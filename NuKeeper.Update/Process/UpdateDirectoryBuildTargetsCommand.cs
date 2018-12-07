@@ -30,13 +30,13 @@ namespace NuKeeper.Update.Process
 
             using (var xmlOutput = File.Open(currentPackage.Path.FullName, FileMode.Truncate))
             {
-                UpdateNuspec(xmlOutput, newVersion, currentPackage, xml);
+                UpdateFile(xmlOutput, newVersion, currentPackage, xml);
             }
 
             return Task.CompletedTask;
         }
 
-        private void UpdateNuspec(Stream fileContents, NuGetVersion newVersion,
+        private void UpdateFile(Stream fileContents, NuGetVersion newVersion,
             PackageInProject currentPackage, XDocument xml)
         {
             var packagesNode = xml.Element("Project")?.Element("ItemGroup");
