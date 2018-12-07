@@ -38,11 +38,11 @@ namespace NuKeeper.Abstractions.Formats
             return repositoryUri;
         }
 
-        public static Uri ToUri(this string test)
+        public static Uri ToUri(this string repositoryString)
         {
             var calledFrom = Environment.CurrentDirectory;
             
-            var repositoryUri = new Uri(test, UriKind.RelativeOrAbsolute);
+            var repositoryUri = new Uri(repositoryString, UriKind.RelativeOrAbsolute);
 
             if (repositoryUri.IsAbsoluteUri) return repositoryUri;
             
