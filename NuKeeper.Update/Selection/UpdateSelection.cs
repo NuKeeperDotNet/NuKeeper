@@ -15,7 +15,7 @@ namespace NuKeeper.Update.Selection
     {
         private readonly INuKeeperLogger _logger;
         private FilterSettings _settings;
-        private DateTime _maxPublishedDate;
+        private DateTime? _maxPublishedDate = null;
 
         public UpdateSelection(INuKeeperLogger logger)
         {
@@ -28,7 +28,10 @@ namespace NuKeeper.Update.Selection
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             _settings = settings;
-            _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
+            if (settings.MinimumAge != TimeSpan.Zero)
+            {
+                _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
+            }
 
             var filtered = await ApplyFilters(candidates, remoteCheck);
 
@@ -126,13 +129,18 @@ namespace NuKeeper.Update.Selection
 
         private bool MatchesMinAge(PackageUpdateSet packageUpdateSet)
         {
+            if (!_maxPublishedDate.HasValue)
+            {
+                return true;
+            }
+
             var published = packageUpdateSet.Selected.Published;
             if (!published.HasValue)
             {
                 return true;
             }
 
-            return published.Value.UtcDateTime <= _maxPublishedDate;
+            return published.Value.UtcDateTime <= _maxPublishedDate.Value;
         }
     }
 }
