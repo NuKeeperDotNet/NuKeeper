@@ -21,9 +21,4 @@
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.6.2" PrivateAssets="All" />
     <PackageReference Include="Text.Analyzers" Version="2.6.2" PrivateAssets="All" />
   </ItemGroup>
-
-  <PropertyGroup>
-   <LangVersion>8</LangVersion>
- </PropertyGroup>
- 
 </Project>
