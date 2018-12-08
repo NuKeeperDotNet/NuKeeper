@@ -32,7 +32,9 @@ namespace NuKeeper.Abstractions.Formats
                 var origin = discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
                 
                 if (origin != null)
+                {
                     return origin.Url;
+                }
             }
             
             return repositoryUri;
