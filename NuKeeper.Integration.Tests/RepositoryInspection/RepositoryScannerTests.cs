@@ -183,7 +183,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             return new RepositoryScanner(
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),
-                new NuspecFileReader(logger));
+                new NuspecFileReader(logger),
+                new DirectoryBuildTargetsReader(logger));
         }
 
         private static void WriteFile(IFolder path, string fileName, string contents)

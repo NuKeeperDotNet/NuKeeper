@@ -11,9 +11,11 @@ namespace NuKeeper.Inspection.RepositoryInspection
     {
         private readonly IReadOnlyCollection<IPackageReferenceFinder> _finders;
 
-        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader, NuspecFileReader nuspecFileReader)
+        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader,
+            NuspecFileReader nuspecFileReader, DirectoryBuildTargetsReader directoryBuildTargetsReader)
         {
-            _finders = new IPackageReferenceFinder[] {projectFileReader, packagesFileReader, nuspecFileReader};
+            _finders = new IPackageReferenceFinder[]
+                {projectFileReader, packagesFileReader, nuspecFileReader, directoryBuildTargetsReader};
         }
 
         public IReadOnlyCollection<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
