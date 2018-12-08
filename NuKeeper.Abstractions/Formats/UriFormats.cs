@@ -40,17 +40,18 @@ namespace NuKeeper.Abstractions.Formats
 
         public static Uri ToUri(this string repositoryString)
         {
-            var calledFrom = Environment.CurrentDirectory;
-            
             var repositoryUri = new Uri(repositoryString, UriKind.RelativeOrAbsolute);
-
-            if (repositoryUri.IsAbsoluteUri) return repositoryUri;
+            if (repositoryUri.IsAbsoluteUri)
+            {
+                return repositoryUri;
+            }
             
-            var absoluteUri = Path.Combine(calledFrom, repositoryUri.OriginalString);
-            
+            var absoluteUri = Path.Combine(Environment.CurrentDirectory, repositoryUri.OriginalString);
             if (!Directory.Exists(absoluteUri))
+            {
                 throw new NuKeeperException($"Local uri doesn't exist: {absoluteUri}");
-            
+            }
+
             return new Uri(absoluteUri);
         }
     }
