@@ -4,12 +4,4 @@ dist: trusty
 dotnet: 2.1.500
 script:
   - dotnet build -c Release NuKeeper.sln /m:1
-  - dotnet test -c Release NuKeeper.Tests/NuKeeper.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.Abstractions.Tests/NuKeeper.Abstractions.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.Inspection.Tests/NuKeeper.Inspection.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.Update.Tests/NuKeeper.Update.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.Integration.Tests/NuKeeper.Integration.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release NuKeeper.GitHub.Tests/NuKeeper.GitHub.Tests.csproj --filter "TestCategory!=WindowsOnly"
-  - dotnet test -c Release Nukeeper.AzureDevOps.Tests/Nukeeper.AzureDevOps.Tests.csproj --filter "TestCategory!=WindowsOnly"
-
- 
+  - dotnet test -c Release NuKeeper.sln --filter "TestCategory!=WindowsOnly"
