@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0070" />

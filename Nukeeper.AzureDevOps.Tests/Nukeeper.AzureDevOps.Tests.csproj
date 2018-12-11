@@ -7,7 +7,6 @@
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
