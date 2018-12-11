@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
+    <IsTestProject>true</IsTestProject>
 	</PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
@@ -16,9 +17,5 @@
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj">
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}">
-    </Service>
   </ItemGroup>
 </Project>
