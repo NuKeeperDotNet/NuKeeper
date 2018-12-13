@@ -3,6 +3,13 @@ queue:
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 steps:
+  - bash: echo Set $NugetVersion
+    env:
+      NugetVersion: $(NugetVersion)
+  - powershell: Write-Host Set $NugetVersion
+    env:
+      NugetVersion : $(NugetVersion)
+
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core sdk 2.1.500'
   inputs:
