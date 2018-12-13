@@ -8,6 +8,11 @@ steps:
   inputs:
     version: 2.1.500
 
+- bash: export NugetVersion
+  displayName: 'set NugetVersion into env vars'
+  env:
+    NugetVersion: $(NugetVersion)
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
