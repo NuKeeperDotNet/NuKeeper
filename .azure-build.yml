@@ -8,7 +8,7 @@ steps:
   inputs:
     version: 2.1.500
 
-- bash: NugetVersion=$(NugetVersion)
+- bash: export NugetVersion=$(NugetVersion)
   displayName: 'set NugetVersion into env vars'
   env:
     NugetVersion: $(NugetVersion)
