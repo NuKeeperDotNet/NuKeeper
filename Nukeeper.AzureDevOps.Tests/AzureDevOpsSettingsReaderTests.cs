@@ -91,5 +91,18 @@ namespace Nukeeper.AzureDevOps.Tests
             var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/"));
             Assert.IsNull(settings);
         }
+
+        [Test]
+        public void RepositorySettings_HandlesSpacesInRepo()
+        {
+            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project%20name/_git/repo%20name"));
+
+            Assert.IsNotNull(settings);
+            Assert.AreEqual("https://dev.azure.com/org/", settings.ApiUri.ToString());
+            Assert.AreEqual("https://dev.azure.com/org/project%20name/_git/repo%20name", settings.RepositoryUri.AbsoluteUri);
+            Assert.AreEqual("repo name", settings.RepositoryName);
+            Assert.AreEqual("project name", settings.RepositoryOwner);
+        }
+
     }
 }
