@@ -66,7 +66,7 @@ namespace NuKeeper.Git
         {
             using (var repo = MakeRepo())
             {
-                repo.Network.Remotes.Add(name, endpoint.ToString());
+                repo.Network.Remotes.Add(name, endpoint.AbsoluteUri);
             }
         }
 
