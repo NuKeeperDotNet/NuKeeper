@@ -100,8 +100,8 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException("Unknown format. Format should be http(s)://tfs.company.local:port/<nothingOrVirtualSite>/{project}/_git/{repo}");
             }
 
-            var project = pathParts[gitLocation - 1];
-            var repoName = pathParts[gitLocation + 1];
+            var project = Uri.UnescapeDataString( pathParts[gitLocation - 1]);
+            var repoName = Uri.UnescapeDataString( pathParts[gitLocation + 1]);
             var apiPathParts = pathParts.Take(gitLocation - 1).ToArray();
 
             return new RepositorySettings
