@@ -154,6 +154,16 @@ namespace NuKeeper.Git
             }
         }
 
+        public void Pull()
+        {
+            using (var repo = MakeRepo())
+            {
+                var pullOptions = new PullOptions();
+
+                GitCommands.Pull(repo, GetSignature(repo), pullOptions);
+            }
+        }
+
         public string GetCurrentHead()
         {
             using (var repo = MakeRepo())

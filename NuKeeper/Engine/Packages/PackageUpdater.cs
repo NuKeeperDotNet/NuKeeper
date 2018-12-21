@@ -67,6 +67,8 @@ namespace NuKeeper.Engine.Packages
 
             git.Checkout(repository.DefaultBranch);
 
+            git.Pull();
+
             // branch
             var branchWithChanges = BranchNamer.MakeName(updates);
             _logger.Detailed($"Using branch name: '{branchWithChanges}'");
@@ -98,7 +100,6 @@ namespace NuKeeper.Engine.Packages
             var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) { Body = body };
 
             await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
-
 
             git.Checkout(repository.DefaultBranch);
             return updates.Count;

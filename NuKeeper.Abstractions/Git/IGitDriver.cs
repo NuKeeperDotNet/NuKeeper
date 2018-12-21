@@ -19,6 +19,8 @@ namespace NuKeeper.Abstractions.Git
 
         void Push(string remoteName, string branchName);
 
+        void Pull();
+
         string GetCurrentHead();
 
     }
