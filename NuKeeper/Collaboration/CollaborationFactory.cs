@@ -9,6 +9,7 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
 using NuKeeper.BitBucketLocal;
+using NuKeeper.Engine;
 using NuKeeper.GitHub;
 
 namespace NuKeeper.Collaboration
@@ -20,6 +21,8 @@ namespace NuKeeper.Collaboration
         private Platform? _platform;
 
         public IForkFinder ForkFinder { get; private set; }
+
+        public ICommitWorder CommitWorder { get; private set; }
 
         public IRepositoryDiscovery RepositoryDiscovery { get; private set; }
 
