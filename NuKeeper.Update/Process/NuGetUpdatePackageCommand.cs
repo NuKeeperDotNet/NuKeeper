@@ -44,7 +44,7 @@ namespace NuKeeper.Update.Process
             }
 
             var sources = allSources.CommandLine("-Source");
-            var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources}";
+            var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources} -NonInteractive";
             await _externalProcess.Run(projectPath, nuget, updateCommand, true);
         }
     }
