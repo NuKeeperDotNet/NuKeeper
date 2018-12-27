@@ -44,7 +44,6 @@ namespace NuKeeper.Tests.Engine
             Assert.That(f.RepositoryDiscovery, Is.Null);
         }
 
-
         [Test]
         public void UnknownApiReturnsUnableToFindPlatform()
         {
@@ -59,12 +58,42 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
+        public void UnknownApiCanHaveManualPlatform()
+        {
+            var collaborationFactory = GetCollaborationFactory();
+
+            var result = collaborationFactory.Initialise(
+                    new Uri("https://unknown.com/"), "token",
+                    ForkMode.SingleRepositoryOnly,
+                    Platform.GitHub);
+
+            Assert.That(result.IsSuccess);
+            AssertGithub(collaborationFactory);
+        }
+
+        [Test]
+        public void ManualPlatformWillOverrideUri()
+        {
+            var collaborationFactory = GetCollaborationFactory();
+
+            var result = collaborationFactory.Initialise(
+                new Uri("https://api.github.myco.com"), "token",
+                ForkMode.SingleRepositoryOnly,
+                Platform.AzureDevOps);
+
+            Assert.That(result.IsSuccess);
+            AssertAzureDevOps(collaborationFactory);
+        }
+
+
+        [Test]
         public void AzureDevOpsUrlReturnsAzureDevOps()
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token",
+            var result = collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token",
                 ForkMode.SingleRepositoryOnly, null);
+            Assert.That(result.IsSuccess);
 
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
@@ -75,8 +104,9 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token",
+            var result = collaborationFactory.Initialise(new Uri("https://api.github.com"), "token",
                 ForkMode.PreferFork, null);
+            Assert.That(result.IsSuccess);
 
             AssertGithub(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
