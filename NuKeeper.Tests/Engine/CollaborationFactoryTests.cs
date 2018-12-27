@@ -52,7 +52,8 @@ namespace NuKeeper.Tests.Engine
 
             var exception = Assert.Throws<NuKeeperException>(
                 () => collaborationFactory.Initialise(
-                    new Uri("https://unknown.com/"), null, ForkMode.SingleRepositoryOnly));
+                    new Uri("https://unknown.com/"), null,
+                    ForkMode.SingleRepositoryOnly, null));
 
             Assert.AreEqual(exception.Message, "Unable to find collaboration platform for uri https://unknown.com/");
         }
@@ -62,7 +63,8 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token", ForkMode.SingleRepositoryOnly);
+            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token",
+                ForkMode.SingleRepositoryOnly, null);
 
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
@@ -73,7 +75,8 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token", ForkMode.PreferFork);
+            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token",
+                ForkMode.PreferFork, null);
 
             AssertGithub(collaborationFactory);
             AssertAreSameObject(collaborationFactory);

@@ -100,7 +100,8 @@ namespace NuKeeper.Tests.Commands
                 .Initialise(
                     Arg.Is(new Uri("https://api.github.com")),
                     Arg.Is("abc"),
-                    Arg.Is<ForkMode?>(ForkMode.PreferSingleRepository));
+                    Arg.Is<ForkMode?>(ForkMode.PreferSingleRepository),
+                    Arg.Is((Platform?)null));
         }
 
         [Test]
@@ -134,7 +135,8 @@ namespace NuKeeper.Tests.Commands
                 .Initialise(
                     Arg.Is(new Uri("https://api.github.com")),
                     Arg.Is("abc"),
-                    Arg.Is<ForkMode?>(ForkMode.PreferFork));
+                    Arg.Is<ForkMode?>(ForkMode.PreferFork),
+                    Arg.Is((Platform?)null));
         }
 
         [Test]
