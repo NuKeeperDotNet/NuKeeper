@@ -49,12 +49,13 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            var exception = Assert.Throws<NuKeeperException>(
-                () => collaborationFactory.Initialise(
+            var result = collaborationFactory.Initialise(
                     new Uri("https://unknown.com/"), null,
-                    ForkMode.SingleRepositoryOnly, null));
+                    ForkMode.SingleRepositoryOnly, null);
 
-            Assert.AreEqual(exception.Message, "Unable to find collaboration platform for uri https://unknown.com/");
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.ErrorMessage,
+                Is.EqualTo("Unable to find collaboration platform for uri https://unknown.com/"));
         }
 
         [Test]
@@ -84,7 +85,6 @@ namespace NuKeeper.Tests.Engine
             Assert.That(result.IsSuccess);
             AssertAzureDevOps(collaborationFactory);
         }
-
 
         [Test]
         public void AzureDevOpsUrlReturnsAzureDevOps()

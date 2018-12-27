@@ -39,6 +39,14 @@ namespace NuKeeper.Collaboration
             ForkMode? forkModeFromSettings, Platform? platformFromSettings)
         {
             var platformSettingsReader = FindPlatformSettingsReader(platformFromSettings, apiEndpoint);
+            if (platformSettingsReader != null)
+            {
+                _platform = platformSettingsReader.Platform;
+            }
+            else
+            {
+                return ValidationResult.Failure($"Unable to find collaboration platform for uri {apiEndpoint}");
+            }
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
@@ -56,33 +64,33 @@ namespace NuKeeper.Collaboration
             return ValidationResult.Success;
         }
 
-        private ISettingsReader FindPlatformSettingsReader(Platform? platformFromSettings, Uri apiEndpoint)
+        private ISettingsReader FindPlatformSettingsReader(
+            Platform? platformFromSettings, Uri apiEndpoint)
         {
             if (platformFromSettings.HasValue)
             {
-                _platform = platformFromSettings.Value;
-                _nuKeeperLogger.Normal($"Collaboration platform specified as '{_platform}'");
-                return _settingReaders
-                    .Single(s => s.Platform == _platform);
+                var reader = _settingReaders
+                    .FirstOrDefault(s => s.Platform == platformFromSettings.Value);
+
+                if (reader != null)
+                {
+                    _nuKeeperLogger.Normal($"Collaboration platform specified as '{_platform}'");
+                }
+
+                return reader;
             }
-
-            var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
-            _platform = platformSettingsReader.Platform;
-            _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
-            return platformSettingsReader;
-        }
-
-        private ISettingsReader SettingsReaderForPlatform(Uri apiEndpoint)
-        {
-            var platformSettingsReader = _settingReaders
-                .FirstOrDefault(s => s.CanRead(apiEndpoint));
-
-            if (platformSettingsReader == null)
+            else
             {
-                throw new NuKeeperException($"Unable to find collaboration platform for uri {apiEndpoint}");
-            }
+                var reader = _settingReaders
+                    .FirstOrDefault(s => s.CanRead(apiEndpoint));
 
-            return platformSettingsReader;
+                if (reader != null)
+                {
+                    _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
+                }
+
+                return reader;
+            }
         }
 
         private ValidationResult ValidateSettings()
