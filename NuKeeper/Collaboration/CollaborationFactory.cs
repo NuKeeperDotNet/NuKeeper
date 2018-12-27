@@ -35,13 +35,10 @@ namespace NuKeeper.Collaboration
             Settings = new CollaborationPlatformSettings();
         }
 
-        public ValidationResult Initialise(Uri apiEndpoint, string token, ForkMode? forkModeFromSettings)
+        public ValidationResult Initialise(Uri apiEndpoint, string token,
+            ForkMode? forkModeFromSettings, Platform? platformFromSettings)
         {
-            var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
-
-            _platform = platformSettingsReader.Platform;
-
-            _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
+            var platformSettingsReader = FindPlatformSettingsReader(platformFromSettings, apiEndpoint);
 
             Settings.BaseApiUrl = UriFormats.EnsureTrailingSlash(apiEndpoint);
             Settings.Token = token;
@@ -57,6 +54,22 @@ namespace NuKeeper.Collaboration
             CreateForPlatform();
 
             return ValidationResult.Success;
+        }
+
+        private ISettingsReader FindPlatformSettingsReader(Platform? platformFromSettings, Uri apiEndpoint)
+        {
+            if (platformFromSettings.HasValue)
+            {
+                _platform = platformFromSettings.Value;
+                _nuKeeperLogger.Normal($"Collaboration platform specified as '{_platform}'");
+                return _settingReaders
+                    .Single(s => s.Platform == _platform);
+            }
+
+            var platformSettingsReader = SettingsReaderForPlatform(apiEndpoint);
+            _platform = platformSettingsReader.Platform;
+            _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
+            return platformSettingsReader;
         }
 
         private ISettingsReader SettingsReaderForPlatform(Uri apiEndpoint)
