@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
