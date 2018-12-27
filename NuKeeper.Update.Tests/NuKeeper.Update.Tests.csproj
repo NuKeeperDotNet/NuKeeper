@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <LangVersion>latest</LangVersion>
-	</PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+ 	</PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

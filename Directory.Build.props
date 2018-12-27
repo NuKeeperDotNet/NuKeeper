@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <VersionPrefix>$(NugetVersion)</VersionPrefix>
