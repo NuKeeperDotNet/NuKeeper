@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
@@ -103,15 +103,23 @@ namespace NuKeeper.Inspection.RepositoryInspection
                     return null;
                 }
 
-                var versionParseSuccess = NuGetVersion.TryParse(version, out var nugetVersion);
-                if (!versionParseSuccess)
+                var packageVersionRange = PackageVersionRange.Read(id, version);
+
+                if (packageVersionRange == null)
                 {
                     _logger.Normal($"Skipping package '{id}' with version '{version}' that could not be parsed.");
                     return null;
                 }
 
-                return new PackageInProject(new PackageIdentity(id, nugetVersion),
-                    path, projectReferences);
+                var singleVersion = packageVersionRange.SingleVersionIdentity();
+
+                if (singleVersion == null)
+                {
+                    _logger.Normal($"Skipping package '{id}' with version range '{version}' that is not a single version.");
+                    return null;
+                }
+
+                return new PackageInProject(singleVersion, path, projectReferences);
             }
             catch (Exception ex)
             {

@@ -25,7 +25,7 @@ namespace NuKeeper.Abstractions.NuGet
             var success = VersionRange.TryParse(version, out VersionRange versionRange);
             if (!success)
             {
-                throw new ArgumentException($"Could not parse {version} as a version range", nameof(version));
+                return null;
             }
 
             return new PackageVersionRange(id, versionRange);
