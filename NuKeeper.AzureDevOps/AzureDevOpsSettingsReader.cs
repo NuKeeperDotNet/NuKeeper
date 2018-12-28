@@ -61,8 +61,8 @@ namespace NuKeeper.AzureDevOps
             }
 
             var org = pathParts[0];
-            var project = pathParts[1];
-            var repoName = pathParts[3];
+            var project = Uri.UnescapeDataString(pathParts[1]);
+            var repoName = Uri.UnescapeDataString(pathParts[3]);
 
             return CreateRepositorySettings(org, repositoryUri, project, repoName);
         }
@@ -104,8 +104,8 @@ namespace NuKeeper.AzureDevOps
             }
 
             var org = pathParts[0];
-            var project = pathParts[1];
-            var repoName = pathParts[3];
+            var project =Uri.UnescapeDataString( pathParts[1]);
+            var repoName = Uri.UnescapeDataString(pathParts[3]);
 
             return CreateRepositorySettings(org, repositoryUri, project, repoName, remoteInfo);
         }
