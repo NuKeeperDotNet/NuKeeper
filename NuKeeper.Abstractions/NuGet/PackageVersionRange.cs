@@ -13,13 +13,8 @@ namespace NuKeeper.Abstractions.NuGet
                 throw new ArgumentException("Should not be null or empty", nameof(id));
             }
 
-            if (Version == null)
-            {
-                throw new ArgumentNullException(nameof(version));
-            }
-
             Id = id;
-            Version = version;
+            Version = version ?? throw new ArgumentNullException(nameof(version));
         }
 
         public string Id { get; }
@@ -36,14 +31,9 @@ namespace NuKeeper.Abstractions.NuGet
             return new PackageVersionRange(id, versionRange);
         }
 
-        public NuGetVersion SingleVersion()
+        public PackageIdentity SingleVersionIdentity()
         {
-            return VersionRanges.SingleVersion(Version);
-        }
-
-        public PackageIdentity Identity()
-        {
-            var version = SingleVersion();
+            var version = VersionRanges.SingleVersion(Version);
             if (version == null)
             {
                 return null;
