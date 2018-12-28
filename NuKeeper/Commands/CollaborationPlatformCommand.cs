@@ -42,7 +42,7 @@ namespace NuKeeper.Commands
                 "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
         public string ApiEndpoint { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "pl", LongName = "platform",
+        [Option(CommandOptionType.SingleValue, ShortName = "t", LongName = "platform",
             Description = "Sets the collaboration platform type. By default this is inferred from the Url.")]
         public Platform? Platform { get; set; }
 
