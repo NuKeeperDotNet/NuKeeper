@@ -1,7 +1,7 @@
 language: csharp
 mono: none
 dist: trusty
-dotnet: 2.2.100
+dotnet: 2.2.101
 script:
   - dotnet build -c Release NuKeeper.sln /m:1
   - dotnet test -c Release NuKeeper.sln --filter "TestCategory!=WindowsOnly"
