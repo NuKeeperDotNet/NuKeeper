@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dist: trusty
+dist: bionic
 dotnet: 2.2.101
 script:
   - dotnet build -c Release NuKeeper.sln /m:1
