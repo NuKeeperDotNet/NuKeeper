@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NuGet.Packaging.Core;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
@@ -13,10 +11,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
     {
         private const string VisualStudioLegacyProjectNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private readonly INuKeeperLogger _logger;
+        private readonly PackageInProjectReader _packageInProjectReader;
 
         public ProjectFileReader(INuKeeperLogger logger)
         {
             _logger = logger;
+            _packageInProjectReader = new PackageInProjectReader(logger);
         }
 
         public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
@@ -97,29 +97,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 var id = el.Attribute("Include")?.Value;
                 var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
 
-                if (string.IsNullOrWhiteSpace(version))
-                {
-                    _logger.Normal($"Skipping package '{id}' with no version specified.");
-                    return null;
-                }
-
-                var packageVersionRange = PackageVersionRange.Read(id, version);
-
-                if (packageVersionRange == null)
-                {
-                    _logger.Normal($"Skipping package '{id}' with version '{version}' that could not be parsed.");
-                    return null;
-                }
-
-                var singleVersion = packageVersionRange.SingleVersionIdentity();
-
-                if (singleVersion == null)
-                {
-                    _logger.Normal($"Skipping package '{id}' with version range '{version}' that is not a single version.");
-                    return null;
-                }
-
-                return new PackageInProject(singleVersion, path, projectReferences);
+                return _packageInProjectReader.Read(id, version, path, projectReferences);
             }
             catch (Exception ex)
             {

@@ -4,17 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class PackagesFileReader : IPackageReferenceFinder
     {
         private readonly INuKeeperLogger _logger;
+        private readonly PackageInProjectReader _packageInProjectReader;
 
         public PackagesFileReader(INuKeeperLogger logger)
         {
             _logger = logger;
+
+            _packageInProjectReader = new PackageInProjectReader(logger);
         }
 
         public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
@@ -64,30 +66,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 var id = el.Attribute("id")?.Value;
                 var version = el.Attribute("version")?.Value;
 
-                if (string.IsNullOrWhiteSpace(version))
-                {
-                    _logger.Normal($"Skipping package '{id}' with no version specified.");
-                    return null;
-                }
-
-                var packageVersionRange = PackageVersionRange.Read(id, version);
-
-                if (packageVersionRange == null)
-                {
-                    _logger.Normal($"Skipping package '{id}' with version '{version}' that could not be parsed.");
-                    return null;
-                }
-
-                var singleVersion = packageVersionRange.SingleVersionIdentity();
-
-                if (singleVersion == null)
-                {
-                    _logger.Normal($"Skipping package '{id}' with version range '{version}' that is not a single version.");
-                    return null;
-                }
-
-                return new PackageInProject(singleVersion, path, null);
-
+                return _packageInProjectReader.Read(id, version, path, null);
             }
             catch (Exception ex)
             {
