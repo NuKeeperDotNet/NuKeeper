@@ -78,7 +78,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                     return null;
                 }
 
-                var singleVersion = packageVersionRange?.SingleVersionIdentity();
+                var singleVersion = packageVersionRange.SingleVersionIdentity();
 
                 if (singleVersion == null)
                 {
