@@ -42,6 +42,10 @@ namespace NuKeeper.Commands
                 "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
         public string ApiEndpoint { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "t", LongName = "platform",
+            Description = "Sets the collaboration platform type. By default this is inferred from the Url.")]
+        public Platform? Platform { get; set; }
+
         protected CollaborationPlatformCommand(ICollaborationEngine engine, IConfigureLogger logger,
             IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
             base(logger, fileSettingsCache)
@@ -62,6 +66,7 @@ namespace NuKeeper.Commands
 
             var endpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, settings.SourceControlServerSettings.Repository?.ApiUri.ToString());
             var forkMode = ForkMode ?? fileSettings.ForkMode;
+            var platform = Platform ?? fileSettings.Platform;
 
             if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var baseUri))
             {
@@ -70,7 +75,14 @@ namespace NuKeeper.Commands
 
             try
             {
-                CollaborationFactory.Initialise(baseUri, PersonalAccessToken, forkMode);
+                var collaborationResult = CollaborationFactory.Initialise(
+                    baseUri, PersonalAccessToken,
+                    forkMode, platform);
+
+                if (!collaborationResult.IsSuccess)
+                {
+                    return collaborationResult;
+                }
             }
             catch (Exception ex)
             {
