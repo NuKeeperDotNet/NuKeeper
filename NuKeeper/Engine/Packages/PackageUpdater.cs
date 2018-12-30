@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.Inspections.Files;
+using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -82,9 +84,43 @@ namespace NuKeeper.Engine.Packages
 
             git.Push(repository.Remote, branchWithChanges);
 
+            await RunBeforePullRequestCommand(git.WorkingFolder, settings.UserSettings);
+
             var title = CommitWording.MakePullRequestTitle(updates);
             var body = CommitWording.MakeCommitDetails(updates);
 
+            await MakePullRequest(repository,
+                branchWithChanges,
+                title, body,
+                settings);
+
+            git.Checkout(repository.DefaultBranch);
+            return updates.Count;
+        }
+
+        private async Task RunBeforePullRequestCommand(
+            IFolder folder,
+            UserSettings settings)
+        {
+            if (!string.IsNullOrWhiteSpace(settings.BeforePullRequestCommand))
+            {
+                var runner = new ExternalProcess(_logger);
+                var runnerOutput = await runner.Run(folder.FullPath, settings.BeforePullRequestCommand, string.Empty, false);
+
+                if (!runnerOutput.Success)
+                {
+                    _logger.Normal($"BeforePullRequestCommand failed with: {runnerOutput.Output}");
+                }
+            }
+        }
+
+        private async Task MakePullRequest(
+            RepositoryData repository,
+            string branchWithChanges,
+            string title,
+            string body,
+            SettingsContainer settings)
+        {
             string qualifiedBranch;
             if (repository.Pull.Owner == repository.Push.Owner)
             {
@@ -95,13 +131,10 @@ namespace NuKeeper.Engine.Packages
                 qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
             }
 
-            var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) { Body = body };
+            var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch) {Body = body};
 
-            await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
-
-
-            git.Checkout(repository.DefaultBranch);
-            return updates.Count;
+            await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest,
+                settings.SourceControlServerSettings.Labels);
         }
     }
 }
