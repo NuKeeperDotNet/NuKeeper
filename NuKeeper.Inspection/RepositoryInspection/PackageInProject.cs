@@ -9,7 +9,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
     {
         public PackageInProject(PackageIdentity identity,
             PackagePath path,
-            IEnumerable<string> projectReferences)
+            IEnumerable<string> projectReferences = null)
         {
             Identity = identity;
             Path = path;
