@@ -48,6 +48,12 @@ namespace NuKeeper.BitBucket
             return response.values;
         }
 
+        public async Task<Repository> GetGitRepository(string account, string repositoryName)
+        {
+            var response = await GetResourceOrEmpty<Repository>($"repositories/{account}/{repositoryName}");
+            return response;
+        }
+
         public async Task<IEnumerable<Ref>> GetRepositoryRefs(string account, string repositoryId)
         {
             var response = await GetResourceOrEmpty<IteratorBasedPage<Ref>>($"repositories/{account}/{repositoryId}/refs");
@@ -57,7 +63,7 @@ namespace NuKeeper.BitBucket
         public async Task<PullRequest> CreatePullRequest(PullRequest request, string account, string reponame)
         {
             var response = await _client.PostAsync(($"repositories/{account}/{reponame}/pullrequests"),
-                new StringContent(JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore}), Encoding.UTF8, "application/json"));
+                 new StringContent(JsonConvert.SerializeObject(request, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), Encoding.UTF8, "application/json"));
 
             var result = await response.Content.ReadAsStringAsync();
             var resource = JsonConvert.DeserializeObject<PullRequest>(result);

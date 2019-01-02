@@ -18,7 +18,7 @@ namespace NuKeeper.BitBucket
         private readonly INuKeeperLogger _logger;
         private BitbucketRestClient _client;
         private AuthSettings _settings;
-        
+
         public BitbucketPlatform(INuKeeperLogger logger)
         {
             _logger = logger;
@@ -36,14 +36,13 @@ namespace NuKeeper.BitBucket
 
         public Task<User> GetCurrentUser()
         {
-            
+
             return Task.FromResult(new User(_settings.Username, "", ""));
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
-            var repos = await _client.GetGitRepositories(target.Owner);
-            var repo = repos.Single(x => x.name == target.Name);
+            var repo = await _client.GetGitRepository(target.Owner, target.Name);
             var req = new PullRequest
             {
                 title = request.Title,
@@ -78,19 +77,15 @@ namespace NuKeeper.BitBucket
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
             var repos = await _client.GetGitRepositories(projectName);
-            return repos.Select(repo =>
-                new Repository(repo.name, false,
-                    new UserPermissions(true, true, true),
-                    new Uri(repo.links.clone.First().href),
-                    new Uri(repo.links.clone.First().href),
-                    null, false, null))
+            return repos.Select(MapRepository)
                 .ToList();
         }
 
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
-            var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
+            var repo = await _client.GetGitRepository(projectName, repositoryName);
+            if (repo == null) return default;
+            return MapRepository(repo);
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
@@ -100,8 +95,7 @@ namespace NuKeeper.BitBucket
 
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
-            var repos = await _client.GetGitRepositories(projectName);
-            var repo = repos.Single(x => x.name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
+            var repo = await _client.GetGitRepository(projectName, repositoryName);
             var refs = await _client.GetRepositoryRefs(projectName, repo.name);
             var count = refs.Count(x => x.Name.Equals(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
@@ -116,6 +110,15 @@ namespace NuKeeper.BitBucket
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             throw new NotImplementedException();
+        }
+
+        private static Repository MapRepository(BitBucket.Models.Repository repo)
+        {
+            return new Repository(repo.name, false,
+                    new UserPermissions(true, true, true),
+                    new Uri(repo.links.clone.First().href),
+                    new Uri(repo.links.clone.First().href),
+                    null, false, null);
         }
     }
 }
