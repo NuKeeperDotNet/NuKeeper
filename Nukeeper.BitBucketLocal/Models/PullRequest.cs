@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace NuKeeper.BitBucketLocal.Models
@@ -27,5 +28,10 @@ namespace NuKeeper.BitBucketLocal.Models
 
         [JsonProperty("locked")]
         public bool Locked { get; set; } = false;
+
+        [JsonProperty("reviewers")]
+        public List<AddReviewer> Reviewers { get; set; }
     }
 }
+
+

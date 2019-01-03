@@ -74,7 +74,7 @@ namespace NuKeeper.Collaboration
 
                 if (reader != null)
                 {
-                    _nuKeeperLogger.Normal($"Collaboration platform specified as '{_platform}'");
+                    _nuKeeperLogger.Normal($"Collaboration platform specified as '{reader.Platform}'");
                 }
 
                 return reader;
@@ -86,7 +86,7 @@ namespace NuKeeper.Collaboration
 
                 if (reader != null)
                 {
-                    _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{_platform}'");
+                    _nuKeeperLogger.Normal($"Matched uri '{apiEndpoint}' to collaboration platform '{reader.Platform}'");
                 }
 
                 return reader;
