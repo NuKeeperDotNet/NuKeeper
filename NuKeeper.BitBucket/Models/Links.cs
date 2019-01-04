@@ -11,5 +11,6 @@ namespace NuKeeper.BitBucket.Models
         public Link avatar { get; set; }
         public Link following { get; set; }
         public List<Link> clone { get; set; }
+        public Link html { get; set; }
     }
 }
