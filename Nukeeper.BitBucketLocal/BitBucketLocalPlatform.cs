@@ -77,7 +77,6 @@ namespace NuKeeper.BitBucketLocal
                     new Repository(repo.Name, false,
                         new UserPermissions(true, true, true),
                         new Uri(repo.Links.Clone.First(x => x.Name.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)).Href),
-                        new Uri(repo.Links.Clone.First(x => x.Name.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)).Href),
                         null, false, null))
                 .ToList();
         }

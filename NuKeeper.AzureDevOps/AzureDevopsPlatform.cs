@@ -68,7 +68,7 @@ namespace NuKeeper.AzureDevOps
             return repos.Select(x =>
                     new Repository(x.name, false,
                         new UserPermissions(true, true, true),
-                        new Uri(x.url), new Uri(x.remoteUrl),
+                        new Uri(x.remoteUrl),
                         null, false, null))
                 .ToList();
         }
