@@ -30,7 +30,7 @@ namespace NuKeeper.BitBucketLocal.Models
         public bool Locked { get; set; } = false;
 
         [JsonProperty("reviewers")]
-        public List<AddReviewer> Reviewers { get; set; }
+        public List<PullRequestReviewer> Reviewers { get; set; }
     }
 }
 
