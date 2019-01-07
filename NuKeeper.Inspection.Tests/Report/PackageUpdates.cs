@@ -28,7 +28,7 @@ namespace NuKeeper.Inspection.Tests.Report
                 OsSpecifics.GenerateBaseDirectory(),
                 Path.Combine("folder", "src", "project1", "packages.config"),
                 PackageReferenceType.PackagesConfig);
-            return new PackageInProject(package.Id, package.Version.ToString(), path);
+            return new PackageInProject(package, path);
         }
 
         internal static List<PackageUpdateSet> PackageUpdateSets(int count)
