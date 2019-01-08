@@ -20,7 +20,7 @@ namespace NuKeeper.Abstractions.NuGet
         public string Id { get; }
         public VersionRange Version { get; }
 
-        public static PackageVersionRange Read(string id, string version)
+        public static PackageVersionRange Parse(string id, string version)
         {
             var success = VersionRange.TryParse(version, out VersionRange versionRange);
             if (!success)

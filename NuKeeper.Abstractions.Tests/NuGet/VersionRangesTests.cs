@@ -42,7 +42,7 @@ namespace NuKeeper.Abstractions.Tests.NuGet
         [TestCase("1.2.3.4-beta05")]
         public void ParseableToPackageIdentity(string rangeString)
         {
-            var rangeIdentity = PackageVersionRange.Read("testPackage", rangeString);
+            var rangeIdentity = PackageVersionRange.Parse("testPackage", rangeString);
             var singleVersion = rangeIdentity.SingleVersionIdentity();
 
             Assert.That(rangeIdentity, Is.Not.Null);
@@ -60,7 +60,7 @@ namespace NuKeeper.Abstractions.Tests.NuGet
         [TestCase("[1.*, 2.0.0)")]
         public void ParseableButNotToPackageIdentity(string rangeString)
         {
-            var rangeIdentity = PackageVersionRange.Read("testPackage", rangeString);
+            var rangeIdentity = PackageVersionRange.Parse("testPackage", rangeString);
             var singleVersion = rangeIdentity.SingleVersionIdentity();
 
             Assert.That(rangeIdentity, Is.Not.Null);
