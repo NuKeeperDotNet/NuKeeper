@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,6 +18,8 @@ namespace NuKeeper.BitBucketLocal
     {
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
+        private const string ApiPath = @"rest/api/1.0";
+        private const string ApiReviewersPath = @"rest/default-reviewers/1.0";
 
         public BitbucketLocalRestClient(HttpClient client, INuKeeperLogger logger, string username, string appPassword)
         {
@@ -83,26 +86,26 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<IEnumerable<Repository>> GetProjects([CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>("projects?limit=999", caller);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($@"{ApiPath}/projects?limit=999", caller);
             return response.Values;
         }
 
 
         public async Task<IEnumerable<Repository>> GetGitRepositories(string projectName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($"projects/{projectName}/repos?limit=999", caller);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($@"{ApiPath}/projects/{projectName}/repos?limit=999", caller);
             return response.Values;
         }
 
         public async Task<IEnumerable<string>> GetGitRepositoryFileNames(string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<string>>($"projects/{projectName}/repos/{repositoryName}/files?limit=9999", caller);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<string>>($@"{ApiPath}/projects/{projectName}/repos/{repositoryName}/files?limit=9999", caller);
             return response.Values;
         }
 
         public async Task<IEnumerable<Branch>> GetGitRepositoryBranches(string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<IteratorBasedPage<Branch>>($"projects/{projectName}/repos/{repositoryName}/branches", caller);
+            var response = await GetResourceOrEmpty<IteratorBasedPage<Branch>>($@"{ApiPath}/projects/{projectName}/repos/{repositoryName}/branches", caller);
             return  response.Values;
         }
 
@@ -111,9 +114,15 @@ namespace NuKeeper.BitBucketLocal
             var requestJson = JsonConvert.SerializeObject(pullReq, Formatting.None, new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore});
             var requestBody = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
-            var response = await _client.PostAsync($@"projects/{projectName}/repos/{repositoryName}/pull-requests", requestBody);
+            var response = await _client.PostAsync($@"{ApiPath}/projects/{projectName}/repos/{repositoryName}/pull-requests", requestBody);
 
             return await HandleResponse<PullRequest>(response, caller);
+        }
+
+        public async Task<IEnumerable<PullRequestReviewer>> GetBitBucketReviewers(string projectName, string repositoryName, [CallerMemberName] string caller = null)
+        {
+            var response = await GetResourceOrEmpty<List<Conditions>>($@"{ApiReviewersPath}/projects/{projectName}/repos/{repositoryName}/conditions", caller);
+            return response.SelectMany(c => c.Reviewers).Select(usr => new PullRequestReviewer() {User = usr} );
         }
     }
 }

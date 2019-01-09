@@ -9,13 +9,14 @@ using NuKeeper.Abstractions.Logging;
 namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class DirectoryBuildTargetsReader : IPackageReferenceFinder
-
     {
         private readonly INuKeeperLogger _logger;
+        private readonly PackageInProjectReader _packageInProjectReader;
 
         public DirectoryBuildTargetsReader(INuKeeperLogger logger)
         {
             _logger = logger;
+            _packageInProjectReader = new PackageInProjectReader(logger);
         }
 
         public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
@@ -69,7 +70,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 }
                 var version = el.Attribute("Version")?.Value;
 
-                return new PackageInProject(id, version, path);
+                return _packageInProjectReader.Read(id, version, path, null);
             }
             catch (Exception ex)
             {

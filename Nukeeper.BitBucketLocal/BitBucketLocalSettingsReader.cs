@@ -44,7 +44,7 @@ namespace NuKeeper.BitBucketLocal
 
             return new RepositorySettings
             {
-                ApiUri = new Uri($"{repositoryUri.Scheme}://{repositoryUri.Authority}/rest/api/1.0"),
+                ApiUri = new Uri($"{repositoryUri.Scheme}://{repositoryUri.Authority}"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = project
@@ -65,3 +65,5 @@ namespace NuKeeper.BitBucketLocal
         }
     }
 }
+
+
