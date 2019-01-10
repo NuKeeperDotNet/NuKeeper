@@ -84,6 +84,28 @@ namespace NuKeeper.Update.Tests
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
+        
+        [Test]
+        public async Task WhenThereMaxPackagesUpdateIsZero_DontCap()
+        {
+            var updateSets = new List<PackageUpdateSet>
+            {
+                UpdateFooFromOneVersion(),
+                UpdateBarFromTwoVersions()
+            };
+
+            var settings = new FilterSettings
+            {
+                MaxPackageUpdates = 0,
+            };
+
+            var target = CreateUpdateSelection();
+
+            var results = await target.Filter(updateSets, settings, Pass);
+
+            Assert.That(results.Count, Is.EqualTo(2));
+            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
+        }
 
         [Test]
         public async Task WhenThereAreExcludes_OnlyConsiderNonMatching()
