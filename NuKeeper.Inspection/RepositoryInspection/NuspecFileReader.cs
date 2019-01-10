@@ -11,10 +11,12 @@ namespace NuKeeper.Inspection.RepositoryInspection
     public class NuspecFileReader : IPackageReferenceFinder
     {
         private readonly INuKeeperLogger _logger;
+        private readonly PackageInProjectReader _packageInProjectReader;
 
         public NuspecFileReader(INuKeeperLogger logger)
         {
             _logger = logger;
+            _packageInProjectReader = new PackageInProjectReader(logger);
         }
 
         public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
@@ -64,7 +66,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 var id = el.Attribute("id")?.Value;
                 var version = el.Attribute("version")?.Value;
 
-                return new PackageInProject(id, version, path);
+                return _packageInProjectReader.Read(id, version, path, null);
 
             }
             catch (Exception ex)

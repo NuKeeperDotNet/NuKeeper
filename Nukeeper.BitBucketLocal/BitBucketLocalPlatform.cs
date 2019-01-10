@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -10,6 +9,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucketLocal.Models;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
+
 
 namespace NuKeeper.BitBucketLocal
 {
@@ -29,8 +29,9 @@ namespace NuKeeper.BitBucketLocal
             _settings = settings;
             var httpClient = new HttpClient
             {
-                BaseAddress = settings.ApiBase
-            };
+                BaseAddress = new Uri($"{settings.ApiBase.Scheme}://{settings.ApiBase.Authority}")
+             };
+
             _client = new BitbucketLocalRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
@@ -44,6 +45,8 @@ namespace NuKeeper.BitBucketLocal
             var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
+            var reviewers = await _client.GetBitBucketReviewers(target.Owner, targetRepository.Name);
+
             var pullReq = new PullRequest
             {
                 Title = request.Title,
@@ -55,7 +58,8 @@ namespace NuKeeper.BitBucketLocal
                 ToRef = new Ref
                 {
                     Id = request.BaseRef
-                }
+                },
+                Reviewers = reviewers.ToList()
             };
 
             await _client.CreatePullRequest(pullReq, target.Owner, targetRepository.Name);

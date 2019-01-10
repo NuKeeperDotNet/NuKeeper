@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using NuGet.Common;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
@@ -30,10 +32,29 @@ namespace NuKeeper.Abstractions.Formats
                 var origin = discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
                 
                 if (origin != null)
+                {
                     return origin.Url;
+                }
             }
             
             return repositoryUri;
+        }
+
+        public static Uri ToUri(this string repositoryString)
+        {
+            var repositoryUri = new Uri(repositoryString, UriKind.RelativeOrAbsolute);
+            if (repositoryUri.IsAbsoluteUri)
+            {
+                return repositoryUri;
+            }
+            
+            var absoluteUri = Path.Combine(Environment.CurrentDirectory, repositoryUri.OriginalString);
+            if (!Directory.Exists(absoluteUri))
+            {
+                throw new NuKeeperException($"Local uri doesn't exist: {absoluteUri}");
+            }
+
+            return new Uri(absoluteUri);
         }
     }
 }
