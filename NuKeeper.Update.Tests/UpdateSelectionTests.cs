@@ -104,7 +104,7 @@ namespace NuKeeper.Update.Tests
             var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
+            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
