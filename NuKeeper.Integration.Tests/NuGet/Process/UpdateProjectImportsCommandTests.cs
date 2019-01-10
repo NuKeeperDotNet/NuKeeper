@@ -41,7 +41,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var subject = new UpdateProjectImportsCommand();
 
-            var package = new PackageInProject("acme", "1",
+            var package = new PackageInProject("acme", "1.0.0",
                 new PackagePath(workDirectory, projectName, PackageReferenceType.ProjectFileOldStyle));
 
             await subject.Invoke(package, null, null, NuGetSources.GlobalFeed);
@@ -76,7 +76,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             var subject = new UpdateProjectImportsCommand();
 
-            var package = new PackageInProject("acme", "1",
+            var package = new PackageInProject("acme", "1.0.0",
                 new PackagePath(workDirectory, "RootProject.csproj", PackageReferenceType.ProjectFileOldStyle));
 
             await subject.Invoke(package, null, null, NuGetSources.GlobalFeed);
