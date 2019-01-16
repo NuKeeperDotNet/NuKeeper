@@ -6,6 +6,7 @@ using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NUnit.Framework;
@@ -167,8 +168,9 @@ namespace NuKeeper.Inspection.Tests.Sort
                 refs.Add(refProject.Path.FullName);
             }
 
-            return new PackageInProject(
-                new PackageIdentity(packageId, new NuGetVersion(packageVersion)),
+            var packageVersionRange = PackageVersionRange.Parse(packageId, packageVersion);
+
+            return new PackageInProject(packageVersionRange,
                 new PackagePath(basePath, relativePath, PackageReferenceType.ProjectFile),
                 refs);
         }

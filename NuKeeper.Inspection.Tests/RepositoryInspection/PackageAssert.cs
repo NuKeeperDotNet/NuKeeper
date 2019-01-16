@@ -8,6 +8,8 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         public static void IsPopulated(PackageInProject package)
         {
             Assert.That(package, Is.Not.Null);
+            Assert.That(package.PackageVersionRange, Is.Not.Null);
+            Assert.That(package.Version, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
             Assert.That(package.Path, Is.Not.Null);
 
