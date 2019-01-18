@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
@@ -50,11 +51,7 @@ namespace NuKeeper.Inspection.NuGetApi
             }
             catch (Exception ex)
             {
-                if(ex is UnauthorizedAccessException)
-                    _nuKeeperLogger.Minimal(ex.Message);
-                else
-                    _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
-                
+                _nuKeeperLogger.Normal($"Getting {packageName} from {source} returned exception: {ex.Message}");
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
         }
