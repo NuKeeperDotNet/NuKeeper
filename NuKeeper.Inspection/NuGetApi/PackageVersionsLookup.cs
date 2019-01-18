@@ -50,7 +50,11 @@ namespace NuKeeper.Inspection.NuGetApi
             }
             catch (Exception ex)
             {
-                _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
+                if(ex is UnauthorizedAccessException)
+                    _nuKeeperLogger.Minimal(ex.Message);
+                else
+                    _nuKeeperLogger.Error($"Error getting {packageName} from {source}", ex);
+                
                 return Enumerable.Empty<PackageSearchMedatadata>();
             }
         }
