@@ -6,6 +6,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 
@@ -24,9 +25,10 @@ namespace NuKeeper.Tests
             string version = "1.2.3",
             PackageReferenceType packageRefType = PackageReferenceType.ProjectFile)
         {
-            var packageId = new PackageIdentity(packageName, new NuGetVersion(version));
+            var packageId = PackageVersionRange.Parse(packageName, version);
+
             var latest = new PackageSearchMedatadata(
-                packageId, OfficialPackageSource(),
+                packageId.SingleVersionIdentity(), OfficialPackageSource(),
                 null,
                 Enumerable.Empty<PackageDependency>());
 
