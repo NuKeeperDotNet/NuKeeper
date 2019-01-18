@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
-    <PackageReference Include="NuGet.Protocol" Version="4.9.1" />
+    <PackageReference Include="NuGet.Protocol" Version="4.9.2" />
   </ItemGroup>
 
 </Project>
