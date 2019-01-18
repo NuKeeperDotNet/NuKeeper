@@ -7,7 +7,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
+    [Command("org", Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
     internal class OrganisationCommand : MultipleRepositoryCommand
     {
         [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]

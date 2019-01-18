@@ -6,7 +6,7 @@ using NuKeeper.Local;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Checks projects existing locally for possible updates.")]
+    [Command("inspect", Description = "Checks projects existing locally for possible updates.")]
     internal class InspectCommand : LocalNuKeeperCommand
     {
         private readonly ILocalEngine _engine;
