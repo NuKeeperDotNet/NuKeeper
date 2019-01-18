@@ -21,9 +21,10 @@ namespace NuKeeper.Engine
 
         public async Task<bool> ContainsDotNetProjects(RepositorySettings repository)
         {
-            var request = new SearchCodeRequest("\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"")
+            var request = new SearchCodeRequest(
+                "\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"",
+                new List<(string owner, string name)> { (repository.RepositoryOwner, repository.RepositoryName) })
             {
-                Repos = new List<(string owner, string name)> { (repository.RepositoryOwner, repository.RepositoryName) },
                 PerPage = 1
             };
             try
