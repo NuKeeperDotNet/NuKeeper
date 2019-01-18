@@ -10,7 +10,7 @@ namespace NuKeeper.Abstractions.CollaborationModels
         }
 
         public string Term { get; }
-        public IList<(string owner, string name)> Repos { get; set; }
+        public IList<(string owner, string name)> Repos { get; }
         public int PerPage { get; set; }
     }
 }
