@@ -59,7 +59,12 @@ namespace NuKeeper.GitHub
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
-            return new User(user.Login, user.Name, user.Email);
+            if (user != null)
+            {
+                return new User(user.Login, user.Name, user.Email);
+            }
+
+            return null;
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -153,7 +158,7 @@ namespace NuKeeper.GitHub
             var repos = new RepositoryCollection();
             foreach (var repo in search.Repos)
             {
-                repos.Add(repo.owner, repo.name);
+                repos.Add(repo.Owner, repo.Name);
             }
 
             var result = await _client.Search.SearchCode(
