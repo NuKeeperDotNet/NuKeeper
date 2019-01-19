@@ -33,7 +33,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\nuget.commandline\4.7.1\tools\NuGet.exe">
+    <Content Include="$(NuGetPackageRoot)\nuget.commandline\4.9.2\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\netcoreapp2.1\any\NuGet.exe</PackagePath>
     </Content>
