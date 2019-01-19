@@ -48,16 +48,14 @@ namespace NuKeeper.Update.Selection
             IReadOnlyCollection<PackageUpdateSet> all,
             Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
-            var filteredByInOut = FilteredByIncludeExclude(all);
-
-            var filteredLocally = filteredByInOut
+            var filteredLocally = all
                 .Where(MatchesMinAge)
                 .ToList();
 
-            if (filteredLocally.Count < filteredByInOut.Count)
+            if (filteredLocally.Count < all.Count)
             {
                 var agoFormat = TimeSpanFormat.Ago(_settings.MinimumAge);
-                _logger.Normal($"Filtered by minimum package age '{agoFormat}' from {filteredByInOut.Count} to {filteredLocally.Count}");
+                _logger.Normal($"Filtered by minimum package age '{agoFormat}' from {all.Count} to {filteredLocally.Count}");
             }
 
             var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
@@ -68,31 +66,6 @@ namespace NuKeeper.Update.Selection
             }
 
             return remoteFiltered;
-        }
-
-        private IReadOnlyCollection<PackageUpdateSet> FilteredByIncludeExclude(IReadOnlyCollection<PackageUpdateSet> all)
-        {
-            var filteredByIncludeExclude = all
-                .Where(MatchesIncludeExclude)
-                .ToList();
-
-            if (filteredByIncludeExclude.Count < all.Count)
-            {
-                var filterDesc = string.Empty;
-                if (_settings.Excludes != null)
-                {
-                    filterDesc += $"Exclude '{_settings.Excludes}'";
-                }
-
-                if (_settings.Includes != null)
-                {
-                    filterDesc += $"Include '{_settings.Includes}'";
-                }
-
-                _logger.Normal($"Filtered by {filterDesc} from {all.Count} to {filteredByIncludeExclude.Count}");
-            }
-
-            return filteredByIncludeExclude;
         }
 
         public static async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyRemoteFilter(
@@ -119,12 +92,6 @@ namespace NuKeeper.Update.Selection
             }
 
             _logger.Minimal(message);
-        }
-
-        private bool MatchesIncludeExclude(PackageUpdateSet packageUpdateSet)
-        {
-            return RegexMatch.IncludeExclude(packageUpdateSet.SelectedId,
-                _settings.Includes, _settings.Excludes);
         }
 
         private bool MatchesMinAge(PackageUpdateSet packageUpdateSet)

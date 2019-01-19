@@ -8,7 +8,10 @@ using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Inspection;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
@@ -57,77 +60,6 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
 
             var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
-        }
-
-        [Test]
-        public async Task WhenThereAreIncludes_OnlyConsiderMatches()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new FilterSettings
-            {
-                MaxPackageUpdates = 10,
-                Includes = new Regex("bar")
-            };
-
-            var target = CreateUpdateSelection();
-
-            var results = await target.Filter(updateSets, settings, Pass);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-        }
-
-        [Test]
-        public async Task WhenThereAreExcludes_OnlyConsiderNonMatching()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new FilterSettings
-            {
-                MaxPackageUpdates = 10,
-                Excludes = new Regex("bar")
-            };
-
-            var target = CreateUpdateSelection();
-
-            var results = await target.Filter(updateSets, settings, Pass);
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
-        }
-
-        [Test]
-        public async Task WhenThereAreIncludesAndExcludes_OnlyConsiderMatchesButRemoveNonMatching()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFoobarFromOneVersion(),
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var settings = new FilterSettings 
-            {
-                MaxPackageUpdates = 10,
-                Excludes = new Regex("bar"),
-                Includes = new Regex("foo")
-            };
-
-            var target = CreateUpdateSelection();
-
-            var results = await target.Filter(updateSets, settings, Pass);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
