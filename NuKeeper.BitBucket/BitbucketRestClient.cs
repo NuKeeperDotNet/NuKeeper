@@ -12,9 +12,13 @@ namespace NuKeeper.BitBucket
 {
     public class BitbucketRestClient
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
-        private static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         public BitbucketRestClient(HttpClient client, INuKeeperLogger logger, string username, string appPassword)
         {
@@ -29,11 +33,17 @@ namespace NuKeeper.BitBucket
 
         private async Task<T> GetResourceOrEmpty<T>(string url)
         {
+            _logger.Detailed($"Getting from BitBucket url {url}");
             var response = await _client.GetAsync(url);
 
-            if (!response.IsSuccessStatusCode) return default;
-
             var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.Detailed($"Response {response.StatusCode} is not success, body:\n{responseBody}");
+                return default;
+            }
+
             return JsonConvert.DeserializeObject<T>(responseBody);
         }
 
@@ -64,7 +74,7 @@ namespace NuKeeper.BitBucket
         public async Task<PullRequest> CreatePullRequest(PullRequest request, string account, string reponame)
         {
             var response = await _client.PostAsync(($"repositories/{account}/{reponame}/pullrequests"),
-                 new StringContent(JsonConvert.SerializeObject(request, Formatting.None, jsonSerializerSettings), Encoding.UTF8, "application/json"));
+                 new StringContent(JsonConvert.SerializeObject(request, Formatting.None, JsonSerializerSettings), Encoding.UTF8, "application/json"));
 
             var result = await response.Content.ReadAsStringAsync();
             var resource = JsonConvert.DeserializeObject<PullRequest>(result);

@@ -16,8 +16,14 @@ namespace NuKeeper.BitBucketLocal
 {
     public class BitbucketLocalRestClient
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
+
         private const string ApiPath = @"rest/api/1.0";
         private const string ApiReviewersPath = @"rest/default-reviewers/1.0";
 
@@ -32,14 +38,12 @@ namespace NuKeeper.BitBucketLocal
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-
-
         private async Task<T> GetResourceOrEmpty<T>(string url, [CallerMemberName] string caller = null)
         {
+            _logger.Detailed($"Getting from BitBucketLocal url {url}");
             var response = await _client.GetAsync(url);
-            return await HandleResponse<T>(response, caller);      
+            return await HandleResponse<T>(response, caller);
         }
-
 
         private async Task<T> HandleResponse<T>(HttpResponseMessage response, [CallerMemberName] string caller = null)
         {
@@ -82,8 +86,6 @@ namespace NuKeeper.BitBucketLocal
             }
         }
 
-
-
         public async Task<IEnumerable<Repository>> GetProjects([CallerMemberName] string caller = null)
         {
             var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($@"{ApiPath}/projects?limit=999", caller);
@@ -111,7 +113,7 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<PullRequest> CreatePullRequest(PullRequest pullReq, string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
-            var requestJson = JsonConvert.SerializeObject(pullReq, Formatting.None, new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore});
+            var requestJson = JsonConvert.SerializeObject(pullReq, Formatting.None, JsonSerializerSettings);
             var requestBody = new StringContent(requestJson, Encoding.UTF8, "application/json");
             
             var response = await _client.PostAsync($@"{ApiPath}/projects/{projectName}/repos/{repositoryName}/pull-requests", requestBody);
