@@ -59,12 +59,7 @@ namespace NuKeeper.GitHub
             var user = await _client.User.Current();
             var userLogin = user?.Login;
             _logger.Detailed($"Read github user '{userLogin}'");
-            if (user != null)
-            {
-                return new User(user.Login, user.Name, user.Email);
-            }
-
-            return null;
+            return new User(user.Login, user.Name, user.Email);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
