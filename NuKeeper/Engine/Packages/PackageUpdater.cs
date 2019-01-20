@@ -74,7 +74,7 @@ namespace NuKeeper.Engine.Packages
 
             foreach (var updateSet in updates)
             {
-                await _updateRunner.Update(updateSet, sources);
+                await _updateRunner.Update(updateSet, sources, null);
 
                 var commitMessage = CommitWording.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);

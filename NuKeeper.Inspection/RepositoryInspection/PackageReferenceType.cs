@@ -6,6 +6,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
         ProjectFile,
         ProjectFileOldStyle,
         Nuspec,
-        DirectoryBuildTargets
+        DirectoryBuildTargets,
+        PaketDependencyFile
     }
 }

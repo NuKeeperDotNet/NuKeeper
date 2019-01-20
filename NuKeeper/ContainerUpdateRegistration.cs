@@ -16,7 +16,7 @@ namespace NuKeeper
             container.Register<IUpdateNuspecCommand, UpdateNuspecCommand>();
             container.Register<IUpdateDirectoryBuildTargetsCommand, UpdateDirectoryBuildTargetsCommand>();
             container.Register<IExternalProcess, ExternalProcess>();
-            container.Register<IUpdateRunner, UpdateRunner>();
+            container.Register<IUpdateRunner, PaketUpdateRunner>();
             container.Register<INuGetPath, NuGetPath>();
         }
     }

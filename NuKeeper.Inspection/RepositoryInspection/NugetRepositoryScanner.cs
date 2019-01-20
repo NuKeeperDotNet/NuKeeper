@@ -7,11 +7,11 @@ using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public class RepositoryScanner: IRepositoryScanner
+    public class NugetRepositoryScanner: IRepositoryScanner
     {
         private readonly IReadOnlyCollection<IPackageReferenceFinder> _finders;
 
-        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader,
+        public NugetRepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader,
             NuspecFileReader nuspecFileReader, DirectoryBuildTargetsReader directoryBuildTargetsReader)
         {
             _finders = new IPackageReferenceFinder[]
@@ -32,13 +32,14 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .GetFilePatterns()
                 .SelectMany(workingFolder.Find)
                 .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
-
-            return files.SelectMany(f =>
+            var packages =  files.SelectMany(f =>
                 packageReferenceFinder.ReadFile(
                     workingFolder.FullPath,
                     GetRelativeFileName(
                         workingFolder.FullPath,
                         f.FullName)));
+
+            return packages;
         }
 
         private static string GetRelativeFileName(string rootDir, string fileName)

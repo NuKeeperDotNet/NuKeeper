@@ -30,7 +30,7 @@ namespace NuKeeper
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
             container.Register<IPackageVersionsLookup, PackageVersionsLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
-            container.Register<IRepositoryScanner, RepositoryScanner>();
+            container.Register<IRepositoryScanner, PaketRepositoryScanner>();
 
             container.Register<IUpdateFinder, UpdateFinder>();
             container.Register<INuGetSourcesReader, NuGetSourcesReader>();

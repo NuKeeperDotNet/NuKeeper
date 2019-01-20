@@ -164,7 +164,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             // then the app root directory to scan is "C:\Code\NuKeeper\"
             // So go up four dir levels to the root
             // Self is a convenient source of a valid project to scan
-            var fullPath = new Uri(typeof(RepositoryScanner).GetTypeInfo().Assembly.CodeBase).LocalPath;
+            var fullPath = new Uri(typeof(NugetRepositoryScanner).GetTypeInfo().Assembly.CodeBase).LocalPath;
             var runDir = Path.GetDirectoryName(fullPath);
 
             var projectRootDir = Directory.GetParent(runDir).Parent.Parent.Parent;
@@ -180,7 +180,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         private static IRepositoryScanner MakeScanner()
         {
             var logger = Substitute.For<INuKeeperLogger>();
-            return new RepositoryScanner(
+            return new NugetRepositoryScanner(
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),
                 new NuspecFileReader(logger),

@@ -64,7 +64,7 @@ namespace NuKeeper.Local
             {
                 _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
-                await _updateRunner.Update(update, sources);
+                await _updateRunner.Update(update, sources, workingFolder);
             }
         }
     }
