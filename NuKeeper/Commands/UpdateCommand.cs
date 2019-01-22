@@ -6,7 +6,7 @@ using NuKeeper.Local;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Applies relevant updates to a local project.")]
+    [Command("update", Description = "Applies relevant updates to a local project.")]
     internal class UpdateCommand : LocalNuKeeperCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",

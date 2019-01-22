@@ -116,7 +116,6 @@ namespace NuKeeper.BitBucket
         {
             return new Repository(repo.name, false,
                     new UserPermissions(true, true, true),
-                    new Uri(repo.links.clone.First(x => x.name == "https").href),
                     new Uri(repo.links.html.href),
                     null, false, null);
         }

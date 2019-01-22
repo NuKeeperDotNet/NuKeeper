@@ -87,7 +87,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[0].Name));
-            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[0].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[0].CloneUrl));
         }
 
         [Test]
@@ -95,8 +95,8 @@ namespace NuKeeper.GitHub.Tests
         {
             var inputRepos = new List<Repository>
             {
-                RepositoryBuilder.MakeRepository("http://a.com/repo1", "http://a.com/repo1.git", false),
-                RepositoryBuilder.MakeRepository("http://b.com/repob", "http://b.com/repob.git", true)
+                RepositoryBuilder.MakeRepository("http://a.com/repo1.git", false),
+                RepositoryBuilder.MakeRepository("http://b.com/repob.git", true)
             };
 
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery(inputRepos.AsReadOnly());
@@ -109,7 +109,7 @@ namespace NuKeeper.GitHub.Tests
 
             var firstRepo = repos.First();
             Assert.That(firstRepo.RepositoryName, Is.EqualTo(inputRepos[1].Name));
-            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[1].HtmlUrl));
+            Assert.That(firstRepo.RepositoryUri.ToString(), Is.EqualTo(inputRepos[1].CloneUrl));
         }
 
         [Test]

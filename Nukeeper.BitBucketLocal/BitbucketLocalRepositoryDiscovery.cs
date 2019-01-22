@@ -60,10 +60,10 @@ namespace NuKeeper.BitBucketLocal
             }
 
             return usableRepos
-                .Select(r => new RepositorySettings()
+                .Select(r => new RepositorySettings
                 {
                     ApiUri = _setting.BaseApiUrl, 
-                    RepositoryUri = r.HtmlUrl,
+                    RepositoryUri = r.CloneUrl,
                     RepositoryName = r.Name,
                     RepositoryOwner = organisationName
                 }).ToList();

@@ -36,11 +36,11 @@ namespace NuKeeper.Git
             _gitCredentials = gitCredentials;
             _identity = userIdentity;
         }
-        
+
         public void Clone(Uri pullEndpoint)
         {
             _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
-          
+
             Repository.Clone(pullEndpoint.AbsoluteUri, WorkingFolder.FullPath,
                 new CloneOptions
                 {
@@ -84,7 +84,8 @@ namespace NuKeeper.Git
             var qualifiedBranchName = "origin/" + branchName;
             if (BranchExists(qualifiedBranchName))
             {
-                throw new NuKeeperException($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
+                _logger.Normal($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
+                return;
             }
 
             _logger.Detailed($"Git checkout new branch '{branchName}'");
