@@ -1,13 +1,14 @@
-using LibGit2Sharp;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Engine
 {
     public interface IGitRepositoryEngine
     {
         Task<int> Run(RepositorySettings repository,
-            UsernamePasswordCredentials gitCreds, Identity userIdentity,
-            SettingsContainer settings);
+            GitUsernamePasswordCredentials credentials,
+            SettingsContainer settings, User user);
     }
 }
