@@ -78,11 +78,11 @@ namespace NuKeeper.AzureDevOps
             {
                 return JsonConvert.DeserializeObject<T>(responseBody);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                msg = $"{caller}: Json exception - malformed PAT?";
+                msg = $"{caller} failed to parse json to {typeof(T)}: {ex.Message}";
                 _logger.Error(msg);
-                throw new NuKeeperException(msg);
+                throw new NuKeeperException($"Failed to parse json to {typeof(T)}", ex);
             }
         }
 
