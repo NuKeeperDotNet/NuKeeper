@@ -39,8 +39,10 @@ namespace NuKeeper.Git
                 ArgumentEscaper.EscapeAndConcatenate(
                     new[]
                     {
-                        "clone", "--config", "credential.helper=", "--depth", "1", pullEndpoint.AbsoluteUri, "."
+                        "clone", "--config", "credential.helper=cache --timeout=28800", "--depth", "1",
+                        pullEndpoint.AbsoluteUri, "."
                     }),
+                new[] {_credentials.Username, _credentials.Password},
                 true);
 
             _logger.Detailed("Git clone complete");
@@ -79,6 +81,7 @@ namespace NuKeeper.Git
                     {
                         "push", "--porcelain", remoteName, branchName
                     }),
+                null,
                 true);
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Logging;
@@ -14,7 +15,7 @@ namespace NuKeeper.Abstractions.ProcessRunner
             _logger = logger;
         }
 
-        public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
+        public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, IEnumerable<string> input, bool ensureSuccess)
         {
             _logger.Detailed($"In path {workingDirectory}, running command: {command} {arguments}");
 
@@ -41,6 +42,14 @@ namespace NuKeeper.Abstractions.ProcessRunner
             if (process == null)
             {
                 throw new NuKeeperException($"Could not start external process for {command}");
+            }
+
+            if (input != null)
+            {
+                foreach (var line in input)
+                {
+                    process.StandardInput.WriteLine(line);
+                }
             }
 
             var textOut = await process.StandardOutput.ReadToEndAsync();
@@ -71,6 +80,7 @@ namespace NuKeeper.Abstractions.ProcessRunner
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                RedirectStandardInput = true,
                 UseShellExecute = false,
                 WorkingDirectory = workingDirectory
             };

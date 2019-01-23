@@ -52,7 +52,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         private static async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
         {
             IExternalProcess process = new ExternalProcess(Substitute.For<INuKeeperLogger>());
-            return await process.Run(".", command, args, ensureSuccess);
+            return await process.Run(".", command, args, null, ensureSuccess);
         }
 
         private static void AssertSuccess(ProcessOutput result)

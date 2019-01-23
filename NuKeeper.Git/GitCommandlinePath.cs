@@ -27,7 +27,7 @@ namespace NuKeeper.Git
         private async Task<string> FindExecutable()
         {
             var process = new ExternalProcess(_logger);
-            var result = await process.Run("", "git", "--version", false);
+            var result = await process.Run("", "git", "--version", null, false);
 
             return result.Success ? "git" : null;
         }

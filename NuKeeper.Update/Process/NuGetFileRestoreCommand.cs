@@ -49,7 +49,7 @@ namespace NuKeeper.Update.Process
             var restoreCommand = $"restore {file.Name} {sourcesCommandLine}  -NonInteractive";
 
             var processOutput = await _externalProcess.Run(file.DirectoryName, nuget,
-                restoreCommand, ensureSuccess: false);
+                restoreCommand, null, ensureSuccess: false);
 
             if (processOutput.Success)
             {
