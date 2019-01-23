@@ -12,13 +12,13 @@ namespace NuKeeper.Abstractions.Git
 
         void AddRemote(string name, Uri endpoint);
 
-        Task Checkout(string branchName);
+        void Checkout(string branchName);
 
         void CheckoutNewBranch(string branchName);
 
         void Commit(string message);
 
-        void Push(string remoteName, string branchName);
+        Task Push(string remoteName, string branchName);
 
         string GetCurrentHead();
 

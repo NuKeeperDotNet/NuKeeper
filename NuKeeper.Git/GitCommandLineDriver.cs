@@ -28,9 +28,22 @@ namespace NuKeeper.Git
 
         public IFolder WorkingFolder { get; }
 
-        public Task Clone(Uri pullEndpoint)
+        public async Task Clone(Uri pullEndpoint)
         {
-            throw new NotImplementedException();
+            _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
+
+            var gitProcess = new ExternalProcess(_logger);
+            await gitProcess.Run(
+                WorkingFolder.FullPath,
+                await _gitPath.Executable,
+                ArgumentEscaper.EscapeAndConcatenate(
+                    new[]
+                    {
+                        "clone", "--depth", "1", pullEndpoint.AbsoluteUri, "."
+                    }),
+                true);
+
+            _logger.Detailed("Git clone complete");
         }
 
         public void AddRemote(string name, Uri endpoint)
@@ -38,20 +51,9 @@ namespace NuKeeper.Git
             throw new NotImplementedException();
         }
 
-        public async Task Checkout(string branchName)
+        public void Checkout(string branchName)
         {
-            _logger.Detailed($"Git checkout '{branchName}'");
-            var gitProcess = new ExternalProcess(_logger);
-
-            await gitProcess.Run(
-                WorkingFolder.FullPath,
-                await _gitPath.Executable,
-                ArgumentEscaper.EscapeAndConcatenate(
-                    new[]
-                    {
-                        "checkout", branchName
-                    }),
-                true);
+            throw new NotImplementedException();
         }
 
         public void CheckoutNewBranch(string branchName)
@@ -64,9 +66,20 @@ namespace NuKeeper.Git
             throw new NotImplementedException();
         }
 
-        public void Push(string remoteName, string branchName)
+        public async Task Push(string remoteName, string branchName)
         {
-            throw new NotImplementedException();
+            _logger.Detailed($"Git push to {remoteName}/{branchName}");
+
+            var gitProcess = new ExternalProcess(_logger);
+            await gitProcess.Run(
+                WorkingFolder.FullPath,
+                await _gitPath.Executable,
+                ArgumentEscaper.EscapeAndConcatenate(
+                    new[]
+                    {
+                        "push", "--porcelain", remoteName, branchName
+                    }),
+                true);
         }
 
         public string GetCurrentHead()

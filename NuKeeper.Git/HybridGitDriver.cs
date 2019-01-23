@@ -25,7 +25,10 @@ namespace NuKeeper.Git
 
         public async Task Clone(Uri pullEndpoint)
         {
-            await _libGitDriver.Clone(pullEndpoint);
+            if (await _gitPath.IsValid())
+                await _gitCommandLineDriver.Clone(pullEndpoint);
+            else
+                await _libGitDriver.Clone(pullEndpoint);
         }
 
         public void AddRemote(string name, Uri endpoint)
@@ -33,12 +36,9 @@ namespace NuKeeper.Git
             _libGitDriver.AddRemote(name, endpoint);
         }
 
-        public async Task Checkout(string branchName)
+        public void Checkout(string branchName)
         {
-            if (await _gitPath.IsValid())
-                await _gitCommandLineDriver.Checkout(branchName);
-            else
-                await _libGitDriver.Checkout(branchName);
+            _libGitDriver.Checkout(branchName);
         }
 
         public void CheckoutNewBranch(string branchName)
@@ -51,9 +51,12 @@ namespace NuKeeper.Git
             _libGitDriver.Commit(message);
         }
 
-        public void Push(string remoteName, string branchName)
+        public async Task Push(string remoteName, string branchName)
         {
-            _libGitDriver.Push(remoteName, branchName);
+            if (await _gitPath.IsValid())
+                await _gitCommandLineDriver.Push(remoteName, branchName);
+            else
+                await _libGitDriver.Push(remoteName, branchName);
         }
 
         public string GetCurrentHead()

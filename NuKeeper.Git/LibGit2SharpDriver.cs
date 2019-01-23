@@ -75,15 +75,13 @@ namespace NuKeeper.Git
             }
         }
 
-        public Task Checkout(string branchName)
+        public void Checkout(string branchName)
         {
             _logger.Detailed($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
                 GitCommands.Checkout(repo, repo.Branches[branchName]);
             }
-
-            return Task.CompletedTask;
         }
 
         public void CheckoutNewBranch(string branchName)
@@ -142,7 +140,7 @@ namespace NuKeeper.Git
             return repoSignature;
         }
 
-        public void Push(string remoteName, string branchName)
+        public Task Push(string remoteName, string branchName)
         {
             _logger.Detailed($"Git push to {remoteName}/{branchName}");
 
@@ -160,6 +158,8 @@ namespace NuKeeper.Git
                     CredentialsProvider = UsernamePasswordCredentials
                 });
             }
+
+            return Task.CompletedTask;
         }
 
         public string GetCurrentHead()
