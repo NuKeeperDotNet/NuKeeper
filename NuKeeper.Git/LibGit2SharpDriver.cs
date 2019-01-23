@@ -2,10 +2,12 @@ using System;
 using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using GitCommands = LibGit2Sharp.Commands;
+using Repository = LibGit2Sharp.Repository;
 
 namespace NuKeeper.Git
 {
@@ -19,22 +21,23 @@ namespace NuKeeper.Git
         public IFolder WorkingFolder { get; }
 
         public LibGit2SharpDriver(INuKeeperLogger logger,
-            IFolder workingFolder, Credentials gitCredentials, Identity userIdentity)
+            IFolder workingFolder, GitUsernamePasswordCredentials credentials, User user)
         {
             if (workingFolder == null)
             {
                 throw new ArgumentNullException(nameof(workingFolder));
             }
 
-            if (gitCredentials == null)
+            if (credentials == null)
             {
-                throw new ArgumentNullException(nameof(gitCredentials));
+                throw new ArgumentNullException(nameof(credentials));
             }
 
             _logger = logger;
             WorkingFolder = workingFolder;
-            _gitCredentials = gitCredentials;
-            _identity = userIdentity;
+            _gitCredentials = new UsernamePasswordCredentials
+                {Password = credentials.Password, Username = credentials.Username};
+            _identity = GetUserIdentity(user);
         }
 
         public void Clone(Uri pullEndpoint)
@@ -172,6 +175,23 @@ namespace NuKeeper.Git
             string url, string usernameFromUrl, SupportedCredentialTypes types)
         {
             return _gitCredentials;
+        }
+
+
+        private Identity GetUserIdentity(User user)
+        {
+            if (string.IsNullOrWhiteSpace(user?.Name))
+            {
+                _logger.Minimal("User name missing from profile, falling back to .gitconfig");
+                return null;
+            }
+            if (string.IsNullOrWhiteSpace(user?.Email))
+            {
+                _logger.Minimal("Email missing from profile, falling back to .gitconfig");
+                return null;
+            }
+
+            return new Identity(user.Name, user.Email);
         }
     }
 }

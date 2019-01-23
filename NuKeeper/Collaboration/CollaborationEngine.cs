@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using LibGit2Sharp;
-using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Files;
@@ -36,13 +35,11 @@ namespace NuKeeper.Collaboration
             _folderFactory.DeleteExistingTempDirs();
 
             var user = await _collaborationFactory.CollaborationPlatform.GetCurrentUser();
-            var gitCreds = new UsernamePasswordCredentials
+            var credentials = new GitUsernamePasswordCredentials
             {
                 Username = user.Login,
                 Password = _collaborationFactory.Settings.Token
             };
-
-            var userIdentity = GetUserIdentity(user);
 
             var repositories = await _collaborationFactory.RepositoryDiscovery.GetRepositories(settings.SourceControlServerSettings);
 
@@ -57,7 +54,7 @@ namespace NuKeeper.Collaboration
                 }
 
                 var updatesInThisRepo = await _repositoryEngine.Run(repository,
-                    gitCreds, userIdentity, settings);
+                    credentials, settings, user);
 
                 if (updatesInThisRepo > 0)
                 {
@@ -72,22 +69,6 @@ namespace NuKeeper.Collaboration
 
             _logger.Detailed($"Done at {Now()}");
             return reposUpdated;
-        }
-
-        private Identity GetUserIdentity(User user)
-        {
-            if (string.IsNullOrWhiteSpace(user?.Name))
-            {
-                _logger.Minimal("User name missing from profile, falling back to .gitconfig");
-                return null;
-            }
-            if (string.IsNullOrWhiteSpace(user?.Email))
-            {
-                _logger.Minimal("Email missing from profile, falling back to .gitconfig");
-                return null;
-            }
-
-            return new Identity(user.Name, user.Email);
         }
 
         private static string Now()
