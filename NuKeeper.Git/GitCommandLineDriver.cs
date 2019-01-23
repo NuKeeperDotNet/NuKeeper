@@ -39,7 +39,7 @@ namespace NuKeeper.Git
                 ArgumentEscaper.EscapeAndConcatenate(
                     new[]
                     {
-                        "clone", "--depth", "1", pullEndpoint.AbsoluteUri, "."
+                        "clone", "--config", "credential.helper=", "--depth", "1", pullEndpoint.AbsoluteUri, "."
                     }),
                 true);
 
