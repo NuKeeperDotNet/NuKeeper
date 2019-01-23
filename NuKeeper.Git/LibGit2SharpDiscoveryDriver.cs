@@ -20,7 +20,7 @@ namespace NuKeeper.Git
             return Repository.IsValid(discovered.AbsolutePath);
         }
 
-        public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
+        private IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
         {
             if (! IsGitRepo(repositoryUri))
             {

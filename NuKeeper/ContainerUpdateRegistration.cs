@@ -1,6 +1,6 @@
+using NuKeeper.Abstractions.ProcessRunner;
 using NuKeeper.Update;
 using NuKeeper.Update.Process;
-using NuKeeper.Update.ProcessRunner;
 using SimpleInjector;
 
 namespace NuKeeper

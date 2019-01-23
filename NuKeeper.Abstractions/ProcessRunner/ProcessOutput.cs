@@ -1,4 +1,4 @@
-namespace NuKeeper.Update.ProcessRunner
+namespace NuKeeper.Abstractions.ProcessRunner
 {
     public class ProcessOutput
     {

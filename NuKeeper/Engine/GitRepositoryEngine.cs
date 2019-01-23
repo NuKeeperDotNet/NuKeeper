@@ -73,7 +73,7 @@ namespace NuKeeper.Engine
                     settings.WorkingFolder = folder;
                 }
 
-                var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
+                var git = new HybridGitDriver(_logger, folder, credentials, user);
 
                 var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 

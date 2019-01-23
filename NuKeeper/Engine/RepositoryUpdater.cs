@@ -47,7 +47,9 @@ namespace NuKeeper.Engine
             SettingsContainer settings)
         {
             if (string.IsNullOrEmpty(repository.DefaultBranch))
-                GitInit(git, repository);
+            {
+                await GitInit(git, repository);
+            }
 
             var userSettings = settings.UserSettings;
 
@@ -104,9 +106,9 @@ namespace NuKeeper.Engine
             return updatesDone;
         }
 
-        private static void GitInit(IGitDriver git, RepositoryData repository)
+        private static async Task GitInit(IGitDriver git, RepositoryData repository)
         {
-            git.Clone(repository.Pull.Uri);
+            await git.Clone(repository.Pull.Uri);
             repository.DefaultBranch = git.GetCurrentHead();
             git.AddRemote(repository.Remote, repository.Push.Uri);
         }

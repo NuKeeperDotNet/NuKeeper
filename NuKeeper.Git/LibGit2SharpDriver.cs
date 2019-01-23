@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -11,7 +12,7 @@ using Repository = LibGit2Sharp.Repository;
 
 namespace NuKeeper.Git
 {
-    public class LibGit2SharpDriver : IGitDriver
+    internal class LibGit2SharpDriver : IGitDriver
     {
         private readonly INuKeeperLogger _logger;
         private readonly Credentials _gitCredentials;
@@ -20,7 +21,7 @@ namespace NuKeeper.Git
 
         public IFolder WorkingFolder { get; }
 
-        public LibGit2SharpDriver(INuKeeperLogger logger,
+        internal LibGit2SharpDriver(INuKeeperLogger logger,
             IFolder workingFolder, GitUsernamePasswordCredentials credentials, User user)
         {
             if (workingFolder == null)
@@ -40,7 +41,7 @@ namespace NuKeeper.Git
             _identity = GetUserIdentity(user);
         }
 
-        public void Clone(Uri pullEndpoint)
+        public Task Clone(Uri pullEndpoint)
         {
             _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
 
@@ -52,6 +53,7 @@ namespace NuKeeper.Git
                 });
 
             _logger.Detailed("Git clone complete");
+            return Task.CompletedTask;
         }
 
         private bool OnTransferProgress(TransferProgress progress)
@@ -73,13 +75,15 @@ namespace NuKeeper.Git
             }
         }
 
-        public void Checkout(string branchName)
+        public Task Checkout(string branchName)
         {
             _logger.Detailed($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
                 GitCommands.Checkout(repo, repo.Branches[branchName]);
             }
+
+            return Task.CompletedTask;
         }
 
         public void CheckoutNewBranch(string branchName)

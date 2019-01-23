@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.ProcessRunner;
 using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {

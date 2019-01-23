@@ -7,11 +7,11 @@ using NuGet.Versioning;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.ProcessRunner;
 using NUnit.Framework;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Process;
-using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {

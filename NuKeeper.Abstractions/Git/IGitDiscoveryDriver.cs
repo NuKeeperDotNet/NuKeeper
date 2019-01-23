@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace NuKeeper.Abstractions.Git
 {
@@ -11,12 +10,6 @@ namespace NuKeeper.Abstractions.Git
         /// <param name="repositoryUri"></param>
         /// <returns></returns>
         bool IsGitRepo(Uri repositoryUri);
-
-        /// <summary>
-        /// Get all the configured remotes
-        /// </summary>
-        /// <param name="repositoryUri"></param>
-        IEnumerable<GitRemote> GetRemotes(Uri repositoryUri);
 
         Uri DiscoverRepo(Uri repositoryUri);
 

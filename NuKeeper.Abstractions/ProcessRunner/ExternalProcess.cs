@@ -1,10 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 
-namespace NuKeeper.Update.ProcessRunner
+namespace NuKeeper.Abstractions.ProcessRunner
 {
     public class ExternalProcess : IExternalProcess
     {

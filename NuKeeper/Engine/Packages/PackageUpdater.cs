@@ -65,7 +65,7 @@ namespace NuKeeper.Engine.Packages
         {
             _logger.Normal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
 
             // branch
             var branchWithChanges = BranchNamer.MakeName(updates);
@@ -100,7 +100,7 @@ namespace NuKeeper.Engine.Packages
             await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
 
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
             return updates.Count;
         }
     }

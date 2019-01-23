@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Update.ProcessRunner;
+using NuKeeper.Abstractions.ProcessRunner;
 using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.ProcessRunner
