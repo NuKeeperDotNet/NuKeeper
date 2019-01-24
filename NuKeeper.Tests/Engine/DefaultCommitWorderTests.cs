@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -10,14 +11,14 @@ using NUnit.Framework;
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class _sutTests
+    public class DefaultCommitWorderTests
     {
         private ICommitWorder _sut;
 
         [SetUp]
         public void TestInitialize()
         {
-            _sut = new _sut();
+            _sut = new DefaultCommitWorder();
         }
 
         [Test]

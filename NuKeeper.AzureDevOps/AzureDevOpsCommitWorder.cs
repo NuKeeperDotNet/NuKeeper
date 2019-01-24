@@ -3,7 +3,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 
 namespace NuKeeper.AzureDevOps
 {
-    public class AzureDevOpsCommitWording : ICommitWorder
+    public class AzureDevOpsCommitWorder : ICommitWorder
     {
         // Azure DevOps allows a maximum of 4000 characters to be used in a pull request description:
         // https://visualstudio.uservoice.com/forums/330519-azure-devops-formerly-visual-studio-team-services/suggestions/20217283-raise-the-character-limit-for-pull-request-descrip

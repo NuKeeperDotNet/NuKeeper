@@ -10,11 +10,11 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public class DefaultCommitWording : ICommitWorder
+    public class DefaultCommitWorder : ICommitWorder
     {
         private const string CommitEmoji = "package";
 
-        public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             if (updates.Count == 1)
             {
