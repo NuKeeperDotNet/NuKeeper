@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 
@@ -36,6 +37,7 @@ namespace NuKeeper.Abstractions.Configuration
         public string OutputFileName { get; set; }
 
         public LogDestination? LogDestination { get; set; }
+        public Platform? Platform { get; set; }
 
         public static FileSettings Empty()
         {

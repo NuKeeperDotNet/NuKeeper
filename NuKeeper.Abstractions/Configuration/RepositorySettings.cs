@@ -11,7 +11,7 @@ namespace NuKeeper.Abstractions.Configuration
 
         public RepositorySettings(Repository repository)
         {
-            RepositoryUri = repository.HtmlUrl;
+            RepositoryUri = repository.CloneUrl;
             RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;
         }

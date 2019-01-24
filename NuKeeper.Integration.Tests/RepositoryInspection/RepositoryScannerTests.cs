@@ -69,8 +69,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var item = results.FirstOrDefault();
 
             Assert.That(item, Is.Not.Null);
-            Assert.That(item.Identity.Id, Is.EqualTo("foo"));
-            Assert.That(item.Identity.Version, Is.EqualTo(new NuGetVersion(1,2,3)));
+            Assert.That(item.Id, Is.EqualTo("foo"));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1,2,3)));
             Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.PackagesConfig));
         }
 
@@ -139,8 +139,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             var item = results.FirstOrDefault();
 
             Assert.That(item, Is.Not.Null);
-            Assert.That(item.Identity.Id, Is.EqualTo("foo"));
-            Assert.That(item.Identity.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
+            Assert.That(item.Id, Is.EqualTo("foo"));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
             Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
         }
 

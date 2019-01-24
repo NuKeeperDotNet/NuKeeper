@@ -39,7 +39,6 @@ namespace Nukeeper.AzureDevOps.Tests
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) {BaseAddress = new Uri("https://fakebaseAddress.com/")};
             var restClient = new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
             var exception = Assert.ThrowsAsync<NuKeeperException>(async () => await restClient.GetGitRepositories("Project"));
-            Assert.IsTrue(exception.Message.Contains("Json exception", StringComparison.InvariantCultureIgnoreCase));
         }
 
         [Test]

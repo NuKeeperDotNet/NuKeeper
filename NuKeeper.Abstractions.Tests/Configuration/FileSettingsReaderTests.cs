@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
@@ -38,6 +39,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
+            Assert.That(data.Platform, Is.Null);
         }
 
         [Test]
@@ -66,6 +68,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFormat, Is.Null);
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
+            Assert.That(data.Platform, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -86,7 +89,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""OutputFormat"": ""Text"",
                ""OutputDestination"": ""Console"",
                ""OutputFileName"" : ""out_42.txt"",
-               ""LogDestination"" : ""file""
+               ""LogDestination"" : ""file"",
+               ""Platform"" : ""Bitbucket""
 }";
 
         [Test]
@@ -158,6 +162,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
 
             Assert.That(data.OutputDestination, Is.EqualTo(OutputDestination.Console));
             Assert.That(data.OutputFormat, Is.EqualTo(OutputFormat.Text));
+            Assert.That(data.Platform, Is.EqualTo(Platform.Bitbucket));
         }
 
         [Test]

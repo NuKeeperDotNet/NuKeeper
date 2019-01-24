@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
@@ -44,17 +43,46 @@ namespace NuKeeper.Tests.Engine
             Assert.That(f.RepositoryDiscovery, Is.Null);
         }
 
-
         [Test]
         public void UnknownApiReturnsUnableToFindPlatform()
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            var exception = Assert.Throws<NuKeeperException>(
-                () => collaborationFactory.Initialise(
-                    new Uri("https://unknown.com/"), null, ForkMode.SingleRepositoryOnly));
+            var result = collaborationFactory.Initialise(
+                    new Uri("https://unknown.com/"), null,
+                    ForkMode.SingleRepositoryOnly, null);
 
-            Assert.AreEqual(exception.Message, "Unable to find collaboration platform for uri https://unknown.com/");
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.ErrorMessage,
+                Is.EqualTo("Unable to find collaboration platform for uri https://unknown.com/"));
+        }
+
+        [Test]
+        public void UnknownApiCanHaveManualPlatform()
+        {
+            var collaborationFactory = GetCollaborationFactory();
+
+            var result = collaborationFactory.Initialise(
+                    new Uri("https://unknown.com/"), "token",
+                    ForkMode.SingleRepositoryOnly,
+                    Platform.GitHub);
+
+            Assert.That(result.IsSuccess);
+            AssertGithub(collaborationFactory);
+        }
+
+        [Test]
+        public void ManualPlatformWillOverrideUri()
+        {
+            var collaborationFactory = GetCollaborationFactory();
+
+            var result = collaborationFactory.Initialise(
+                new Uri("https://api.github.myco.com"), "token",
+                ForkMode.SingleRepositoryOnly,
+                Platform.AzureDevOps);
+
+            Assert.That(result.IsSuccess);
+            AssertAzureDevOps(collaborationFactory);
         }
 
         [Test]
@@ -62,7 +90,9 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token", ForkMode.SingleRepositoryOnly);
+            var result = collaborationFactory.Initialise(new Uri("https://dev.azure.com"), "token",
+                ForkMode.SingleRepositoryOnly, null);
+            Assert.That(result.IsSuccess);
 
             AssertAzureDevOps(collaborationFactory);
             AssertAreSameObject(collaborationFactory);
@@ -73,7 +103,9 @@ namespace NuKeeper.Tests.Engine
         {
             var collaborationFactory = GetCollaborationFactory();
 
-            collaborationFactory.Initialise(new Uri("https://api.github.com"), "token", ForkMode.PreferFork);
+            var result = collaborationFactory.Initialise(new Uri("https://api.github.com"), "token",
+                ForkMode.PreferFork, null);
+            Assert.That(result.IsSuccess);
 
             AssertGithub(collaborationFactory);
             AssertAreSameObject(collaborationFactory);

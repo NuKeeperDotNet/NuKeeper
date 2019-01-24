@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
+using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
@@ -58,8 +57,8 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
         [Test]
         public void TwoRowsHaveOutput()
         {
-            var package1 = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
-            var package2 = new PackageIdentity("fish", new NuGetVersion("2.3.4"));
+            var package1 = PackageVersionRange.Parse("foo.bar", "1.2.3");
+            var package2 = PackageVersionRange.Parse("fish", "2.3.4");
 
             var rows = new List<PackageUpdateSet>
             {
