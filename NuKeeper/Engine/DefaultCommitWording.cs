@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Inspection.RepositoryInspection;
 
