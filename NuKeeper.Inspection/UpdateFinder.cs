@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
@@ -40,18 +42,50 @@ namespace NuKeeper.Inspection
             IFolder workingFolder,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease)
+            UsePrerelease usePrerelease,
+            Regex includes = null,
+            Regex excludes = null)
         {
             var packages = FindPackages(workingFolder);
 
-            _logger.Log(PackagesFoundLogger.Log(packages));
+            _logger.Normal($"Found {packages.Count} packages");
+
+            var filtered = FilteredByIncludeExclude(packages, includes, excludes);
+
+            _logger.Log(PackagesFoundLogger.Log(filtered));
 
             // look for updates to these packages
             var updates = await _packageUpdatesLookup.FindUpdatesForPackages(
-                packages, sources, allowedChange, usePrerelease);
+                filtered, sources, allowedChange, usePrerelease);
 
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;
+        }
+
+
+        private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
+        {
+            var filteredByIncludeExclude = all
+                .Where(package => RegexMatch.IncludeExclude(package.Id,includes, excludes))
+                .ToList();
+
+            if (filteredByIncludeExclude.Count < all.Count)
+            {
+                var filterDesc = string.Empty;
+                if (excludes != null)
+                {
+                    filterDesc += $"Exclude '{excludes}'";
+                }
+
+                if (includes != null)
+                {
+                    filterDesc += $"Include '{includes}'";
+                }
+
+                _logger.Normal($"Filtered by {filterDesc} from {all.Count} to {filteredByIncludeExclude.Count}");
+            }
+
+            return filteredByIncludeExclude;
         }
 
         private IReadOnlyCollection<PackageInProject> FindPackages(IFolder workingFolder)

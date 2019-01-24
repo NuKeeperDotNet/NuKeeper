@@ -12,7 +12,7 @@ namespace NuKeeper.BitBucket
         public Platform Platform => Platform.Bitbucket;
 
         private string Username { get; set; }
-        
+
         public bool CanRead(Uri repositoryUri)
         {
             return repositoryUri?.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == true;
@@ -37,7 +37,7 @@ namespace NuKeeper.BitBucket
             {
                 return null;
             }
-            
+
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -48,15 +48,27 @@ namespace NuKeeper.BitBucket
                 return null;
             }
 
-            Username = pathParts[0];
+            if (String.IsNullOrWhiteSpace(repositoryUri.UserInfo))
+            {
+                Username = pathParts[0];
+            }
+            else
+            {
+                Username = repositoryUri.UserInfo.Split(':').First();
+            }
             var repoName = pathParts[1];
+            //Trim off any .git extension from repo name
+            repoName = repoName.EndsWith(".git", StringComparison.InvariantCultureIgnoreCase) ?
+                repoName.Substring(0, repoName.LastIndexOf(".git", StringComparison.InvariantCultureIgnoreCase))
+                : repoName;
+            var owner = pathParts[0];
 
             return new RepositorySettings
             {
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = Username
+                RepositoryOwner = owner
             };
         }
     }

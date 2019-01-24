@@ -18,11 +18,10 @@ namespace Nukeeper.AzureDevOps.Tests
 
         public static Repository MakeRepository(bool canPull, bool canPush)
         {
-            return MakeRepository(ForkHtmlUrl, ForkCloneUrl, canPull, canPush);
+            return MakeRepository(ForkCloneUrl, canPull, canPush);
         }
 
         public static Repository MakeRepository(
-            Uri forkHtmlUrl = null,
             Uri forkCloneUrl = null,
             bool canPull = true,
             bool canPush = true,
@@ -32,7 +31,6 @@ namespace Nukeeper.AzureDevOps.Tests
                 name,
                 false,
                 new UserPermissions(false, canPush, canPull),
-                forkHtmlUrl ?? ForkHtmlUrl,
                 forkCloneUrl ?? ForkCloneUrl,
                 MakeUser(),
                 true,
@@ -46,7 +44,6 @@ namespace Nukeeper.AzureDevOps.Tests
                 false,
                 new UserPermissions(false, true, true),
                 ParentCloneUrl,
-                ParentHtmlUrl,
                 MakeUser(),
                 true,
                 null

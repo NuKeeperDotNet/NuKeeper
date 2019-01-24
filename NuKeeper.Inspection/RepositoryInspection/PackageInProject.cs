@@ -2,29 +2,35 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class PackageInProject
     {
-        public PackageInProject(PackageIdentity identity,
+        public PackageInProject(PackageVersionRange packageVersionRange,
             PackagePath path,
-            IEnumerable<string> projectReferences)
+            IEnumerable<string> projectReferences = null)
         {
-            Identity = identity;
+            PackageVersionRange = packageVersionRange;
             Path = path;
             ProjectReferences = projectReferences?.ToList() ?? new List<string>();
         }
 
-        public PackageInProject(string id, string version, PackagePath path) :
-            this(new PackageIdentity(id, new NuGetVersion(version)), path, null)
+        public PackageInProject(string id, string versionRange, PackagePath path) :
+            this(new PackageVersionRange(id, VersionRange.Parse(versionRange)), path, null)
         {
         }
 
-        public PackageIdentity Identity { get; }
+        public PackageIdentity Identity => PackageVersionRange.SingleVersionIdentity();
+
+        public PackageVersionRange PackageVersionRange { get; }
+
         public PackagePath Path { get; }
 
-        public string Id => Identity.Id;
+        public string Id => PackageVersionRange.Id;
+        public VersionRange Range => PackageVersionRange.Version;
+
         public NuGetVersion Version => Identity.Version;
 
         public bool IsPrerelease => Identity.Version.IsPrerelease;

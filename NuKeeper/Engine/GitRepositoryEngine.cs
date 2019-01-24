@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
@@ -35,13 +35,12 @@ namespace NuKeeper.Engine
         }
 
         public async Task<int> Run(RepositorySettings repository,
-            UsernamePasswordCredentials gitCreds,
-            Identity userIdentity,
-            SettingsContainer settings)
+            GitUsernamePasswordCredentials credentials,
+            SettingsContainer settings, User user)
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, gitCreds.Username);
+                var repo = await BuildGitRepositorySpec(repository, credentials.Username);
                 if (repo == null)
                 {
                     return 0;
@@ -74,7 +73,7 @@ namespace NuKeeper.Engine
                     settings.WorkingFolder = folder;
                 }
 
-                var git = new LibGit2SharpDriver(_logger, folder, gitCreds, userIdentity);
+                var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
 
                 var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
 

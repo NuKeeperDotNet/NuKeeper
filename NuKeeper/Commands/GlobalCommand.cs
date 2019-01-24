@@ -7,7 +7,7 @@ using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
-    [Command(Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
+    [Command("global", Description = "Performs version checks and generates pull requests for all repositories the provided token can access.")]
     internal class GlobalCommand : MultipleRepositoryCommand
     {
         public GlobalCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)

@@ -14,11 +14,11 @@ namespace NuKeeper
         Name = "NuKeeper",
         FullName = "Automagically update NuGet packages in .NET projects.")]
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
-    [Subcommand("inspect", typeof(InspectCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
-    [Subcommand("repo", typeof(RepositoryCommand))]
-    [Subcommand("org", typeof(OrganisationCommand))]
-    [Subcommand("global", typeof(GlobalCommand))]
+    [Subcommand(typeof(InspectCommand))]
+    [Subcommand(typeof(UpdateCommand))]
+    [Subcommand(typeof(RepositoryCommand))]
+    [Subcommand(typeof(OrganisationCommand))]
+    [Subcommand(typeof(GlobalCommand))]
     public class Program
     {
         public static int Main(string[] args)

@@ -79,9 +79,9 @@ namespace NuKeeper.GitHub.Tests
         }
 
         [Test]
-        public async Task WhenSuitableUserForkIsFound_ThatMatchesParentHtmlUrl_ItIsUsedOverFallback()
+        public async Task WhenSuitableUserForkIsFound_ThatMatchesCloneHtmlUrl_ItIsUsedOverFallback()
         {
-            var fallbackFork = new ForkData(new Uri(RepositoryBuilder.ParentHtmlUrl), "testOrg", "someRepo");
+            var fallbackFork = new ForkData(new Uri(RepositoryBuilder.ParentCloneUrl), "testOrg", "someRepo");
 
             var userRepo = RepositoryBuilder.MakeRepository();
 

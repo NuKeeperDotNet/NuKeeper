@@ -153,7 +153,7 @@ namespace NuKeeper.GitHub
             var repos = new RepositoryCollection();
             foreach (var repo in search.Repos)
             {
-                repos.Add(repo.owner, repo.name);
+                repos.Add(repo.Owner, repo.Name);
             }
 
             var result = await _client.Search.SearchCode(

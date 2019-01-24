@@ -141,8 +141,7 @@ namespace NuKeeper.GitHub
                 return false;
             }
 
-            return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl)
-                   || UrlIsMatch(userRepo.Parent?.HtmlUrl.ToString(), parentUrl);
+            return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl);
         }
 
         private static bool UrlIsMatch(string test, string expected)
