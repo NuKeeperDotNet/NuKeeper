@@ -76,14 +76,14 @@ namespace NuKeeper.Engine.Packages
             {
                 await _updateRunner.Update(updateSet, sources);
 
-                var commitMessage = DefaultCommitWording.MakeCommitMessage(updateSet);
+                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
             }
 
             git.Push(repository.Remote, branchWithChanges);
 
-            var title = DefaultCommitWording.MakePullRequestTitle(updates);
-            var body = DefaultCommitWording.MakeCommitDetails(updates);
+            var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
+            var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
             string qualifiedBranch;
             if (repository.Pull.Owner == repository.Push.Owner)

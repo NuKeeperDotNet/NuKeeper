@@ -1,4 +1,3 @@
-using NuKeeper.Inspection.RepositoryInspection;
 using System.Collections.Generic;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform
