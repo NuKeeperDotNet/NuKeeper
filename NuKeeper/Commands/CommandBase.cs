@@ -22,7 +22,7 @@ namespace NuKeeper.Commands
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
         public VersionChange? AllowedChange { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "up", LongName = "useprerelease",
+        [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "useprerelease",
             Description = "Allowed prerelease: Always, Never, FromPrerelease. Defaults to FromPrerelease.")]
         public UsePrerelease? UsePrerelease { get; set; }
 
@@ -53,23 +53,23 @@ namespace NuKeeper.Commands
             Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         public LogLevel? Verbosity { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "ld", LongName = "logdestination",
+        [Option(CommandOptionType.SingleValue, ShortName = "b", LongName = "logdestination",
             Description = "Destination for logging.")]
         public LogDestination? LogDestination { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "lf", LongName = "logfile",
+        [Option(CommandOptionType.SingleValue, ShortName = "j", LongName = "logfile",
             Description = "Log to the named file.")]
         public string LogFile { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "om", LongName = "outputformat",
+        [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "outputformat",
             Description = "Format for output.")]
         public OutputFormat? OutputFormat { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "od", LongName = "outputdestination",
+        [Option(CommandOptionType.SingleValue, ShortName = "d", LongName = "outputdestination",
             Description = "Destination for output.")]
         public OutputDestination? OutputDestination { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "of", LongName = "outputfile",
+        [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "outputfile",
             Description = "File name for output.")]
         public string OutputFileName { get; set; }
 

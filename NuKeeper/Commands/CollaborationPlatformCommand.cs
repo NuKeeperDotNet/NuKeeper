@@ -28,7 +28,7 @@ namespace NuKeeper.Commands
             Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
         public int? MaxPullRequestsPerRepository { get; set; }
 
-        [Option(CommandOptionType.NoValue, ShortName = "co", LongName = "consolidate",
+        [Option(CommandOptionType.NoValue, ShortName = "n", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
         public bool? Consolidate { get; set; }
 

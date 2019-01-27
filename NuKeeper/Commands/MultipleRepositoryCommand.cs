@@ -11,10 +11,10 @@ namespace NuKeeper.Commands
 {
     internal abstract class MultipleRepositoryCommand : CollaborationPlatformCommand
     {
-        [Option(CommandOptionType.SingleValue, ShortName = "ir", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "k", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
         public string IncludeRepos { get; set;  }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "er", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "u", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
         public string ExcludeRepos { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "maxrepo",
