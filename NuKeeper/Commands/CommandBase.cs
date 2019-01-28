@@ -53,23 +53,23 @@ namespace NuKeeper.Commands
             Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         public LogLevel? Verbosity { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "b", LongName = "logdestination",
+        [Option(CommandOptionType.SingleValue, LongName = "logdestination",
             Description = "Destination for logging.")]
         public LogDestination? LogDestination { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "j", LongName = "logfile",
+        [Option(CommandOptionType.SingleValue, LongName = "logfile",
             Description = "Log to the named file.")]
         public string LogFile { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "outputformat",
+        [Option(CommandOptionType.SingleValue, LongName = "outputformat",
             Description = "Format for output.")]
         public OutputFormat? OutputFormat { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "d", LongName = "outputdestination",
+        [Option(CommandOptionType.SingleValue, LongName = "outputdestination",
             Description = "Destination for output.")]
         public OutputDestination? OutputDestination { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "outputfile",
+        [Option(CommandOptionType.SingleValue, LongName = "outputfile",
             Description = "File name for output.")]
         public string OutputFileName { get; set; }
 
