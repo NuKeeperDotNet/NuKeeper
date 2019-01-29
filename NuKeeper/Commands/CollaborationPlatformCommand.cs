@@ -25,7 +25,7 @@ namespace NuKeeper.Commands
         public ForkMode? ForkMode { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpackageupdates",
-            Description = "The maximum number of package updates to apply on any repository. Defaults to 3.")]
+            Description = "The maximum number of package updates to apply on one repository. Defaults to 3.")]
         public int? MaxPackageUpdates { get; set; }
 
         [Option(CommandOptionType.NoValue, ShortName = "n", LongName = "consolidate",
