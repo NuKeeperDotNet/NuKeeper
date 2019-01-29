@@ -168,7 +168,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                MaxPr = 42
+                MaxPackageUpdates = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);

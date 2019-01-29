@@ -24,9 +24,9 @@ namespace NuKeeper.Commands
                 "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly.")]
         public ForkMode? ForkMode { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpr",
-            Description = "The maximum number of pull requests to raise on any repository. Defaults to 3.")]
-        public int? MaxPullRequestsPerRepository { get; set; }
+        [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpackageupdates",
+            Description = "The maximum number of package updates to apply on any repository. Defaults to 3.")]
+        public int? MaxPackageUpdates { get; set; }
 
         [Option(CommandOptionType.NoValue, ShortName = "n", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
@@ -97,9 +97,9 @@ namespace NuKeeper.Commands
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
-            const int defaultMaxPullRequests = 3;
+            const int defaultMaxPackageUpdates = 3;
             settings.PackageFilters.MaxPackageUpdates =
-                Concat.FirstValue(MaxPullRequestsPerRepository, fileSettings.MaxPr, defaultMaxPullRequests);
+                Concat.FirstValue(MaxPackageUpdates, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
 
             var defaultLabels = new List<string> {"nukeeper"};
 

@@ -28,7 +28,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
-            Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxPackageUpdates, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
@@ -57,7 +57,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
-            Assert.That(data.MaxPr, Is.Null);
+            Assert.That(data.MaxPackageUpdates, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
@@ -80,7 +80,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
-               ""maxpr"": 42,
+               ""maxPackageUpdates"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
                ""Change"": ""Minor"",
@@ -139,7 +139,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
 
             var data = fsr.Read(path);
 
-            Assert.That(data.MaxPr, Is.EqualTo(42));
+            Assert.That(data.MaxPackageUpdates, Is.EqualTo(42));
             Assert.That(data.MaxRepo, Is.EqualTo(12));
         }
 
