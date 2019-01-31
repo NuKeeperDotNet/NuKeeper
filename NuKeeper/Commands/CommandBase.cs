@@ -22,7 +22,7 @@ namespace NuKeeper.Commands
             Description = "Allowed version change: Patch, Minor, Major. Defaults to Major.")]
         public VersionChange? AllowedChange { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "useprerelease",
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "useprerelease",
             Description = "Allowed prerelease: Always, Never, FromPrerelease. Defaults to FromPrerelease.")]
         public UsePrerelease? UsePrerelease { get; set; }
 
