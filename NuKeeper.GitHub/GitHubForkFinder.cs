@@ -143,14 +143,20 @@ namespace NuKeeper.GitHub
                 return false;
             }
 
-            return UrlIsMatch(
-                userRepo.Parent?.CloneUrl,
-                GithubUriHelpers.Normalise(originRepo));
-        }
+            if (userRepo.Parent?.CloneUrl == null)
+            {
+                return false;
+            }
 
-        private static bool UrlIsMatch(Uri test, Uri expected)
-        {
-            return (test != null) && (test == expected);
+            if (originRepo == null)
+            {
+                return false;
+            }
+
+            var userParentUrl = GithubUriHelpers.Normalise(userRepo.Parent.CloneUrl);
+            var originUrl = GithubUriHelpers.Normalise(originRepo);
+
+            return userParentUrl.Equals(originUrl);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
