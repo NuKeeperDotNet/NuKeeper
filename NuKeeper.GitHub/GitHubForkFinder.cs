@@ -112,7 +112,9 @@ namespace NuKeeper.GitHub
             var userFork = await _collaborationPlatform.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
-                if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.UserPermissions.Push)
+                var isFork = RepoIsForkOf(userFork, originFork.Uri);
+                var canPush = userFork.UserPermissions.Push;
+                if (isFork && canPush)
                 {
                     // the user has a pushable fork
                     return RepositoryToForkData(userFork);
@@ -120,7 +122,7 @@ namespace NuKeeper.GitHub
 
                 // the user has a repo of that name, but it can't be used. 
                 // Don't try to create it
-                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable.");
+                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable. Match: {isFork}. Pushable: {canPush}");
                 return null;
             }
 
@@ -134,20 +136,21 @@ namespace NuKeeper.GitHub
             return null;
         }
 
-        private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
+        private static bool RepoIsForkOf(Repository userRepo, Uri originRepo)
         {
             if (!userRepo.Fork)
             {
                 return false;
             }
 
-            return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl);
+            return UrlIsMatch(
+                userRepo.Parent?.CloneUrl,
+                GithubHelpers.GithubUri(originRepo));
         }
 
-        private static bool UrlIsMatch(string test, string expected)
+        private static bool UrlIsMatch(Uri test, Uri expected)
         {
-            return !string.IsNullOrWhiteSpace(test) &&
-                   string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
+            return (test != null) && (test == expected);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
