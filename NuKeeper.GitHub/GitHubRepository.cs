@@ -10,7 +10,7 @@ namespace NuKeeper.GitHub
             repository.Archived,
             repository.Permissions != null ?
                 new UserPermissions(repository.Permissions.Admin, repository.Permissions.Push, repository.Permissions.Pull) : null,
-            GithubHelpers.GithubUri(repository.CloneUrl),
+            GithubUriHelpers.Normalise(repository.CloneUrl),
             new User(repository.Owner.Login, repository.Owner.Name, repository.Owner.Email),
             repository.Fork,
             repository.Parent != null ?

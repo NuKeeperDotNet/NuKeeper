@@ -112,9 +112,9 @@ namespace NuKeeper.GitHub
             var userFork = await _collaborationPlatform.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
-                var isFork = RepoIsForkOf(userFork, originFork.Uri);
-                var canPush = userFork.UserPermissions.Push;
-                if (isFork && canPush)
+                var isMatchingFork = RepoIsForkOf(userFork, originFork.Uri);
+                var forkIsPushable = userFork.UserPermissions.Push;
+                if (isMatchingFork && forkIsPushable)
                 {
                     // the user has a pushable fork
                     return RepositoryToForkData(userFork);
@@ -122,7 +122,7 @@ namespace NuKeeper.GitHub
 
                 // the user has a repo of that name, but it can't be used. 
                 // Don't try to create it
-                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable. Match: {isFork}. Pushable: {canPush}");
+                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable. Matching: {isMatchingFork}. Pushable: {forkIsPushable}");
                 return null;
             }
 
@@ -145,7 +145,7 @@ namespace NuKeeper.GitHub
 
             return UrlIsMatch(
                 userRepo.Parent?.CloneUrl,
-                GithubHelpers.GithubUri(originRepo));
+                GithubUriHelpers.Normalise(originRepo));
         }
 
         private static bool UrlIsMatch(Uri test, Uri expected)

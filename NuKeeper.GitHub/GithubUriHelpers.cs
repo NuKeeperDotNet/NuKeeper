@@ -2,14 +2,14 @@ using System;
 
 namespace NuKeeper.GitHub
 {
-    public static class GithubHelpers
+    public static class GithubUriHelpers
     {
-        public static Uri GithubUri(Uri value)
+        public static Uri Normalise(Uri value)
         {
-            return GithubUri(value.ToString());
+            return Normalise(value.ToString());
         }
 
-        public static Uri GithubUri(string value)
+        public static Uri Normalise(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
