@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using NuGet.Common;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
