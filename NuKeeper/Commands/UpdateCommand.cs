@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Local;
@@ -11,7 +12,7 @@ namespace NuKeeper.Commands
     {
         [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",
             Description = "Maximum number of package updates to make. Defaults to 1.")]
-        protected int MaxPackageUpdates { get; } = 1;
+        protected int? MaxPackageUpdates { get; set; }
 
         private readonly ILocalEngine _engine;
 
@@ -29,8 +30,20 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            settings.PackageFilters.MaxPackageUpdates = MaxPackageUpdates;
+            const int defaultMaxPackageUpdates = 1;
+            var fileSettings = FileSettingsCache.GetSettings();
 
+            var maxUpdates = Concat.FirstValue(
+                MaxPackageUpdates,
+                fileSettings.MaxPackageUpdates,
+                defaultMaxPackageUpdates);
+
+            if (maxUpdates < 1)
+            {
+                return ValidationResult.Failure($"Max package updates of {maxUpdates} is not valid");
+            }
+
+            settings.PackageFilters.MaxPackageUpdates = maxUpdates;
             return ValidationResult.Success;
         }
 
