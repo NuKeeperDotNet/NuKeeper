@@ -26,7 +26,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",
             Description = "The maximum number of package updates to apply on one repository. Defaults to 3.")]
-        public int? MaxPackageUpdates { get; set; }
+        public int? MaxUpdate { get; set; }
 
         [Option(CommandOptionType.NoValue, ShortName = "n", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
@@ -99,7 +99,7 @@ namespace NuKeeper.Commands
 
             const int defaultMaxPackageUpdates = 3;
             settings.PackageFilters.MaxPackageUpdates =
-                Concat.FirstValue(MaxPackageUpdates, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
+                Concat.FirstValue(MaxUpdate, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
 
             var defaultLabels = new List<string> {"nukeeper"};
 

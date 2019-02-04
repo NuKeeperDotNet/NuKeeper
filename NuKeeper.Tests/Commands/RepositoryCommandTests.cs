@@ -346,7 +346,7 @@ namespace NuKeeper.Tests.Commands
                 command.Label = new List<string> {"runLabel1", "runLabel2"};
             }
 
-            command.MaxPackageUpdates = maxPackageUpdates;
+            command.MaxUpdate = maxPackageUpdates;
 
             await command.OnExecute();
 

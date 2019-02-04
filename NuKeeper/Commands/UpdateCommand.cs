@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
     {
         [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",
             Description = "Maximum number of package updates to make. Defaults to 1.")]
-        public int? MaxPackageUpdates { get; set; }
+        public int? MaxUpdate { get; set; }
 
         private readonly ILocalEngine _engine;
 
@@ -34,7 +34,7 @@ namespace NuKeeper.Commands
             var fileSettings = FileSettingsCache.GetSettings();
 
             var maxUpdates = Concat.FirstValue(
-                MaxPackageUpdates,
+                MaxUpdate,
                 fileSettings.MaxPackageUpdates,
                 defaultMaxPackageUpdates);
 

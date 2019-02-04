@@ -163,7 +163,7 @@ namespace NuKeeper.Tests.Commands
 
             var command = new UpdateCommand(engine, logger, fileSettings);
             command.AllowedChange = change;
-            command.MaxPackageUpdates = maxPackageUpdates;
+            command.MaxUpdate = maxPackageUpdates;
 
             await command.OnExecute();
 
