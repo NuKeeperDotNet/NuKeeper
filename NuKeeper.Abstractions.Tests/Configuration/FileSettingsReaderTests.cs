@@ -28,7 +28,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
-            Assert.That(data.MaxPackageUpdates, Is.Null);
+            Assert.That(data.MaxUpdate, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
@@ -57,7 +57,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Include, Is.Null);
             Assert.That(data.Exclude, Is.Null);
             Assert.That(data.Label, Is.Null);
-            Assert.That(data.MaxPackageUpdates, Is.Null);
+            Assert.That(data.MaxUpdate, Is.Null);
             Assert.That(data.MaxRepo, Is.Null);
             Assert.That(data.Verbosity, Is.Null);
             Assert.That(data.Change, Is.Null);
@@ -80,7 +80,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
-               ""maxPackageUpdates"": 42,
+               ""maxUpdate"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
                ""Change"": ""Minor"",
@@ -139,7 +139,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
 
             var data = fsr.Read(path);
 
-            Assert.That(data.MaxPackageUpdates, Is.EqualTo(42));
+            Assert.That(data.MaxUpdate, Is.EqualTo(42));
             Assert.That(data.MaxRepo, Is.EqualTo(12));
         }
 
@@ -175,6 +175,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludE"":""fish"",
                ""IncluDeRepoS"":""repo2"",
                ""label"": [""mark"" ],
+               ""maxUpdate"":4,
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH""
@@ -194,6 +195,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
             Assert.That(data.Label.Count, Is.EqualTo(1));
             Assert.That(data.Label, Does.Contain("mark"));
+            Assert.That(data.MaxUpdate, Is.EqualTo(4));
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));

@@ -97,9 +97,9 @@ namespace NuKeeper.Commands
             settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
-            const int defaultMaxPackageUpdates = 3;
+            const int defaultMaxUpdate = 3;
             settings.PackageFilters.MaxPackageUpdates =
-                Concat.FirstValue(MaxUpdate, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
+                Concat.FirstValue(MaxUpdate, fileSettings.MaxUpdate, defaultMaxUpdate);
 
             var defaultLabels = new List<string> {"nukeeper"};
 

@@ -30,13 +30,13 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            const int defaultMaxPackageUpdates = 1;
+            const int defaultMaxUpdate = 1;
             var fileSettings = FileSettingsCache.GetSettings();
 
             var maxUpdates = Concat.FirstValue(
                 MaxUpdate,
-                fileSettings.MaxPackageUpdates,
-                defaultMaxPackageUpdates);
+                fileSettings.MaxUpdate,
+                defaultMaxUpdate);
 
             if (maxUpdates < 1)
             {

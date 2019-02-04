@@ -182,11 +182,11 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task WillReadMaxPrFromFile()
+        public async Task WillReadMaxUpdateFromFile()
         {
             var fileSettings = new FileSettings
             {
-                MaxPackageUpdates = 42
+                MaxUpdate = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);
