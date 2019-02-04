@@ -10,9 +10,9 @@ namespace NuKeeper.Commands
     [Command("update", Description = "Applies relevant updates to a local project.")]
     internal class UpdateCommand : LocalNuKeeperCommand
     {
-        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxupdate",
+        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxpackageupdates",
             Description = "Maximum number of package updates to make. Defaults to 1.")]
-        public int? MaxUpdate { get; set; }
+        public int? MaxPackageUpdates { get; set; }
 
         private readonly ILocalEngine _engine;
 
@@ -30,13 +30,13 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            const int defaultMaxUpdate = 1;
+            const int defaultMaxPackageUpdates = 1;
             var fileSettings = FileSettingsCache.GetSettings();
 
             var maxUpdates = Concat.FirstValue(
-                MaxUpdate,
-                fileSettings.MaxUpdate,
-                defaultMaxUpdate);
+                MaxPackageUpdates,
+                fileSettings.MaxPackageUpdates,
+                defaultMaxPackageUpdates);
 
             if (maxUpdates < 1)
             {

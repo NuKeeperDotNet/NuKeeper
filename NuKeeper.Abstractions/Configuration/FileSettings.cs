@@ -27,7 +27,7 @@ namespace NuKeeper.Abstractions.Configuration
 
         public string LogFile { get; set; }
 
-        public int? MaxUpdate { get; set; }
+        public int? MaxPackageUpdates { get; set; }
         public int? MaxRepo { get; set; }
 
         public bool? Consolidate { get; set; }

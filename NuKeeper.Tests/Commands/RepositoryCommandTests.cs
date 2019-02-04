@@ -247,7 +247,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                MaxUpdate = 42
+                MaxPackageUpdates = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);
@@ -291,7 +291,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                MaxUpdate = 42
+                MaxPackageUpdates = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings, false, 101);
@@ -346,7 +346,7 @@ namespace NuKeeper.Tests.Commands
                 command.Label = new List<string> {"runLabel1", "runLabel2"};
             }
 
-            command.MaxUpdate = maxPackageUpdates;
+            command.MaxPackageUpdates = maxPackageUpdates;
 
             await command.OnExecute();
 

@@ -121,7 +121,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                MaxUpdate = 1234
+                MaxPackageUpdates = 1234
             };
 
             var settings = await CaptureSettings(fileSettings);
@@ -136,7 +136,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                MaxUpdate = 123
+                MaxPackageUpdates = 123
             };
 
             var settings = await CaptureSettings(fileSettings, null, 23456);
@@ -163,7 +163,7 @@ namespace NuKeeper.Tests.Commands
 
             var command = new UpdateCommand(engine, logger, fileSettings);
             command.AllowedChange = change;
-            command.MaxUpdate = maxPackageUpdates;
+            command.MaxPackageUpdates = maxPackageUpdates;
 
             await command.OnExecute();
 
