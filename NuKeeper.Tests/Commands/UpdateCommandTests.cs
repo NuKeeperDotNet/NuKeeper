@@ -117,7 +117,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task WillReadMaxUpdateFromFile()
+        public async Task WillReadMaxPackageUpdatesFromFile()
         {
             var fileSettings = new FileSettings
             {
@@ -132,7 +132,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task WillReadMaxUpdateFromCommandLineOverFile()
+        public async Task WillReadMaxPackageUpdatesFromCommandLineOverFile()
         {
             var fileSettings = new FileSettings
             {
