@@ -98,6 +98,47 @@ namespace NuKeeper.GitHub.Tests
         }
 
         [Test]
+        public async Task WhenSuitableUserForkIsFound_ThatMatchesCloneHtmlUrl_WithRepoUrlVariation()
+        {
+            var fallbackFork = new ForkData(new Uri(RepositoryBuilder.ParentCloneBareUrl), "testOrg", "someRepo");
+
+            var userRepo = RepositoryBuilder.MakeRepository();
+
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new GitHubForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>(), ForkMode.PreferFork);
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
+        }
+
+        [Test]
+        public async Task WhenSuitableUserForkIsFound_ThatMatchesCloneHtmlUrl_WithParentRepoUrlVariation()
+        {
+            var fallbackFork = new ForkData(new Uri(RepositoryBuilder.ParentCloneUrl), "testOrg", "someRepo");
+
+            var userRepo = RepositoryBuilder.MakeRepository(
+                RepositoryBuilder.ForkCloneUrl,
+                true, true, "userRepo",
+                RepositoryBuilder.MakeParentRepo(RepositoryBuilder.ParentCloneBareUrl));
+
+            var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
+            collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
+                .Returns(userRepo);
+
+            var forkFinder = new GitHubForkFinder(collaborationPlatform, Substitute.For<INuKeeperLogger>(), ForkMode.PreferFork);
+
+            var fork = await forkFinder.FindPushFork("testUser", fallbackFork);
+
+            Assert.That(fork, Is.Not.EqualTo(fallbackFork));
+            AssertForkMatchesRepo(fork, userRepo);
+        }
+
+        [Test]
         public async Task WhenUnsuitableUserForkIsFoundItIsNotUsed()
         {
             var fallbackFork = NoMatchFork();
