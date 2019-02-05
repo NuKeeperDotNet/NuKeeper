@@ -19,7 +19,7 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "maxrepo",
             Description = "The maximum number of repositories to change. Defaults to 10.")]
-        public int? AllowedMaxRepositoriesChangedChange { get; set; }
+        public int? MaxRepositoriesChanged { get; set; }
 
         protected MultipleRepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
             : base(engine, logger, fileSettingsCache, collaborationFactory)
@@ -47,10 +47,10 @@ namespace NuKeeper.Commands
             }
 
             var fileSettings = FileSettingsCache.GetSettings();
-
             const int defaultMaxReposChanged = 10;
+
             settings.UserSettings.MaxRepositoriesChanged = Concat.FirstValue(
-                AllowedMaxRepositoriesChangedChange, fileSettings.MaxRepo, defaultMaxReposChanged);
+                MaxRepositoriesChanged, fileSettings.MaxRepo, defaultMaxReposChanged);
 
             return ValidationResult.Success;
         }

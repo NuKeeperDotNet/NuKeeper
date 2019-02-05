@@ -175,6 +175,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludE"":""fish"",
                ""IncluDeRepoS"":""repo2"",
                ""label"": [""mark"" ],
+               ""MaxPackageUpdates"":4,
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH""
@@ -194,6 +195,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.IncludeRepos, Is.EqualTo("repo2"));
             Assert.That(data.Label.Count, Is.EqualTo(1));
             Assert.That(data.Label, Does.Contain("mark"));
+            Assert.That(data.MaxPackageUpdates, Is.EqualTo(4));
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));

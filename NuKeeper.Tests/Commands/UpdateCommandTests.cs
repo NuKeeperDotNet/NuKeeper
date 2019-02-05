@@ -116,8 +116,40 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.AllowedChange, Is.EqualTo(VersionChange.Patch));
         }
 
+        [Test]
+        public async Task WillReadMaxPackageUpdatesFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxPackageUpdates = 1234
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(1234));
+        }
+
+        [Test]
+        public async Task WillReadMaxPackageUpdatesFromCommandLineOverFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                MaxPackageUpdates = 123
+            };
+
+            var settings = await CaptureSettings(fileSettings, null, 23456);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.PackageFilters, Is.Not.Null);
+            Assert.That(settings.PackageFilters.MaxPackageUpdates, Is.EqualTo(23456));
+        }
+
+
         public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
-            VersionChange? change = null)
+            VersionChange? change = null,
+            int? maxPackageUpdates = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -131,6 +163,7 @@ namespace NuKeeper.Tests.Commands
 
             var command = new UpdateCommand(engine, logger, fileSettings);
             command.AllowedChange = change;
+            command.MaxPackageUpdates = maxPackageUpdates;
 
             await command.OnExecute();
 
