@@ -67,9 +67,6 @@ namespace NuKeeper.Git
                 var repoHeadBranch = repo.Branches.
                     SingleOrDefault(b => b.IsCurrentRepositoryHead);
 
-                // todo - is the above different to
-                // var repoHeadBranch = repo.Head; ???
-
                 if (repoHeadBranch == null)
                 {
                     throw new NuKeeperException($"Cannot find current head branch for repo at '{repoRoot}', with {repo.Branches.Count()} branches");
