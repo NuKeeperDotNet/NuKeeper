@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.RepositoryInspection;

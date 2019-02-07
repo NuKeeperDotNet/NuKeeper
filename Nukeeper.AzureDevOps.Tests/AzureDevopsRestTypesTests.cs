@@ -1,9 +1,6 @@
 using Newtonsoft.Json;
 using NuKeeper.AzureDevOps;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Nukeeper.AzureDevOps.Tests
 {
