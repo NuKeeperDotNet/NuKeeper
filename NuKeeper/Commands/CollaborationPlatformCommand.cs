@@ -24,7 +24,7 @@ namespace NuKeeper.Commands
                 "Prefer to make branches on a fork of the writer repository, or on that repository itself. Allowed values are PreferFork, PreferSingleRepository, SingleRepositoryOnly.")]
         public ForkMode? ForkMode { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "maxpackageupdates",
+        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "maxpackageupdates",
             Description = "The maximum number of package updates to apply on one repository. Defaults to 3.")]
         public int? MaxPackageUpdates { get; set; }
 
