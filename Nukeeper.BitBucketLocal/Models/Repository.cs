@@ -1,7 +1,4 @@
-using System;
 using Newtonsoft.Json;
-using NuGet.Common;
-using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.BitBucketLocal.Models
 {

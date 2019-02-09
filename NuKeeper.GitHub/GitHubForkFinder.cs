@@ -112,7 +112,9 @@ namespace NuKeeper.GitHub
             var userFork = await _collaborationPlatform.GetUserRepository(userName, originFork.Name);
             if (userFork != null)
             {
-                if (RepoIsForkOf(userFork, originFork.Uri.ToString()) && userFork.UserPermissions.Push)
+                var isMatchingFork = RepoIsForkOf(userFork, originFork.Uri);
+                var forkIsPushable = userFork.UserPermissions.Push;
+                if (isMatchingFork && forkIsPushable)
                 {
                     // the user has a pushable fork
                     return RepositoryToForkData(userFork);
@@ -120,7 +122,7 @@ namespace NuKeeper.GitHub
 
                 // the user has a repo of that name, but it can't be used. 
                 // Don't try to create it
-                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable.");
+                _logger.Normal($"User '{userName}' fork of '{originFork.Name}' exists but is unsuitable. Matching: {isMatchingFork}. Pushable: {forkIsPushable}");
                 return null;
             }
 
@@ -134,20 +136,27 @@ namespace NuKeeper.GitHub
             return null;
         }
 
-        private static bool RepoIsForkOf(Repository userRepo, string parentUrl)
+        private static bool RepoIsForkOf(Repository userRepo, Uri originRepo)
         {
             if (!userRepo.Fork)
             {
                 return false;
             }
 
-            return UrlIsMatch(userRepo.Parent?.CloneUrl.ToString(), parentUrl);
-        }
+            if (userRepo.Parent?.CloneUrl == null)
+            {
+                return false;
+            }
 
-        private static bool UrlIsMatch(string test, string expected)
-        {
-            return !string.IsNullOrWhiteSpace(test) &&
-                   string.Equals(test, expected, StringComparison.OrdinalIgnoreCase);
+            if (originRepo == null)
+            {
+                return false;
+            }
+
+            var userParentUrl = GithubUriHelpers.Normalise(userRepo.Parent.CloneUrl);
+            var originUrl = GithubUriHelpers.Normalise(originRepo);
+
+            return userParentUrl.Equals(originUrl);
         }
 
         private static ForkData RepositoryToForkData(Repository repo)
