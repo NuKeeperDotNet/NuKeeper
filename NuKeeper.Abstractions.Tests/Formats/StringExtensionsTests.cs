@@ -1,5 +1,4 @@
 using System;
-using NuKeeper.Abstractions.Formats;
 using NUnit.Framework;
 
 namespace NuKeeper.Abstractions.Tests.Formats

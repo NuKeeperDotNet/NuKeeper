@@ -243,11 +243,11 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task WillReadMaxPrFromFile()
+        public async Task WillReadMaxPackageUpdatesFromFile()
         {
             var fileSettings = new FileSettings
             {
-                MaxPr = 42
+                MaxPackageUpdates = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);
@@ -287,11 +287,11 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task MaxPrFromCommandLineOverridesFiles()
+        public async Task MaxPackageUpdatesFromCommandLineOverridesFiles()
         {
             var fileSettings = new FileSettings
             {
-                MaxPr = 42
+                MaxPackageUpdates = 42
             };
 
             var (settings, _) = await CaptureSettings(fileSettings, false, 101);
@@ -323,7 +323,7 @@ namespace NuKeeper.Tests.Commands
         public static async Task<(SettingsContainer settingsContainer, CollaborationPlatformSettings platformSettings)> CaptureSettings(
             FileSettings settingsIn,
             bool addLabels = false,
-            int? maxPr = null)
+            int? maxPackageUpdates = null)
         {
             var logger = Substitute.For<IConfigureLogger>();
             var fileSettings = Substitute.For<IFileSettingsCache>();
@@ -346,7 +346,7 @@ namespace NuKeeper.Tests.Commands
                 command.Label = new List<string> {"runLabel1", "runLabel2"};
             }
 
-            command.MaxPullRequestsPerRepository = maxPr;
+            command.MaxPackageUpdates = maxPackageUpdates;
 
             await command.OnExecute();
 

@@ -9,7 +9,7 @@ using NuKeeper.Collaboration;
 
 namespace NuKeeper.Commands
 {
-    [Command("repo", Description = "Performs version checks and generates pull requests for a single repository.")]
+    [Command("repo", "r","repository", Description = "Performs version checks and generates pull requests for a single repository.")]
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]

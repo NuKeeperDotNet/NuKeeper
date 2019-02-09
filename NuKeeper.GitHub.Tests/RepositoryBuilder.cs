@@ -8,8 +8,10 @@ namespace NuKeeper.GitHub.Tests
     public static class RepositoryBuilder
     {
         public const string ParentCloneUrl = "http://repos.com/org/parent.git";
+        public const string ParentCloneBareUrl = "http://repos.com/org/parent/";
 
         public const string ForkCloneUrl = "http://repos.com/org/repo.git";
+        public const string ForkCloneBareUrl = "http://repos.com/org/repo/";
         public const string NoMatchUrl = "http://repos.com/org/nomatch";
 
         public static Repository MakeRepository(bool canPull, bool canPush)
@@ -21,7 +23,8 @@ namespace NuKeeper.GitHub.Tests
             string forkCloneUrl = ForkCloneUrl,
             bool canPull = true,
             bool canPush = true,
-            string name = "repoName")
+            string name = "repoName",
+            Repository parent = null)
         {
             return new Repository(
                 name,
@@ -30,16 +33,17 @@ namespace NuKeeper.GitHub.Tests
                 new Uri(forkCloneUrl),
                 MakeUser(),
                 true,
-                MakeParentRepo());
+                parent ?? MakeParentRepo());
         }
 
-        private static Repository MakeParentRepo()
+        public static Repository MakeParentRepo(
+            string cloneUrl = ParentCloneUrl)
         {
             return new Repository(
                 "repoName",
                 false,
                 new UserPermissions(false, true, true),
-                new Uri(ParentCloneUrl),
+                new Uri(cloneUrl),
                 MakeUser(),
                 true,
                 null

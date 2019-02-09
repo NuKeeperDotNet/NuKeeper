@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
 
@@ -60,10 +61,18 @@ namespace NuKeeper.Git
 
         public string GetCurrentHead(Uri repositoryUri)
         {
-            using (var repo = new Repository(DiscoverRepo(repositoryUri).AbsolutePath))
+            var repoRoot = DiscoverRepo(repositoryUri).AbsolutePath;
+            using (var repo = new Repository(repoRoot))
             {
-                var repoHead = repo.Branches.Single(b => b.IsCurrentRepositoryHead);
-                return repoHead.FriendlyName;
+                var repoHeadBranch = repo.Branches.
+                    SingleOrDefault(b => b.IsCurrentRepositoryHead);
+
+                if (repoHeadBranch == null)
+                {
+                    throw new NuKeeperException($"Cannot find current head branch for repo at '{repoRoot}', with {repo.Branches.Count()} branches");
+                }
+
+                return repoHeadBranch.FriendlyName;
             }
         }
 
