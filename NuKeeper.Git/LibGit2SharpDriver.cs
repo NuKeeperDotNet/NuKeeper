@@ -146,9 +146,9 @@ namespace NuKeeper.Git
             {
                 
                 var localBranch = repo.Branches
-                    .FirstOrDefault(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
+                    .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
                 var remote = repo.Network.Remotes
-                    .FirstOrDefault(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
+                    .Single(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
 
                 repo.Branches.Update(localBranch,
                     b => b.Remote = remote.Name,
