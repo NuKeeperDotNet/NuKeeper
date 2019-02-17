@@ -362,28 +362,6 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task ShouldHaveTargetbranchIfParameterIsProvided()
         {
-            var engine = Substitute.For<ICollaborationEngine>();
-            var logger = Substitute.For<IConfigureLogger>();
-            var fileSettings = Substitute.For<IFileSettingsCache>();
-            fileSettings.GetSettings().Returns(FileSettings.Empty());
-
-            var settingReader = new GitHubSettingsReader();
-            var settingsReaders = new List<ISettingsReader> {settingReader};
-            var collaborationFactory = GetCollaborationFactory(settingsReaders);
-
-            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
-
-            var status = await command.OnExecute();
-
-            Assert.That(status, Is.EqualTo(-1));
-            await engine
-                .DidNotReceive()
-                .Run(Arg.Any<SettingsContainer>());
-        }
-
-        [Test]
-        public async Task ShouldNotHaveTargetbranchIfParameterIsProvided()
-        {
             var testUri = new Uri("https://github.com");
 
             var collaborationFactorySubstitute = Substitute.For<ICollaborationFactory>();
