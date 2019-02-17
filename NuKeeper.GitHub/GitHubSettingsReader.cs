@@ -9,6 +9,8 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
+        private const string UrlPattern = "https://github.com/{owner}/{reponame}.git";
+
         public Platform Platform => Platform.GitHub;
 
         public bool CanRead(Uri repositoryUri)
@@ -32,7 +34,7 @@ namespace NuKeeper.GitHub
         {
             if (repositoryUri == null)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://github.com/owner/reponame.git");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
             // general pattern is https://github.com/owner/reponame.git
@@ -44,7 +46,7 @@ namespace NuKeeper.GitHub
 
             if (pathParts.Count != 2)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://github.com/owner/reponame.git");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
             }
 
             var repoOwner = pathParts[0];
