@@ -16,7 +16,7 @@ namespace NuKeeper.Commands
         public string RepositoryUri { get; set; }
 
         [Option(CommandOptionType.SingleValue, LongName = "targetBranch",
-            Description = "If the target branch is another branch than that you are currently on set this to the target")]
+            Description = "If the target branch is another branch than that you are currently on, set this to the target")]
         public string TargetBranch { get; set; }
 
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
