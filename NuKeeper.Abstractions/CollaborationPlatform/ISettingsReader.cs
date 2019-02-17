@@ -6,11 +6,11 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
     public interface ISettingsReader
     {
         Platform Platform { get; }
-        
+
         bool CanRead(Uri repositoryUri);
 
-        RepositorySettings RepositorySettings(Uri repositoryUri);
-        
+        RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null);
+
         void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings);
     }
 }

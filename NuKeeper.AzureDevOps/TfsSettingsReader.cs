@@ -10,8 +10,10 @@ namespace NuKeeper.AzureDevOps
     public class TfsSettingsReader : BaseSettingsReader
     {
         private const string PlatformHost = "tfs";
+        private const string UrlPattern = "https://tfs.company.local:{port}/<nothingOrVirtualSite>/{project}/_git/{repo}";
+
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isFromLocalGitRepo;
+        private bool _isLocalGitRepo;
 
         public TfsSettingsReader(IGitDiscoveryDriver gitDriver)
         {
@@ -29,7 +31,7 @@ namespace NuKeeper.AzureDevOps
             if (repositoryUri.IsFile)
             {
                 repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
-                _isFromLocalGitRepo = true;
+                _isLocalGitRepo = true;
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -42,14 +44,22 @@ namespace NuKeeper.AzureDevOps
             return tfsInPath || tfsInHost;
         }
 
-        public override RepositorySettings RepositorySettings(Uri repositoryUri)
+        public override RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
                 return null;
             }
 
-            return _isFromLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+            var settings = _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+            if (settings == null)
+            {
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+            }
+
+            settings.TargetBranch = targetBranch;
+
+            return settings;
         }
 
         private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)

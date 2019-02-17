@@ -78,7 +78,15 @@ namespace NuKeeper.Git
             _logger.Detailed($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
-                GitCommands.Checkout(repo, repo.Branches[branchName]);
+                if (BranchExists(branchName))
+                {
+                    GitCommands.Checkout(repo, repo.Branches[branchName]);
+                }
+                else
+                {
+                    throw new NuKeeperException(
+                        $"Git Cannot checkout branch: the branch named '{branchName}' doesn't exist");
+                }
             }
         }
 
