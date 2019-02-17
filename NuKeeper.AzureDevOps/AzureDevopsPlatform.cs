@@ -89,7 +89,7 @@ namespace NuKeeper.AzureDevOps
             var repos = await _client.GetGitRepositories(projectName);
             var repo = repos.Single(x => x.name == repositoryName);
             var refs = await _client.GetRepositoryRefs(projectName, repo.id);
-            var count = refs.Count(x => x.name == branchName);
+            var count = refs.Count(x => x.name.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
             {
                 _logger.Detailed($"Branch found for {projectName} / {repositoryName} / {branchName}");
