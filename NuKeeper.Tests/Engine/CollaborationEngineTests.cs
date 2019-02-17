@@ -137,6 +137,7 @@ namespace NuKeeper.Tests.Engine
 
             var engine = new CollaborationEngine(collaborationFactory, repoEngine,
                 folders, Substitute.For<INuKeeperLogger>());
+
             return engine;
         }
 

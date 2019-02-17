@@ -46,7 +46,7 @@ namespace NuKeeper.Engine
             RepositoryData repository,
             SettingsContainer settings)
         {
-            if (string.IsNullOrEmpty(repository.DefaultBranch))
+            if (!repository.IsLocalRepo)
                 GitInit(git, repository);
 
             var userSettings = settings.UserSettings;
@@ -107,7 +107,7 @@ namespace NuKeeper.Engine
         private static void GitInit(IGitDriver git, RepositoryData repository)
         {
             git.Clone(repository.Pull.Uri);
-            repository.DefaultBranch = git.GetCurrentHead();
+            repository.DefaultBranch = repository.DefaultBranch ?? git.GetCurrentHead();
             git.AddRemote(repository.Remote, repository.Push.Uri);
         }
     }

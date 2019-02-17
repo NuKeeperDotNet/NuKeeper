@@ -28,11 +28,11 @@ namespace NuKeeper.GitHub
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri)
+        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://github.com/owner/reponame.git");
             }
 
             // general pattern is https://github.com/owner/reponame.git
@@ -44,7 +44,7 @@ namespace NuKeeper.GitHub
 
             if (pathParts.Count != 2)
             {
-                return null;
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://github.com/owner/reponame.git");
             }
 
             var repoOwner = pathParts[0];
@@ -55,7 +55,8 @@ namespace NuKeeper.GitHub
                 ApiUri = new Uri("https://api.github.com/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = repoOwner
+                RepositoryOwner = repoOwner,
+                TargetBranch = targetBranch
             };
         }
     }

@@ -10,9 +10,11 @@ namespace NuKeeper.AzureDevOps
     public class VstsSettingsReader : BaseSettingsReader
     {
         private const string PlatformHost = "visualstudio.com";
+        private const string UrlPattern = "https://{org}.visualstudio.com/{project}/_git/{repo}";
+
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isFromLocalGitRepo;
-        
+        private bool _isLocalGitRepo;
+
         public VstsSettingsReader(IGitDiscoveryDriver gitDriver)
         {
             _gitDriver = gitDriver;
@@ -24,25 +26,33 @@ namespace NuKeeper.AzureDevOps
             {
                 return false;
             }
-            
+
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
                 repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
-                _isFromLocalGitRepo = true;
+                _isLocalGitRepo = true;
             }
-       
+
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override RepositorySettings RepositorySettings(Uri repositoryUri)
+        public override RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
                 return null;
             }
 
-            return _isFromLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+            var settings = _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+            if (settings == null)
+            {
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+            }
+
+            settings.TargetBranch = targetBranch;
+
+            return settings;
         }
 
         private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
@@ -128,7 +138,7 @@ namespace NuKeeper.AzureDevOps
 
             return RepositorySettings(org, project, repoName, remoteInfo);
         }
-        
+
         private RepositorySettings RepositorySettings (string org, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
         {
             ApiUri = new Uri($"https://{org}.visualstudio.com/"),

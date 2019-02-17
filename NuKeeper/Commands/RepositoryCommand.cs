@@ -14,7 +14,11 @@ namespace NuKeeper.Commands
     {
         [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
         public string RepositoryUri { get; set; }
-        
+
+        [Option(CommandOptionType.SingleValue, LongName = "targetBranch",
+            Description = "If the target branch is another branch than that you are currently on set this to the target")]
+        public string TargetBranch { get; set; }
+
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -26,7 +30,7 @@ namespace NuKeeper.Commands
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
             Uri repoUri;
-            
+
             try
             {
                 repoUri = RepositoryUri.ToUri();
@@ -35,14 +39,14 @@ namespace NuKeeper.Commands
             {
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
-            
+
             var didRead = false;
             foreach (var reader in _settingsReaders)
             {
                 if (reader.CanRead(repoUri))
                 {
                     didRead = true;
-                    settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri);
+                    settings.SourceControlServerSettings.Repository = reader.RepositorySettings(repoUri, TargetBranch);
                 }
             }
 

@@ -20,7 +20,7 @@ namespace NuKeeper.BitBucketLocal
                    repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false;
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri)
+        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
@@ -47,13 +47,14 @@ namespace NuKeeper.BitBucketLocal
                 ApiUri = new Uri($"{repositoryUri.Scheme}://{repositoryUri.Authority}"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = project
+                RepositoryOwner = project,
+                TargetBranch = targetBranch
             };
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            settings.Username = Concat.FirstValue(Username, Environment.UserName); 
+            settings.Username = Concat.FirstValue(Username, Environment.UserName);
             UpdateTokenSettings(settings);
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }

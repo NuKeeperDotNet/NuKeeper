@@ -1,14 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
+using NuKeeper.Engine;
+using NuKeeper.Git;
 using NuKeeper.GitHub;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 
@@ -351,6 +357,60 @@ namespace NuKeeper.Tests.Commands
             await command.OnExecute();
 
             return (settingsOut, collaborationFactory.Settings);
+        }
+
+        [Test]
+        public async Task ShouldHaveTargetbranchIfParameterIsProvided()
+        {
+            var engine = Substitute.For<ICollaborationEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
+
+            var settingReader = new GitHubSettingsReader();
+            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var collaborationFactory = GetCollaborationFactory(settingsReaders);
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
+
+            var status = await command.OnExecute();
+
+            Assert.That(status, Is.EqualTo(-1));
+            await engine
+                .DidNotReceive()
+                .Run(Arg.Any<SettingsContainer>());
+        }
+
+        [Test]
+        public async Task ShouldNotHaveTargetbranchIfParameterIsProvided()
+        {
+            var testUri = new Uri("https://github.com");
+
+            var collaborationFactorySubstitute = Substitute.For<ICollaborationFactory>();
+            collaborationFactorySubstitute.ForkFinder.FindPushFork(Arg.Any<string>(), Arg.Any<ForkData>()).Returns(Task.FromResult(new ForkData(testUri, "nukeeper","nukeeper")));
+
+            var updater = Substitute.For<IRepositoryUpdater>();
+            var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, Substitute.For<IFolderFactory>(),
+                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>());
+
+            await gitEngine.Run(new RepositorySettings
+            {
+                RepositoryUri = testUri,
+                TargetBranch = "custombranch",
+                RepositoryOwner = "nukeeper",
+                RepositoryName = "nukeeper"
+            }, new GitUsernamePasswordCredentials()
+            {
+                Password = "..",
+                Username = "nukeeper"
+            }, new SettingsContainer() { SourceControlServerSettings = new SourceControlServerSettings()
+            {
+                Scope = ServerScope.Repository
+            }}, null);
+
+
+            await updater.Received().Run(Arg.Any<IGitDriver>(),
+                Arg.Is<RepositoryData>(r => r.DefaultBranch == "custombranch"), Arg.Any<SettingsContainer>());
         }
 
         private static ICollaborationFactory GetCollaborationFactory(IEnumerable<ISettingsReader> settingReaders = null)

@@ -1,4 +1,5 @@
 using System;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NUnit.Framework;
@@ -71,13 +72,10 @@ namespace NuKeeper.GitHub.Tests
 
         [TestCase(null)]
         [TestCase("https://github.com/owner/badpart/reponame.git")]
-        [TestCase("https://github.com/reponame.git")]
         public void RepositorySettings_InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            var settings = GitHubSettingsReader.RepositorySettings(testUri);
-
-            Assert.IsNull(settings);
+            Assert.Throws<NuKeeperException>(() => GitHubSettingsReader.RepositorySettings(testUri));
         }
     }
 }

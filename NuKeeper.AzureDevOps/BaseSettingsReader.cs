@@ -23,6 +23,6 @@ namespace NuKeeper.AzureDevOps
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public abstract RepositorySettings RepositorySettings(Uri repositoryUri);
+        public abstract RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch);
     }
 }

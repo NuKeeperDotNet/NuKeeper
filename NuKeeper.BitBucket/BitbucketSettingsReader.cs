@@ -31,7 +31,7 @@ namespace NuKeeper.BitBucket
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri)
+        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
@@ -45,7 +45,7 @@ namespace NuKeeper.BitBucket
 
             if (pathParts.Count != 2)
             {
-                return null;
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://username_@bitbucket.org/projectname/repositoryname.git");
             }
 
             if (String.IsNullOrWhiteSpace(repositoryUri.UserInfo))
@@ -68,7 +68,8 @@ namespace NuKeeper.BitBucket
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = owner
+                RepositoryOwner = owner,
+                TargetBranch = targetBranch
             };
         }
     }
