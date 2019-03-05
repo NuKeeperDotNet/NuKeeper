@@ -254,7 +254,7 @@ namespace NuKeeper.Inspection.Tests
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
 
-            return new PackageUpdateSet(updates, new List<PackageInProject> {pip });
+            return new PackageUpdateSet(updates, new List<PackageInProject> { pip });
         }
     }
 }

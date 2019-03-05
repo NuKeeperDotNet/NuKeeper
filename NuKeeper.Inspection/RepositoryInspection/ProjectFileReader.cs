@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<string> GetFilePatterns()
         {
-            return new[] {"*.csproj", "*.vbproj", "*.fsproj" };
+            return new[] { "*.csproj", "*.vbproj", "*.fsproj" };
         }
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)

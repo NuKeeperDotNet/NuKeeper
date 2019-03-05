@@ -47,7 +47,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         {
             var path = MakeTestFile("{}");
 
-            var fsr =  new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
 
             var data = fsr.Read(path);
 

@@ -13,12 +13,12 @@ namespace Nukeeper.AzureDevOps.Tests
 {
     public class AzureDevOpsRepositoryDiscoveryTests
     {
-         [Test]
+        [Test]
         public async Task SuccessInRepoMode()
         {
             var settings = new SourceControlServerSettings
             {
-                Repository = new RepositorySettings {RepositoryUri = new Uri("https://repo/")},
+                Repository = new RepositorySettings { RepositoryUri = new Uri("https://repo/") },
                 Scope = ServerScope.Repository
             };
 
@@ -38,7 +38,7 @@ namespace Nukeeper.AzureDevOps.Tests
         {
             var settings = new SourceControlServerSettings
             {
-                Repository = new RepositorySettings {RepositoryUri = new Uri("https://user:--PasswordToReplace--@repo/")},
+                Repository = new RepositorySettings { RepositoryUri = new Uri("https://user:--PasswordToReplace--@repo/") },
                 Scope = ServerScope.Repository
             };
 
@@ -82,19 +82,19 @@ namespace Nukeeper.AzureDevOps.Tests
         public void FailureInOrgMode()
         {
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
-            Assert.Throws<NotImplementedException>(() => githubRepositoryDiscovery.GetRepositories(new SourceControlServerSettings {Scope = ServerScope.Organisation}));
+            Assert.Throws<NotImplementedException>(() => githubRepositoryDiscovery.GetRepositories(new SourceControlServerSettings { Scope = ServerScope.Organisation }));
         }
 
         [Test]
         public void FailureInGlobalMode()
         {
             var githubRepositoryDiscovery = MakeGithubRepositoryDiscovery();
-            Assert.Throws<NotImplementedException>(() => githubRepositoryDiscovery.GetRepositories(new SourceControlServerSettings {Scope = ServerScope.Global}));
+            Assert.Throws<NotImplementedException>(() => githubRepositoryDiscovery.GetRepositories(new SourceControlServerSettings { Scope = ServerScope.Global }));
         }
 
         private static IRepositoryDiscovery MakeGithubRepositoryDiscovery()
         {
-            return new AzureDevOpsRepositoryDiscovery(Substitute.For<INuKeeperLogger>(),"token");
+            return new AzureDevOpsRepositoryDiscovery(Substitute.For<INuKeeperLogger>(), "token");
         }
     }
 }

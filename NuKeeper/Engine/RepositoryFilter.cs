@@ -42,7 +42,7 @@ namespace NuKeeper.Engine
                         $"Repository {repository.RepositoryOwner}/{repository.RepositoryName} contains no .NET code on the default branch, skipping.");
                     return false;
                 }
-                
+
                 return true;
             }
             catch (Exception ex)

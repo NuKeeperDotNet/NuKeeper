@@ -39,7 +39,7 @@ namespace NuKeeper.BitBucketLocal
                 return null;
             }
 
-            var repoName = pathParts[pathParts.Count-1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);
+            var repoName = pathParts[pathParts.Count - 1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);
             var project = pathParts[pathParts.Count - 2];
 
             return new RepositorySettings

@@ -7,7 +7,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report.Formats
 {
-    public class CsvReportFormat: IReportFormat
+    public class CsvReportFormat : IReportFormat
     {
         private readonly IReportWriter _writer;
 

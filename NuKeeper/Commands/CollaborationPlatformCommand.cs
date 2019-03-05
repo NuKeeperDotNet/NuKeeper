@@ -101,7 +101,7 @@ namespace NuKeeper.Commands
             settings.PackageFilters.MaxPackageUpdates =
                 Concat.FirstValue(MaxPackageUpdates, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
 
-            var defaultLabels = new List<string> {"nukeeper"};
+            var defaultLabels = new List<string> { "nukeeper" };
 
             settings.SourceControlServerSettings.Labels =
                 Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);

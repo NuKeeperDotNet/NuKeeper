@@ -10,4 +10,4 @@
         public string updated_on { get; set; }
         public int? id { get; set; }
     }
-}  
+}

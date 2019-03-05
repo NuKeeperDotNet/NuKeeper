@@ -3,4 +3,4 @@
     public class PullRequestsInfo : ListBasedPage<PullRequest>
     {
     }
-}  
+}

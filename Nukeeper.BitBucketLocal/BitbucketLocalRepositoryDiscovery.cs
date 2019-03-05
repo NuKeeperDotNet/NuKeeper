@@ -27,7 +27,7 @@ namespace NuKeeper.BitBucketLocal
         {
             switch (settings.Scope)
             {
-                case ServerScope.Global:              
+                case ServerScope.Global:
                     _logger.Error($"{settings.Scope} not yet implemented");
                     throw new NotImplementedException();
 
@@ -61,7 +61,7 @@ namespace NuKeeper.BitBucketLocal
             return usableRepos
                 .Select(r => new RepositorySettings
                 {
-                    ApiUri = _setting.BaseApiUrl, 
+                    ApiUri = _setting.BaseApiUrl,
                     RepositoryUri = r.CloneUrl,
                     RepositoryName = r.Name,
                     RepositoryOwner = organisationName

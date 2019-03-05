@@ -13,9 +13,9 @@ namespace NuKeeper.BitBucket
     public class BitbucketRestClient
     {
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            };
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
 
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;

@@ -160,7 +160,7 @@ namespace NuKeeper.Tests.Engine
 
         private static UserSettings MakeUserSettings()
         {
-            return new UserSettings {MaxRepositoriesChanged = int.MaxValue};
+            return new UserSettings { MaxRepositoriesChanged = int.MaxValue };
         }
     }
 }

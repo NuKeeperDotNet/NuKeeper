@@ -120,7 +120,7 @@ namespace NuKeeper.AzureDevOps
             return CreateRepositorySettings(org, repositoryUri, project, repoName, remoteInfo);
         }
 
-        private RepositorySettings CreateRepositorySettings (string org, Uri repositoryUri, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
+        private RepositorySettings CreateRepositorySettings(string org, Uri repositoryUri, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
         {
             ApiUri = new Uri($"https://dev.azure.com/{org}/"),
             RepositoryUri = repositoryUri,

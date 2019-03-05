@@ -3,7 +3,7 @@ using System.IO;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class FileReportWriter: IReportWriter
+    public class FileReportWriter : IReportWriter
     {
         private TextWriter _stream;
 

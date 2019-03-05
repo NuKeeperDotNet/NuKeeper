@@ -165,7 +165,7 @@ namespace NuKeeper.GitHub.Tests
 
             var collaborationPlatform = Substitute.For<ICollaborationPlatform>();
             collaborationPlatform.GetUserRepository(Arg.Any<string>(), Arg.Any<string>())
-                .Returns((Repository) null);
+                .Returns((Repository)null);
             collaborationPlatform.MakeUserFork(Arg.Any<string>(), Arg.Any<string>())
                 .Returns(userRepo);
 

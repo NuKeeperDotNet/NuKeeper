@@ -17,7 +17,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
         {
             var dirInPath = Path.DirectorySeparatorChar + dirName + Path.DirectorySeparatorChar;
 
-            return 
+            return
                 !string.IsNullOrEmpty(fullPath) &&
                  (fullPath.IndexOf(dirInPath, StringComparison.InvariantCultureIgnoreCase) >= 0);
         }

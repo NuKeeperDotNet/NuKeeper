@@ -13,7 +13,7 @@ namespace Nukeeper.AzureDevOps.Tests
         public void Initialise()
         {
             var platform = new AzureDevOpsPlatform(Substitute.For<INuKeeperLogger>());
-            platform.Initialise(new AuthSettings(new Uri("https://uri.com"),"token"));
+            platform.Initialise(new AuthSettings(new Uri("https://uri.com"), "token"));
         }
     }
 }

@@ -363,7 +363,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             Assert.That(packages.Count, Is.EqualTo(1));
             Assert.That(packages.First().IsPrerelease, Is.False);
         }
-        
+
         [Test]
         public void PackageWithAssetsVersionShouldBeRead()
         {

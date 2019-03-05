@@ -31,7 +31,7 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
         public async Task InvalidCommandShouldFail()
         {
             var result = await RunExternalProcess(Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture), false);
-        
+
             Assert.That(result.ExitCode, Is.Not.EqualTo(0));
             Assert.That(result.ErrorOutput, Is.Not.Empty);
             Assert.That(result.Success, Is.False);

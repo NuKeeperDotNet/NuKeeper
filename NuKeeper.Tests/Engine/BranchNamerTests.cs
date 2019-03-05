@@ -106,7 +106,7 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("ZomePackage", "2.3.4"),
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
-            
+
             var branchName1 = BranchNamer.MakeName(packages1);
             var branchName2 = BranchNamer.MakeName(packages2);
 

@@ -70,7 +70,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
 
             Assert.That(item, Is.Not.Null);
             Assert.That(item.Id, Is.EqualTo("foo"));
-            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1,2,3)));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
             Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.PackagesConfig));
         }
 

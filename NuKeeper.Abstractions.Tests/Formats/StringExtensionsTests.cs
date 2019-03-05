@@ -31,7 +31,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         public void ShouldThrowOnNull()
         {
             Assert.Throws<NullReferenceException>(
-                () => ((string) null).Contains("sth", StringComparison.CurrentCulture));
+                () => ((string)null).Contains("sth", StringComparison.CurrentCulture));
         }
     }
 }

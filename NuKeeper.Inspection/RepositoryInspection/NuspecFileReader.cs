@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<string> GetFilePatterns()
         {
-            return new[] {"*.nuspec"};
+            return new[] { "*.nuspec" };
         }
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, PackagePath path)
