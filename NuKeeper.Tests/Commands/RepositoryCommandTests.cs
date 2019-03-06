@@ -32,7 +32,7 @@ namespace NuKeeper.Tests.Commands
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var settingReader = new GitHubSettingsReader();
-            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders);
@@ -54,7 +54,7 @@ namespace NuKeeper.Tests.Commands
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
             var settingReader = new GitHubSettingsReader();
-            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
@@ -236,7 +236,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new List<string> {"testLabel"}
+                Label = new List<string> { "testLabel" }
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);
@@ -312,7 +312,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new List<string> {"testLabel"}
+                Label = new List<string> { "testLabel" }
             };
 
             var (settings, _) = await CaptureSettings(fileSettings, true);
@@ -336,7 +336,7 @@ namespace NuKeeper.Tests.Commands
             fileSettings.GetSettings().Returns(settingsIn);
 
             var settingReader = new GitHubSettingsReader();
-            var settingsReaders = new List<ISettingsReader> {settingReader};
+            var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(settingsReaders);
 
             SettingsContainer settingsOut = null;
@@ -349,7 +349,7 @@ namespace NuKeeper.Tests.Commands
 
             if (addLabels)
             {
-                command.Label = new List<string> {"runLabel1", "runLabel2"};
+                command.Label = new List<string> { "runLabel1", "runLabel2" };
             }
 
             command.MaxPackageUpdates = maxPackageUpdates;
@@ -365,7 +365,7 @@ namespace NuKeeper.Tests.Commands
             var testUri = new Uri("https://github.com");
 
             var collaborationFactorySubstitute = Substitute.For<ICollaborationFactory>();
-            collaborationFactorySubstitute.ForkFinder.FindPushFork(Arg.Any<string>(), Arg.Any<ForkData>()).Returns(Task.FromResult(new ForkData(testUri, "nukeeper","nukeeper")));
+            collaborationFactorySubstitute.ForkFinder.FindPushFork(Arg.Any<string>(), Arg.Any<ForkData>()).Returns(Task.FromResult(new ForkData(testUri, "nukeeper", "nukeeper")));
 
             var updater = Substitute.For<IRepositoryUpdater>();
             var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, Substitute.For<IFolderFactory>(),
@@ -381,10 +381,13 @@ namespace NuKeeper.Tests.Commands
             {
                 Password = "..",
                 Username = "nukeeper"
-            }, new SettingsContainer() { SourceControlServerSettings = new SourceControlServerSettings()
+            }, new SettingsContainer()
             {
-                Scope = ServerScope.Repository
-            }}, null);
+                SourceControlServerSettings = new SourceControlServerSettings()
+                {
+                    Scope = ServerScope.Repository
+                }
+            }, null);
 
 
             await updater.Received().Run(Arg.Any<IGitDriver>(),

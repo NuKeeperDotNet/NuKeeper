@@ -87,7 +87,7 @@ namespace NuKeeper.Update.Selection
 
             if (capped < filtered)
             {
-                message +=  $", capped at {capped}";
+                message += $", capped at {capped}";
             }
 
             _logger.Minimal(message);

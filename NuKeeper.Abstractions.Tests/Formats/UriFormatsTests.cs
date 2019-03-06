@@ -26,7 +26,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
 
             Assert.That(output.ToString(), Is.EqualTo("http://test.com/api/path/"));
         }
-        
+
         [Test]
         public void IsLocalUri()
         {
@@ -35,22 +35,22 @@ namespace NuKeeper.Abstractions.Tests.Formats
 
             Assert.That(output.IsFile, Is.EqualTo(true));
         }
-        
+
         [Test]
         public void IsRemoteUri()
         {
             var input = "https://www.google.com";
             var output = input.ToUri();
-            
+
             Assert.That(output.Host, Is.EqualTo("www.google.com"));
         }
-        
+
         [Test]
         public void IsNonExistingUri()
         {
             var input = "../../../invalidpath/test/1234/abcde";
-            
-            Assert.That(() => input.ToUri(), 
+
+            Assert.That(() => input.ToUri(),
                 Throws.Exception
                     .TypeOf<NuKeeperException>());
         }

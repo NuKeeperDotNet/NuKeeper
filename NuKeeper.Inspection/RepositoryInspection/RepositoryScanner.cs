@@ -7,7 +7,7 @@ using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public class RepositoryScanner: IRepositoryScanner
+    public class RepositoryScanner : IRepositoryScanner
     {
         private readonly IReadOnlyCollection<IPackageReferenceFinder> _finders;
 
@@ -28,7 +28,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
         private static IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
             IPackageReferenceFinder packageReferenceFinder)
         {
-            var files =  packageReferenceFinder
+            var files = packageReferenceFinder
                 .GetFilePatterns()
                 .SelectMany(workingFolder.Find)
                 .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));

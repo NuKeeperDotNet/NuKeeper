@@ -8,13 +8,13 @@ using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
-    public class BulkPackageLookup: IBulkPackageLookup
+    public class BulkPackageLookup : IBulkPackageLookup
     {
         private readonly IApiPackageLookup _packageLookup;
         private readonly PackageLookupResultReporter _lookupReporter;
 
         public BulkPackageLookup(
-            IApiPackageLookup packageLookup, 
+            IApiPackageLookup packageLookup,
             PackageLookupResultReporter lookupReporter)
         {
             _packageLookup = packageLookup;

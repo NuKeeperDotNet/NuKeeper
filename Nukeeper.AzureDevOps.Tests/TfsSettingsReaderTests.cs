@@ -103,8 +103,8 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://internalserver/tfs", settings.ApiUri.ToString());
             Assert.AreEqual("https://user:--PasswordToReplace--@internalserver/tfs/project%20name/_git/repo%20name/", settings.RepositoryUri.AbsoluteUri);
-            Assert.AreEqual( "repo name",settings.RepositoryName);
-            Assert.AreEqual("project name",settings.RepositoryOwner);
+            Assert.AreEqual("repo name", settings.RepositoryName);
+            Assert.AreEqual("project name", settings.RepositoryOwner);
         }
 
     }

@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
     internal abstract class MultipleRepositoryCommand : CollaborationPlatformCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
-        public string IncludeRepos { get; set;  }
+        public string IncludeRepos { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
         public string ExcludeRepos { get; set; }

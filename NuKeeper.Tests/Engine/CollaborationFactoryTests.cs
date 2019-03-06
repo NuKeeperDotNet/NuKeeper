@@ -27,7 +27,7 @@ namespace NuKeeper.Tests.Engine
             settingReader2.CanRead(gitHubUri).Returns(true);
             settingReader2.Platform.Returns(Platform.GitHub);
 
-            var readers = new List<ISettingsReader> {settingReader1, settingReader2};
+            var readers = new List<ISettingsReader> { settingReader1, settingReader2 };
             var logger = Substitute.For<INuKeeperLogger>();
             return new CollaborationFactory(readers, logger);
         }

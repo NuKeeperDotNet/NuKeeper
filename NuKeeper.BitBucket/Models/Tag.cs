@@ -7,4 +7,4 @@
         public object date { get; set; }
         public object message { get; set; }
     }
-}  
+}

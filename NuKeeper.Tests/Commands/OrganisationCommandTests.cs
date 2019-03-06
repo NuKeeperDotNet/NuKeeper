@@ -20,7 +20,7 @@ namespace NuKeeper.Tests.Commands
         private static CollaborationFactory GetCollaborationFactory()
         {
             return new CollaborationFactory(
-                new ISettingsReader[] {new GitHubSettingsReader()},
+                new ISettingsReader[] { new GitHubSettingsReader() },
                 Substitute.For<INuKeeperLogger>()
             );
         }
@@ -132,7 +132,7 @@ namespace NuKeeper.Tests.Commands
         {
             var fileSettings = new FileSettings
             {
-                Label = new List<string> {"testLabel"}
+                Label = new List<string> { "testLabel" }
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);

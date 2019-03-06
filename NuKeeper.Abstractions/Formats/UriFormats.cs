@@ -29,13 +29,13 @@ namespace NuKeeper.Abstractions.Formats
             {
                 // Check the origin remotes
                 var origin = discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
-                
+
                 if (origin != null)
                 {
                     return origin.Url;
                 }
             }
-            
+
             return repositoryUri;
         }
 
@@ -46,7 +46,7 @@ namespace NuKeeper.Abstractions.Formats
             {
                 return repositoryUri;
             }
-            
+
             var absoluteUri = Path.Combine(Environment.CurrentDirectory, repositoryUri.OriginalString);
             if (!Directory.Exists(absoluteUri))
             {

@@ -26,7 +26,7 @@ namespace NuKeeper.Commands
                 return baseResult;
             }
 
-            if (! string.IsNullOrWhiteSpace(Path) && ! Directory.Exists(Path))
+            if (!string.IsNullOrWhiteSpace(Path) && !Directory.Exists(Path))
             {
                 return ValidationResult.Failure($"Path '{Path}' was not found");
             }

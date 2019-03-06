@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace NuKeeper.BitBucket.Models
 {
-   public partial class Refs
+    public partial class Refs
     {
         [JsonProperty("pagelen")]
         public long Pagelen { get; set; }

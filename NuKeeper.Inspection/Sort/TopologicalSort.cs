@@ -46,8 +46,8 @@ namespace NuKeeper.Inspection.Sort
             return DoSortVisits(inputItems);
         }
 
-        private IReadOnlyCollection<T> DoSortVisits(IReadOnlyCollection<T>  input)
-        { 
+        private IReadOnlyCollection<T> DoSortVisits(IReadOnlyCollection<T> input)
+        {
             foreach (var item in _data)
             {
                 if (item.Mark == Mark.None)

@@ -9,4 +9,4 @@ namespace NuKeeper.BitBucket.Models
         public int? page { get; set; }
         public ulong? size { get; set; }
     }
-}  
+}

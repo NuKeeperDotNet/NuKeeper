@@ -23,15 +23,15 @@ namespace NuKeeper.Git
 
         public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
         {
-            if (! IsGitRepo(repositoryUri))
+            if (!IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();
             }
-            
+
             var discover = Repository.Discover(repositoryUri.AbsolutePath);
 
             var repo = new Repository(discover);
-            
+
             var gitRemotes = new List<GitRemote>();
 
             foreach (var remote in repo.Network.Remotes)
@@ -43,7 +43,7 @@ namespace NuKeeper.Git
                 };
                 gitRemotes.Add(gitRemote);
             }
-            
+
             return gitRemotes;
         }
 

@@ -17,4 +17,4 @@
         public object merge_commit { get; set; }
         public int? id { get; set; }
     }
-}  
+}
