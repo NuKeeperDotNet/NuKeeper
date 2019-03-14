@@ -23,6 +23,7 @@ namespace NuKeeper
             container.RegisterInstance<IConfigureLogger>(logger);
             container.Register<ILogger, NuGetLogger>();
 
+            container.Register<IDirectoryExclusions, DirectoryExclusions>();
             container.Register<IFolder, Folder>();
             container.Register<IFolderFactory, FolderFactory>();
 

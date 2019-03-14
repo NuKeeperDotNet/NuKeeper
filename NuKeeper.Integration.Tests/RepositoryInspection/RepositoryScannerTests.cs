@@ -184,7 +184,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),
                 new NuspecFileReader(logger),
-                new DirectoryBuildTargetsReader(logger));
+                new DirectoryBuildTargetsReader(logger),
+                new DirectoryExclusions());
         }
 
         private static void WriteFile(IFolder path, string fileName, string contents)
