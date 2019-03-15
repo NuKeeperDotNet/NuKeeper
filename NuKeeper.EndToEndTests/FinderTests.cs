@@ -41,7 +41,7 @@ namespace NuKeeper.EndToEndTests
             Assert.That(finder, Is.Not.Null);
 
             var updates = await finder.FindPackageUpdateSets(
-                FolderForPath(".{sep}Data{sep}newStyleCsProj"),
+                FolderForPath(".{sep}Data{sep}NewStyleCsProj"),
                 NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.Never);
 
             Assert.That(updates, Is.Not.Null);
