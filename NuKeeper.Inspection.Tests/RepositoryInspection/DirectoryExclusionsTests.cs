@@ -16,7 +16,10 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         public void ShouldBeIncluded(string pathTemplate)
         {
             var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
-            var actual = DirectoryExclusions.PathIsExcluded(path);
+
+            var exclusions = new DirectoryExclusions();
+            var actual = exclusions.PathIsExcluded(path);
+
             Assert.That(actual, Is.False);
         }
 
@@ -28,7 +31,9 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             var path = pathTemplate.Replace("{sep}", $"{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
 
-            var actual = DirectoryExclusions.PathIsExcluded(path);
+            var exclusions = new DirectoryExclusions();
+            var actual = exclusions.PathIsExcluded(path);
+
             Assert.That(actual, Is.True);
         }
     }

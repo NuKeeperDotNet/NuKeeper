@@ -10,12 +10,21 @@ namespace NuKeeper.Inspection.RepositoryInspection
     public class RepositoryScanner : IRepositoryScanner
     {
         private readonly IReadOnlyCollection<IPackageReferenceFinder> _finders;
+        private readonly IDirectoryExclusions _directoryExclusions;
 
-        public RepositoryScanner(ProjectFileReader projectFileReader, PackagesFileReader packagesFileReader,
-            NuspecFileReader nuspecFileReader, DirectoryBuildTargetsReader directoryBuildTargetsReader)
+        public RepositoryScanner(
+            ProjectFileReader projectFileReader,
+            PackagesFileReader packagesFileReader,
+            NuspecFileReader nuspecFileReader,
+            DirectoryBuildTargetsReader directoryBuildTargetsReader,
+            IDirectoryExclusions directoryExclusions)
         {
             _finders = new IPackageReferenceFinder[]
-                {projectFileReader, packagesFileReader, nuspecFileReader, directoryBuildTargetsReader};
+            {
+                projectFileReader, packagesFileReader, nuspecFileReader, directoryBuildTargetsReader
+            };
+
+            _directoryExclusions = directoryExclusions;
         }
 
         public IReadOnlyCollection<PackageInProject> FindAllNuGetPackages(IFolder workingFolder)
@@ -25,15 +34,17 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .ToList();
         }
 
-        private static IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
+        private IEnumerable<PackageInProject> FindPackages(IFolder workingFolder,
             IPackageReferenceFinder packageReferenceFinder)
         {
             var files = packageReferenceFinder
                 .GetFilePatterns()
-                .SelectMany(workingFolder.Find)
-                .Where(f => !DirectoryExclusions.PathIsExcluded(f.FullName));
+                .SelectMany(workingFolder.Find);
 
-            return files.SelectMany(f =>
+            var filesInUsableDirectories =
+                files.Where(f => !_directoryExclusions.PathIsExcluded(f.FullName));
+
+            return filesInUsableDirectories.SelectMany(f =>
                 packageReferenceFinder.ReadFile(
                     workingFolder.FullPath,
                     GetRelativeFileName(
