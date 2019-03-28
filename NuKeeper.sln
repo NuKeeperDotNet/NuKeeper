@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Abstractions.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.BitBucketLocal", "Nukeeper.BitBucketLocal\NuKeeper.BitBucketLocal.csproj", "{37444E91-3675-4FC7-9EB1-37B091115BAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Gitlab", "NuKeeper.Gitlab\NuKeeper.Gitlab.csproj", "{10DCD86D-66D4-43A8-AAC7-86777DC7166D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{37444E91-3675-4FC7-9EB1-37B091115BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37444E91-3675-4FC7-9EB1-37B091115BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37444E91-3675-4FC7-9EB1-37B091115BAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10DCD86D-66D4-43A8-AAC7-86777DC7166D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10DCD86D-66D4-43A8-AAC7-86777DC7166D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10DCD86D-66D4-43A8-AAC7-86777DC7166D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10DCD86D-66D4-43A8-AAC7-86777DC7166D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
