@@ -11,6 +11,7 @@ using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
 using NuKeeper.GitHub;
+using NuKeeper.Gitlab;
 using NuKeeper.Local;
 using NuKeeper.Update.Selection;
 using SimpleInjector;
@@ -56,6 +57,7 @@ namespace NuKeeper
                 typeof(VstsSettingsReader).Assembly,
                 typeof(BitbucketSettingsReader).Assembly,
                 typeof(BitBucketLocalSettingsReader).Assembly,
+                typeof(GitlabSettingsReader).Assembly
             });
 
             container.Collection.Register<ISettingsReader>(settingsRegistration);

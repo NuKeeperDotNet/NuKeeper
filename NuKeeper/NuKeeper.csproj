@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Nukeeper.BitBucketLocal\NuKeeper.BitBucketLocal.csproj" />
     <ProjectReference Include="..\NuKeeper.BitBucket\NuKeeper.BitBucket.csproj" />
     <ProjectReference Include="..\NuKeeper.GitHub\NuKeeper.GitHub.csproj" />
+    <ProjectReference Include="..\NuKeeper.Gitlab\NuKeeper.Gitlab.csproj" />
     <ProjectReference Include="..\NuKeeper.Git\NuKeeper.Git.csproj" />
     <ProjectReference Include="..\NuKeeper.Inspection\NuKeeper.Inspection.csproj" />
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
