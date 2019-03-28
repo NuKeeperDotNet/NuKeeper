@@ -29,7 +29,7 @@ NuKeeper works for .NET Framework and for .NET Core projects. It also has the ab
 |:------------------:|:------------------:|:------------------------:| 
 | :heavy_check_mark: | :heavy_check_mark: |     :heavy_check_mark:   |
 
-The intergration for the following platforms is supported.
+Integration with the following platforms is supported.
 
 |     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |
 |:------------------:|:------------------:|:------------------:| :------------------:| 
@@ -37,7 +37,7 @@ The intergration for the following platforms is supported.
 
 ### Commands
 
-NuKeeper has different command and options which can be utilized. Below you'll find a summary of all the commands and what they do.
+NuKeeper has different commands and options which can be utilized. Below you'll find a summary of all the commands and what they do.
 
 ```
 Options:
