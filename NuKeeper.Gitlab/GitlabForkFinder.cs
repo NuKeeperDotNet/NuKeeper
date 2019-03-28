@@ -14,8 +14,6 @@ namespace NuKeeper.Gitlab
         {
             _collaborationPlatform = collaborationPlatform;
             _nuKeeperLogger = nuKeeperLogger;
-
-            throw new System.NotImplementedException();
         }
 
         public Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)

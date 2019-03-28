@@ -12,21 +12,28 @@ namespace NuKeeper.Gitlab
     public class GitlabPlatform: ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
+        private GitlabRestClient _client;
 
         public GitlabPlatform(INuKeeperLogger logger)
         {
             _logger = logger;
-
         }
 
         public void Initialise(AuthSettings settings)
         {
-            throw new NotImplementedException();
+            var httpClient = new HttpClient
+            {
+                BaseAddress = settings.ApiBase
+            };
+
+            _client = new GitlabRestClient(httpClient, settings.Token, _logger);
         }
 
-        public Task<User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
-            throw new NotImplementedException();
+            var user = await _client.GetCurrentUser().ConfigureAwait(false);
+
+            return new User(user.UserName, user.Name, user.Email);
         }
 
         public Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

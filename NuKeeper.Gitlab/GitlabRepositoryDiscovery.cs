@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -8,20 +10,33 @@ namespace NuKeeper.Gitlab
 {
     public class GitlabRepositoryDiscovery : IRepositoryDiscovery
     {
-        private readonly INuKeeperLogger _nuKeeperLogger;
+        private readonly INuKeeperLogger _logger;
         private readonly ICollaborationPlatform _collaborationPlatform;
 
-        public GitlabRepositoryDiscovery(INuKeeperLogger nuKeeperLogger, ICollaborationPlatform collaborationPlatform)
+        public GitlabRepositoryDiscovery(INuKeeperLogger logger, ICollaborationPlatform collaborationPlatform)
         {
-            _nuKeeperLogger = nuKeeperLogger;
+            _logger = logger;
             _collaborationPlatform = collaborationPlatform;
-
-            throw new System.NotImplementedException();
         }
 
         public Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
         {
-            throw new System.NotImplementedException();
+            switch (settings.Scope)
+            {
+                case ServerScope.Global:
+                    throw new NotImplementedException();
+
+                case ServerScope.Organisation:
+                    throw new NotImplementedException();
+
+                case ServerScope.Repository:
+                    IEnumerable<RepositorySettings> repositorySettings = new[] { settings.Repository };
+                    return Task.FromResult(repositorySettings);
+
+                default:
+                    _logger.Error($"Unknown Server Scope {settings.Scope}");
+                    throw new NotImplementedException();
+            }
         }
     }
 }
