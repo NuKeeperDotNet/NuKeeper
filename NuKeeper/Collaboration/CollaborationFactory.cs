@@ -154,7 +154,7 @@ namespace NuKeeper.Collaboration
                 case Platform.GitLab:
                     CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
-                    ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger);
+                    ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 default:
