@@ -68,8 +68,7 @@ namespace NuKeeper.BitBucket
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = owner,
-                TargetBranch = targetBranch
+                RepositoryOwner = owner
             };
         }
     }

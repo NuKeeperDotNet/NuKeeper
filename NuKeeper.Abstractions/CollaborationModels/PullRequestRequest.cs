@@ -6,12 +6,12 @@ namespace NuKeeper.Abstractions.CollaborationModels
         {
             Head = head;
             Title = title;
-            BaseRef = baseRef;
+            BaseRef = baseRef.Replace("origin/", string.Empty);
         }
 
         public string Head { get; }
         public string Title { get; }
-        public string BaseRef { get; set; }
+        public string BaseRef { get; }
         public string Body { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -360,7 +361,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task ShouldHaveTargetbranchIfParameterIsProvided()
+        public async Task UseCustomTargetBranchIfParameterIsProvided()
         {
             var testUri = new Uri("https://github.com");
 
@@ -374,7 +375,51 @@ namespace NuKeeper.Tests.Commands
             await gitEngine.Run(new RepositorySettings
             {
                 RepositoryUri = testUri,
-                TargetBranch = "custombranch",
+                RemoteInfo = new RemoteInfo()
+                {
+                    BranchName = "custombranch",
+                },
+                RepositoryOwner = "nukeeper",
+                RepositoryName = "nukeeper"
+            }, new GitUsernamePasswordCredentials()
+            {
+                Password = "..",
+                Username = "nukeeper"
+            }, new SettingsContainer()
+            {
+                SourceControlServerSettings = new SourceControlServerSettings()
+                {
+                    Scope = ServerScope.Repository
+                }
+            }, null);
+
+
+            await updater.Received().Run(Arg.Any<IGitDriver>(),
+                Arg.Is<RepositoryData>(r => r.DefaultBranch == "custombranch"), Arg.Any<SettingsContainer>());
+        }
+
+        [Test]
+        public async Task UseCustomTargetBranchIfParameterIsProvidedForLocal()
+        {
+            var testUri = new Uri("https://github.com");
+
+            var collaborationFactorySubstitute = Substitute.For<ICollaborationFactory>();
+            collaborationFactorySubstitute.ForkFinder.FindPushFork(Arg.Any<string>(), Arg.Any<ForkData>()).Returns(Task.FromResult(new ForkData(testUri, "nukeeper", "nukeeper")));
+
+            var updater = Substitute.For<IRepositoryUpdater>();
+            var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, Substitute.For<IFolderFactory>(),
+                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>());
+
+            await gitEngine.Run(new RepositorySettings
+            {
+                RepositoryUri = testUri,
+                RemoteInfo = new RemoteInfo()
+                {
+                    LocalRepositoryUri = testUri,
+                    BranchName = "custombranch",
+                    WorkingFolder = new Uri(Assembly.GetExecutingAssembly().Location),
+                    RemoteName = "github"
+                },
                 RepositoryOwner = "nukeeper",
                 RepositoryName = "nukeeper"
             }, new GitUsernamePasswordCredentials()
