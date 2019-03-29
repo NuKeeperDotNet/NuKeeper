@@ -16,7 +16,10 @@ namespace NuKeeper.Gitlab
 
         public bool CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.Contains("gitlab", StringComparison.OrdinalIgnoreCase) == true;
+            if (repositoryUri == null)
+                return false;
+
+            return repositoryUri.Host.Contains("gitlab", StringComparison.OrdinalIgnoreCase);
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
@@ -39,7 +42,7 @@ namespace NuKeeper.Gitlab
                     $"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
-            // Assumption - url should look https://gitlab.com/{username}/{projectname}.git";
+            // Assumption - url should look like https://gitlab.com/{username}/{projectname}.git";
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -48,13 +51,13 @@ namespace NuKeeper.Gitlab
             if (pathParts.Count != 2)
             {
                 throw new NuKeeperException(
-                    $"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                    $"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            var uriBuilder = new UriBuilder(repositoryUri) {Path = "/api/v4/"};
+            var uriBuilder = new UriBuilder(repositoryUri) { Path = "/api/v4/" };
 
             return new RepositorySettings
             {

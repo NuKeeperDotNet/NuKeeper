@@ -9,13 +9,11 @@ namespace NuKeeper.Gitlab.Tests
     {
         private GitlabSettingsReader _gitlabSettingsReader;
 
-
         [SetUp]
         public void Setup()
         {
             _gitlabSettingsReader = new GitlabSettingsReader();
         }
-
 
         [Test]
         public void ReturnsCorrectPlatform()
@@ -24,7 +22,6 @@ namespace NuKeeper.Gitlab.Tests
 
             Assert.AreEqual(Platform.GitLab, platform);
         }
-
 
         [Test]
         public void AssumesItCanReadGitLabUrls()

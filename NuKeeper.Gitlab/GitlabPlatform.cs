@@ -59,11 +59,13 @@ namespace NuKeeper.Gitlab
 
         public Task<IReadOnlyList<Organization>> GetOrganizations()
         {
+            _logger.Error("GitLab organizations have not yet been implemented.");
             throw new NotImplementedException();
         }
 
         public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
+            _logger.Error("GitLab organizations have not yet been implemented.");
             throw new NotImplementedException();
         }
 
@@ -79,6 +81,7 @@ namespace NuKeeper.Gitlab
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
         {
+            _logger.Error($"{ForkMode.PreferFork} has not yet been implemented for GitLab.");
             throw new NotImplementedException();
         }
 
@@ -91,6 +94,7 @@ namespace NuKeeper.Gitlab
 
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
+            _logger.Error($"Search has not yet been implemented for GitLab.");
             throw new NotImplementedException();
         }
     }
