@@ -41,7 +41,7 @@ namespace NuKeeper.Gitlab.Tests
             var repositorySettings = _gitlabSettingsReader.RepositorySettings(repositoryUri, "master");
 
             Assert.IsNotNull(repositorySettings);
-            Assert.AreEqual(new Uri("https://gitlab.com/api/v4"), repositorySettings.ApiUri);
+            Assert.AreEqual(new Uri("https://gitlab.com/api/v4/"), repositorySettings.ApiUri);
             Assert.AreEqual(repositoryUri, repositorySettings.RepositoryUri);
             Assert.AreEqual("user", repositorySettings.RepositoryOwner);
             Assert.AreEqual("projectname", repositorySettings.RepositoryName);
