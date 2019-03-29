@@ -51,11 +51,14 @@ namespace NuKeeper.Gitlab
             var encodedBranchName = HttpUtility.UrlEncode(branchName);
 
             return await GetResource<Model.Branch>(
-                $"projects/{encodedProjectName}/repository/branches/{encodedBranchName}").ConfigureAwait(false);
+                $"projects/{encodedProjectName}/repository/branches/{encodedBranchName}",
+                statusCode => statusCode == HttpStatusCode.NotFound
+                    ? Result<Model.Branch>.Success(null)
+                    : Result<Model.Branch>.Failure()).ConfigureAwait(false);
         }
 
-        // POST /projects/:id/merge_requests
         // https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
+        // POST /projects/:id/merge_requests
         public Task<Model.MergeRequest> OpenMergeRequest(string projectName, string repositoryName, Model.MergeRequest mergeRequest)
         {
             var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
@@ -65,25 +68,27 @@ namespace NuKeeper.Gitlab
             return PostResource<Model.MergeRequest>($"projects/{encodedProjectName}/merge_requests", content);
         }
 
-        private async Task<T> GetResource<T>(string url, [CallerMemberName] string caller = null)
+        private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)
         {
             var fullUrl = new Uri(url, UriKind.Relative);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
             var response = await _client.GetAsync(fullUrl).ConfigureAwait(false);
-            return await HandleResponse<T>(response, caller).ConfigureAwait(false);
+            return await HandleResponse<T>(response, customErrorHandling, caller).ConfigureAwait(false);
         }
 
-        private async Task<T> PostResource<T>(string url, HttpContent content, [CallerMemberName] string caller = null)
+        private async Task<T> PostResource<T>(string url, HttpContent content, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)
         {
             _logger.Detailed($"{caller}: Requesting {url}");
 
             var response = await _client.PostAsync(url, content).ConfigureAwait(false);
 
-            return await HandleResponse<T>(response, caller).ConfigureAwait(false);
+            return await HandleResponse<T>(response, customErrorHandling, caller).ConfigureAwait(false);
         }
 
-        private async Task<T> HandleResponse<T>(HttpResponseMessage response, [CallerMemberName] string caller = null)
+        private async Task<T> HandleResponse<T>(HttpResponseMessage response,
+            Func<HttpStatusCode, Result<T>> customErrorHandling,
+            [CallerMemberName] string caller = null)
         {
             string msg;
 
@@ -93,20 +98,23 @@ namespace NuKeeper.Gitlab
             {
                 _logger.Detailed($"Response {response.StatusCode} is not success, body:\n{responseBody}");
 
+                if (customErrorHandling != null)
+                {
+                    var result = customErrorHandling(response.StatusCode);
+                    if (result.IsSuccessful)
+                        return result.Value;
+                }
+
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.Unauthorized:
                         msg = $"{caller}: Unauthorised, ensure PAT has appropriate permissions";
                         _logger.Error(msg);
                         throw new NuKeeperException(msg);
-
                     case HttpStatusCode.Forbidden:
                         msg = $"{caller}: Forbidden, ensure PAT has appropriate permissions";
                         _logger.Error(msg);
                         throw new NuKeeperException(msg);
-
-                    case HttpStatusCode.NotFound:
-                        return default;
                     default:
                         msg = $"{caller}: Error {response.StatusCode}";
                         _logger.Error($"{caller}: Error {response.StatusCode}");

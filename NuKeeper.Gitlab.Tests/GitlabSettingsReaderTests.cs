@@ -27,7 +27,7 @@ namespace NuKeeper.Gitlab.Tests
 
 
         [Test]
-        public void ReturnsTrueForGitLabUrl()
+        public void AssumesItCanReadGitLabUrls()
         {
             var canRead = _gitlabSettingsReader.CanRead(new Uri("https://gitlab.com/user/projectname.git"));
 
@@ -35,7 +35,7 @@ namespace NuKeeper.Gitlab.Tests
         }
 
         [Test]
-        public void RepositorySettingsGetsCorrectSettings()
+        public void GetsCorrectSettingsFromTheUrl()
         {
             var repositoryUri = new Uri("https://gitlab.com/user/projectname.git");
             var repositorySettings = _gitlabSettingsReader.RepositorySettings(repositoryUri, "master");
