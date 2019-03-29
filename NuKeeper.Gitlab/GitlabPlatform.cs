@@ -6,13 +6,16 @@ using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Gitlab.Model;
+using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 namespace NuKeeper.Gitlab
 {
-    public class GitlabPlatform: ICollaborationPlatform
+    public class GitlabPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
         private GitlabRestClient _client;
+        private AuthSettings _settings;
 
         public GitlabPlatform(INuKeeperLogger logger)
         {
@@ -21,11 +24,12 @@ namespace NuKeeper.Gitlab
 
         public void Initialise(AuthSettings settings)
         {
+            _settings = settings;
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
             };
-
             _client = new GitlabRestClient(httpClient, settings.Token, _logger);
         }
 
@@ -36,9 +40,21 @@ namespace NuKeeper.Gitlab
             return new User(user.UserName, user.Name, user.Email);
         }
 
-        public Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
+        public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
-            throw new NotImplementedException();
+            var projectName = target.Owner;
+            var repositoryName = target.Name;
+
+            var mergeRequest = new MergeRequest
+            {
+                Title = request.Title,
+                SourceBranch = request.Head,
+                Description = request.Body,
+                TargetBranch = request.BaseRef,
+                Id = $"{projectName}/{repositoryName}"
+            };
+
+            await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest).ConfigureAwait(false);
         }
 
         public Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -46,14 +62,19 @@ namespace NuKeeper.Gitlab
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
+        public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Repository> GetUserRepository(string userName, string repositoryName)
+        public async Task<Repository> GetUserRepository(string userName, string repositoryName)
         {
-            throw new NotImplementedException();
+            var project = await _client.GetProject(userName, repositoryName).ConfigureAwait(false);
+
+            return new Repository(project.Name, project.Archived,
+                new UserPermissions(true, true, true),
+                project.HttpUrlToRepo,
+                null, false, null);
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
@@ -61,9 +82,11 @@ namespace NuKeeper.Gitlab
             throw new NotImplementedException();
         }
 
-        public Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName)
+        public async Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName)
         {
-            throw new NotImplementedException();
+            var result = await _client.CheckExistingBranch(userName, repositoryName, branchName).ConfigureAwait(false);
+
+            return result != null;
         }
 
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
