@@ -24,9 +24,8 @@ namespace NuKeeper.Gitlab
             switch (settings.Scope)
             {
                 case ServerScope.Global:
-                    throw new NotImplementedException();
-
                 case ServerScope.Organisation:
+                    _logger.Error($"{settings.Scope} not yet implemented");
                     throw new NotImplementedException();
 
                 case ServerScope.Repository:
