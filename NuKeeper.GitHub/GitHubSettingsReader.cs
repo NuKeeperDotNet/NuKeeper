@@ -58,7 +58,6 @@ namespace NuKeeper.GitHub
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
-                TargetBranch = targetBranch
             };
         }
     }

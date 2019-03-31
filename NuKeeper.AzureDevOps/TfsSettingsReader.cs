@@ -51,13 +51,11 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
-            var settings = _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri) : CreateSettingsFromRemote(repositoryUri);
+            var settings = _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri);
             if (settings == null)
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
             }
-
-            settings.TargetBranch = targetBranch;
 
             return settings;
         }
@@ -67,8 +65,7 @@ namespace NuKeeper.AzureDevOps
             return RepositorySettings(repositoryUri);
         }
 
-
-        private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri)
+        private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
         {
             var remoteInfo = new RemoteInfo();
 
@@ -82,7 +79,7 @@ namespace NuKeeper.AzureDevOps
                 {
                     remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
-                    remoteInfo.BranchName = _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
+                    remoteInfo.BranchName = targetBranch ?? _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = origin.Name;
                     remoteInfo.WorkingFolder = localFolder;
                 }
