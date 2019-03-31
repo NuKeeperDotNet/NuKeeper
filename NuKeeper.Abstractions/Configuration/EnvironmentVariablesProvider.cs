@@ -8,5 +8,10 @@ namespace NuKeeper.Abstractions.Configuration
         {
             return Environment.GetEnvironmentVariable(name);
         }
+
+        public string GetUserName()
+        {
+            return Environment.UserName;
+        }
     }
 }
