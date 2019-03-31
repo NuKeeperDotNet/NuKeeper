@@ -6,7 +6,9 @@ namespace NuKeeper.Abstractions.CollaborationModels
         {
             Head = head;
             Title = title;
-            BaseRef = baseRef.Replace("origin/", string.Empty);
+
+            //This can be a remote that has been passed in, this happens when run locally against a targetbranch that is remote
+            BaseRef = baseRef.Contains("origin/") ? baseRef.Replace("origin/", string.Empty) : baseRef;
         }
 
         public string Head { get; }
