@@ -10,8 +10,15 @@ namespace NuKeeper.BitBucketLocal
 {
     public class BitBucketLocalSettingsReader : ISettingsReader
     {
-        public Platform Platform { get; } = Platform.BitbucketLocal;
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
 
+        public BitBucketLocalSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
+
+        public Platform Platform { get; } = Platform.BitbucketLocal;
+        
         private string Username { get; set; }
 
         public bool CanRead(Uri repositoryUri)
@@ -55,14 +62,10 @@ namespace NuKeeper.BitBucketLocal
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
             settings.Username = Concat.FirstValue(Username, Environment.UserName);
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
-        }
 
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
+            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
     }
 }
