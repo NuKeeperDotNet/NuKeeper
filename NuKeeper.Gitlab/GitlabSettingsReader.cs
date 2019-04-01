@@ -9,8 +9,14 @@ namespace NuKeeper.Gitlab
 {
     public class GitlabSettingsReader : ISettingsReader
     {
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
         private const string GitLabTokenEnvironmentVariableName = "NuKeeper_gitlab_token";
         private const string UrlPattern = "https://gitlab.com/{username}/{projectname}.git";
+
+        public GitlabSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
 
         public Platform Platform => Platform.GitLab;
 
@@ -24,13 +30,8 @@ namespace NuKeeper.Gitlab
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
-        }
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable(GitLabTokenEnvironmentVariableName);
 
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable(GitLabTokenEnvironmentVariableName);
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 

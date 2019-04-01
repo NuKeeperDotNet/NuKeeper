@@ -1,5 +1,7 @@
 using System;
+using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
 using NUnit.Framework;
 
 namespace NuKeeper.Gitlab.Tests
@@ -8,11 +10,14 @@ namespace NuKeeper.Gitlab.Tests
     public class GitlabSettingsReaderTests
     {
         private GitlabSettingsReader _gitlabSettingsReader;
+        private IEnvironmentVariablesProvider _environmentVariablesProvider;
 
         [SetUp]
         public void Setup()
         {
-            _gitlabSettingsReader = new GitlabSettingsReader();
+            _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
+
+            _gitlabSettingsReader = new GitlabSettingsReader(_environmentVariablesProvider);
         }
 
         [Test]
@@ -21,6 +26,21 @@ namespace NuKeeper.Gitlab.Tests
             var platform = _gitlabSettingsReader.Platform;
 
             Assert.AreEqual(Platform.GitLab, platform);
+        }
+
+        [Test]
+        public void UpdatesAuthenticationTokenFromTheEnvironment()
+        {
+            _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_gitlab_token").Returns("envToken");
+
+            var settings = new CollaborationPlatformSettings
+            {
+                Token = "accessToken",
+            };
+
+            _gitlabSettingsReader.UpdateCollaborationPlatformSettings(settings);
+
+            Assert.AreEqual(settings.Token, "envToken");
         }
 
         [Test]
