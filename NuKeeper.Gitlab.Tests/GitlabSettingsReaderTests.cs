@@ -31,18 +31,19 @@ namespace NuKeeper.Gitlab.Tests
             Assert.AreEqual(true, canRead);
         }
 
-        [Test]
-        public void GetsCorrectSettingsFromTheUrl()
+        [TestCase(null)]
+        [TestCase("master")]
+        public void GetsCorrectSettingsFromTheUrl(string targetBranch)
         {
             var repositoryUri = new Uri("https://gitlab.com/user/projectname.git");
-            var repositorySettings = _gitlabSettingsReader.RepositorySettings(repositoryUri, "master");
+            var repositorySettings = _gitlabSettingsReader.RepositorySettings(repositoryUri, targetBranch);
 
             Assert.IsNotNull(repositorySettings);
             Assert.AreEqual(new Uri("https://gitlab.com/api/v4/"), repositorySettings.ApiUri);
             Assert.AreEqual(repositoryUri, repositorySettings.RepositoryUri);
             Assert.AreEqual("user", repositorySettings.RepositoryOwner);
             Assert.AreEqual("projectname", repositorySettings.RepositoryName);
-            Assert.AreEqual("master", repositorySettings.TargetBranch);
+            Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
         }
     }
 }

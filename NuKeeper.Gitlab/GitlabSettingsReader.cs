@@ -65,7 +65,9 @@ namespace NuKeeper.Gitlab
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
-                TargetBranch = targetBranch
+                RemoteInfo = targetBranch == null
+                    ? null
+                    : new RemoteInfo { BranchName = targetBranch }
             };
         }
     }
