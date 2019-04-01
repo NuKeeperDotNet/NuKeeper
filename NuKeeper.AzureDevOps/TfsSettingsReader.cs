@@ -15,7 +15,8 @@ namespace NuKeeper.AzureDevOps
         private readonly IGitDiscoveryDriver _gitDriver;
         private bool _isLocalGitRepo;
 
-        public TfsSettingsReader(IGitDiscoveryDriver gitDriver)
+        public TfsSettingsReader(IGitDiscoveryDriver gitDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
+        : base(environmentVariablesProvider)
         {
             _gitDriver = gitDriver;
         }

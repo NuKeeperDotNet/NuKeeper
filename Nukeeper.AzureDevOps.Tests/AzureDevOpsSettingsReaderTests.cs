@@ -1,4 +1,5 @@
 using System;
+using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -10,19 +11,27 @@ namespace Nukeeper.AzureDevOps.Tests
     [TestFixture]
     public class AzureDevOpsSettingsReaderTests
     {
-        private static ISettingsReader AzureSettingsReader => new AzureDevOpsSettingsReader(new MockedGitDiscoveryDriver());
+        private ISettingsReader _azureSettingsReader;
+        private IEnvironmentVariablesProvider _environmentVariablesProvider;
+
+        [SetUp]
+        public void Setup()
+        {
+            _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
+            _azureSettingsReader = new AzureDevOpsSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
+        }
 
         [Test]
         public void ReturnsTrueIfCanRead()
         {
-            var canRead = AzureSettingsReader.CanRead(new Uri("https://dev.azure.com/org"));
+            var canRead = _azureSettingsReader.CanRead(new Uri("https://dev.azure.com/org"));
             Assert.IsTrue(canRead);
         }
 
         [Test]
         public void ReturnsCorrectPlatform()
         {
-            var platform = AzureSettingsReader.Platform;
+            var platform = _azureSettingsReader.Platform;
             Assert.IsNotNull(platform);
             Assert.AreEqual(platform, Platform.AzureDevOps);
         }
@@ -35,7 +44,7 @@ namespace Nukeeper.AzureDevOps.Tests
                 Token = "accessToken",
                 BaseApiUrl = new Uri("https://dev.azure.com/")
             };
-            AzureSettingsReader.UpdateCollaborationPlatformSettings(settings);
+            _azureSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.BaseApiUrl, "https://dev.azure.com/");
@@ -46,13 +55,14 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void AuthSettings_GetsCorrectSettingsFromEnvironment()
         {
+            _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_azure_devops_token").Returns("envToken");
+
             var settings = new CollaborationPlatformSettings
             {
                 Token = "accessToken",
             };
-            Environment.SetEnvironmentVariable("NuKeeper_azure_devops_token", "envToken");
-            AzureSettingsReader.UpdateCollaborationPlatformSettings(settings);
-            Environment.SetEnvironmentVariable("NuKeeper_azure_devops_token", null);
+
+            _azureSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.AreEqual(settings.Token, "envToken");
         }
@@ -62,7 +72,7 @@ namespace Nukeeper.AzureDevOps.Tests
         public void InvalidUrlReturnsNull(string value)
         {
             var uriToTest = value == null ? null : new Uri(value);
-            var canRead = AzureSettingsReader.CanRead(uriToTest);
+            var canRead = _azureSettingsReader.CanRead(uriToTest);
 
             Assert.IsFalse(canRead);
         }
@@ -70,7 +80,7 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void RepositorySettings_GetsCorrectSettings()
         {
-            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
+            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/org/");
@@ -82,21 +92,21 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void RepositorySettings_ReturnsNull()
         {
-            var settings = AzureSettingsReader.RepositorySettings(null);
+            var settings = _azureSettingsReader.RepositorySettings(null);
             Assert.IsNull(settings);
         }
 
         [Test]
         public void RepositorySettings_PathTooLong()
         {
-            Assert.Throws<NuKeeperException>(() => AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
+            Assert.Throws<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
 
         }
 
         [Test]
         public void RepositorySettings_HandlesSpacesInRepo()
         {
-            var settings = AzureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project%20name/_git/repo%20name"));
+            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project%20name/_git/repo%20name"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://dev.azure.com/org/", settings.ApiUri.ToString());

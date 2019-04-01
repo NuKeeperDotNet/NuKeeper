@@ -1,4 +1,5 @@
 using System;
+using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -9,12 +10,20 @@ namespace NuKeeper.GitHub.Tests
     [TestFixture]
     public class GitHubSettingsReaderTests
     {
-        private static GitHubSettingsReader GitHubSettingsReader => new GitHubSettingsReader();
+        private GitHubSettingsReader _gitHubSettingsReader;
+        private IEnvironmentVariablesProvider _environmentVariablesProvider;
+
+        [SetUp]
+        public void Setup()
+        {
+            _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
+            _gitHubSettingsReader = new GitHubSettingsReader(_environmentVariablesProvider);
+        }
 
         [Test]
         public void ReturnsCorrectPlatform()
         {
-            var platform = GitHubSettingsReader.Platform;
+            var platform = _gitHubSettingsReader.Platform;
             Assert.IsNotNull(platform);
             Assert.AreEqual(platform, Platform.GitHub);
         }
@@ -27,7 +36,7 @@ namespace NuKeeper.GitHub.Tests
                 Token = "accessToken",
                 BaseApiUrl = new Uri("https://github.custom.com/")
             };
-            GitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
+            _gitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.BaseApiUrl, "https://github.custom.com/");
@@ -38,13 +47,14 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public void AuthSettings_GetsCorrectSettingsFromEnvironment()
         {
+            _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_github_token").Returns("envToken");
+
             var settings = new CollaborationPlatformSettings
             {
                 Token = "accessToken",
             };
-            Environment.SetEnvironmentVariable("NuKeeper_github_token", "envToken");
-            GitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
-            Environment.SetEnvironmentVariable("NuKeeper_github_token", null);
+
+            _gitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.AreEqual(settings.Token, "envToken");
         }
@@ -54,7 +64,7 @@ namespace NuKeeper.GitHub.Tests
         public void InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            var canRead = GitHubSettingsReader.CanRead(testUri);
+            var canRead = _gitHubSettingsReader.CanRead(testUri);
 
             Assert.IsFalse(canRead);
         }
@@ -62,7 +72,7 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public void RepositorySettings_GetsCorrectSettings()
         {
-            var settings = GitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
+            var settings = _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.RepositoryUri, "https://github.com/owner/reponame.git");
@@ -75,7 +85,7 @@ namespace NuKeeper.GitHub.Tests
         public void RepositorySettings_InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            Assert.Throws<NuKeeperException>(() => GitHubSettingsReader.RepositorySettings(testUri));
+            Assert.Throws<NuKeeperException>(() => _gitHubSettingsReader.RepositorySettings(testUri));
         }
     }
 }

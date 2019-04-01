@@ -19,8 +19,10 @@ namespace NuKeeper.Tests.Commands
     {
         private static CollaborationFactory GetCollaborationFactory()
         {
+            var environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
+
             return new CollaborationFactory(
-                new ISettingsReader[] { new GitHubSettingsReader() },
+                new ISettingsReader[] { new GitHubSettingsReader(environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>()
             );
         }

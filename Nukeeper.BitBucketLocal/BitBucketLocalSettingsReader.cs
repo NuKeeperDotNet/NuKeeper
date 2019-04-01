@@ -10,6 +10,13 @@ namespace NuKeeper.BitBucketLocal
 {
     public class BitBucketLocalSettingsReader : ISettingsReader
     {
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
+
+        public BitBucketLocalSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
+
         public Platform Platform { get; } = Platform.BitbucketLocal;
 
         private string Username { get; set; }
@@ -32,7 +39,7 @@ namespace NuKeeper.BitBucketLocal
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            Username = Concat.FirstValue(repositoryUri.UserInfo, Environment.UserName);
+            Username = Concat.FirstValue(repositoryUri.UserInfo, _environmentVariablesProvider.GetUserName());
 
             if (pathParts.Count < 2)
             {
@@ -53,15 +60,11 @@ namespace NuKeeper.BitBucketLocal
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            settings.Username = Concat.FirstValue(Username, Environment.UserName);
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
-        }
+            settings.Username = Concat.FirstValue(Username, _environmentVariablesProvider.GetUserName());
 
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
+            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
     }
 }
