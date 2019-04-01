@@ -9,6 +9,13 @@ namespace NuKeeper.BitBucket
 {
     public class BitbucketSettingsReader : ISettingsReader
     {
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
+
+        public BitbucketSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
+
         public Platform Platform => Platform.Bitbucket;
 
         private string Username { get; set; }
@@ -21,14 +28,9 @@ namespace NuKeeper.BitBucket
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
             settings.Username = Username;
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
-        }
-
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_bitbucket_token");
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucket_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
+            settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
@@ -45,10 +47,10 @@ namespace NuKeeper.BitBucket
 
             if (pathParts.Count != 2)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be https://username_@bitbucket.org/projectname/repositoryname.git");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be https://username_@bitbucket.org/projectname/repositoryname.git");
             }
 
-            if (String.IsNullOrWhiteSpace(repositoryUri.UserInfo))
+            if (string.IsNullOrWhiteSpace(repositoryUri.UserInfo))
             {
                 Username = pathParts[0];
             }
@@ -56,6 +58,7 @@ namespace NuKeeper.BitBucket
             {
                 Username = repositoryUri.UserInfo.Split(':').First();
             }
+
             var repoName = pathParts[1];
             //Trim off any .git extension from repo name
             repoName = repoName.EndsWith(".git", StringComparison.InvariantCultureIgnoreCase) ?
@@ -68,8 +71,7 @@ namespace NuKeeper.BitBucket
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = owner,
-                TargetBranch = targetBranch
+                RepositoryOwner = owner
             };
         }
     }

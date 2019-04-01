@@ -46,6 +46,8 @@ namespace NuKeeper
             container.Register<IUpdateSelection, UpdateSelection>();
             container.Register<IFileSettingsCache, FileSettingsCache>();
 
+            container.RegisterSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();
+
             container.RegisterSingleton<IGitDiscoveryDriver, LibGit2SharpDiscoveryDriver>();
 
             container.RegisterSingleton<ICollaborationFactory, CollaborationFactory>();

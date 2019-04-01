@@ -9,7 +9,13 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
         private const string UrlPattern = "https://github.com/{owner}/{reponame}.git";
+
+        public GitHubSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
 
         public Platform Platform => Platform.GitHub;
 
@@ -20,14 +26,9 @@ namespace NuKeeper.GitHub
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            UpdateTokenSettings(settings);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
-        }
-
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_github_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
+            settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
         }
 
         public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null)
@@ -58,7 +59,6 @@ namespace NuKeeper.GitHub
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
-                TargetBranch = targetBranch
             };
         }
     }

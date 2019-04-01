@@ -64,9 +64,7 @@ namespace NuKeeper.Engine
                 {
                     folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
                     settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
-                    repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
                     repositoryData.Remote = repository.RemoteInfo.RemoteName;
-
                 }
                 else
                 {
@@ -74,9 +72,9 @@ namespace NuKeeper.Engine
                     settings.WorkingFolder = folder;
                 }
 
-                if (!string.IsNullOrEmpty(repository.TargetBranch))
+                if (!string.IsNullOrEmpty(repository.RemoteInfo.BranchName))
                 {
-                    repositoryData.DefaultBranch = repository.TargetBranch;
+                    repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
                 }
 
                 repositoryData.IsLocalRepo = repository.IsLocalRepo;
