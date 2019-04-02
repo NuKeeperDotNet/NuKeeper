@@ -15,7 +15,6 @@ namespace NuKeeper.Gitlab
     {
         private readonly INuKeeperLogger _logger;
         private GitlabRestClient _client;
-        private AuthSettings _settings;
 
         public GitlabPlatform(INuKeeperLogger logger)
         {
@@ -24,8 +23,6 @@ namespace NuKeeper.Gitlab
 
         public void Initialise(AuthSettings settings)
         {
-            _settings = settings;
-
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -35,7 +32,7 @@ namespace NuKeeper.Gitlab
 
         public async Task<User> GetCurrentUser()
         {
-            var user = await _client.GetCurrentUser().ConfigureAwait(false);
+            var user = await _client.GetCurrentUser();
 
             return new User(user.UserName, user.Name, user.Email);
         }
@@ -54,7 +51,7 @@ namespace NuKeeper.Gitlab
                 Id = $"{projectName}/{repositoryName}"
             };
 
-            await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest).ConfigureAwait(false);
+            await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest);
         }
 
         public Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -71,7 +68,7 @@ namespace NuKeeper.Gitlab
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
         {
-            var project = await _client.GetProject(userName, repositoryName).ConfigureAwait(false);
+            var project = await _client.GetProject(userName, repositoryName);
 
             return new Repository(project.Name, project.Archived,
                 new UserPermissions(true, true, true),
@@ -87,7 +84,7 @@ namespace NuKeeper.Gitlab
 
         public async Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName)
         {
-            var result = await _client.CheckExistingBranch(userName, repositoryName, branchName).ConfigureAwait(false);
+            var result = await _client.CheckExistingBranch(userName, repositoryName, branchName);
 
             return result != null;
         }

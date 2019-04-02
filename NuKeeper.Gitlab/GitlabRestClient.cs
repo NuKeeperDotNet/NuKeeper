@@ -9,7 +9,6 @@ using System.Web;
 using Newtonsoft.Json;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
-using Model = NuKeeper.Gitlab.Model;
 
 namespace NuKeeper.Gitlab
 {
@@ -31,7 +30,7 @@ namespace NuKeeper.Gitlab
         // GET /user
         public async Task<Model.User> GetCurrentUser()
         {
-            return await GetResource<Model.User>("user").ConfigureAwait(false);
+            return await GetResource<Model.User>("user");
         }
 
         // https://docs.gitlab.com/ee/api/projects.html#get-single-project
@@ -39,7 +38,7 @@ namespace NuKeeper.Gitlab
         public async Task<Model.Project> GetProject(string projectName, string repositoryName)
         {
             var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
-            return await GetResource<Model.Project>($"projects/{encodedProjectName}").ConfigureAwait(false);
+            return await GetResource<Model.Project>($"projects/{encodedProjectName}");
         }
 
         // https://docs.gitlab.com/ee/api/branches.html#get-single-repository-branch
@@ -50,11 +49,11 @@ namespace NuKeeper.Gitlab
             var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
             var encodedBranchName = HttpUtility.UrlEncode(branchName);
 
-            return await GetResource<Model.Branch>(
+            return await GetResource(
                 $"projects/{encodedProjectName}/repository/branches/{encodedBranchName}",
                 statusCode => statusCode == HttpStatusCode.NotFound
                     ? Result<Model.Branch>.Success(null)
-                    : Result<Model.Branch>.Failure()).ConfigureAwait(false);
+                    : Result<Model.Branch>.Failure());
         }
 
         // https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
@@ -73,17 +72,17 @@ namespace NuKeeper.Gitlab
             var fullUrl = new Uri(url, UriKind.Relative);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
-            var response = await _client.GetAsync(fullUrl).ConfigureAwait(false);
-            return await HandleResponse<T>(response, customErrorHandling, caller).ConfigureAwait(false);
+            var response = await _client.GetAsync(fullUrl);
+            return await HandleResponse(response, customErrorHandling, caller);
         }
 
         private async Task<T> PostResource<T>(string url, HttpContent content, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)
         {
             _logger.Detailed($"{caller}: Requesting {url}");
 
-            var response = await _client.PostAsync(url, content).ConfigureAwait(false);
+            var response = await _client.PostAsync(url, content);
 
-            return await HandleResponse<T>(response, customErrorHandling, caller).ConfigureAwait(false);
+            return await HandleResponse(response, customErrorHandling, caller);
         }
 
         private async Task<T> HandleResponse<T>(HttpResponseMessage response,
@@ -92,7 +91,7 @@ namespace NuKeeper.Gitlab
         {
             string msg;
 
-            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
