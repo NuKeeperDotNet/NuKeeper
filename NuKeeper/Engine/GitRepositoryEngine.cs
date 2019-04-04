@@ -72,7 +72,7 @@ namespace NuKeeper.Engine
                     settings.WorkingFolder = folder;
                 }
 
-                if (!string.IsNullOrEmpty(repository.RemoteInfo.BranchName))
+                if (!string.IsNullOrEmpty(repository.RemoteInfo?.BranchName))
                 {
                     repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
                 }
