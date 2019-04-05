@@ -29,6 +29,11 @@ namespace NuKeeper.Commands
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            if (string.IsNullOrWhiteSpace(RepositoryUri))
+            {
+                return ValidationResult.Failure($"Missing repository URI");
+            }
+
             Uri repoUri;
 
             try
