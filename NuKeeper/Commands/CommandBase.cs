@@ -203,7 +203,7 @@ namespace NuKeeper.Commands
             {
                 settings.PackageFilters.Includes = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 {
                     return ValidationResult.Failure(
@@ -230,7 +230,7 @@ namespace NuKeeper.Commands
             {
                 settings.PackageFilters.Excludes = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 {
                     return ValidationResult.Failure(

@@ -112,7 +112,7 @@ namespace NuKeeper.GitHub
                 _logger.Normal($"User fork created at {result.GitUrl} for {result.Owner.Login}");
                 return new GitHubRepository(result);
             }
-            catch (Exception ex)
+            catch (ApiException ex)
             {
                 _logger.Error("User fork not created", ex);
                 return null;
@@ -184,7 +184,7 @@ namespace NuKeeper.GitHub
                         labelsToApply);
 
                 }
-                catch (Exception ex)
+                catch (ApiException ex)
                 {
                     _logger.Error("Failed to add labels. Continuing", ex);
                 }

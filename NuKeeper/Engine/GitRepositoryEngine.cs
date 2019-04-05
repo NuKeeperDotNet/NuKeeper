@@ -90,7 +90,9 @@ namespace NuKeeper.Engine
 
                 return updatesDone;
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
                 return 1;

@@ -78,7 +78,7 @@ namespace NuKeeper.BitBucketLocal
             {
                 return JsonConvert.DeserializeObject<T>(responseBody);
             }
-            catch (Exception)
+            catch (JsonReaderException)
             {
                 msg = $"{caller}: Json exception";
                 _logger.Error(msg);

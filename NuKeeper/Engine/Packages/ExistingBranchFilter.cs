@@ -27,7 +27,9 @@ namespace NuKeeper.Engine.Packages
                 var branchExists = await _collaborationFactory.CollaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
                 return !branchExists;
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error($"Failed on existing branch check at {pushFork.Owner}/{pushFork.Name}", ex);
                 return false;

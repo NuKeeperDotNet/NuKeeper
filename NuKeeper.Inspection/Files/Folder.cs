@@ -29,7 +29,7 @@ namespace NuKeeper.Inspection.Files
                     .ToList();
 
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 _logger.Minimal(ex.Message);
                 return new List<FileInfo>();
@@ -45,7 +45,7 @@ namespace NuKeeper.Inspection.Files
                 DeleteDirectoryInternal(_root.FullName);
                 _logger.Detailed($"Deleted folder {_root.FullName}");
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 _logger.Detailed($"Folder delete failed: {ex.GetType().Name} {ex.Message}");
             }

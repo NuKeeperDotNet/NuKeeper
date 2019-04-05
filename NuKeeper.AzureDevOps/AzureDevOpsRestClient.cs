@@ -78,7 +78,7 @@ namespace NuKeeper.AzureDevOps
             {
                 return JsonConvert.DeserializeObject<T>(responseBody);
             }
-            catch (Exception ex)
+            catch (JsonReaderException ex)
             {
                 msg = $"{caller} failed to parse json to {typeof(T)}: {ex.Message}";
                 _logger.Error(msg);

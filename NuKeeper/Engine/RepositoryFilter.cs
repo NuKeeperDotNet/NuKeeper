@@ -45,7 +45,9 @@ namespace NuKeeper.Engine
 
                 return true;
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error("Repository search failed.", ex);
             }

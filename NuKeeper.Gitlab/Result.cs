@@ -22,6 +22,42 @@ class Result<T>
 
     public static Result<T> Failure()
     {
-        return new Result<T>(default(T), false);
+        return new Result<T>(default, false);
+    }
+
+    public void Match(Action<T> success, Action failure)
+    {
+        if (IsSuccessful)
+        {
+            success(Value);
+        }
+        else
+        {
+            failure();
+        }
+    }
+
+    public Result<U> Select<U>(Func<T, Result<U>> transform)
+    {
+        if (IsSuccessful)
+        {
+            return transform(Value);
+        }
+        else
+        {
+            return Result<U>.Failure();
+        }
+    }
+
+    public Result<U> Select<U>(Func<T, U> transform)
+    {
+        if (IsSuccessful)
+        {
+            return Result<U>.Success(transform(Value));
+        }
+        else
+        {
+            return Result<U>.Failure();
+        }
     }
 }

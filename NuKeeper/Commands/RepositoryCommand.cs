@@ -35,7 +35,7 @@ namespace NuKeeper.Commands
             {
                 repoUri = RepositoryUri.ToUri();
             }
-            catch
+            catch (UriFormatException)
             {
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
