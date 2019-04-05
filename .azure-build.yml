@@ -1,6 +1,7 @@
 queue:
   name: Hosted VS2017
 variables:
+  buildConfiguration: Release
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 steps:
 - task: DotNetCoreInstaller@0
@@ -18,14 +19,27 @@ steps:
   inputs:
     command: build
     projects: 'NuKeeper.sln'
-    arguments: '--configuration Release'
+    arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: test
     projects: 'NuKeeper.sln'
-    arguments: '--configuration Release'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    nobuild: true
+
+- script: |
+    dotnet tool install -g dotnet-reportgenerator-globaltool
+    reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
+  displayName: Create Code coverage report
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop for master'
