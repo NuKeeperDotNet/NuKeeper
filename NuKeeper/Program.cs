@@ -5,7 +5,6 @@ using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Commands;
 
 [assembly: InternalsVisibleTo("NuKeeper.Tests")]
-
 #pragma warning disable CA1822
 
 namespace NuKeeper
