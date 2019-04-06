@@ -100,6 +100,7 @@ namespace NuKeeper.Gitlab
                 if (customErrorHandling != null)
                 {
                     var result = customErrorHandling(response.StatusCode);
+
                     if (result.IsSuccessful)
                         return result.Value;
                 }
@@ -125,7 +126,7 @@ namespace NuKeeper.Gitlab
             {
                 return JsonConvert.DeserializeObject<T>(responseBody);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
                 msg = $"{caller} failed to parse json to {typeof(T)}: {ex.Message}";
                 _logger.Error(msg);

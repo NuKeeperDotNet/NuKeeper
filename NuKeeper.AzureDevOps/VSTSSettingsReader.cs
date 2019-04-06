@@ -138,7 +138,7 @@ namespace NuKeeper.AzureDevOps
             return RepositorySettings(org, project, repoName, remoteInfo);
         }
 
-        private RepositorySettings RepositorySettings(string org, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
+        private static RepositorySettings RepositorySettings(string org, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
         {
             ApiUri = new Uri($"https://{org}.visualstudio.com/"),
             RepositoryUri = new Uri($"https://{org}.visualstudio.com/{project}/_git/{repoName}/"),

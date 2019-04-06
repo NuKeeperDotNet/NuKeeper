@@ -22,6 +22,6 @@ class Result<T>
 
     public static Result<T> Failure()
     {
-        return new Result<T>(default(T), false);
+        return new Result<T>(default, false);
     }
 }

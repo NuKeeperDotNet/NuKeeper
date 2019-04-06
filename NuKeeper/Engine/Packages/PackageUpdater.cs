@@ -50,7 +50,9 @@ namespace NuKeeper.Engine.Packages
                     totalCount += updatesMade;
                 }
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error("Updates failed", ex);
             }

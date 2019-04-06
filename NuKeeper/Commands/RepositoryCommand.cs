@@ -29,13 +29,18 @@ namespace NuKeeper.Commands
 
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
+            if (string.IsNullOrWhiteSpace(RepositoryUri))
+            {
+                return ValidationResult.Failure($"Missing repository URI");
+            }
+
             Uri repoUri;
 
             try
             {
                 repoUri = RepositoryUri.ToUri();
             }
-            catch
+            catch (UriFormatException)
             {
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }

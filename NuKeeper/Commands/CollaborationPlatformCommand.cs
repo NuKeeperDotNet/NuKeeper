@@ -84,7 +84,9 @@ namespace NuKeeper.Commands
                     return collaborationResult;
                 }
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 return ValidationResult.Failure(ex.Message);
             }

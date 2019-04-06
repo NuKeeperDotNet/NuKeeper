@@ -70,7 +70,7 @@ namespace NuKeeper.Commands
             {
                 settings.SourceControlServerSettings.IncludeRepos = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return ValidationResult.Failure($"Unable to parse regex '{value}' for IncludeRepos: {ex.Message}");
             }
@@ -93,7 +93,7 @@ namespace NuKeeper.Commands
             {
                 settings.SourceControlServerSettings.ExcludeRepos = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return ValidationResult.Failure($"Unable to parse regex '{value}' for ExcludeRepos: {ex.Message}");
             }
