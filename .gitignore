@@ -18,6 +18,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+coverage.json
 
 # ReSharper is a .NET coding add-in
 _ReSharper*/
