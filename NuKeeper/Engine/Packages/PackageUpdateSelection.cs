@@ -17,7 +17,7 @@ namespace NuKeeper.Engine.Packages
         private readonly IPackageUpdateSetSort _sort;
         private readonly IUpdateSelection _updateSelection;
 
- 
+
         public PackageUpdateSelection(
             IExistingBranchFilter existingBranchFilter,
             IPackageUpdateSetSort sort,

@@ -10,7 +10,7 @@ namespace NuKeeper.Abstractions
             return values.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
-        public static T FirstValue<T>(params T?[] values) where T: struct 
+        public static T FirstValue<T>(params T?[] values) where T : struct
         {
             return values.FirstOrDefault(i => i.HasValue) ?? default;
         }

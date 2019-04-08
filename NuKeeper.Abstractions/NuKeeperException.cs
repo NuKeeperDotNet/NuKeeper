@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace NuKeeper.Abstractions
 {
     [Serializable]
-    public class NuKeeperException: Exception
+    public class NuKeeperException : Exception
     {
         public NuKeeperException()
         {

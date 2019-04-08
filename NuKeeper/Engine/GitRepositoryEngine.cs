@@ -40,8 +40,8 @@ namespace NuKeeper.Engine
         {
             try
             {
-                var repo = await BuildGitRepositorySpec(repository, credentials.Username);
-                if (repo == null)
+                var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);
+                if (repositoryData == null)
                 {
                     return 0;
                 }
@@ -64,8 +64,7 @@ namespace NuKeeper.Engine
                 {
                     folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
                     settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
-                    repo.DefaultBranch = repository.RemoteInfo.BranchName;
-                    repo.Remote = repository.RemoteInfo.RemoteName;
+                    repositoryData.Remote = repository.RemoteInfo.RemoteName;
                 }
                 else
                 {
@@ -73,9 +72,16 @@ namespace NuKeeper.Engine
                     settings.WorkingFolder = folder;
                 }
 
+                if (!string.IsNullOrEmpty(repository.RemoteInfo?.BranchName))
+                {
+                    repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
+                }
+
+                repositoryData.IsLocalRepo = repository.IsLocalRepo;
+
                 var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
 
-                var updatesDone = await _repositoryUpdater.Run(git, repo, settings);
+                var updatesDone = await _repositoryUpdater.Run(git, repositoryData, settings);
 
                 if (!repository.IsLocalRepo)
                 {
@@ -84,7 +90,9 @@ namespace NuKeeper.Engine
 
                 return updatesDone;
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
                 return 1;

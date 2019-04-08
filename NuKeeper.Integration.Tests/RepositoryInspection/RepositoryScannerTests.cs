@@ -70,7 +70,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
 
             Assert.That(item, Is.Not.Null);
             Assert.That(item.Id, Is.EqualTo("foo"));
-            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1,2,3)));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
             Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.PackagesConfig));
         }
 
@@ -184,7 +184,8 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),
                 new NuspecFileReader(logger),
-                new DirectoryBuildTargetsReader(logger));
+                new DirectoryBuildTargetsReader(logger),
+                new DirectoryExclusions());
         }
 
         private static void WriteFile(IFolder path, string fileName, string contents)

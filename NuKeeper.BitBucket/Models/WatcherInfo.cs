@@ -3,4 +3,4 @@
     public class WatcherInfo : ListBasedPage<Watcher>
     {
     }
-}  
+}

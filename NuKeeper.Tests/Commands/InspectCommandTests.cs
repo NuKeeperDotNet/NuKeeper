@@ -291,7 +291,7 @@ namespace NuKeeper.Tests.Commands
         }
 
         public static async Task<SettingsContainer> CaptureSettings(FileSettings settingsIn,
-            OutputDestination? outputDestination =null,
+            OutputDestination? outputDestination = null,
             OutputFormat? outputFormat = null,
             string outputFileName = null)
         {

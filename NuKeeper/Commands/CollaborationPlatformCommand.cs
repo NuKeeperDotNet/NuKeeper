@@ -84,7 +84,9 @@ namespace NuKeeper.Commands
                     return collaborationResult;
                 }
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 return ValidationResult.Failure(ex.Message);
             }
@@ -101,7 +103,7 @@ namespace NuKeeper.Commands
             settings.PackageFilters.MaxPackageUpdates =
                 Concat.FirstValue(MaxPackageUpdates, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
 
-            var defaultLabels = new List<string> {"nukeeper"};
+            var defaultLabels = new List<string> { "nukeeper" };
 
             settings.SourceControlServerSettings.Labels =
                 Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);

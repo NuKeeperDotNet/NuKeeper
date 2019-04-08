@@ -21,7 +21,7 @@ namespace NuKeeper.Commands
         protected override ValidationResult PopulateSettings(SettingsContainer settings)
         {
             var fileSettings = FileSettingsCache.GetSettings();
-            ApiEndpoint =  Concat.FirstValue(ApiEndpoint, fileSettings.Api, "https://api.github.com"); 
+            ApiEndpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, "https://api.github.com");
 
             var baseResult = base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)

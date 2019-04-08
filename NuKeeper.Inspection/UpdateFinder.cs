@@ -14,7 +14,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection
 {
-    public class UpdateFinder: IUpdateFinder
+    public class UpdateFinder : IUpdateFinder
     {
         private readonly IRepositoryScanner _repositoryScanner;
         private readonly IPackageUpdatesLookup _packageUpdatesLookup;
@@ -66,7 +66,7 @@ namespace NuKeeper.Inspection
         private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
         {
             var filteredByIncludeExclude = all
-                .Where(package => RegexMatch.IncludeExclude(package.Id,includes, excludes))
+                .Where(package => RegexMatch.IncludeExclude(package.Id, includes, excludes))
                 .ToList();
 
             if (filteredByIncludeExclude.Count < all.Count)

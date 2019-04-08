@@ -5,6 +5,7 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         GitHub,
         AzureDevOps,
         Bitbucket,
-        BitbucketLocal
+        BitbucketLocal,
+        GitLab
     }
 }

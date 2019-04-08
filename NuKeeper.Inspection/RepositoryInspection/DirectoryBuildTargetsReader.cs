@@ -29,7 +29,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
                     return Read(fileContents, packagePath);
                 }
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 throw new NuKeeperException($"Unable to parse file {packagePath.FullName}", ex);
             }
@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<string> GetFilePatterns()
         {
-            return new[] {"Directory.Build.props", "Directory.Build.targets"};
+            return new[] { "Directory.Build.props", "Directory.Build.targets" };
         }
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, PackagePath path)
@@ -61,22 +61,14 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         private PackageInProject XmlToPackage(XElement el, PackagePath path)
         {
-            try
+            var id = el.Attribute("Include")?.Value;
+            if (id == null)
             {
-                var id = el.Attribute("Include")?.Value;
-                if (id == null)
-                {
-                    id = el.Attribute("Update")?.Value;
-                }
-                var version = el.Attribute("Version")?.Value;
+                id = el.Attribute("Update")?.Value;
+            }
+            var version = el.Attribute("Version")?.Value;
 
-                return _packageInProjectReader.Read(id, version, path, null);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Could not read package from {el} in file {path.FullName}", ex);
-                return null;
-            }
+            return _packageInProjectReader.Read(id, version, path, null);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace NuKeeper.Abstractions.Inspections.Files
 {
-    public  interface IFolder
+    public interface IFolder
     {
         string FullPath { get; }
         void TryDelete();

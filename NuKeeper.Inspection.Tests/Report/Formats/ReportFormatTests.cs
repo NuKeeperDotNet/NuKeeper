@@ -86,8 +86,8 @@ namespace NuKeeper.Inspection.Tests.Report.Formats
                 return (IReportFormat)noArgCtor.Invoke(Array.Empty<object>());
             }
 
-            var oneArgCtor = reportType.GetConstructor(new [] { typeof(IReportWriter) } );
-            return (IReportFormat)oneArgCtor.Invoke(new object[] { writer } );
+            var oneArgCtor = reportType.GetConstructor(new[] { typeof(IReportWriter) });
+            return (IReportFormat)oneArgCtor.Invoke(new object[] { writer });
         }
     }
 }

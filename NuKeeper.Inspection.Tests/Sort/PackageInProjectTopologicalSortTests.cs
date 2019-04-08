@@ -63,7 +63,7 @@ namespace NuKeeper.Inspection.Tests.Sort
 
             AssertIsASortOf(sorted, items);
             logger.Received(1).Detailed("No dependencies between items, no need to sort on dependencies");
-       }
+        }
 
         [Test]
         public void CanSortTwoRelatedItemsinCorrectOrder()

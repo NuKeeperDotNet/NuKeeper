@@ -56,7 +56,7 @@ namespace NuKeeper.Abstractions.NuGet
 
         private static string EscapePathIfLocal(PackageSource source)
         {
-            return source.IsLocal ? ArgumentEscaper.EscapeAndConcatenate(new[] {source.Source}) : source.Source;
+            return source.IsLocal ? ArgumentEscaper.EscapeAndConcatenate(new[] { source.Source }) : source.Source;
         }
     }
 }

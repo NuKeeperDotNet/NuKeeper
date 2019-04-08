@@ -11,6 +11,7 @@ using NuKeeper.BitBucket;
 using NuKeeper.BitBucketLocal;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
+using NuKeeper.Gitlab;
 
 namespace NuKeeper.Collaboration
 {
@@ -157,6 +158,12 @@ namespace NuKeeper.Collaboration
                     CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
+
+                case Platform.GitLab:
+                    CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
+                    RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
+                    ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 default:
