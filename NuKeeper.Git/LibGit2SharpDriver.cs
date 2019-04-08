@@ -36,7 +36,7 @@ namespace NuKeeper.Git
             _logger = logger;
             WorkingFolder = workingFolder;
             _gitCredentials = new UsernamePasswordCredentials
-                {Password = credentials.Password, Username = credentials.Username};
+            { Password = credentials.Password, Username = credentials.Username };
             _identity = GetUserIdentity(user);
         }
 
@@ -78,7 +78,15 @@ namespace NuKeeper.Git
             _logger.Detailed($"Git checkout '{branchName}'");
             using (var repo = MakeRepo())
             {
-                GitCommands.Checkout(repo, repo.Branches[branchName]);
+                if (BranchExists(branchName))
+                {
+                    GitCommands.Checkout(repo, repo.Branches[branchName]);
+                }
+                else
+                {
+                    throw new NuKeeperException(
+                        $"Git Cannot checkout branch: the branch named '{branchName}' doesn't exist");
+                }
             }
         }
 
@@ -127,7 +135,7 @@ namespace NuKeeper.Git
                 return new Signature(_identity, DateTimeOffset.Now);
             }
 
-            var repoSignature =  repo.Config.BuildSignature(DateTimeOffset.Now);
+            var repoSignature = repo.Config.BuildSignature(DateTimeOffset.Now);
 
             if (repoSignature == null)
             {
@@ -144,8 +152,11 @@ namespace NuKeeper.Git
 
             using (var repo = MakeRepo())
             {
-                var localBranch = repo.Branches[branchName];
-                var remote = repo.Network.Remotes[remoteName];
+
+                var localBranch = repo.Branches
+                    .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
+                var remote = repo.Network.Remotes
+                    .Single(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
 
                 repo.Branches.Update(localBranch,
                     b => b.Remote = remote.Name,

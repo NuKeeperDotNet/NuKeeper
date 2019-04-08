@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Commands;
 
-[assembly:InternalsVisibleTo("NuKeeper.Tests")]
+[assembly: InternalsVisibleTo("NuKeeper.Tests")]
 
 #pragma warning disable CA1822
 
@@ -25,7 +25,7 @@ namespace NuKeeper
         {
             var container = ContainerRegistration.Init();
 
-            var app = new CommandLineApplication<Program> {ThrowOnUnexpectedArgument = false};
+            var app = new CommandLineApplication<Program> { ThrowOnUnexpectedArgument = false };
             app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
 
             try

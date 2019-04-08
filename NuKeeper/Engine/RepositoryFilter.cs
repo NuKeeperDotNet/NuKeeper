@@ -42,10 +42,12 @@ namespace NuKeeper.Engine
                         $"Repository {repository.RepositoryOwner}/{repository.RepositoryName} contains no .NET code on the default branch, skipping.");
                     return false;
                 }
-                
+
                 return true;
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _logger.Error("Repository search failed.", ex);
             }

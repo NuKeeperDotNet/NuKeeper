@@ -37,11 +37,16 @@ namespace NuKeeper.Abstractions.Configuration
                 _logger.Detailed($"Read settings file at {fullPath}");
                 return result;
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 _logger.Error($"Cannot read settings file at {fullPath}", ex);
-                return FileSettings.Empty();
             }
+            catch (JsonException ex)
+            {
+                _logger.Error($"Cannot read json from settings file at {fullPath}", ex);
+            }
+
+            return FileSettings.Empty();
         }
     }
 }

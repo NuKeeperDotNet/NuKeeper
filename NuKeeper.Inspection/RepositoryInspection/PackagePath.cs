@@ -5,7 +5,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 {
     public class PackagePath
     {
-        public PackagePath(string baseDirectory, string relativePath, 
+        public PackagePath(string baseDirectory, string relativePath,
             PackageReferenceType packageReferenceType)
         {
             if (string.IsNullOrWhiteSpace(baseDirectory))
@@ -31,7 +31,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             Info = new FileInfo(fullPath);
         }
 
-        public FileInfo Info { get;  }
+        public FileInfo Info { get; }
 
         /// <summary>
         /// The working directory at the root of all the files

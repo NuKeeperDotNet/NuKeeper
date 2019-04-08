@@ -230,7 +230,7 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void OneUpdateWithDate_MakeCommitDetails_HasVersionLimitDataWithDate()
         {
-            var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32 ,45, TimeSpan.Zero);
+            var publishedAt = new DateTimeOffset(2018, 2, 20, 11, 32, 45, TimeSpan.Zero);
 
             var updates = PackageUpdates.LimitedToMinor(publishedAt, MakePackageForV110())
                 .InList();
@@ -344,7 +344,7 @@ namespace NuKeeper.Tests.Engine
         {
             var path = new PackagePath("c:\\temp", "folder\\src\\project3\\packages.config", PackageReferenceType.PackagesConfig);
 
-            return  new PackageInProject("foo.bar", "1.1.0", path);
+            return new PackageInProject("foo.bar", "1.1.0", path);
         }
     }
 }

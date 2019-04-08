@@ -14,7 +14,7 @@ namespace Nukeeper.AzureDevOps.Tests
 
         public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
         {
-          return new List<GitRemote>(){ new GitRemote
+            return new List<GitRemote>(){ new GitRemote
           {
               Name="origin",
               Url = repositoryUri

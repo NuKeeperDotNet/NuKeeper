@@ -37,7 +37,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var reporter = new PackageLookupResultReporter(logger);
 
             var fooMetadata = new PackageSearchMedatadata(
-                new PackageIdentity("foo", new NuGetVersion(2, 3, 4)), 
+                new PackageIdentity("foo", new NuGetVersion(2, 3, 4)),
                 new PackageSource("http://none"), DateTimeOffset.Now, null);
 
             var data = new PackageLookupResult(VersionChange.Major, fooMetadata, fooMetadata, fooMetadata);

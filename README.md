@@ -2,7 +2,8 @@
 
 [![Build Status](https://dev.azure.com/nukeeper/NuKeeper/_apis/build/status/PR%20build?branchName=master&label=build)](https://dev.azure.com/nukeeper/NuKeeper/_build/latest?definitionId=3?branchName=master)
 [![Gitter](https://img.shields.io/gitter/room/NuKeeperDotNet/Lobby.js.svg?maxAge=2592000)](https://gitter.im/NuKeeperDotNet/Lobby)
-[![NuGet](https://img.shields.io/nuget/v/NuKeeper.svg?maxAge=3600)](https://www.nuget.org/packages/NuKeeper/)   
+[![NuGet](https://img.shields.io/nuget/v/NuKeeper.svg?maxAge=3600)](https://www.nuget.org/packages/NuKeeper/)
+[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/nukeeper/NuKeeper/4.svg)](https://dev.azure.com/nukeeper/NuKeeper/_build?definitionId=4)   
 <p align="center">
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki">NuKeeper Wiki Home</a> •
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Getting-Started#getting-nukeeper">Installation</a> •
@@ -11,7 +12,7 @@
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Debugging-NuKeeper">Debugging</a> •
 </p>
 
-### NuKeeper, 
+### NuKeeper
 
 Automagically update NuGet packages in all .NET projects.
 
@@ -29,15 +30,15 @@ NuKeeper works for .NET Framework and for .NET Core projects. It also has the ab
 |:------------------:|:------------------:|:------------------------:| 
 | :heavy_check_mark: | :heavy_check_mark: |     :heavy_check_mark:   |
 
-The intergration for the following platforms is supported.
+Integration with the following platforms is supported.
 
 |     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |
 |:------------------:|:------------------:|:------------------:| :------------------:| 
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |         :x:         |
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  |
 
 ### Commands
 
-NuKeeper has different command and options which can be utilized. Below you'll find a summary of all the commands and what they do.
+NuKeeper has different commands and options which can be utilized. Below you'll find a summary of all the commands and what they do.
 
 ```
 Options:

@@ -7,7 +7,7 @@ using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {
-    public class Reporter: IReporter
+    public class Reporter : IReporter
     {
         private readonly INuKeeperLogger _logger;
 
@@ -24,7 +24,7 @@ namespace NuKeeper.Inspection.Report
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var destinationDesc = destination == OutputDestination.File ?
-                $" File '{fileName}'":
+                $" File '{fileName}'" :
                 destination.ToString();
 
             _logger.Detailed($"Output report named {reportName}, is {format} to {destinationDesc}");

@@ -88,7 +88,7 @@ namespace NuKeeper.Update.Tests
 
             var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, OneTargetSelection(),FilterToId("bar"));
+            var results = await target.Filter(updateSets, OneTargetSelection(), FilterToId("bar"));
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));

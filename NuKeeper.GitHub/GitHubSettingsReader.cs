@@ -9,6 +9,14 @@ namespace NuKeeper.GitHub
 {
     public class GitHubSettingsReader : ISettingsReader
     {
+        private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
+        private const string UrlPattern = "https://github.com/{owner}/{reponame}.git";
+
+        public GitHubSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        {
+            _environmentVariablesProvider = environmentVariablesProvider;
+        }
+
         public Platform Platform => Platform.GitHub;
 
         public bool CanRead(Uri repositoryUri)
@@ -18,21 +26,16 @@ namespace NuKeeper.GitHub
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            UpdateTokenSettings(settings);
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_github_token");
+            settings.Token = Concat.FirstValue(envToken, settings.Token);
             settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
         }
 
-        private static void UpdateTokenSettings(CollaborationPlatformSettings settings)
-        {
-            var envToken = Environment.GetEnvironmentVariable("NuKeeper_github_token");
-            settings.Token = Concat.FirstValue(envToken, settings.Token);
-        }
-
-        public RepositorySettings RepositorySettings(Uri repositoryUri)
+        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
             // general pattern is https://github.com/owner/reponame.git
@@ -44,7 +47,7 @@ namespace NuKeeper.GitHub
 
             if (pathParts.Count != 2)
             {
-                return null;
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
             }
 
             var repoOwner = pathParts[0];
@@ -55,7 +58,7 @@ namespace NuKeeper.GitHub
                 ApiUri = new Uri("https://api.github.com/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = repoOwner
+                RepositoryOwner = repoOwner,
             };
         }
     }

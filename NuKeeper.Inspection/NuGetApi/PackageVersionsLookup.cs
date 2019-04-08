@@ -48,7 +48,9 @@ namespace NuKeeper.Inspection.NuGetApi
                 var metadatas = await FindPackage(metadataResource, packageName, includePrerelease);
                 return metadatas.Select(m => BuildPackageData(source, m));
             }
+#pragma warning disable CA1031
             catch (Exception ex)
+#pragma warning restore CA1031
             {
                 _nuKeeperLogger.Normal($"Getting {packageName} from {source} returned exception: {ex.Message}");
                 return Enumerable.Empty<PackageSearchMedatadata>();

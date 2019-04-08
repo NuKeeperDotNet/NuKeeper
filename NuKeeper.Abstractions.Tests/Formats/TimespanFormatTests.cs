@@ -126,7 +126,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [Test]
         public void TestTwoDatesTenMonthsApart()
         {
-            var end = new DateTime(2018, 4,5);
+            var end = new DateTime(2018, 4, 5);
             var start = end.AddMonths(-10);
 
             var result = TimeSpanFormat.Ago(start, end);
@@ -137,7 +137,7 @@ namespace NuKeeper.Abstractions.Tests.Formats
         [Test]
         public void TestTwoDatesFourteenApart()
         {
-            var end = new DateTime(2018, 3 ,4);
+            var end = new DateTime(2018, 3, 4);
             var start = end.AddMonths(-14);
 
             var result = TimeSpanFormat.Ago(start, end);

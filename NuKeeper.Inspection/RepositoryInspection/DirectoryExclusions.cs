@@ -5,11 +5,10 @@ using System.Linq;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {
-    public static class DirectoryExclusions
+    public class DirectoryExclusions : IDirectoryExclusions
     {
-        public static bool PathIsExcluded(string path)
+        public bool PathIsExcluded(string path)
         {
-            // subDir is a full path, check all parts
             return ExcludedDirNames.Any(s => PathContains(path, s));
         }
 
@@ -17,7 +16,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
         {
             var dirInPath = Path.DirectorySeparatorChar + dirName + Path.DirectorySeparatorChar;
 
-            return 
+            return
                 !string.IsNullOrEmpty(fullPath) &&
                  (fullPath.IndexOf(dirInPath, StringComparison.InvariantCultureIgnoreCase) >= 0);
         }

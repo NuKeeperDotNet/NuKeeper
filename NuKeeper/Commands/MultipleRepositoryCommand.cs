@@ -12,7 +12,7 @@ namespace NuKeeper.Commands
     internal abstract class MultipleRepositoryCommand : CollaborationPlatformCommand
     {
         [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "includerepos", Description = "Only consider repositories matching this regex pattern.")]
-        public string IncludeRepos { get; set;  }
+        public string IncludeRepos { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "excluderepos", Description = "Do not consider repositories matching this regex pattern.")]
         public string ExcludeRepos { get; set; }
@@ -70,7 +70,7 @@ namespace NuKeeper.Commands
             {
                 settings.SourceControlServerSettings.IncludeRepos = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return ValidationResult.Failure($"Unable to parse regex '{value}' for IncludeRepos: {ex.Message}");
             }
@@ -93,7 +93,7 @@ namespace NuKeeper.Commands
             {
                 settings.SourceControlServerSettings.ExcludeRepos = new Regex(value);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return ValidationResult.Failure($"Unable to parse regex '{value}' for ExcludeRepos: {ex.Message}");
             }
