@@ -12,7 +12,7 @@
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Debugging-NuKeeper">Debugging</a> •
 </p>
 
-### NuKeeper, 
+### NuKeeper
 
 Automagically update NuGet packages in all .NET projects.
 
