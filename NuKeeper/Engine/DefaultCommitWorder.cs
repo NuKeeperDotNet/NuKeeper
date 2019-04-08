@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Formats;
-using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
@@ -14,7 +14,7 @@ namespace NuKeeper.Engine
     {
         private const string CommitEmoji = "package";
 
-        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             if (updates.Count == 1)
             {

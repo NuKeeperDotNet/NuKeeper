@@ -38,7 +38,7 @@ namespace NuKeeper.Inspection
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
+        public async Task<IReadOnlyCollection<RepositoryInspection.PackageUpdateSet>> FindPackageUpdateSets(
             IFolder workingFolder,
             NuGetSources sources,
             VersionChange allowedChange,
@@ -63,7 +63,7 @@ namespace NuKeeper.Inspection
         }
 
 
-        private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
+        private IReadOnlyCollection<RepositoryInspection.PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<RepositoryInspection.PackageInProject> all, Regex includes, Regex excludes)
         {
             var filteredByIncludeExclude = all
                 .Where(package => RegexMatch.IncludeExclude(package.Id, includes, excludes))
@@ -88,7 +88,7 @@ namespace NuKeeper.Inspection
             return filteredByIncludeExclude;
         }
 
-        private IReadOnlyCollection<PackageInProject> FindPackages(IFolder workingFolder)
+        private IReadOnlyCollection<RepositoryInspection.PackageInProject> FindPackages(IFolder workingFolder)
         {
             // scan for nuget packages
             var allPackages = _repositoryScanner.FindAllNuGetPackages(workingFolder);
@@ -105,7 +105,7 @@ namespace NuKeeper.Inspection
                 .ToList();
         }
 
-        private void LogVersionedMetapackage(PackageInProject metaPackage)
+        private void LogVersionedMetapackage(RepositoryInspection.PackageInProject metaPackage)
         {
             _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version} in {metaPackage.Path.FullName}, " +
                   "but should not have explicit version.");
