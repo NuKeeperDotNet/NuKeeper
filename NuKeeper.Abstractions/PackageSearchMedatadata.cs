@@ -22,7 +22,9 @@ namespace NuKeeper.Abstractions
         }
 
         public PackageIdentity Identity { get; }
+
         public PackageSource Source { get; }
+
         public DateTimeOffset? Published { get; }
 
         public IReadOnlyCollection<PackageDependency> Dependencies { get; }

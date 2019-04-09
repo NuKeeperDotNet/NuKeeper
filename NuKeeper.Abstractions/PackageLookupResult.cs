@@ -20,7 +20,9 @@ namespace NuKeeper.Abstractions
         public VersionChange AllowedChange { get; }
 
         public PackageSearchMedatadata Major { get; }
+
         public PackageSearchMedatadata Minor { get; }
+
         public PackageSearchMedatadata Patch { get; }
 
         public PackageSearchMedatadata Selected()

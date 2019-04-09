@@ -53,12 +53,16 @@ namespace NuKeeper
             {
                 case NuKeeperInspection.RepositoryInspection.PackageReferenceType.DirectoryBuildTargets:
                     return NuKeeperAbstractions.PackageReferenceType.DirectoryBuildTargets;
+
                 case NuKeeperInspection.RepositoryInspection.PackageReferenceType.PackagesConfig:
                     return NuKeeperAbstractions.PackageReferenceType.PackagesConfig;
+
                 case NuKeeperInspection.RepositoryInspection.PackageReferenceType.ProjectFile:
                     return NuKeeperAbstractions.PackageReferenceType.ProjectFile;
+
                 case NuKeeperInspection.RepositoryInspection.PackageReferenceType.ProjectFileOldStyle:
                     return NuKeeperAbstractions.PackageReferenceType.ProjectFileOldStyle;
+
                 case NuKeeperInspection.RepositoryInspection.PackageReferenceType.Nuspec:
                     return NuKeeperAbstractions.PackageReferenceType.Nuspec;
             }
