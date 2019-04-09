@@ -57,6 +57,12 @@ namespace NuKeeper.AzureDevOps
 
             AddCommitFooter(builder);
 
+            if (builder.Length > MaxCharacterCount)
+            {
+                // Strip end of message since Azure DevOps can't handle a bigger pull request description.
+                return $"{builder.ToString(0, MaxCharacterCount - 3)}...";
+            }
+
             return builder.ToString();
         }
 
