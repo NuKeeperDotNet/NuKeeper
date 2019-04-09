@@ -59,7 +59,7 @@ namespace NuKeeper.AzureDevOps
 
             if (builder.Length > MaxCharacterCount)
             {
-                // Strip end of message since Azure DevOps can't handle a bigger pull request description.
+                // Strip end of commit details since Azure DevOps can't handle a bigger pull request description.
                 return $"{builder.ToString(0, MaxCharacterCount - 3)}...";
             }
 
@@ -69,8 +69,7 @@ namespace NuKeeper.AzureDevOps
         private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
         {
             var packageNames = updates
-                .Select(p => CodeQuote(p.SelectedId))
-                .JoinWithCommas();
+                .Select(p => CodeQuote(p.SelectedId)).ToList();
 
             var projects = updates.SelectMany(
                     u => u.CurrentPackages)
@@ -79,9 +78,12 @@ namespace NuKeeper.AzureDevOps
                 .ToList();
 
             var projectOptS = (projects.Count > 1) ? "s" : string.Empty;
-
             builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
-            builder.AppendLine(packageNames);
+            foreach (var packageName in packageNames)
+            {
+                builder.AppendLine($"- {packageName}");
+            }
+
             builder.AppendLine("");
             builder.AppendLine("## Details of updated packages:");
             builder.AppendLine("");
