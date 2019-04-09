@@ -77,10 +77,16 @@ namespace NuKeeper.Gitlab
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// /GET /repos/{owner}/{repo}/branches/{branch} https://try.gitea.io/api/swagger#/repository/repoGetBranch
+        /// </summary>
+        /// <param name="userName">the owner</param>
+        /// <param name="repositoryName">the repo name</param>
+        /// <param name="branchName">branch to check</param>
+        /// <returns>true if exist</returns>
         public async Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName)
         {
-            var result = await _client.CheckExistingBranch(userName, repositoryName, branchName);
-
+            var result = await _client.GetRepositoryBranch(userName, repositoryName, branchName);
             return result != null;
         }
 

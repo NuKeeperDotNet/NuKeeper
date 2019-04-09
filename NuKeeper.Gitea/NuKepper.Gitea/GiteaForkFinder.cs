@@ -5,7 +5,7 @@ using NuKeeper.Abstractions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace NuKepper.Gitea
+namespace NuKeeper.Gitea
 {
     public class GiteaForkFinder : IForkFinder
     {

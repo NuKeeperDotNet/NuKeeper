@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace NuKeeper.Gitea.Model
 {
-    internal class User
+    public class User
     {
         [JsonProperty("avatur_url")]
         public string AvatarUrl { get; set; }

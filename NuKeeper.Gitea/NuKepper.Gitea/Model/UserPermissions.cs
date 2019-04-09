@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace NuKeeper.Gitea.Model
 {
-    internal class UserPermissions
+    public class UserPermissions
     {
         [JsonProperty("admin")]
         public bool IsAdmin { get; set; }

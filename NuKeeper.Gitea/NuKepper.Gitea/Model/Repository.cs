@@ -3,7 +3,7 @@ using System;
 
 namespace NuKeeper.Gitea.Model
 {
-    internal class Repository
+    public class Repository
     {
         [JsonProperty("archived")]
         public bool IsArchived { get; set; }

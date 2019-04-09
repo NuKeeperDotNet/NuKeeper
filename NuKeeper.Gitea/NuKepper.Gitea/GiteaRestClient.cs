@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Gitea.Model;
 
 namespace NuKeeper.Gitlab
 {
@@ -31,66 +31,71 @@ namespace NuKeeper.Gitlab
         /// GET /user https://try.gitea.io/api/swagger#/user/userGetCurrent
         /// </summary>
         /// <returns>returns the current user</returns>
-        public async Task<Model.User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
-            return await GetResource<Model.User>("user");
+            return await GetResource<User>("user");
         }
 
-        // https://docs.gitlab.com/ee/api/projects.html#get-single-project
-        // GET /projects/:id
-        public async Task<Model.RepoInfo> GetRepository(string ownerName, string repositoryName)
+        /// <summary>
+        /// GET /repos/{owner}/{repo} https://try.gitea.io/api/swagger#/repository/repoGet
+        /// </summary>
+        /// <param name="ownerName"></param>
+        /// <param name="repositoryName"></param>
+        /// <returns></returns>
+        public async Task<Repository> GetRepository(string ownerName, string repositoryName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
-            return await GetResource<Model.RepoInfo>($"projects/{encodedProjectName}");
+            var encodedProjectName = HttpUtility.UrlEncode($"{ownerName}/{repositoryName}");
+            return await GetResource<Repository>($"repos/{encodedProjectName}");
         }
-
-        // https://docs.gitlab.com/ee/api/branches.html#get-single-repository-branch
-        // GET /projects/:id/repository/branches/:branch
-        public async Task<Model.BranchInfo> CheckExistingBranch(string projectName, string repositoryName,
+        /// <summary>
+        /// /GET /repos/{owner}/{repo}/branches/{branch} https://try.gitea.io/api/swagger#/repository/repoGetBranch
+        /// </summary>
+        /// <param name="userName">the owner</param>
+        /// <param name="repositoryName">the repo name</param>
+        /// <param name="branchName">branch to check</param>
+        public async Task<BranchInfo> GetRepositoryBranch(string userName, string repositoryName,
             string branchName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
+            var encodedProjectName = HttpUtility.UrlEncode($"{userName}/{repositoryName}");
             var encodedBranchName = HttpUtility.UrlEncode(branchName);
 
-            return await GetResource<Model.BranchInfo>(
-                $"projects/{encodedProjectName}/repository/branches/{encodedBranchName}",
-                statusCode => statusCode == HttpStatusCode.NotFound
-                    ? Result<Model.Branch>.Success(null)
-                    : Result<Model.Branch>.Failure());
+            return await GetResource<BranchInfo>(
+                $"repos/{encodedProjectName}/branches/{encodedBranchName}");
         }
 
         // https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
         // POST /projects/:id/merge_requests
-        public Task<Model.MergeRequest> OpenMergeRequest(string projectName, string repositoryName, Model.MergeRequest mergeRequest)
+        public Task<MergeRequest> OpenMergeRequest(string projectName, string repositoryName, MergeRequest mergeRequest)
         {
             var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
 
             var content = new StringContent(JsonConvert.SerializeObject(mergeRequest), Encoding.UTF8,
                 "application/json");
-            return PostResource<Model.MergeRequest>($"projects/{encodedProjectName}/merge_requests", content);
+            return PostResource<MergeRequest>($"projects/{encodedProjectName}/merge_requests", content);
         }
 
-        private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, T> customErrorHandling = null, [CallerMemberName] string caller = null)
+        private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, T, T> customErrorHandling = null, [CallerMemberName] string caller = null)
+            where T : class
         {
             var fullUrl = new Uri(url, UriKind.Relative);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
             var response = await _client.GetAsync(fullUrl);
-            return await HandleResponse(response, customErrorHandling, caller);
+            return await HandleResponse<T>(response, caller);
         }
 
-        private async Task<T> PostResource<T>(string url, HttpContent content, Func<HttpStatusCode, T> customErrorHandling = null, [CallerMemberName] string caller = null)
+        private async Task<T> PostResource<T>(string url, HttpContent content, [CallerMemberName] string caller = null)
+            where T : class
         {
             _logger.Detailed($"{caller}: Requesting {url}");
 
             var response = await _client.PostAsync(url, content);
 
-            return await HandleResponse(response, customErrorHandling, caller);
+            return await HandleResponse<T>(response, caller);
         }
 
-        private async Task<T> HandleResponse<T>(HttpResponseMessage response,
-            Func<HttpStatusCode, T> customErrorHandling,
-            [CallerMemberName] string caller = null)
+        private async Task<T> HandleResponse<T>(HttpResponseMessage response, 
+            [CallerMemberName] string caller = null) where T : class
         {
             string msg;
 
@@ -100,13 +105,13 @@ namespace NuKeeper.Gitlab
             {
                 _logger.Detailed($"Response {response.StatusCode} is not success, body:\n{responseBody}");
 
-                if (customErrorHandling != null)
-                {
-                    var result = customErrorHandling(response.StatusCode);
+                //if (customErrorHandling != null)
+                //{
+                //    var result = customErrorHandling(response.StatusCode);
 
-                    if (result.IsSuccessful)
-                        return result.Value;
-                }
+                //    if (result != null)
+                //        return result;
+                // }
 
                 switch (response.StatusCode)
                 {

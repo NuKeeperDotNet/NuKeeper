@@ -1,4 +1,4 @@
-﻿namespace NuKeeper.Gitlab.Model
+namespace NuKeeper.Gitea.Model
 {
     public class BranchInfo
     {
