@@ -31,7 +31,7 @@ namespace NuKeeper.Gitea.Tests
         [Test]
         public void UpdatesAuthenticationTokenFromTheEnvironment()
         {
-            _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_gitlab_token").Returns("envToken");
+            _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_gitea_token").Returns("envToken");
 
             var settings = new CollaborationPlatformSettings
             {
@@ -40,15 +40,23 @@ namespace NuKeeper.Gitea.Tests
 
             _giteaSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
-            Assert.AreEqual(settings.Token, "envToken");
+            Assert.AreEqual("envToken", settings.Token);
         }
 
         [Test]
-        public void AssumesItCanReadGitLabUrls()
+        public void AssumesItCanReadGiteaUrls()
         {
             var canRead = _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/SharpSteff/NuKeeper-TestFork"));
 
             Assert.AreEqual(true, canRead);
+        }
+
+        [Test]
+        public void AssumesItCanNotReadGitHubUrls()
+        {
+            var canRead = _giteaSettingsReader.CanRead(new Uri("https://github.com/SharpSteff/NuKeeper-TestFork"));
+
+            Assert.AreNotEqual(true, canRead);
         }
 
         [TestCase(null)]
@@ -62,7 +70,7 @@ namespace NuKeeper.Gitea.Tests
             Assert.AreEqual(new Uri("https://try.gitea.io/api/v1/"), repositorySettings.ApiUri);
             Assert.AreEqual(repositoryUri, repositorySettings.RepositoryUri);
             Assert.AreEqual("SharpSteff", repositorySettings.RepositoryOwner);
-            Assert.AreEqual("NuKeeperTestFork", repositorySettings.RepositoryName);
+            Assert.AreEqual("NuKeeper-TestFork", repositorySettings.RepositoryName);
             Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
         }
     }

@@ -30,16 +30,18 @@ namespace NuKeeper.Gitea
 
             try
             {
-                // There is no real identifier for gitea repos so try to get the gitea version
-                var client = new HttpClient
+                var baseaddress = repositoryUri.OriginalString.Replace(repositoryUri.LocalPath, "");
+
+                // There is no real identifier for gitea repos so try to get the gitea swagger json
+                var client = new HttpClient()
                 {
-                    BaseAddress = new Uri(repositoryUri.Host)
+                    BaseAddress = new Uri(baseaddress)
                 };
 
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = client.GetAsync($"{ApiBaseAdress}/version").Result;
+                HttpResponseMessage response = client.GetAsync($"swagger.v1.json").Result;
                 if (response.IsSuccessStatusCode)
                 {
                     return true;

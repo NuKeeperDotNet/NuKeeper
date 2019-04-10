@@ -105,7 +105,7 @@ namespace NuKeeper.Gitea
             return PostResource<PullRequest>($"repos/{encodedProjectName}/pulls", content);
         }
 
-        private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, T, T> customErrorHandling = null, [CallerMemberName] string caller = null)
+        private async Task<T> GetResource<T>(string url, [CallerMemberName] string caller = null)
             where T : class
         {
             var fullUrl = new Uri(url, UriKind.Relative);
