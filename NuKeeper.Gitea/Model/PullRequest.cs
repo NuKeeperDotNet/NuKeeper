@@ -23,13 +23,13 @@ namespace NuKeeper.Gitea.Model
         public string Body { get; set; }
 
         [JsonProperty("closed_at")]
-        public DateTime CloseDate { get; set; }
+        public DateTime? CloseDate { get; set; }
 
         [JsonProperty("created_at")]
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         [JsonProperty("due_date")]
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
 
         [JsonProperty("comments")]
         public long Comments { get; set; }
@@ -62,7 +62,7 @@ namespace NuKeeper.Gitea.Model
         public bool IsMerged { get; set; }
 
         [JsonProperty("merged_at")]
-        public DateTime MergedAt { get; set; }
+        public DateTime? MergedAt { get; set; }
 
         [JsonProperty("merged_by")]
         public User MergedBy { get; set; }
@@ -74,7 +74,7 @@ namespace NuKeeper.Gitea.Model
         public string PatchUrl { get; set; }
 
         [JsonProperty("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         [JsonProperty("url")]
         public string Url { get; set; }

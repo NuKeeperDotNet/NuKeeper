@@ -34,6 +34,6 @@ namespace NuKeeper.Gitea.Model
         }
 
         [JsonProperty("labels")]
-        public IEnumerable<string> Labels { get; set; }
+        public IEnumerable<long> Labels { get; set; }
     }
 }

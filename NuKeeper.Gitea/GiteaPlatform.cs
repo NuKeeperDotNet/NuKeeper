@@ -47,7 +47,10 @@ namespace NuKeeper.Gitea
                 Head = request.Head,
                 Body = request.Body,
                 Base = request.BaseRef,
-                Labels = labels
+                Labels = new long[] { 0 },
+
+                // Gitea needs a due date for its pull requests
+                DueDate = DateTime.Now.AddDays(7)
             };
 
             await _client.OpenPullRequest(projectName, repositoryName, mergeRequest);
