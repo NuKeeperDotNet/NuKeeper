@@ -25,7 +25,7 @@ namespace NuKeeper.Gitea
             _logger = logger;
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Add("Private-Token", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", token);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace NuKeeper.Gitea
         /// <returns></returns>
         public async Task<Repository> GetRepository(string ownerName, string repositoryName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{ownerName}/{repositoryName}");
+            var encodedProjectName = $"{ownerName}/{repositoryName}";
             return await GetResource<Repository>($"repos/{encodedProjectName}");
         }
 

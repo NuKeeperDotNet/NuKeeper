@@ -106,11 +106,11 @@ namespace NuKeeper.Gitea
             return new Repository(
                 repo.Name,
                 repo.IsArchived,
-                new UserPermissions(repo.UserPermissions.IsAdmin, repo.UserPermissions.IsPush, repo.UserPermissions.IsPull),
+                new UserPermissions(repo.permissions.admin, repo.permissions.push, repo.permissions.push),
                 new Uri(repo.CloneUrl),
-                new User(repo.Owner.Login, repo.Owner.FullName, repo.Owner.Email),
+                new User(repo.owner.login, repo.owner.full_name, repo.owner.email),
                 repo.IsFork,
-                repo.Parent != null ? MapRepository(repo.Parent) : null);
+                repo.parent != null ? MapRepository(repo.parent) : null);
         }
     }
 }
