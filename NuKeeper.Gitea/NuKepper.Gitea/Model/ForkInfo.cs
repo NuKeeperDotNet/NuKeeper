@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace NuKeeper.Gitea
+namespace NuKeeper.Gitea.Model
 {
     public class ForkInfo
     {

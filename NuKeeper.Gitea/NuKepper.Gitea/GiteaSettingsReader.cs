@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -10,27 +12,50 @@ namespace NuKeeper.Gitlab
     public class GiteaSettingsReader : ISettingsReader
     {
         private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
-        private const string GitLabTokenEnvironmentVariableName = "NuKeeper_gitlab_token";
-        private const string UrlPattern = "https://gitlab.com/{username}/{projectname}.git";
+        private const string GiteaTokenEnvironmentVariableName = "NuKeeper_gitea_token";
+        private const string UrlPattern = "https://yourgiteaserver/{owner}/{repo}.git";
+        private const string ApiBaseAdress = "/api/v1/";
 
         public GiteaSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
         {
             _environmentVariablesProvider = environmentVariablesProvider;
         }
 
-        public Platform Platform => Platform.GitLab;
+        public Platform Platform => Platform.Gitea;
 
         public bool CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null)
                 return false;
 
-            return repositoryUri.Host.Contains("gitlab", StringComparison.OrdinalIgnoreCase);
+            try
+            {
+                // There is no real identifier for gitea repos so try to get the gitea version
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(repositoryUri.Host)
+                };
+
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = client.GetAsync($"{ApiBaseAdress}/version").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine("Error during repo check\n\r{0}", ex.Message);
+            }
+
+            return false;
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
-            var envToken = _environmentVariablesProvider.GetEnvironmentVariable(GitLabTokenEnvironmentVariableName);
+            var envToken = _environmentVariablesProvider.GetEnvironmentVariable(GiteaTokenEnvironmentVariableName);
 
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
@@ -43,7 +68,7 @@ namespace NuKeeper.Gitlab
                     $"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
-            // Assumption - url should look like https://gitlab.com/{username}/{projectname}.git";
+            // Assumption - url should look like https://yourgiteaUrl/{username}/{projectname}.git";
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -58,7 +83,8 @@ namespace NuKeeper.Gitlab
             var repoOwner = pathParts[0];
             var repoName = pathParts[1].Replace(".git", string.Empty);
 
-            var uriBuilder = new UriBuilder(repositoryUri) { Path = "/api/v4/" };
+            // [ Base URL: /api/v1 ] https://try.gitea.io/api/swagger#
+            var uriBuilder = new UriBuilder(repositoryUri) { Path = ApiBaseAdress };
 
             return new RepositorySettings
             {
