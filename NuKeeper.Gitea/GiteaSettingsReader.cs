@@ -7,7 +7,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 
-namespace NuKeeper.Gitlab
+namespace NuKeeper.Gitea
 {
     public class GiteaSettingsReader : ISettingsReader
     {

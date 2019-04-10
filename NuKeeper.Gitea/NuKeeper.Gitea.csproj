@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
+    <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
