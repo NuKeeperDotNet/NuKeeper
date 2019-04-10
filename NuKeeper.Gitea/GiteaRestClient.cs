@@ -67,11 +67,14 @@ namespace NuKeeper.Gitea
         public async Task<BranchInfo> GetRepositoryBranch(string userName, string repositoryName,
             string branchName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{userName}/{repositoryName}");
+            var encodedProjectName = $"{userName}/{repositoryName}";
             var encodedBranchName = HttpUtility.UrlEncode(branchName);
 
             return await GetResource<BranchInfo>(
-                $"repos/{encodedProjectName}/branches/{encodedBranchName}");
+                $"repos/{encodedProjectName}/branches/{encodedBranchName}",
+            statusCode => statusCode == HttpStatusCode.NotFound
+                    ? Result<Model.BranchInfo>.Success(null)
+                    : Result<Model.BranchInfo>.Failure());
         }
 
         /// <summary>
@@ -98,34 +101,35 @@ namespace NuKeeper.Gitea
         /// <returns></returns>
         public Task<PullRequest> OpenPullRequest(string owner, string repositoryName, CreatePullRequestOption pullRequest)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{owner}/{repositoryName}");
+            var encodedProjectName = $"{owner}/{repositoryName}";
 
             var content = new StringContent(JsonConvert.SerializeObject(pullRequest), Encoding.UTF8,
                 "application/json");
             return PostResource<PullRequest>($"repos/{encodedProjectName}/pulls", content);
         }
 
-        private async Task<T> GetResource<T>(string url, [CallerMemberName] string caller = null)
+        private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)
             where T : class
         {
             var fullUrl = new Uri(url, UriKind.Relative);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
             var response = await _client.GetAsync(fullUrl);
-            return await HandleResponse<T>(response, caller);
+            return await HandleResponse<T>(response, customErrorHandling, caller);
         }
 
-        private async Task<T> PostResource<T>(string url, HttpContent content, [CallerMemberName] string caller = null)
+        private async Task<T> PostResource<T>(string url, HttpContent content, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)
             where T : class
         {
             _logger.Detailed($"{caller}: Requesting {url}");
 
             var response = await _client.PostAsync(url, content);
 
-            return await HandleResponse<T>(response, caller);
+            return await HandleResponse<T>(response, customErrorHandling, caller);
         }
 
-        private async Task<T> HandleResponse<T>(HttpResponseMessage response, 
+        private async Task<T> HandleResponse<T>(HttpResponseMessage response,
+            Func<HttpStatusCode, Result<T>> customErrorHandling,
             [CallerMemberName] string caller = null) where T : class
         {
             string msg;
@@ -135,6 +139,14 @@ namespace NuKeeper.Gitea
             if (!response.IsSuccessStatusCode)
             {
                 _logger.Detailed($"Response {response.StatusCode} is not success, body:\n{responseBody}");
+
+                if (customErrorHandling != null)
+                {
+                    var result = customErrorHandling(response.StatusCode);
+
+                    if (result.IsSuccessful)
+                        return result.Value;
+                }
 
                 switch (response.StatusCode)
                 {
