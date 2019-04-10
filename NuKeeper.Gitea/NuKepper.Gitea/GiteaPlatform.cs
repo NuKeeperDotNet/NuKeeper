@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -7,7 +8,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 
-namespace NuKeeper.Gitlab
+namespace NuKeeper.Gitea
 {
     public class GiteaPlatform : ICollaborationPlatform
     {
@@ -40,22 +41,22 @@ namespace NuKeeper.Gitlab
             var projectName = target.Owner;
             var repositoryName = target.Name;
 
-            var mergeRequest = new MergeRequest
+            var mergeRequest = new Model.CreatePullRequestOption
             {
                 Title = request.Title,
-                SourceBranch = request.Head,
-                Description = request.Body,
-                TargetBranch = request.BaseRef,
-                Id = $"{projectName}/{repositoryName}"
+                Head = request.Head,
+                Body = request.Body,
+                Base = request.BaseRef,
+                Labels = labels
             };
 
-            await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest);
+            await _client.OpenPullRequest(projectName, repositoryName, mergeRequest);
         }
 
-        public Task<IReadOnlyList<Organization>> GetOrganizations()
+        public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
-            _logger.Error("GitLab organizations have not yet been implemented.");
-            throw new NotImplementedException();
+            var orgas = await _client.GetOrganizations();
+            return orgas.Select(x => MapOrganization(x)).ToList();
         }
 
         public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
@@ -67,14 +68,13 @@ namespace NuKeeper.Gitlab
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
         {
             var repo = await _client.GetRepository(userName, repositoryName);
-
-            return new Repository(repo.)
+            return MapRepository(repo);
         }
 
-        public Task<Repository> MakeUserFork(string owner, string repositoryName)
+        public async Task<Repository> MakeUserFork(string owner, string repositoryName)
         {
-            _logger.Error($"{ForkMode.PreferFork} has not yet been implemented for GitLab.");
-            throw new NotImplementedException();
+            var fork = await _client.ForkRepository(owner, repositoryName, null);
+            return MapRepository(fork);
         }
 
         /// <summary>
@@ -94,6 +94,23 @@ namespace NuKeeper.Gitlab
         {
             _logger.Error($"Search has not yet been implemented for GitLab.");
             throw new NotImplementedException();
+        }
+
+        private Organization MapOrganization(Gitea.Model.Organization x)
+        {
+            return new Organization(x.FullName);
+        }
+
+        private Repository MapRepository(Gitea.Model.Repository repo)
+        {
+            return new Repository(
+                repo.Name,
+                repo.IsArchived,
+                new UserPermissions(repo.UserPermissions.IsAdmin, repo.UserPermissions.IsPush, repo.UserPermissions.IsPull),
+                new Uri(repo.CloneUrl),
+                new User(repo.Owner.Login, repo.Owner.FullName, repo.Owner.Email),
+                repo.IsFork,
+                repo.Parent != null ? MapRepository(repo.Parent) : null);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,7 +12,7 @@ using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Gitea.Model;
 
-namespace NuKeeper.Gitlab
+namespace NuKeeper.Gitea
 {
     public class GiteaRestClient
     {
@@ -47,6 +48,16 @@ namespace NuKeeper.Gitlab
             var encodedProjectName = HttpUtility.UrlEncode($"{ownerName}/{repositoryName}");
             return await GetResource<Repository>($"repos/{encodedProjectName}");
         }
+
+        /// <summary>
+        /// GET /admin/orgs https://try.gitea.io/api/swagger#/admin/adminGetAllOrgs
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Model.Organization>> GetOrganizations()
+        {
+            return await GetResource<List<Organization>>("admin/orgs");
+        }
+
         /// <summary>
         /// /GET /repos/{owner}/{repo}/branches/{branch} https://try.gitea.io/api/swagger#/repository/repoGetBranch
         /// </summary>
@@ -63,15 +74,35 @@ namespace NuKeeper.Gitlab
                 $"repos/{encodedProjectName}/branches/{encodedBranchName}");
         }
 
-        // https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
-        // POST /projects/:id/merge_requests
-        public Task<MergeRequest> OpenMergeRequest(string projectName, string repositoryName, MergeRequest mergeRequest)
+        /// <summary>
+        /// /POST /repos/{owner}/{repo}/forks https://try.gitea.io/api/swagger#/repository/createFork
+        /// </summary>
+        /// <param name="ownerName">owner of the repo to fork</param>
+        /// <param name="repositoryName">name of the repo to fork</param>
+        /// <returns></returns>
+        public Task<Repository> ForkRepository(string ownerName, string repositoryName, string organizationName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
-
-            var content = new StringContent(JsonConvert.SerializeObject(mergeRequest), Encoding.UTF8,
+            var encodedProjectName = HttpUtility.UrlEncode($"{ownerName}/{repositoryName}");
+            var content = new StringContent(JsonConvert.SerializeObject(new ForkInfo(organizationName)), Encoding.UTF8,
                 "application/json");
-            return PostResource<MergeRequest>($"projects/{encodedProjectName}/merge_requests", content);
+
+            return PostResource<Repository>($"repos/{encodedProjectName}/forks", content);
+        }
+
+        /// <summary>
+        /// /POST /repos/{owner}/{repo}/pulls Create a pull request
+        /// </summary>
+        /// <param name="owner">owner of the repo</param>
+        /// <param name="repositoryName">name of the repository</param>
+        /// <param name="pullRequest">pull request information</param>
+        /// <returns></returns>
+        public Task<PullRequest> OpenPullRequest(string owner, string repositoryName, CreatePullRequestOption pullRequest)
+        {
+            var encodedProjectName = HttpUtility.UrlEncode($"{owner}/{repositoryName}");
+
+            var content = new StringContent(JsonConvert.SerializeObject(pullRequest), Encoding.UTF8,
+                "application/json");
+            return PostResource<PullRequest>($"repos/{encodedProjectName}/pulls", content);
         }
 
         private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, T, T> customErrorHandling = null, [CallerMemberName] string caller = null)
@@ -104,14 +135,6 @@ namespace NuKeeper.Gitlab
             if (!response.IsSuccessStatusCode)
             {
                 _logger.Detailed($"Response {response.StatusCode} is not success, body:\n{responseBody}");
-
-                //if (customErrorHandling != null)
-                //{
-                //    var result = customErrorHandling(response.StatusCode);
-
-                //    if (result != null)
-                //        return result;
-                // }
 
                 switch (response.StatusCode)
                 {
