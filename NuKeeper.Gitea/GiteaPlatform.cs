@@ -49,7 +49,7 @@ namespace NuKeeper.Gitea
                 Base = request.BaseRef,
                 Labels = new long[] { 0 },
 
-                // Gitea needs a due date for its pull requests
+                // Gitea needs a due date for its pull requests. Maybe get this from the config file?
                 DueDate = DateTime.Now.AddDays(7)
             };
 
@@ -109,7 +109,7 @@ namespace NuKeeper.Gitea
             return new Repository(
                 repo.Name,
                 repo.IsArchived,
-                new UserPermissions(repo.permissions.admin, repo.permissions.push, repo.permissions.push),
+                new UserPermissions(repo.permissions.IsAdmin, repo.permissions.IsPush, repo.permissions.IsPull),
                 new Uri(repo.CloneUrl),
                 new User(repo.owner.login, repo.owner.full_name, repo.owner.email),
                 repo.IsFork,
