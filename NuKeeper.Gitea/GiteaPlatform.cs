@@ -64,7 +64,7 @@ namespace NuKeeper.Gitea
 
         public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
-            _logger.Error("GitLab organizations have not yet been implemented.");
+            _logger.Error("Gitea organizations have not yet been implemented.");
             throw new NotImplementedException();
         }
 
@@ -95,7 +95,7 @@ namespace NuKeeper.Gitea
 
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
-            _logger.Error($"Search has not yet been implemented for GitLab.");
+            _logger.Error($"Search has not yet been implemented for Gitea.");
             throw new NotImplementedException();
         }
 
