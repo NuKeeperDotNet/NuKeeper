@@ -1,4 +1,4 @@
-baseUrl = "NuKeeperWebsite"
+baseUrl = "/NuKeeperWebsite"
 languageCode = "en-us"
 title = "NuKeeper"
 theme = "hugo-theme-learn"
