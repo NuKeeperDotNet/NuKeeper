@@ -59,6 +59,16 @@ namespace NuKeeper.Gitea
         }
 
         /// <summary>
+        /// /GET /orgs/{org}/repos List an organization's repos https://try.gitea.io/api/swagger#/organization/orgListRepos
+        /// </summary>
+        /// <param name="orgaName">name of the organization</param>
+        /// <returns>list of repos </returns>
+        public async Task<List<Repository>> GetOrgaRepositories(string orgaName)
+        {
+            return await GetResource<List<Repository>>($"/orgs/{orgaName}/repos");
+        }
+
+        /// <summary>
         /// /GET /repos/{owner}/{repo}/branches/{branch} https://try.gitea.io/api/swagger#/repository/repoGetBranch
         /// </summary>
         /// <param name="userName">the owner</param>

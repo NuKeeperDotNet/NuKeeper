@@ -59,13 +59,13 @@ namespace NuKeeper.Gitea
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
             var orgas = await _client.GetOrganizations();
-            return orgas.Select(x => MapOrganization(x)).ToList();
+            return orgas?.Select(x => MapOrganization(x)).ToList() ?? new List<Organization>();
         }
 
-        public Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
+        public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organizationName)
         {
-            _logger.Error("Gitea organizations have not yet been implemented.");
-            throw new NotImplementedException();
+            var repos = await _client.GetOrgaRepositories(organizationName);
+            return repos?.Select(x => MapRepository(x)).ToList() ?? new List<Repository>();
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
