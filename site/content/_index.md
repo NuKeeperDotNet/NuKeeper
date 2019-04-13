@@ -18,9 +18,9 @@ NuKeeper works for .NET Framework and for .NET Core projects. It also has the ab
 
 Integration with the following platforms is supported.
 
-|     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |
-|:------------------:|:------------------:|:------------------:| :------------------:|
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  |
+|     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |       Gitea         |
+|:------------------:|:------------------:|:------------------:| :------------------:| :------------------:|
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  | :x:                 |
 
 ### Commands
 
@@ -54,8 +54,3 @@ NuKeeper is licensed under the [Apache License](http://opensource.org/licenses/a
 ### Acknowledgements
 
 Logos by [area55](https://github.com/area55git), licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
-
-
-<p align="center">
-  <img src="/img/NuKeeper.svg" />
-</p>
