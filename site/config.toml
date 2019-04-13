@@ -13,3 +13,15 @@ enableEmoji = true
 
 [outputs]
 home = [ "HTML", "RSS", "JSON"]
+
+
+[[menu.shortcuts]]
+name = "<i class='fab fa-fw fa-github'></i> Repo Github"
+url = "https://github.com/NuKeeperDotNet/NuKeeper"
+weight = 10
+
+[[menu.shortcuts]]
+name = "<i class='fas fa-fw fa-bullhorn'></i> Contributors"
+url = "/Contributors"
+weight = 20
+
