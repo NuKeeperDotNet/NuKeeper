@@ -1,6 +1,6 @@
 
 # NuKeeper
-Nukeeper is a tool to Automagically update NuGet packages in all .NET projects. It has command for local usage and for making PR's to a repostiory on all kinds of git hosting platforms. It supports .NET framework and .NET Core.
+Nukeeper is a tool to `automagically` update NuGet packages in all .NET projects. It has command for local usage and for making PR's to a repository on all kinds of git hosting platforms. It supports .NET framework and .NET Core.
  
 ### Quick install
 
