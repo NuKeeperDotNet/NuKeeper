@@ -7,7 +7,7 @@ Use the inspect command to show updates that can be applied to a solution.
 
 Inspect the current folder:
 
-```bat
+```sh
 cd C:\code\MyApp
 nukeeper inspect
 ```
@@ -22,6 +22,6 @@ Swashbuckle.AspNetCore to 2.5.0 from 2.4.0 in 1 place since 6 days ago.
 
 You can inspect a different folder:
 
-```bat
+```sh
 nukeeper inspect C:\code\MyApp
 ```

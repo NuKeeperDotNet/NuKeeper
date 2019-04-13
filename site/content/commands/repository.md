@@ -13,13 +13,13 @@ In order to work with repositories, you will first need a personal access token.
 
 [Github](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 
-```bat
+```sh
 nukeeper repo https://github.com/myorg/myrepo token
 ```
 
 [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts)
 
-```bat
+```sh
 nukeeper repo https://dev.azure.com/{org}/{project}/_git/{repo}/ token
 ```
 The minimum scope of access associated for the token to make NuKeeper work is "Code (Read & write)".
@@ -28,13 +28,13 @@ The minimum scope of access associated for the token to make NuKeeper work is "C
 
 I want one Pull Request that applies a top ten updates to my repository
 
-```bat
+```sh
 nukeeper repo url token --maxpackageupdates 10 --consolidate
 ```
 
 I want one Pull Request that applies  updates to all packages of the AWS SDK:
 
-```bat
+```sh
 nukeeper repo url token --maxpackageupdates 100 --include ^AWSSDK. --consolidate
 ```
 
@@ -52,7 +52,7 @@ The token is a secret; often you don't want to put it on the command line, e.g. 
  `NuKeeper_github_token`
 `Nukeeper_azure_devops_token`
 
-```bat
+```sh
 set NuKeeper_github_token=mygithubtoken
 ```
 
