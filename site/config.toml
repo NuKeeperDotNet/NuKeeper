@@ -6,6 +6,7 @@ enableEmoji = true
 [params]
   editURL = "https://github.com/NuKeeperDotnet/NuKeeper/edit/master/site/content/"
   description = "Documentation for NuKeeper"
+  themeVariant = "nukeeper"
   showVisitedLinks = false
   disableBreadcrumb = false
   disableNextPrev = true
