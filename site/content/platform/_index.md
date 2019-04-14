@@ -9,4 +9,4 @@ chapter: true
 
 # Platform support
 
-These are al the supported platforms. Find instruction on how to use NuKeeper with your platform by selecting an item from the menu.
+These are all the supported platforms. Find instruction on how to use NuKeeper with your platform by selecting an item from the menu.
