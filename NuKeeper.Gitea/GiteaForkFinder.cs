@@ -15,10 +15,10 @@ namespace NuKeeper.Gitea
 
         public GiteaForkFinder(ICollaborationPlatform collaborationPlatform, INuKeeperLogger logger, ForkMode forkMode)
         {
-            if (forkMode != ForkMode.SingleRepositoryOnly)
-            {
-                throw new ArgumentOutOfRangeException(nameof(forkMode), $"{_forkMode} has not yet been implemented");
-            }
+            //if (forkMode != ForkMode.SingleRepositoryOnly)
+            //{
+            //    throw new ArgumentOutOfRangeException(nameof(forkMode), $"{_forkMode} has not yet been implemented");
+            //}
 
             _collaborationPlatform = collaborationPlatform;
             _logger = logger;
