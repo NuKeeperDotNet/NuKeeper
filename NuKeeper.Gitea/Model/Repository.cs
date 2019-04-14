@@ -21,7 +21,7 @@ namespace NuKeeper.Gitea.Model
         public string Name { get; set; }
 
         [JsonProperty("fork")]
-        public bool IsFork { get; }
+        public bool IsFork { get; set; }
 
         [JsonProperty("id")]
         public int Id { get; set; }

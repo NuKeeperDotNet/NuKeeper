@@ -2,6 +2,7 @@ using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.GitHub;
 using System;
 using System.Threading.Tasks;
 
@@ -152,8 +153,8 @@ namespace NuKeeper.Gitea
                 return false;
             }
 
-            var userParentUrl = userRepo.Parent.CloneUrl;
-            var originUrl = originRepo;
+            var userParentUrl = GithubUriHelpers.Normalise(userRepo.Parent.CloneUrl);
+            var originUrl = GithubUriHelpers.Normalise(originRepo);
 
             return userParentUrl.Equals(originUrl);
         }
