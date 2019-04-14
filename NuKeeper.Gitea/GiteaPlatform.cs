@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -70,8 +71,16 @@ namespace NuKeeper.Gitea
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
         {
-            var repo = await _client.GetRepository(userName, repositoryName);
-            return MapRepository(repo);
+            try
+            {
+                var repo = await _client.GetRepository(userName, repositoryName);
+                return MapRepository(repo);
+            }
+            catch (NuKeeperException)
+            { 
+                _logger.Detailed("User repo not found");
+                return null;
+            }
         }
 
         public async Task<Repository> MakeUserFork(string owner, string repositoryName)

@@ -95,7 +95,7 @@ namespace NuKeeper.Gitea
         /// <returns></returns>
         public Task<Repository> ForkRepository(string ownerName, string repositoryName, string organizationName)
         {
-            var encodedProjectName = HttpUtility.UrlEncode($"{ownerName}/{repositoryName}");
+            var encodedProjectName = $"{ownerName}/{repositoryName}";
             var content = new StringContent(JsonConvert.SerializeObject(new ForkInfo(organizationName)), Encoding.UTF8,
                 "application/json");
 
@@ -134,7 +134,6 @@ namespace NuKeeper.Gitea
             _logger.Detailed($"{caller}: Requesting {url}");
 
             var response = await _client.PostAsync(url, content);
-
             return await HandleResponse<T>(response, customErrorHandling, caller);
         }
 
