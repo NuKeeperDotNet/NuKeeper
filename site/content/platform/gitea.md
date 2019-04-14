@@ -2,7 +2,7 @@
 title: "Gitea"
 ---
 
-NuKeeper has Gitea (https://gitea.io/en-us/) support. This means NuKeeper can create PR's to a *single* gitea repository using the repository command and an access token.
+NuKeeper has [Gitea](https://gitea.io/en-us/) support. This means NuKeeper can create PR's to a *single* gitea repository using the repository command and an access token.
 
  ## Getting the Access Token 
 
