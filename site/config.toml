@@ -1,0 +1,27 @@
+languageCode = "en-us"
+title = "NuKeeper"
+theme = "hugo-theme-learn"
+enableEmoji = true
+
+[params]
+  editURL = "https://github.com/NuKeeperDotnet/NuKeeper/edit/master/site/content/"
+  description = "Documentation for NuKeeper"
+  themeVariant = "nukeeper"
+  showVisitedLinks = false
+  disableBreadcrumb = false
+  disableNextPrev = true
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+
+[[menu.shortcuts]]
+name = "<i class='fab fa-fw fa-github'></i> Repo Github"
+url = "https://github.com/NuKeeperDotNet/NuKeeper"
+weight = 10
+
+[[menu.shortcuts]]
+name = "<i class='fas fa-fw fa-bullhorn'></i> Contributors"
+url = "/Contributors"
+weight = 20
+
