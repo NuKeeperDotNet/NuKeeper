@@ -70,14 +70,14 @@ Give it the following rights:
 
 The repo command works for azure-devops & vsts they same as for the other platforms. You will need a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) to use the repo command.
 
-```batch
+```sh
 nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}/" <PAT>
 ```
 
 ### Additional arguments
 Add any additional arguments that are available for the repo command
 
-```batch
+```sh
 nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}/" <PAT> -m 10
 ```
 The `-m 10` tells NuKeeper that it may update 10 packages. For more parameters checkout the [Configuration](/basics/configuration.md) page.
