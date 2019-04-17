@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Formats;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {

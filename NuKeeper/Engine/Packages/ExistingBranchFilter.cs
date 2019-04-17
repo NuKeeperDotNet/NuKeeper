@@ -1,9 +1,9 @@
-using NuKeeper.Abstractions.CollaborationPlatform;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {

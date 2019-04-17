@@ -4,8 +4,8 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
-using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine

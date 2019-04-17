@@ -8,6 +8,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Logging;
 using NuKeeper.Inspection.NuGetApi;
 using NuKeeper.Inspection.RepositoryInspection;
@@ -38,7 +39,7 @@ namespace NuKeeper.Inspection
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<RepositoryInspection.PackageUpdateSet>> FindPackageUpdateSets(
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
             IFolder workingFolder,
             NuGetSources sources,
             VersionChange allowedChange,
@@ -63,7 +64,7 @@ namespace NuKeeper.Inspection
         }
 
 
-        private IReadOnlyCollection<RepositoryInspection.PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<RepositoryInspection.PackageInProject> all, Regex includes, Regex excludes)
+        private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
         {
             var filteredByIncludeExclude = all
                 .Where(package => RegexMatch.IncludeExclude(package.Id, includes, excludes))
@@ -88,7 +89,7 @@ namespace NuKeeper.Inspection
             return filteredByIncludeExclude;
         }
 
-        private IReadOnlyCollection<RepositoryInspection.PackageInProject> FindPackages(IFolder workingFolder)
+        private IReadOnlyCollection<PackageInProject> FindPackages(IFolder workingFolder)
         {
             // scan for nuget packages
             var allPackages = _repositoryScanner.FindAllNuGetPackages(workingFolder);
@@ -105,7 +106,7 @@ namespace NuKeeper.Inspection
                 .ToList();
         }
 
-        private void LogVersionedMetapackage(RepositoryInspection.PackageInProject metaPackage)
+        private void LogVersionedMetapackage(PackageInProject metaPackage)
         {
             _logger.Error($"Metapackage '{metaPackage.Id}' has version {metaPackage.Version} in {metaPackage.Path.FullName}, " +
                   "but should not have explicit version.");

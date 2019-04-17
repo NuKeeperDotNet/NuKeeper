@@ -4,6 +4,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
 

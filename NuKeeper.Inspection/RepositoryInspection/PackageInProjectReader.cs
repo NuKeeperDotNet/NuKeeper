@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

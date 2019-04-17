@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Process;
 using NUnit.Framework;

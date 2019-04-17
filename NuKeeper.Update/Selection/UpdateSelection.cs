@@ -6,6 +6,7 @@ using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Update.Selection
 {
@@ -20,10 +21,10 @@ namespace NuKeeper.Update.Selection
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<Inspection.RepositoryInspection.PackageUpdateSet>> Filter(
-            IReadOnlyCollection<Inspection.RepositoryInspection.PackageUpdateSet> candidates,
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(
+            IReadOnlyCollection<PackageUpdateSet> candidates,
             FilterSettings settings,
-            Func<Inspection.RepositoryInspection.PackageUpdateSet, Task<bool>> remoteCheck)
+            Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             _settings = settings;
             if (settings.MinimumAge != TimeSpan.Zero)
@@ -42,9 +43,9 @@ namespace NuKeeper.Update.Selection
             return capped;
         }
 
-        private async Task<IReadOnlyCollection<Inspection.RepositoryInspection.PackageUpdateSet>> ApplyFilters(
-            IReadOnlyCollection<Inspection.RepositoryInspection.PackageUpdateSet> all,
-            Func<Inspection.RepositoryInspection.PackageUpdateSet, Task<bool>> remoteCheck)
+        private async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyFilters(
+            IReadOnlyCollection<PackageUpdateSet> all,
+            Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             var filteredLocally = all
                 .Where(MatchesMinAge)
@@ -66,9 +67,9 @@ namespace NuKeeper.Update.Selection
             return remoteFiltered;
         }
 
-        public static async Task<IReadOnlyCollection<Inspection.RepositoryInspection.PackageUpdateSet>> ApplyRemoteFilter(
-            IEnumerable<Inspection.RepositoryInspection.PackageUpdateSet> packageUpdateSets,
-            Func<Inspection.RepositoryInspection.PackageUpdateSet, Task<bool>> remoteCheck)
+        public static async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyRemoteFilter(
+            IEnumerable<PackageUpdateSet> packageUpdateSets,
+            Func<PackageUpdateSet, Task<bool>> remoteCheck)
         {
             var results = await packageUpdateSets
                 .WhereAsync(async p => await remoteCheck(p));
@@ -92,7 +93,7 @@ namespace NuKeeper.Update.Selection
             _logger.Minimal(message);
         }
 
-        private bool MatchesMinAge(Inspection.RepositoryInspection.PackageUpdateSet packageUpdateSet)
+        private bool MatchesMinAge(PackageUpdateSet packageUpdateSet)
         {
             if (!_maxPublishedDate.HasValue)
             {
