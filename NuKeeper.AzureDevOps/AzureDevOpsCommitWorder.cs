@@ -154,7 +154,7 @@ namespace NuKeeper.AzureDevOps
                 builder.AppendLine(line);
             }
 
-            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
+            if (SourceIsPublicNuget(updates.Selected.SourceUri))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));

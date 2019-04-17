@@ -9,22 +9,16 @@ namespace NuKeeper.Abstractions
     public class PackageInProject
     {
         public PackageInProject(PackageVersionRange packageVersionRange,
-            PackagePath path,
-            IEnumerable<string> projectReferences = null)
+            PackagePath path)
         {
-            PackageVersionRange = packageVersionRange;
+            Identity = packageVersionRange.SingleVersionIdentity();
             Path = path;
-            ProjectReferences = projectReferences?.ToList() ?? new List<string>();
         }
 
-        public PackageIdentity Identity => PackageVersionRange.SingleVersionIdentity();
-
-        public PackageVersionRange PackageVersionRange { get; }
+        public PackageIdentity Identity { get; }
 
         public PackagePath Path { get; }
 
         public NuGetVersion Version => Identity.Version;
-
-        public IReadOnlyCollection<string> ProjectReferences { get; }
     }
 }
