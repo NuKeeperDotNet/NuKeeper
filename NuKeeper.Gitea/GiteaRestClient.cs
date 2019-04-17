@@ -63,7 +63,7 @@ namespace NuKeeper.Gitea
         /// </summary>
         /// <param name="orgaName">name of the organization</param>
         /// <returns>list of repos </returns>
-        public async Task<List<Repository>> GetOrgaRepositories(string orgaName)
+        public async Task<List<Repository>> GetOrganizationRepositories(string orgaName)
         {
             return await GetResource<List<Repository>>($"/orgs/{orgaName}/repos");
         }

@@ -65,7 +65,7 @@ namespace NuKeeper.Gitea
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organizationName)
         {
-            var repos = await _client.GetOrgaRepositories(organizationName);
+            var repos = await _client.GetOrganizationRepositories(organizationName);
             return repos?.Select(x => MapRepository(x)).ToList() ?? new List<Repository>();
         }
 
