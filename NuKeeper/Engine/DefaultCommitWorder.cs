@@ -148,7 +148,7 @@ namespace NuKeeper.Engine
                 builder.AppendLine(line);
             }
 
-            if (SourceIsPublicNuget(updates.Selected.SourceUri))
+            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
             {
                 builder.AppendLine();
                 builder.AppendLine(NugetPackageLink(updates.Selected.Identity));

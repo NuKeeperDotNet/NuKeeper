@@ -20,10 +20,15 @@ namespace NuKeeper.Abstractions
 
         public VersionChange AllowedChange => Packages.AllowedChange;
 
-        public PackageSearchMedatadata Selected => Packages.Selected;
+        public PackageSearchMedatadata Selected => Packages.Selected();
 
         public string SelectedId => Selected.Identity.Id;
 
         public NuGetVersion SelectedVersion => Selected.Identity.Version;
+
+        public override string ToString()
+        {
+            return $"{SelectedId} to {SelectedVersion} in {CurrentPackages.Count} places";
+        }
     }
 }
