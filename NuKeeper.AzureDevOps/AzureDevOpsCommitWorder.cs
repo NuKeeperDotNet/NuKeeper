@@ -69,7 +69,8 @@ namespace NuKeeper.AzureDevOps
         private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
         {
             var packageNames = updates
-                .Select(p => CodeQuote(p.SelectedId)).ToList();
+                .Select(p => CodeQuote(p.SelectedId))
+                .JoinWithCommas();
 
             var projects = updates.SelectMany(
                     u => u.CurrentPackages)
@@ -78,19 +79,17 @@ namespace NuKeeper.AzureDevOps
                 .ToList();
 
             var projectOptS = (projects.Count > 1) ? "s" : string.Empty;
-            builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
-            foreach (var packageName in packageNames)
-            {
-                builder.AppendLine($"- {packageName}");
-            }
 
-            builder.AppendLine("");
-            builder.AppendLine("## Details of updated packages:");
+            builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
+            builder.AppendLine(packageNames);
+            builder.AppendLine("<details>");
+            builder.AppendLine("<summary>Details of updated packages</summary>");
             builder.AppendLine("");
         }
 
         private static void MultiPackageFooter(StringBuilder builder)
         {
+            builder.AppendLine("</details>");
             builder.AppendLine("");
         }
 
@@ -142,15 +141,18 @@ namespace NuKeeper.AzureDevOps
 
             builder.AppendLine();
 
-            var updateOptS = updates.CurrentPackages.Count > 0 ? "s" : "";
-            builder.AppendLine($"### {updates.CurrentPackages.Count} project update{updateOptS}:");
-
-            builder.AppendLine("| Project | Package | Old | New |");
-            builder.AppendLine("|:--------|:--------|----:|-----:");
+            if (updates.CurrentPackages.Count == 1)
+            {
+                builder.AppendLine("1 project update:");
+            }
+            else
+            {
+                builder.AppendLine($"{updates.CurrentPackages.Count} project updates:");
+            }
 
             foreach (var current in updates.CurrentPackages)
             {
-                var line = $"| {CodeQuote(current.Path.RelativePath)} | {packageId} | {CodeQuote(current.Version.ToString())} |  {CodeQuote(updates.SelectedVersion.ToString())} |";
+                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.SelectedVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
                 builder.AppendLine(line);
             }
 
