@@ -91,7 +91,7 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual("reponame", settings.RepositoryName);
             Assert.AreEqual("owner", settings.RepositoryOwner);
             Assert.NotNull(settings.RemoteInfo);
-            Assert.AreEqual("origin/Feature1", settings.RemoteInfo.BranchName);
+            Assert.AreEqual("Feature1", settings.RemoteInfo.BranchName);
         }
 
         [TestCase(null)]

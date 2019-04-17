@@ -59,7 +59,7 @@ namespace NuKeeper.GitHub
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
-                RemoteInfo = targetBranch != null ? new RemoteInfo { BranchName = $"origin/{targetBranch}" } : null
+                RemoteInfo = targetBranch != null ? new RemoteInfo { BranchName = targetBranch } : null
             };
         }
     }
