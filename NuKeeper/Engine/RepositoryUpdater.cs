@@ -106,8 +106,15 @@ namespace NuKeeper.Engine
 
         private static void GitInit(IGitDriver git, RepositoryData repository)
         {
-            repository.DefaultBranch = repository.DefaultBranch ?? git.GetCurrentHead();
-            git.Clone(repository.Pull.Uri, repository.DefaultBranch);
+            if (repository.DefaultBranch == null)
+            {
+                git.Clone(repository.Pull.Uri);
+                repository.DefaultBranch = git.GetCurrentHead();
+            }
+            else
+            {
+                git.Clone(repository.Pull.Uri, repository.DefaultBranch);
+            }
             git.AddRemote(repository.Remote, repository.Push.Uri);
         }
     }
