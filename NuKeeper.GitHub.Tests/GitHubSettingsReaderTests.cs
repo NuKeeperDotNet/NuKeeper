@@ -39,9 +39,9 @@ namespace NuKeeper.GitHub.Tests
             _gitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
             Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.BaseApiUrl, "https://github.custom.com/");
-            Assert.AreEqual(settings.Token, "accessToken");
-            Assert.AreEqual(settings.ForkMode, ForkMode.PreferFork);
+            Assert.AreEqual(new Uri("https://github.custom.com/"), settings.BaseApiUrl);
+            Assert.AreEqual("accessToken", settings.Token);
+            Assert.AreEqual(ForkMode.PreferFork, settings.ForkMode);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace NuKeeper.GitHub.Tests
 
             _gitHubSettingsReader.UpdateCollaborationPlatformSettings(settings);
 
-            Assert.AreEqual(settings.Token, "envToken");
+            Assert.AreEqual("envToken", settings.Token);
         }
 
         [TestCase(null)]
@@ -75,9 +75,23 @@ namespace NuKeeper.GitHub.Tests
             var settings = _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
 
             Assert.IsNotNull(settings);
-            Assert.AreEqual(settings.RepositoryUri, "https://github.com/owner/reponame.git");
-            Assert.AreEqual(settings.RepositoryName, "reponame");
-            Assert.AreEqual(settings.RepositoryOwner, "owner");
+            Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
+            Assert.AreEqual("reponame", settings.RepositoryName);
+            Assert.AreEqual("owner", settings.RepositoryOwner);
+        }
+
+        [Test]
+        public void RepositorySettings_GetsCorrectSettingsWithTargetBranch()
+        {
+            var settings =
+                _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), "Feature1");
+
+            Assert.IsNotNull(settings);
+            Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
+            Assert.AreEqual("reponame", settings.RepositoryName);
+            Assert.AreEqual("owner", settings.RepositoryOwner);
+            Assert.NotNull(settings.RemoteInfo);
+            Assert.AreEqual("Feature1", settings.RemoteInfo.BranchName);
         }
 
         [TestCase(null)]
