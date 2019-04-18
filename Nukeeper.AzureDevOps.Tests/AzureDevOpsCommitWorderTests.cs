@@ -121,15 +121,17 @@ namespace NuKeeper.AzureDevOps.Tests
 
 
         [Test]
-        public void OneUpdate_MakeCommitDetails_HasProjectDetails()
+        public void OneUpdate_MakeCommitDetails_HasProjectDetailsAsMarkdownTable()
         {
             var updates = PackageUpdates.For(MakePackageForV110())
                 .InList();
 
             var report = _sut.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain("1 project update:"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
+            Assert.That(report, Does.Contain("### 1 project update:"));
+            Assert.That(report, Does.Contain("| Project   | Package   | From   | To   |"));
+            Assert.That(report, Does.Contain("|:----------|:----------|-------:|-----:|"));
+            Assert.That(report, Does.Contain($"| `folder\\src\\project1\\packages.config` | `foo.bar` | {NuGetVersionPackageLink("foo.bar", "1.1.0")} | {NuGetVersionPackageLink("foo.bar", "1.2.3")} |"));
         }
 
         [Test]
@@ -177,8 +179,10 @@ namespace NuKeeper.AzureDevOps.Tests
             var report = _sut.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Contain("2 project updates:"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project2\\packages.config` to `foo.bar` `1.2.3` from `1.0.0`"));
+            Assert.That(report, Does.Contain("| Project   | Package   | From   | To   |"));
+            Assert.That(report, Does.Contain("|:----------|:----------|-------:|-----:|"));
+            Assert.That(report, Does.Contain($"| `folder\\src\\project1\\packages.config` | `foo.bar` | {NuGetVersionPackageLink("foo.bar", "1.1.0")} | {NuGetVersionPackageLink("foo.bar", "1.2.3")} |"));
+            Assert.That(report, Does.Contain($"| `folder\\src\\project2\\packages.config` | `foo.bar` | {NuGetVersionPackageLink("foo.bar", "1.0.0")} | {NuGetVersionPackageLink("foo.bar", "1.2.3")} |"));
         }
 
         [Test]
@@ -224,8 +228,10 @@ namespace NuKeeper.AzureDevOps.Tests
             var report = _sut.MakeCommitDetails(updates);
 
             Assert.That(report, Does.Contain("2 project updates:"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project1\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
-            Assert.That(report, Does.Contain("Updated `folder\\src\\project3\\packages.config` to `foo.bar` `1.2.3` from `1.1.0`"));
+            Assert.That(report, Does.Contain("| Project   | Package   | From   | To   |"));
+            Assert.That(report, Does.Contain("|:----------|:----------|-------:|-----:|"));
+            Assert.That(report, Does.Contain($"| `folder\\src\\project1\\packages.config` | `foo.bar` | {NuGetVersionPackageLink("foo.bar", "1.1.0")} | {NuGetVersionPackageLink("foo.bar", "1.2.3")} |"));
+            Assert.That(report, Does.Contain($"| `folder\\src\\project3\\packages.config` | `foo.bar` | {NuGetVersionPackageLink("foo.bar", "1.1.0")} | {NuGetVersionPackageLink("foo.bar", "1.2.3")} |"));
         }
 
         [Test]
@@ -236,7 +242,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             var report = _sut.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4`, but this was not applied as only `Minor` version changes are allowed."));
+            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar` {NuGetVersionPackageLink("foo.bar", "1.2.3")}, but this was not applied as only `Minor` version changes are allowed."));
         }
 
         [Test]
@@ -249,7 +255,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             var report = _sut.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain("There is also a higher version, `foo.bar 2.3.4` published at `2018-02-20T11:32:45Z`,"));
+            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar` {NuGetVersionPackageLink("foo.bar", "1.2.3")} published at `2018-02-20T11:32:45Z`,"));
             Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
         }
 
@@ -327,11 +333,7 @@ namespace NuKeeper.AzureDevOps.Tests
             var report = _sut.MakeCommitDetails(updates);
 
             Assert.That(report, Does.StartWith("2 packages were updated in 1 project:"));
-            Assert.That(report, Does.Contain("`foo.bar`, `packageTwo`"));
-            Assert.That(report, Does.Contain("<details>"));
-            Assert.That(report, Does.Contain("</details>"));
-            Assert.That(report, Does.Contain("<summary>"));
-            Assert.That(report, Does.Contain("</summary>"));
+            Assert.That(report, Does.Contain("| foo.bar | packageTwo |"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0`"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `packageTwo` to `3.4.5` from `1.1.0`"));
         }
@@ -342,7 +344,6 @@ namespace NuKeeper.AzureDevOps.Tests
             Assert.That(report, Does.Contain("This is an automated update. Merge only if it passes tests"));
             Assert.That(report, Does.EndWith("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper" + Environment.NewLine));
             Assert.That(report, Does.Contain("1.1.0"));
-            Assert.That(report, Does.Contain("[foo.bar 1.2.3 on NuGet.org](https://www.nuget.org/packages/foo.bar/1.2.3)"));
 
             Assert.That(report, Does.Not.Contain("Exception"));
             Assert.That(report, Does.Not.Contain("System.String"));
@@ -372,6 +373,12 @@ namespace NuKeeper.AzureDevOps.Tests
             var path = new PackagePath("c:\\temp", "folder\\src\\project3\\packages.config", PackageReferenceType.PackagesConfig);
 
             return new PackageInProject("foo.bar", "1.1.0", path);
+        }
+
+        private static string NuGetVersionPackageLink(string packageId, string version)
+        {
+            var url = $"https://www.nuget.org/packages/{packageId}/{version}";
+            return $"[{version}]({url})";
         }
     }
 }
