@@ -1,12 +1,12 @@
-using NuGet.Configuration;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NuGet.Configuration;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Abstractions.NuGetApi;
 
 namespace NuKeeper.Inspection.Tests.Report
 {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
-using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Tests.Engine

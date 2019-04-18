@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace NuKeeper.Inspection.RepositoryInspection
+namespace NuKeeper.Abstractions.RepositoryInspection
 {
     public class PackagePath
     {

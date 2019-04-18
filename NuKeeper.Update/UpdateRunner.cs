@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Update.Process;
 

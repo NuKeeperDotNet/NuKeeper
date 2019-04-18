@@ -1,5 +1,5 @@
 using System.IO;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.RepositoryInspection

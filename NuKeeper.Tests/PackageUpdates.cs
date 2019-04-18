@@ -7,8 +7,8 @@ using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.NuGetApi;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Tests
 {

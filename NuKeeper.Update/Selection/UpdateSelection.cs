@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Inspection.RepositoryInspection;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Update.Selection
 {

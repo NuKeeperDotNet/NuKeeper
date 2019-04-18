@@ -5,7 +5,7 @@ using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuKeeper.Abstractions.Formats;
 
-namespace NuKeeper.Inspection.NuGetApi
+namespace NuKeeper.Abstractions.NuGetApi
 {
     public class PackageSearchMedatadata
     {

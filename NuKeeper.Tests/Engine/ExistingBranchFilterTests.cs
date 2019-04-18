@@ -6,13 +6,13 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
+using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Abstractions.NuGetApi;
 
 namespace NuKeeper.Tests.Engine
 {

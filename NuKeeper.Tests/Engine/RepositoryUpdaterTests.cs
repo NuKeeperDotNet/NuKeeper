@@ -8,7 +8,6 @@ using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Report;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update;
 using NuKeeper.Update.Process;
@@ -20,6 +19,7 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine
 {

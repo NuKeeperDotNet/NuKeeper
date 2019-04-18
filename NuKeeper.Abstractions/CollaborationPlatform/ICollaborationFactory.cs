@@ -8,6 +8,7 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         ValidationResult Initialise(Uri apiUri, string token,
             ForkMode? forkModeFromSettings, Platform? platformFromSettings);
 
+        ICommitWorder CommitWorder { get; }
         CollaborationPlatformSettings Settings { get; }
         IForkFinder ForkFinder { get; }
         IRepositoryDiscovery RepositoryDiscovery { get; }

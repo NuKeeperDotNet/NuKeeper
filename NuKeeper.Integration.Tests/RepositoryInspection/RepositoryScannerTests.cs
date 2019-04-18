@@ -6,6 +6,7 @@ using NSubstitute;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;

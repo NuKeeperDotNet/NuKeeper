@@ -4,9 +4,9 @@ using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
-using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Abstractions.NuGetApi;
 
-namespace NuKeeper.Inspection.RepositoryInspection
+namespace NuKeeper.Abstractions.RepositoryInspection
 {
     public class PackageUpdateSet
     {
