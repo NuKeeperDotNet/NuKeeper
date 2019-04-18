@@ -10,6 +10,7 @@ using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
 using NuKeeper.BitBucketLocal;
 using NuKeeper.Engine;
+using NuKeeper.Gitea;
 using NuKeeper.GitHub;
 using NuKeeper.Gitlab;
 
@@ -164,6 +165,12 @@ namespace NuKeeper.Collaboration
                     CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    break;
+
+                case Platform.Gitea:
+                    CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger);
+                    RepositoryDiscovery = new GiteaRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
+                    ForkFinder = new GiteaForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     break;
 
                 default:
