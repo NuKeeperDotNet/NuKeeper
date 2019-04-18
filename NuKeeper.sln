@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper", "NuKeeper\NuKeeper.csproj", "{DA701A15-52BE-4BFC-B9D1-08C94AA14A29}"
 EndProject
@@ -41,9 +41,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Abstractions.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.BitBucketLocal", "Nukeeper.BitBucketLocal\NuKeeper.BitBucketLocal.csproj", "{37444E91-3675-4FC7-9EB1-37B091115BAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Gitlab", "NuKeeper.Gitlab\NuKeeper.Gitlab.csproj", "{10DCD86D-66D4-43A8-AAC7-86777DC7166D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitlab", "NuKeeper.Gitlab\NuKeeper.Gitlab.csproj", "{10DCD86D-66D4-43A8-AAC7-86777DC7166D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Gitlab.Tests", "NuKeeper.Gitlab.Tests\NuKeeper.Gitlab.Tests.csproj", "{14B60A31-F10D-4599-8E63-27D471D94D4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitlab.Tests", "NuKeeper.Gitlab.Tests\NuKeeper.Gitlab.Tests.csproj", "{14B60A31-F10D-4599-8E63-27D471D94D4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitea", "NuKeeper.Gitea\NuKeeper.Gitea.csproj", "{17965A24-8BF5-44C2-BA5C-E3233A991AF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Gitea.Tests", "NuKeeper.Gitea.Tests\NuKeeper.Gitea.Tests.csproj", "{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +127,14 @@ Global
 		{14B60A31-F10D-4599-8E63-27D471D94D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14B60A31-F10D-4599-8E63-27D471D94D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14B60A31-F10D-4599-8E63-27D471D94D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17965A24-8BF5-44C2-BA5C-E3233A991AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17965A24-8BF5-44C2-BA5C-E3233A991AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17965A24-8BF5-44C2-BA5C-E3233A991AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17965A24-8BF5-44C2-BA5C-E3233A991AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
