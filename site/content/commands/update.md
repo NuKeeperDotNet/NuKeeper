@@ -7,38 +7,38 @@ Use the update command to apply an update to code.
 
 Apply a update chosen by NuKeeper to a solution:
 
-```bat
+```sh
 cd C:\code\MyApp
 nukeeper update
 ```
 
 or
 
-```bat
+```sh
 nukeeper update C:\code\MyApp
 ```
 
 Apply up to ten package updates in a run:
 
-```bat
+```sh
 nukeeper update C:\code\MyApp --maxpackageupdates 10
 ```
 
 Apply an update to a particular package:
 
-```bat
+```sh
 nukeeper update C:\code\MyApp --include SomePackageThatIWant
 ```
 
 Exclude updates to a particular package:
 
-```bat
+```sh
 nukeeper update C:\code\MyApp --exclude SomePackageThatIDoNotWant
 ```
 
 Apply updates to all packages of [the AWS SDK](https://aws.amazon.com/sdk-for-net/), a set of closely-related packages with names that all start with `AWSSDK.`:
 
-```bat
+```sh
 nukeeper update C:\code\MyApp --include ^AWSSDK. --maxpackageupdates 100
 ```
 
@@ -63,7 +63,7 @@ The patterns are regular expressions. This is not a regular expression tutorial,
 
 When I do not want major version changes, only minor or patch version changes.
 
-```bat
+```sh
 nukeeper update --change minor
 ```
 
@@ -75,7 +75,7 @@ The default value is `major`.
 
 When I am cautious, only want updates that have been available for 3 weeks or more.
 
-```bat
+```sh
 nukeeper update --age 3w
 ```
 
@@ -85,6 +85,6 @@ This is a precaution against being on the "bleeding edge" by taking new packages
 
 When I am living on the edge, I will take updates as soon as they are available.
 
-```bat
+```sh
 nukeeper update --age 0
 ```
