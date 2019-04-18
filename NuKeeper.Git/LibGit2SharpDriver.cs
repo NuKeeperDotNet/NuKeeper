@@ -42,13 +42,19 @@ namespace NuKeeper.Git
 
         public void Clone(Uri pullEndpoint)
         {
-            _logger.Normal($"Git clone {pullEndpoint} to {WorkingFolder.FullPath}");
+            Clone(pullEndpoint, null);
+        }
+
+        public void Clone(Uri pullEndpoint, string branchName)
+        {
+            _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
 
             Repository.Clone(pullEndpoint.AbsoluteUri, WorkingFolder.FullPath,
                 new CloneOptions
                 {
                     CredentialsProvider = UsernamePasswordCredentials,
-                    OnTransferProgress = OnTransferProgress
+                    OnTransferProgress = OnTransferProgress,
+                    BranchName = branchName
                 });
 
             _logger.Detailed("Git clone complete");

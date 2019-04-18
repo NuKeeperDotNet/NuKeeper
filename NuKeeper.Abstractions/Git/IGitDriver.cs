@@ -9,6 +9,8 @@ namespace NuKeeper.Abstractions.Git
 
         void Clone(Uri pullEndpoint);
 
+        void Clone(Uri pullEndpoint, string branchName);
+
         void AddRemote(string name, Uri endpoint);
 
         void Checkout(string branchName);
