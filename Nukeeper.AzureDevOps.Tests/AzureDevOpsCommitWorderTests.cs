@@ -328,10 +328,6 @@ namespace NuKeeper.AzureDevOps.Tests
 
             Assert.That(report, Does.StartWith("2 packages were updated in 1 project:"));
             Assert.That(report, Does.Contain("`foo.bar`, `packageTwo`"));
-            Assert.That(report, Does.Contain("<details>"));
-            Assert.That(report, Does.Contain("</details>"));
-            Assert.That(report, Does.Contain("<summary>"));
-            Assert.That(report, Does.Contain("</summary>"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0`"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `packageTwo` to `3.4.5` from `1.1.0`"));
         }
