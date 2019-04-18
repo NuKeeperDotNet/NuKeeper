@@ -46,6 +46,14 @@ This is only available for azure devops and vsts
 
 //TODO
 
+
+### Using a targetbranch
+
+{{% notice info %}}
+This is only available for azure devops, vsts and github right now
+{{% /notice %}}
+
+
 ### Hidden token
 
 The token is a secret; often you don't want to put it on the command line, e.g. if this command line is in a script stored in a public repository. In that case, you can put it in the appropriate environment variable blow and NuKeeper will automatically read it from there.
