@@ -1,7 +1,7 @@
 ---
 
 name: 🚀 Feature Request
-about: Want to see something new included in the Framework? Submit it!
+about: Want to see something new included in NuKeeper? Submit it!
 ---
 
 ## 🚀 Feature Requests
@@ -9,7 +9,7 @@ about: Want to see something new included in the Framework? Submit it!
 <!--- Summary description of the feature --->
 
 ### Contextualize the feature
-<!--- Where does it fit in the framework and why it's being included there. --->
+<!--- Where does it fit in nukeeper and why it's being included there. --->
 
 ### Describe the feature
 <!--- Use as much detail as possible here! --->
