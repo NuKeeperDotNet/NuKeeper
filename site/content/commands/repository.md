@@ -47,11 +47,21 @@ This is only available for azure devops and vsts
 //TODO
 
 
-### Using a targetbranch
+### Using a targetBranch
 
 {{% notice info %}}
 This is only available for azure devops, vsts and github right now
 {{% /notice %}}
+
+In some cases you want NuKeeper not to run on the default branch but on a specific (feature-)branch 
+e.g. when you want to keep the feature branches for a certain feature updated and in sync across repositories.
+The --targetBranch option makes this possible. It will create pull-requests on a specific branch if updates are required.
+
+I want one Pull Request that applies updates to all packages to the feature-branch CoolNewFeature:
+
+```sh
+nukeeper repo url token --consolidate --tagetBranch CoolNewFeature
+```
 
 
 ### Hidden token
