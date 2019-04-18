@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.NuGetApi;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Report.Formats;
 using NuKeeper.Inspection.RepositoryInspection;

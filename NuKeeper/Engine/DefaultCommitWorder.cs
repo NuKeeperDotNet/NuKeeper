@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Formats;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Engine
 {
-    public static class CommitWording
+    public class DefaultCommitWorder : ICommitWorder
     {
         private const string CommitEmoji = "package";
 
-        public static string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
+        public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             if (updates.Count == 1)
             {
@@ -28,12 +29,12 @@ namespace NuKeeper.Engine
             return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
-        public static string MakeCommitMessage(PackageUpdateSet updates)
+        public string MakeCommitMessage(PackageUpdateSet updates)
         {
             return $":{CommitEmoji}: {PackageTitle(updates)}";
         }
 
-        public static string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
+        public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
         {
             var builder = new StringBuilder();
 

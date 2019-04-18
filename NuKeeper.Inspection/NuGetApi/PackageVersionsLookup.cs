@@ -8,6 +8,7 @@ using NuGet.Configuration;
 using NuGet.Protocol.Core.Types;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.NuGetApi;
 
 namespace NuKeeper.Inspection.NuGetApi
 {

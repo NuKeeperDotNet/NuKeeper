@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using NuKeeper.Abstractions.Output;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report
 {

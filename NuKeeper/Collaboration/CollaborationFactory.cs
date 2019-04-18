@@ -9,6 +9,7 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
 using NuKeeper.BitBucketLocal;
+using NuKeeper.Engine;
 using NuKeeper.Gitea;
 using NuKeeper.GitHub;
 using NuKeeper.Gitlab;
@@ -22,6 +23,8 @@ namespace NuKeeper.Collaboration
         private Platform? _platform;
 
         public IForkFinder ForkFinder { get; private set; }
+
+        public ICommitWorder CommitWorder { get; private set; }
 
         public IRepositoryDiscovery RepositoryDiscovery { get; private set; }
 
@@ -132,18 +135,24 @@ namespace NuKeeper.Collaboration
                     CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger, Settings.Token);
                     ForkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+
+                    // We go for the specific platform version of ICommitWorder
+                    // here since Azure DevOps has different commit message limits compared to other platforms.
+                    CommitWorder = new AzureDevOpsCommitWorder();
                     break;
 
                 case Platform.GitHub:
                     CollaborationPlatform = new OctokitClient(_nuKeeperLogger);
                     RepositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.Bitbucket:
                     CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.BitbucketLocal:

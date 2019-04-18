@@ -5,6 +5,7 @@ using System.Text;
 using NSubstitute;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
