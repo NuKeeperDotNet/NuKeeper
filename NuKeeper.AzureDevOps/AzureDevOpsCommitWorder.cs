@@ -82,14 +82,12 @@ namespace NuKeeper.AzureDevOps
 
             builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
             builder.AppendLine(packageNames);
-            builder.AppendLine("<details>");
-            builder.AppendLine("<summary>Details of updated packages</summary>");
+            builder.AppendLine("Details of updated packages");
             builder.AppendLine("");
         }
 
         private static void MultiPackageFooter(StringBuilder builder)
         {
-            builder.AppendLine("</details>");
             builder.AppendLine("");
         }
 
