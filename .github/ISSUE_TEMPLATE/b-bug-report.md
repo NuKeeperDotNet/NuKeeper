@@ -18,7 +18,7 @@ about: Create a report to help us fix bugs and make improvements
 
 **Platform if applicable:** 
 - [ ] :hammer_and_wrench: NuKeeper CLI
-- [ ] :sparkles: Github
+- [ ] :sparkles: GitHub
 - [ ] :robot: AzureDevops
 - [ ] :checkered_flag: Bitbucket
 - [ ] :earth_americas: Gitlab
