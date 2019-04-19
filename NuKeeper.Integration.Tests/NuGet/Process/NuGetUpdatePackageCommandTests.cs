@@ -9,9 +9,9 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NUnit.Framework;
 using NuKeeper.Inspection.Files;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.ProcessRunner;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {

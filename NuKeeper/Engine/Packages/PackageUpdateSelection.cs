@@ -5,8 +5,8 @@ using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Engine.Packages
 {

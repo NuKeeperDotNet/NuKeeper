@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Inspection.RepositoryInspection
 {

@@ -4,7 +4,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.NuGet;
 
-namespace NuKeeper.Inspection.RepositoryInspection
+namespace NuKeeper.Abstractions.RepositoryInspection
 {
     public class PackageInProject
     {

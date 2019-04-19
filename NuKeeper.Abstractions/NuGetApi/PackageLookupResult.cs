@@ -1,7 +1,7 @@
 using System;
 using NuKeeper.Abstractions.Configuration;
 
-namespace NuKeeper.Inspection.NuGetApi
+namespace NuKeeper.Abstractions.NuGetApi
 {
     public class PackageLookupResult
     {

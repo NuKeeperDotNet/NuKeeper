@@ -9,9 +9,9 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine
 {

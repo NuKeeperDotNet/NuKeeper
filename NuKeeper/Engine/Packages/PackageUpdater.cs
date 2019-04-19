@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Inspection.RepositoryInspection;
-using NuKeeper.Update;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Update;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -78,14 +78,14 @@ namespace NuKeeper.Engine.Packages
             {
                 await _updateRunner.Update(updateSet, sources);
 
-                var commitMessage = CommitWording.MakeCommitMessage(updateSet);
+                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
                 git.Commit(commitMessage);
             }
 
             git.Push(repository.Remote, branchWithChanges);
 
-            var title = CommitWording.MakePullRequestTitle(updates);
-            var body = CommitWording.MakeCommitDetails(updates);
+            var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
+            var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
             string qualifiedBranch;
             if (repository.Pull.Owner == repository.Push.Owner)

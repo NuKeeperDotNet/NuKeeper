@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Formats;
-using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Inspection.RepositoryInspection;
+using NuKeeper.Abstractions.NuGetApi;
+using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Inspection.Report.Formats
 {

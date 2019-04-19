@@ -1,4 +1,4 @@
-namespace NuKeeper.Inspection.RepositoryInspection
+namespace NuKeeper.Abstractions.RepositoryInspection
 {
     public enum PackageReferenceType
     {
