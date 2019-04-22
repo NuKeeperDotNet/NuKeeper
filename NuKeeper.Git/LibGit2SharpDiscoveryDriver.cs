@@ -30,21 +30,22 @@ namespace NuKeeper.Git
 
             var discover = Repository.Discover(repositoryUri.AbsolutePath);
 
-            var repo = new Repository(discover);
-
-            var gitRemotes = new List<GitRemote>();
-
-            foreach (var remote in repo.Network.Remotes)
+            using (var repo = new Repository(discover))
             {
-                var gitRemote = new GitRemote
-                {
-                    Name = remote.Name,
-                    Url = new Uri(remote.Url)
-                };
-                gitRemotes.Add(gitRemote);
-            }
+                var gitRemotes = new List<GitRemote>();
 
-            return gitRemotes;
+                foreach (var remote in repo.Network.Remotes)
+                {
+                    var gitRemote = new GitRemote
+                    {
+                        Name = remote.Name,
+                        Url = new Uri(remote.Url)
+                    };
+                    gitRemotes.Add(gitRemote);
+                }
+
+                return gitRemotes;
+            }
         }
 
         public Uri DiscoverRepo(Uri repositoryUri)
