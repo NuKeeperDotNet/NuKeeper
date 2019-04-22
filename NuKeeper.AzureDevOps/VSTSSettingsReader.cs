@@ -94,7 +94,7 @@ namespace NuKeeper.AzureDevOps
                 {
                     remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
-                    remoteInfo.BranchName = targetBranch ??_gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
+                    remoteInfo.BranchName = targetBranch ?? _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = origin.Name;
                     remoteInfo.WorkingFolder = localFolder;
                 }
