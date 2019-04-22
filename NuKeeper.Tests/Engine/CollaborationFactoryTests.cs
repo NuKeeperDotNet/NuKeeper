@@ -6,6 +6,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NuKeeper.Collaboration;
+using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NUnit.Framework;
 
@@ -132,6 +133,7 @@ namespace NuKeeper.Tests.Engine
             Assert.IsInstanceOf<GitHubRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
             Assert.IsInstanceOf<OctokitClient>(collaborationFactory.CollaborationPlatform);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
+            Assert.IsInstanceOf<DefaultCommitWorder>(collaborationFactory.CommitWorder);
         }
 
         private static void AssertAzureDevOps(ICollaborationFactory collaborationFactory)
@@ -140,6 +142,7 @@ namespace NuKeeper.Tests.Engine
             Assert.IsInstanceOf<AzureDevOpsRepositoryDiscovery>(collaborationFactory.RepositoryDiscovery);
             Assert.IsInstanceOf<AzureDevOpsPlatform>(collaborationFactory.CollaborationPlatform);
             Assert.IsInstanceOf<CollaborationPlatformSettings>(collaborationFactory.Settings);
+            Assert.IsInstanceOf<AzureDevOpsCommitWorder>(collaborationFactory.CommitWorder);
         }
     }
 }
