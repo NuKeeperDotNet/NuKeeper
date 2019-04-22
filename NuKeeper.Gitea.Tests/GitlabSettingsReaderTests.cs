@@ -28,6 +28,15 @@ namespace NuKeeper.Gitea.Tests
             Assert.AreEqual(Platform.Gitea, platform);
         }
 
+        /// <summary>
+        /// Test for #739
+        /// </summary>
+        [Test]
+        public void CanRead_NoException_OnBadUri()
+        {
+            Assert.DoesNotThrow(() => _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/")));
+        }
+
         [Test]
         public void UpdatesAuthenticationTokenFromTheEnvironment()
         {

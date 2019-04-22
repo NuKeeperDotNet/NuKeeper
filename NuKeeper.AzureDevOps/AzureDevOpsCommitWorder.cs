@@ -42,17 +42,12 @@ namespace NuKeeper.AzureDevOps
 
             if (updates.Count > 1)
             {
-                MultiPackagePrefix(updates, builder);
+                MultiPackage(updates, builder);
             }
 
             foreach (var update in updates)
             {
                 builder.AppendLine(MakeCommitVersionDetails(update));
-            }
-
-            if (updates.Count > 1)
-            {
-                MultiPackageFooter(builder);
             }
 
             AddCommitFooter(builder);
@@ -66,11 +61,10 @@ namespace NuKeeper.AzureDevOps
             return builder.ToString();
         }
 
-        private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
+        private static void MultiPackage(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
         {
             var packageNames = updates
-                .Select(p => CodeQuote(p.SelectedId))
-                .JoinWithCommas();
+                .Select(p => p.SelectedId);
 
             var projects = updates.SelectMany(
                     u => u.CurrentPackages)
@@ -81,13 +75,15 @@ namespace NuKeeper.AzureDevOps
             var projectOptS = (projects.Count > 1) ? "s" : string.Empty;
 
             builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
-            builder.AppendLine(packageNames);
-            builder.AppendLine("Details of updated packages");
-            builder.AppendLine("");
-        }
+            string updatedPackageNames = "|";
+            foreach (var packageName in packageNames)
+            {
+                updatedPackageNames += $" {packageName} |";
+            }
 
-        private static void MultiPackageFooter(StringBuilder builder)
-        {
+            builder.AppendLine(updatedPackageNames);
+            builder.AppendLine("");
+            builder.AppendLine("## Details of updated packages");
             builder.AppendLine("");
         }
 
@@ -139,25 +135,25 @@ namespace NuKeeper.AzureDevOps
 
             builder.AppendLine();
 
-            if (updates.CurrentPackages.Count == 1)
-            {
-                builder.AppendLine("1 project update:");
-            }
-            else
-            {
-                builder.AppendLine($"{updates.CurrentPackages.Count} project updates:");
-            }
+            var updateOptS = (updates.CurrentPackages.Count > 1) ? "s" : string.Empty;
+            builder.AppendLine($"### {updates.CurrentPackages.Count} project update{updateOptS}:");
+
+            builder.AppendLine("| Project   | Package   | From   | To   |");
+            builder.AppendLine("|:----------|:----------|-------:|-----:|");
 
             foreach (var current in updates.CurrentPackages)
             {
-                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.SelectedVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
-                builder.AppendLine(line);
-            }
+                string line;
+                if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
+                {
+                    line = $"| {CodeQuote(current.Path.RelativePath)} | {CodeQuote(updates.SelectedId)} | {NuGetVersionPackageLink(current.Identity)} | {NuGetVersionPackageLink(updates.Selected.Identity)} |";
+                    builder.AppendLine(line);
 
-            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
-            {
-                builder.AppendLine();
-                builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
+                    continue;
+                }
+
+                line = $"| {CodeQuote(current.Path.RelativePath)} | {CodeQuote(updates.SelectedId)} | {current.Version.ToString()} | {updates.SelectedVersion.ToString()} |";
+                builder.AppendLine(line);
             }
 
             return builder.ToString();
@@ -165,7 +161,6 @@ namespace NuKeeper.AzureDevOps
 
         private static void AddCommitFooter(StringBuilder builder)
         {
-            builder.AppendLine();
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
         }
@@ -198,9 +193,17 @@ namespace NuKeeper.AzureDevOps
         private static void LogHighestVersion(PackageUpdateSet updates, NuGetVersion highestVersion, StringBuilder builder)
         {
             var allowedChange = CodeQuote(updates.AllowedChange.ToString());
-            var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
-
             var highestPublishedAt = HighestPublishedAt(updates.Packages.Major.Published);
+
+            string highest;
+            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
+            {
+                highest = $"{CodeQuote(updates.SelectedId)} {NuGetVersionPackageLink(updates.Selected.Identity)}";
+            }
+            else
+            {
+                highest = CodeQuote(updates.SelectedId + " " + highestVersion);
+            }
 
             builder.AppendLine(
                 $"There is also a higher version, {highest}{highestPublishedAt}, " +
@@ -233,10 +236,10 @@ namespace NuKeeper.AzureDevOps
                 sourceUrl.ToString().StartsWith("https://api.nuget.org/", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static string NugetPackageLink(PackageIdentity package)
+        private static string NuGetVersionPackageLink(PackageIdentity package)
         {
             var url = $"https://www.nuget.org/packages/{package.Id}/{package.Version}";
-            return $"[{package.Id} {package.Version} on NuGet.org]({url})";
+            return $"[{package.Version}]({url})";
         }
     }
 }
