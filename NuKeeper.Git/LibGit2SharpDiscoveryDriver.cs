@@ -84,6 +84,4 @@ namespace NuKeeper.Git
                 .FirstOrDefault(rm => rm.Url.Host.Contains(platformHost, StringComparison.OrdinalIgnoreCase));
         }
     }
-
-
 }
