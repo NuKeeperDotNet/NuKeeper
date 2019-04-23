@@ -10,6 +10,7 @@ namespace NuKeeper.Inspection.Files
     public class FolderFactory : IFolderFactory
     {
         private readonly INuKeeperLogger _logger;
+        private const string FolderPrefix = "repo-";
 
         public FolderFactory(INuKeeperLogger logger)
         {
@@ -31,19 +32,20 @@ namespace NuKeeper.Inspection.Files
         private static string GetUniqueTemporaryPath()
         {
             var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
-            return Path.Combine(NuKeeperTempFilesPath(), uniqueName);
+            return Path.Combine(NuKeeperTempFilesPath(), $"{FolderPrefix}{uniqueName}");
         }
 
         /// <summary>
         /// Cleanup folders that are not automatically have been cleaned.
-        /// Only delete folders older than 1 hour to 
+        /// Only delete folders older than 1 hour
+        /// Only delete folders that contain repositories
         /// </summary>
         public void DeleteExistingTempDirs()
         {
             var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
             var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
             var filterDatetime = DateTime.Now.AddHours(-1);
-            foreach (var dir in dirs.Where(d => d.LastWriteTime < filterDatetime))
+            foreach (var dir in dirs.Where(d => d.Name.StartsWith(FolderPrefix, StringComparison.InvariantCultureIgnoreCase) && d.LastWriteTime < filterDatetime))
             {
                 var folder = new Folder(_logger, dir);
                 folder.TryDelete();
