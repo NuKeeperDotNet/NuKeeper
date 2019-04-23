@@ -34,11 +34,16 @@ namespace NuKeeper.Inspection.Files
             return Path.Combine(NuKeeperTempFilesPath(), uniqueName);
         }
 
+        /// <summary>
+        /// Cleanup folders that are not automatically have been cleaned.
+        /// Only delete folders older than 1 hour to 
+        /// </summary>
         public void DeleteExistingTempDirs()
         {
             var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
             var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
-            foreach (var dir in dirs)
+            var filterDatetime = DateTime.Now.AddHours(-1);
+            foreach (var dir in dirs.Where(d => d.LastWriteTime < filterDatetime))
             {
                 var folder = new Folder(_logger, dir);
                 folder.TryDelete();
