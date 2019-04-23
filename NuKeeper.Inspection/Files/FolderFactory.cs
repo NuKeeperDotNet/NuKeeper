@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace NuKeeper.Inspection.Files
             return new Folder(_logger, tempDir);
         }
 
-        private static string NuKeeperTempFilesPath()
+        public static string NuKeeperTempFilesPath()
         {
             return Path.Combine(Path.GetTempPath(), "NuKeeper");
         }
@@ -36,16 +37,26 @@ namespace NuKeeper.Inspection.Files
         }
 
         /// <summary>
+        /// Select folders to cleanup at startup
+        /// </summary>
+        /// <param name="nukeeperTemp">NuKeepers temp folder</param>
+        /// <returns></returns>
+        public static IEnumerable<DirectoryInfo> GetTempDirsToCleanup(DirectoryInfo nukeeperTemp)
+        {
+            var dirs = nukeeperTemp.Exists ? nukeeperTemp.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
+            var filterDatetime = DateTime.Now.AddHours(-1);
+            return dirs.Where(d =>
+                d.Name.StartsWith(FolderPrefix, StringComparison.InvariantCultureIgnoreCase) &&
+                d.LastWriteTime < filterDatetime);
+        }
+
+        /// <summary>
         /// Cleanup folders that are not automatically have been cleaned.
-        /// Only delete folders older than 1 hour
-        /// Only delete folders that contain repositories
         /// </summary>
         public void DeleteExistingTempDirs()
         {
             var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
-            var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
-            var filterDatetime = DateTime.Now.AddHours(-1);
-            foreach (var dir in dirs.Where(d => d.Name.StartsWith(FolderPrefix, StringComparison.InvariantCultureIgnoreCase) && d.LastWriteTime < filterDatetime))
+            foreach (var dir in GetTempDirsToCleanup(dirInfo))
             {
                 var folder = new Folder(_logger, dir);
                 folder.TryDelete();
