@@ -43,8 +43,7 @@ namespace NuKeeper.Inspection.Tests.Files
             var folder2 = factory.UniqueTemporaryFolder();
             Directory.SetLastWriteTime(folder2.FullPath, DateTime.Now.AddHours(-1).AddMinutes(1));
 
-            var baseFolder = Path.GetDirectoryName(folder1.FullPath);
-            var baseDirInfo = new DirectoryInfo(baseFolder);
+            var baseDirInfo = new DirectoryInfo(FolderFactory.NuKeeperTempFilesPath());
 
             var toDelete = FolderFactory.GetTempDirsToCleanup(baseDirInfo).ToArray();
 
@@ -60,12 +59,11 @@ namespace NuKeeper.Inspection.Tests.Files
             // set up edge cases
             var folder1 = factory.UniqueTemporaryFolder();
             Directory.SetLastWriteTime(folder1.FullPath, DateTime.Now.AddHours(-2));
-
-            var baseFolder = Path.GetDirectoryName(folder1.FullPath);
-            var baseDirInfo = new DirectoryInfo(baseFolder);
-            var notToToDeletePath = Path.Combine(baseFolder, "tools");
+            var notToToDeletePath = Path.Combine(FolderFactory.NuKeeperTempFilesPath(), "tools");
             Directory.CreateDirectory(notToToDeletePath);
             Directory.SetLastWriteTime(notToToDeletePath, DateTime.Now.AddHours(-2));
+
+            var baseDirInfo = new DirectoryInfo(FolderFactory.NuKeeperTempFilesPath());
 
             var toDelete = FolderFactory.GetTempDirsToCleanup(baseDirInfo).ToArray();
 
