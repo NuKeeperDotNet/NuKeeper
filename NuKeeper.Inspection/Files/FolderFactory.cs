@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace NuKeeper.Inspection.Files
     public class FolderFactory : IFolderFactory
     {
         private readonly INuKeeperLogger _logger;
+        private const string FolderPrefix = "repo-";
 
         public FolderFactory(INuKeeperLogger logger)
         {
@@ -23,7 +25,7 @@ namespace NuKeeper.Inspection.Files
             return new Folder(_logger, tempDir);
         }
 
-        private static string NuKeeperTempFilesPath()
+        public static string NuKeeperTempFilesPath()
         {
             return Path.Combine(Path.GetTempPath(), "NuKeeper");
         }
@@ -31,14 +33,30 @@ namespace NuKeeper.Inspection.Files
         private static string GetUniqueTemporaryPath()
         {
             var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
-            return Path.Combine(NuKeeperTempFilesPath(), uniqueName);
+            return Path.Combine(NuKeeperTempFilesPath(), $"{FolderPrefix}{uniqueName}");
         }
 
+        /// <summary>
+        /// Select folders to cleanup at startup
+        /// </summary>
+        /// <param name="nukeeperTemp">NuKeepers temp folder</param>
+        /// <returns></returns>
+        public static IEnumerable<DirectoryInfo> GetTempDirsToCleanup(DirectoryInfo nukeeperTemp)
+        {
+            var dirs = nukeeperTemp.Exists ? nukeeperTemp.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
+            var filterDatetime = DateTime.Now.AddHours(-1);
+            return dirs.Where(d =>
+                d.Name.StartsWith(FolderPrefix, StringComparison.InvariantCultureIgnoreCase) &&
+                d.LastWriteTime < filterDatetime);
+        }
+
+        /// <summary>
+        /// Cleanup folders that are not automatically have been cleaned.
+        /// </summary>
         public void DeleteExistingTempDirs()
         {
             var dirInfo = new DirectoryInfo(NuKeeperTempFilesPath());
-            var dirs = dirInfo.Exists ? dirInfo.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
-            foreach (var dir in dirs)
+            foreach (var dir in GetTempDirsToCleanup(dirInfo))
             {
                 var folder = new Folder(_logger, dir);
                 folder.TryDelete();
