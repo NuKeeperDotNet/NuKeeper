@@ -14,7 +14,7 @@ about: Proposals for code cleanup, refactor and improvements in general
 
 ### Platforms affected (mark all that apply)
 - [ ] :hammer_and_wrench: NuKeeper CLI
-- [ ] :sparkles: Github
+- [ ] :sparkles: GitHub
 - [ ] :robot: AzureDevops
 - [ ] :checkered_flag: Bitbucket
 - [ ] :earth_americas: Gitlab

@@ -47,9 +47,9 @@ namespace NuKeeper.Gitea
                     return true;
                 }
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error during repo check\n\r{0}", ex.Message);
+                Console.WriteLine("No valid Gitea repo during repo check\n\r{0}", ex.Message);
             }
 
             return false;

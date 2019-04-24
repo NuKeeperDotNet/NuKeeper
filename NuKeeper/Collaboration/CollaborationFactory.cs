@@ -159,18 +159,21 @@ namespace NuKeeper.Collaboration
                     CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.GitLab:
                     CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.Gitea:
                     CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new GiteaRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GiteaForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
+                    CommitWorder = new DefaultCommitWorder();
                     break;
 
                 default:

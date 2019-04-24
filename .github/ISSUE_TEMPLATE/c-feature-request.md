@@ -16,7 +16,7 @@ about: Want to see something new included in NuKeeper? Submit it!
 
 ### Platforms affected (mark all that apply)
 - [ ] :hammer_and_wrench: NuKeeper CLI
-- [ ] :sparkles: Github
+- [ ] :sparkles: GitHub
 - [ ] :robot: AzureDevops
 - [ ] :checkered_flag: Bitbucket
 - [ ] :earth_americas: Gitlab

@@ -30,21 +30,21 @@ namespace NuKeeper.Git
 
             var discover = Repository.Discover(repositoryUri.AbsolutePath);
 
-            var repo = new Repository(discover);
-
             var gitRemotes = new List<GitRemote>();
-
-            foreach (var remote in repo.Network.Remotes)
+            using (var repo = new Repository(discover))
             {
-                var gitRemote = new GitRemote
+                foreach (var remote in repo.Network.Remotes)
                 {
-                    Name = remote.Name,
-                    Url = new Uri(remote.Url)
-                };
-                gitRemotes.Add(gitRemote);
-            }
+                    var gitRemote = new GitRemote
+                    {
+                        Name = remote.Name,
+                        Url = new Uri(remote.Url)
+                    };
+                    gitRemotes.Add(gitRemote);
+                }
 
-            return gitRemotes;
+                return gitRemotes;
+            }
         }
 
         public Uri DiscoverRepo(Uri repositoryUri)
@@ -83,6 +83,4 @@ namespace NuKeeper.Git
                 .FirstOrDefault(rm => rm.Url.Host.Contains(platformHost, StringComparison.OrdinalIgnoreCase));
         }
     }
-
-
 }
