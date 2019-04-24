@@ -77,7 +77,7 @@ namespace NuKeeper.Gitea
                 return MapRepository(repo);
             }
             catch (NuKeeperException)
-            { 
+            {
                 _logger.Detailed("User repo not found");
                 return null;
             }
