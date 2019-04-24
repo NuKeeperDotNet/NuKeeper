@@ -46,9 +46,17 @@ Any additional arguments can be added after the app password, for more informati
 
 ## Organisation command
 
-For this please checkout the [organisation command documentation](/commands/organisation.md).
+Use the organisation command to raise multiple pull requests against multiple GitHub repositories within the same [GitHub Organisation](https://help.github.com/articles/about-organizations/).
+
+```sh
+nukeeper org myteam mygithubtoken
+```
+
 
 ## Global command
 
+Use the global command to update a particular package across your entire github server.
 
-For this please checkout the [global command documentation](/commands/global.md).
+```sh
+nukeeper global mygithubtoken --include PackageToUpdate --api https://github.mycompany.com/api/v3
+```
