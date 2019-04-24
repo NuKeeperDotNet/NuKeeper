@@ -2,7 +2,7 @@
 title: "Github"
 ---
 
-NuKeeper has extended Github support. This means NuKeeper can create PR's to a *single* bitbucket repository, update all repositories within a whole organization or on an entire Github server. The only requirement is that we have a valid personal access token(PAT).
+NuKeeper has extended Github support. This means NuKeeper can create PR's to a *single* github repository, update all repositories within a whole organization or on an entire Github server. The only requirement is that we have a valid personal access token(PAT).
 
 ## Getting a token
 
@@ -21,7 +21,7 @@ To get a token for your *account* go to [`settings -> developer settings -> pers
 
 ## Repo command
 
-The repo command has two required arguments. The first one is the repository that you want to target. For BitBucket **you can use the same url that you use for cloning**. So something like:
+The repo command has two required arguments. The first one is the repository that you want to target. For github **you can use the same url that you use for cloning**. So something like:
 
 For your own repositories:
 
