@@ -23,7 +23,7 @@ Integration with the following platforms is supported.
 
 |     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |       Gitea         |
 |:------------------:|:------------------:|:------------------:| :------------------:| :------------------:|
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  | :x:                 |
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark:  |
 
 ### Commands
 
