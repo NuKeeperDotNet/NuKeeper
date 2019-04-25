@@ -6,18 +6,18 @@ NuKeeper has extended Github support. This means NuKeeper can create PR's to a *
 
 ## Getting a token
 
-To get a token for your *account* go to [`settings -> developer settings -> personal access token`](https://github.com/settings/tokens) and click *Generate new token*. 
+To get a token for your *account* go to [**settings -> developer settings -> personal access token**](https://github.com/settings/tokens) and click *Generate new token*. 
 
-1. Go to `your github settings`
-2. Click `developer settings`
-3. Click the `personal access token` button
-4. Give it the following access rights:
-   - Repo command: 
-     - [x] Repo
-    - Organisation command and Global command:
-      - [x] Admin:org (read)
-      - [x] Admin:public_key (read)  
-5. Store the token and use that for the commands
+1. Go to **your github settings**
+1. Click **developer settings**
+1. Click the **personal access token** button
+1. Give it the following access rights:
+  - Repo command: 
+    - [x] Repo
+  - Organisation command and Global command:
+    - [x] Admin:org (read)
+    - [x] Admin:public_key (read)  
+1. Store the token and use that for the commands
 
 ## Repo command
 
@@ -25,13 +25,13 @@ The repo command has two required arguments. The first one is the repository tha
 
 For your own repositories:
 
-``` sh
+```sh
 https://github.com/{username}/{repositoryname}.git
 ```
 
 For organisation repositories:
 
-``` sh
+```sh
 https://github.com/{organisation}/{repositoryname}.git
 ```
 
