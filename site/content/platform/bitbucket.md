@@ -6,16 +6,16 @@ NuKeeper has BitBucket support. This means NuKeeper can create PR's to a *single
 
 ## Getting a app password
 
-To get a app password for your *account* go to `bitbucket settings` and click *App password*. 
+To get a app password for your *account* go to **bitbucket settings** and click *App password*. 
 
 NuKeeper needs an *App password* to create a PR on your repository. 
 
-1. Go to `bitbucket settings`
-2. Select `App password`
-3. Click the `Create app password` button
-4. Give it the following access rights:
+1. Go to **bitbucket settings**
+1. Select **App password**
+1. Click the **Create app password** button
+1. Give it the following access rights:
    - Pull request: write(that should also select the other applicable access rights)
-5. Store the token and use that for a NuKeeper repo command
+1. Store the token and use that for a NuKeeper repo command
 
 ## Repo command
 
