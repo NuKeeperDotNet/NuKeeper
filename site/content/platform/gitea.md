@@ -4,7 +4,7 @@ title: "Gitea"
 
 NuKeeper has [Gitea](https://gitea.io/en-us/) support. This means NuKeeper can create PR's to a *single* gitea repository using the repository command and an access token.
 
- ## Getting the Access Token 
+## Getting the Access Token 
 
  To get token for your *account* go to `gitea user settings` (https://yourGiteaUrl/user/settings) and click *Applications*. 
 
@@ -16,7 +16,7 @@ NuKeeper has [Gitea](https://gitea.io/en-us/) support. This means NuKeeper can c
 4. Click the `Generate Token` button
 5. Store the token and use that for a NuKeeper repo command
 
- ## Repo command
+## Repo command
 
  The repo command has two required arguments. The first one is the repository that you want to target. For Gitea **you can use the same url that you use for cloning**. So something like:
 
