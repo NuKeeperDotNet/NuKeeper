@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace NuKeeper.Gitea.Tests
 {
     [TestFixture]
-    public class GitlabSettingsReaderTests
+    public class GiteaSettingsReaderTests
     {
         private GiteaSettingsReader _giteaSettingsReader;
         private IEnvironmentVariablesProvider _environmentVariablesProvider;
