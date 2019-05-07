@@ -1,11 +1,11 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.Gitea
 {
@@ -14,7 +14,7 @@ namespace NuKeeper.Gitea
         private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
         private const string GiteaTokenEnvironmentVariableName = "NuKeeper_gitea_token";
         private const string UrlPattern = "https://yourgiteaserver/{owner}/{repo}.git";
-        private const string ApiBaseAdress = "/api/v1/";
+        private const string ApiBaseAdress = "api/v1/";
 
         public GiteaSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
         {
@@ -25,17 +25,15 @@ namespace NuKeeper.Gitea
 
         public bool CanRead(Uri repositoryUri)
         {
-            if (repositoryUri == null)
+            if (repositoryUri == null || repositoryUri.Segments == null || repositoryUri.Segments.Length < 3)
                 return false;
 
             try
             {
-                var baseaddress = repositoryUri.OriginalString.Replace(repositoryUri.LocalPath, "");
-
                 // There is no real identifier for gitea repos so try to get the gitea swagger json
                 var client = new HttpClient()
                 {
-                    BaseAddress = new Uri(baseaddress)
+                    BaseAddress = GetBaseAddress(repositoryUri)
                 };
 
                 client.DefaultRequestHeaders.Accept.Add(
@@ -76,21 +74,22 @@ namespace NuKeeper.Gitea
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count != 2)
+            if (pathParts.Count < 2)
             {
                 throw new NuKeeperException(
                     $"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
-            var repoOwner = pathParts[0];
-            var repoName = pathParts[1].Replace(".git", string.Empty);
+            var repoOwner = pathParts[pathParts.Count - 2];
+            var repoName = pathParts[pathParts.Count - 1].Replace(".git", string.Empty);
 
             // [ Base URL: /api/v1 ] https://try.gitea.io/api/swagger#
-            var uriBuilder = new UriBuilder(repositoryUri) { Path = ApiBaseAdress };
+            var baseAddress = GetBaseAddress(repositoryUri);
+            var apiUri = new Uri(baseAddress, ApiBaseAdress);
 
             return new RepositorySettings
             {
-                ApiUri = uriBuilder.Uri,
+                ApiUri = apiUri,
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
@@ -98,6 +97,15 @@ namespace NuKeeper.Gitea
                     ? null
                     : new RemoteInfo { BranchName = targetBranch }
             };
+        }
+
+        private Uri GetBaseAddress (Uri repoUri)
+        {
+            var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
+            var ub = new UriBuilder(repoUri);
+            ub.Path = string.Concat(newSegments);
+
+            return ub.Uri;
         }
     }
 }
