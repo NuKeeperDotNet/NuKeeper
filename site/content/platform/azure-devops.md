@@ -45,7 +45,7 @@ Azure Devops gives us the option to do it either in editor mode, or in yaml.
 1. Create a new build pipeline for editor mode.
 1. Select your repository and select the master branch.
 1. Add a new task to your pipeline and select NuKeeper.
-1. Optionally, click on the task and add additional arguments to the **Arguments** field. For help on the arguments checkout the [Configuration](/basics/configuration.md) page. The extension just call the **repo** command, so any arguments extra for your repo command can be added here.
+1. Optionally, click on the task and add additional arguments to the **Arguments** field. For help on the arguments checkout the [Configuration](/basics/configuration/) page. The extension just call the **repo** command, so any arguments extra for your repo command can be added here.
 1. Go to triggers and click the <i class="fas fa-plus"></i> Add button to add your schedule.
 1. Enable your agent to access the oauth token:
     ![Oauth checkmark](/img/oauth_checkmark.png)
