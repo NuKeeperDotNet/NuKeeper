@@ -6,7 +6,7 @@ title: "Azure Devops"
 NuKeeper supports Azure Devops, VSTS and TFS on premise. The same instruction apply for all these platforms!
 {{% /notice %}}
 
-NuKeeper supports intergration with Azure Devops in two ways. One of them is to use the **repo** command and the other one is through the **extension**. The benefit of the extension is that you can make a build pipeline with the extension and schedule your pipeline. This way you can automate your updating flow.
+NuKeeper supports integration with Azure Devops in two ways. One of them is to use the **repo** command and the other one is through the **extension**. The benefit of the extension is that you can make a build pipeline with the extension and schedule your pipeline. This way you can automate your updating flow.
 
 ## Extension
 
