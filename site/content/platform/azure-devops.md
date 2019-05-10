@@ -80,4 +80,4 @@ Add any additional arguments that are available for the repo command
 ```sh
 nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}/" <PAT> -m 10
 ```
-The `-m 10` tells NuKeeper that it may update 10 packages. For more parameters checkout the [Configuration](/basics/configuration.md) page.
+The `-m 10` tells NuKeeper that it may update 10 packages. For more parameters checkout the [Configuration](/basics/configuration/) page.
