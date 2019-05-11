@@ -178,8 +178,9 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""MaxPackageUpdates"":4,
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
-               ""CHANGE"": ""PATCH""
-}";
+               ""CHANGE"": ""PATCH"",
+               ""bRanCHNamEPREfiX"": ""nukeeper/""
+            }";
 
             var path = MakeTestFile(configData);
 
@@ -199,6 +200,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
+            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper/"));
         }
 
         [Test]
