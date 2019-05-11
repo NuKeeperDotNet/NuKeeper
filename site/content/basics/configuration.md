@@ -73,4 +73,4 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 
-* *branchnameprefix* A prefix that gets added to branch names that NuKeeper creates. Allows you to put those branches in hierarchy (E.G. 'nukeeper/').
+* *branchnameprefix* A prefix that gets added to branch name that NuKeeper creates. Allows you to put those branches in hierarchy (E.G. 'nukeeper/').
