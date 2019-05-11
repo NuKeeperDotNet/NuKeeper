@@ -5,9 +5,9 @@
 [![NuGet](https://img.shields.io/nuget/v/NuKeeper.svg?maxAge=3600)](https://www.nuget.org/packages/NuKeeper/)
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/nukeeper/NuKeeper/4.svg)](https://dev.azure.com/nukeeper/NuKeeper/_build?definitionId=4)   
 <p align="center">
-  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki">NuKeeper Wiki Home</a> •
-  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Getting-Started#getting-nukeeper">Installation</a> •
-  <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Getting-Started#using-nukeeper">Getting started</a> •
+  <a href="https://nukeeper.com">NuKeeper docs</a> •
+  <a href="https://nukeeper.com/basics/installation/">Installation</a> •
+  <a href="https://nukeeper.com/basics/installation/#using-nukeeper">Getting started</a> •
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Recipes">Recipes</a> •
   <a href="https://github.com/NuKeeperDotNet/NuKeeper/wiki/Debugging-NuKeeper">Debugging</a> •
 </p>
