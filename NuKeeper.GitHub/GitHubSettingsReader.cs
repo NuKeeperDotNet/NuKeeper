@@ -11,7 +11,7 @@ namespace NuKeeper.GitHub
     public class GitHubSettingsReader : ISettingsReader
     {
         private readonly IEnvironmentVariablesProvider _environmentVariablesProvider;
-        private const string PlatformHost = "github.com";
+        private const string PlatformHost = "github";
         private const string UrlPattern = "https://github.com/{owner}/{reponame}.git";
         private readonly IGitDiscoveryDriver _gitDriver;
         private bool _isLocalGitRepo;
@@ -27,6 +27,11 @@ namespace NuKeeper.GitHub
 
         public bool CanRead(Uri repositoryUri)
         {
+            if (repositoryUri == null)
+            {
+                return false;
+            }
+
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
@@ -101,6 +106,11 @@ namespace NuKeeper.GitHub
 
         private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
         {
+            if (repositoryUri == null)
+            {
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
+            }
+
             // general pattern is https://github.com/owner/reponame.git
             // from this we extract owner and repo name
             var path = repositoryUri.AbsolutePath;

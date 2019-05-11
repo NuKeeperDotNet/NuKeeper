@@ -19,5 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
     <ProjectReference Include="..\NuKeeper.GitHub\NuKeeper.GitHub.csproj" />
+    <ProjectReference Include="..\NuKeeper.Tests\NuKeeper.Tests.csproj" />
   </ItemGroup>
 </Project>
