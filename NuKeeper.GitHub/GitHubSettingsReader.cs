@@ -79,9 +79,8 @@ namespace NuKeeper.GitHub
                 throw new NuKeeperException("No git repository found");
             }
 
-            // URL pattern is
-            // https://{org}.visualstudio.com/{project}/_git/{repo} or
-            // https://{org}.visualstudio.com/_git/{repo} for the default repo
+            // general pattern is https://github.com/owner/reponame.git
+            // from this we extract owner and repo name
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
