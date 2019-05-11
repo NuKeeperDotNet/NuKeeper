@@ -80,6 +80,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
+               ""branchNamePrefix: ""nukeeper/"",
                ""maxPackageUpdates"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
@@ -91,12 +92,11 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""OutputFileName"" : ""out_42.txt"",
                ""LogDestination"" : ""file"",
                ""Platform"" : ""Bitbucket""
-}";
+        }";
 
         [Test]
         public void PopulatedConfigReturnsAllStringSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -112,12 +112,12 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
+            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper/"));
         }
 
         [Test]
         public void PopulatedConfigReturnsLabels()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -132,7 +132,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         [Test]
         public void PopulatedConfigReturnsNumericSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -146,7 +145,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         [Test]
         public void PopulatedConfigReturnsEnumSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -210,7 +208,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""age"":""3d"",
                ""api"":""http://api.com"",
                ""something"":""nothing""
-}";
+            }";
 
             var path = MakeTestFile(configData);
 
