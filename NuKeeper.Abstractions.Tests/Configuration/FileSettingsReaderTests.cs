@@ -80,7 +80,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
-               ""branchNamePrefix: ""nukeeper/"",
+               ""branchNamePrefix"": ""nukeeper"",
                ""maxPackageUpdates"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
@@ -112,7 +112,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
-            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper/"));
+            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH"",
-               ""bRanCHNamEPREfiX"": ""nukeeper/""
+               ""bRanCHNamEPREfiX"": ""nukeeper""
             }";
 
             var path = MakeTestFile(configData);
@@ -198,7 +198,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
-            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper/"));
+            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
         }
 
         [Test]
