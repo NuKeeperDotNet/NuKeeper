@@ -90,8 +90,9 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""OutputDestination"": ""Console"",
                ""OutputFileName"" : ""out_42.txt"",
                ""LogDestination"" : ""file"",
-               ""Platform"" : ""Bitbucket""
-}";
+               ""Platform"" : ""Bitbucket"",
+               ""DeleteBranchAfterMerge"": ""false""
+        }";
 
         [Test]
         public void PopulatedConfigReturnsAllStringSettings()
@@ -112,12 +113,12 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
+            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(false));
         }
 
         [Test]
         public void PopulatedConfigReturnsLabels()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -132,7 +133,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         [Test]
         public void PopulatedConfigReturnsNumericSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -146,7 +146,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         [Test]
         public void PopulatedConfigReturnsEnumSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -178,8 +177,9 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""MaxPackageUpdates"":4,
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
-               ""CHANGE"": ""PATCH""
-}";
+               ""CHANGE"": ""PATCH"",
+               ""deLeTEBranCHafTERMerge"": ""true""
+            }";
 
             var path = MakeTestFile(configData);
 
@@ -199,6 +199,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
+            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
         [Test]
@@ -220,7 +221,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Age, Is.EqualTo("3d"));
             Assert.That(data.Api, Is.EqualTo("http://api.com"));
         }
-
 
         private static string MakeTestFile(string contents)
         {
