@@ -6,10 +6,10 @@ namespace NuKeeper.Abstractions.CollaborationModels
         {
             Head = head;
             Title = title;
+            DeleteBranchAfterMerge = deleteBranchAfterMerge;
 
             //This can be a remote that has been passed in, this happens when run locally against a targetbranch that is remote
             BaseRef = baseRef.Replace("origin/", string.Empty);
-            DeleteBranchAfterMerge = deleteBranchAfterMerge;
         }
 
         public string Head { get; }
