@@ -11,5 +11,7 @@ namespace NuKeeper.Abstractions.Configuration
         public FilterSettings PackageFilters { get; set; }
 
         public IFolder WorkingFolder { get; set; }
+
+        public BranchSettings BranchSettings { get; set; }
     }
 }
