@@ -129,7 +129,8 @@ namespace NuKeeper.Commands
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
                     NuGetSources = NuGetSources
-                }
+                },
+                BranchSettings = new BranchSettings()
             };
 
             return settings;

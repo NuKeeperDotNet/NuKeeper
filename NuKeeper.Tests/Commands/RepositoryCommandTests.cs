@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -13,7 +12,6 @@ using NuKeeper.Abstractions.Output;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
-using NuKeeper.Git;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -221,6 +219,9 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(1));
             Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.False);
 
+            Assert.That(settings.BranchSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(false));
+
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);
         }
@@ -333,6 +334,21 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("runLabel1"));
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Contain("runLabel2"));
             Assert.That(settings.SourceControlServerSettings.Labels, Does.Not.Contain("testLabel"));
+        }
+
+        [Test]
+        public async Task WillReadDeleteBranchAfterMergeFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                DeleteBranchAfterMerge = true
+            };
+
+            var (settings, _) = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.BranchSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.False);
         }
 
         public static async Task<(SettingsContainer settingsContainer, CollaborationPlatformSettings platformSettings)> CaptureSettings(

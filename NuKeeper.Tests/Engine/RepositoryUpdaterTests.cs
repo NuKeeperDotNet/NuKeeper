@@ -185,7 +185,8 @@ namespace NuKeeper.Tests.Engine
                 UserSettings = new UserSettings
                 {
                     ConsolidateUpdatesInSinglePullRequest = consolidateUpdates
-                }
+                },
+                BranchSettings = new BranchSettings()
             };
         }
 
