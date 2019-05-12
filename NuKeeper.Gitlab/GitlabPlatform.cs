@@ -49,7 +49,7 @@ namespace NuKeeper.Gitlab
                 Description = request.Body,
                 TargetBranch = request.BaseRef,
                 Id = $"{projectName}/{repositoryName}",
-                RemoveSourceBranch = true
+                RemoveSourceBranch = request.DeleteBranchAfterMerge
             };
 
             await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest);
