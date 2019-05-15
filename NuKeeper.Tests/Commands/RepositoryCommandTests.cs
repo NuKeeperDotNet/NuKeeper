@@ -220,7 +220,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.False);
 
             Assert.That(settings.BranchSettings, Is.Not.Null);
-            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(false));
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);

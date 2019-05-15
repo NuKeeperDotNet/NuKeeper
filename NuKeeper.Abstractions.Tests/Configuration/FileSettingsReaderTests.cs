@@ -40,6 +40,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
+            Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
         [Test]
@@ -69,6 +70,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
+            Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -91,13 +93,12 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""OutputFileName"" : ""out_42.txt"",
                ""LogDestination"" : ""file"",
                ""Platform"" : ""Bitbucket"",
-               ""DeleteBranchAfterMerge"": ""false""
+               ""DeleteBranchAfterMerge"": ""true""
         }";
 
         [Test]
         public void PopulatedConfigReturnsAllStringSettings()
         {
-
             var path = MakeTestFile(FullFileData);
 
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
@@ -113,7 +114,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
-            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(false));
+            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
         [Test]

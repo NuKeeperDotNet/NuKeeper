@@ -134,7 +134,7 @@ namespace NuKeeper.Commands
 
             if (!Platform.HasValue)
             {
-                settings.BranchSettings.DeleteBranchAfterMerge = false;
+                settings.BranchSettings.DeleteBranchAfterMerge = true;
                 return ValidationResult.Success;
             }
 
@@ -145,7 +145,7 @@ namespace NuKeeper.Commands
                         $"Deletion of source branch after merge is currently only available for Azure DevOps and Gitlab.");
             }
 
-            settings.BranchSettings.DeleteBranchAfterMerge = Concat.FirstValue(DeleteBranchAfterMerge, fileSettings.DeleteBranchAfterMerge, false);
+            settings.BranchSettings.DeleteBranchAfterMerge = Concat.FirstValue(DeleteBranchAfterMerge, fileSettings.DeleteBranchAfterMerge, true);
             return ValidationResult.Success;
         }
     }

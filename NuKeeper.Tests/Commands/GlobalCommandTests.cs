@@ -127,7 +127,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Console));
             Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Text));
 
-            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(false));
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
 
             Assert.That(settings.SourceControlServerSettings.Scope, Is.EqualTo(ServerScope.Global));
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
