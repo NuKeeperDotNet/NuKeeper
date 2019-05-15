@@ -139,10 +139,11 @@ namespace NuKeeper.Commands
             }
 
             if (Platform != Abstractions.CollaborationPlatform.Platform.AzureDevOps
-                && Platform != Abstractions.CollaborationPlatform.Platform.GitLab)
+                && Platform != Abstractions.CollaborationPlatform.Platform.GitLab
+                && Platform != Abstractions.CollaborationPlatform.Platform.Bitbucket)
             {
                 return ValidationResult.Failure(
-                        $"Deletion of source branch after merge is currently only available for Azure DevOps and Gitlab.");
+                        $"Deletion of source branch after merge is currently only available for Azure DevOps, Gitlab and Bitbucket.");
             }
 
             settings.BranchSettings.DeleteBranchAfterMerge = Concat.FirstValue(DeleteBranchAfterMerge, fileSettings.DeleteBranchAfterMerge, true);
