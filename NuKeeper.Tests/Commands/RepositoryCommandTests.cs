@@ -40,7 +40,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(_environmentVariablesProvider, settingsReaders);
 
@@ -62,7 +62,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(_environmentVariablesProvider, settingsReaders);
 
@@ -88,7 +88,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var settingReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
@@ -123,7 +123,7 @@ namespace NuKeeper.Tests.Commands
                     ForkMode = ForkMode.PreferFork
                 });
 
-            var settingReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
@@ -158,7 +158,7 @@ namespace NuKeeper.Tests.Commands
                     Platform = Platform.BitbucketLocal
                 });
 
-            var settingReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
@@ -363,7 +363,7 @@ namespace NuKeeper.Tests.Commands
             var environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var settingReader = new GitHubSettingsReader(environmentVariablesProvider);
+            var settingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { settingReader };
             var collaborationFactory = GetCollaborationFactory(environmentVariablesProvider, settingsReaders);
 
@@ -470,7 +470,7 @@ namespace NuKeeper.Tests.Commands
             IEnumerable<ISettingsReader> settingReaders = null)
         {
             return new CollaborationFactory(
-                settingReaders ?? new ISettingsReader[] { new GitHubSettingsReader(environmentVariablesProvider) },
+                settingReaders ?? new ISettingsReader[] { new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>()
             );
         }

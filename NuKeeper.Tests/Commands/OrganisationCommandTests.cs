@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.Commands
             var environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
 
             return new CollaborationFactory(
-                new ISettingsReader[] { new GitHubSettingsReader(environmentVariablesProvider) },
+                new ISettingsReader[] { new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>()
             );
         }
