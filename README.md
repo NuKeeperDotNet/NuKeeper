@@ -32,9 +32,9 @@ NuKeeper works for .NET Framework and for .NET Core projects. It also has the ab
 
 Integration with the following platforms is supported.
 
-|     Github         |     AzureDevOps    |      BitBucket     |       GitLab        |
-|:------------------:|:------------------:|:------------------:| :------------------:| 
-| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  |
+|     Github         |     AzureDevOps    |      BitBucket     |       GitLab       |       Gitea        |
+|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
+| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Commands
 
