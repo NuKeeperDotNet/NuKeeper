@@ -3,6 +3,7 @@ using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Tests;
 using NUnit.Framework;
 
 namespace NuKeeper.GitHub.Tests
@@ -17,7 +18,7 @@ namespace NuKeeper.GitHub.Tests
         public void Setup()
         {
             _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
-            _gitHubSettingsReader = new GitHubSettingsReader(_environmentVariablesProvider);
+            _gitHubSettingsReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
         }
 
         [Test]

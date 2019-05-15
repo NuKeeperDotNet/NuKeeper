@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Abstractions.Git;
 
-namespace Nukeeper.AzureDevOps.Tests
+namespace NuKeeper.Tests
 {
     public class MockedGitDiscoveryDriver : IGitDiscoveryDriver
     {
         public bool IsGitRepo(Uri repositoryUri)
         {
-            return repositoryUri.IsFile == false;
+            return true;
         }
 
         public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
         {
             return new List<GitRemote>(){ new GitRemote
-          {
-              Name="origin",
-              Url = repositoryUri
-          }};
+            {
+                Name="origin",
+                Url = repositoryUri
+            }};
         }
 
         public Uri DiscoverRepo(Uri repositoryUri)
