@@ -40,6 +40,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
+            Assert.That(data.BranchNamePrefix, Is.Null);
         }
 
         [Test]
@@ -69,6 +70,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
+            Assert.That(data.BranchNamePrefix, Is.Null);
         }
 
         private const string FullFileData = @"{
