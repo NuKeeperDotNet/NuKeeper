@@ -73,6 +73,10 @@ namespace NuKeeper.Commands
             Description = "File name for output.")]
         public string OutputFileName { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "branchnameprefix",
+            Description = "Prefix that will be added to created branch name.")]
+        public string BranchNamePrefix { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
@@ -119,6 +123,7 @@ namespace NuKeeper.Commands
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
             var usePrerelease =
                 Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
+            var branchPrefixName = Concat.FirstValue(BranchNamePrefix, fileSettings.BranchNamePrefix);
 
             var settings = new SettingsContainer
             {
@@ -130,7 +135,10 @@ namespace NuKeeper.Commands
                     UsePrerelease = usePrerelease,
                     NuGetSources = NuGetSources
                 },
-                BranchSettings = new BranchSettings()
+                BranchSettings = new BranchSettings
+                {
+                    BranchNamePrefix = branchPrefixName
+                }
             };
 
             return settings;
@@ -175,6 +183,12 @@ namespace NuKeeper.Commands
             settings.UserSettings.OutputFileName =
                 Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,
                     "nukeeper.out");
+
+            var branchNamePrefixValid = PopulateBranchNamePrefix(settings);
+            if (!branchNamePrefixValid.IsSuccess)
+            {
+                return branchNamePrefixValid;
+            }
 
             return ValidationResult.Success;
         }
@@ -239,6 +253,32 @@ namespace NuKeeper.Commands
                 }
             }
 
+            return ValidationResult.Success;
+        }
+
+        private ValidationResult PopulateBranchNamePrefix(
+            SettingsContainer settings)
+        {
+            var settingsFromFile = FileSettingsCache.GetSettings();
+            var value = Concat.FirstValue(BranchNamePrefix, settingsFromFile.BranchNamePrefix);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                settings.BranchSettings.BranchNamePrefix = null;
+                return ValidationResult.Success;
+            }
+
+            // Validating git branch names: https://stackoverflow.com/a/12093994/1661209
+            // We validate the user defined branch name prefix in combination with a actual branch name that NuKeeper could create.
+            // We want to validate the combination since the prefix doesn't need to fully comply with the rules (E.G. 'nukeeper/' is not allowed soley as a branch name).
+            var validationValue = $"{value}nukeeper-update-FakeItEasy-to-4.9.2";
+            if (!Regex.IsMatch(validationValue, @"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\000-\037\177 ~^:?*[]+/[^\000-\037\177 ~^:?*[]+(?<!\.lock|[/.])$"))
+            {
+                return ValidationResult.Failure(
+                    $"Provided branch name prefix '{value}' does not comply with branch naming rules.");
+            }
+
+            settings.BranchSettings.BranchNamePrefix = value;
             return ValidationResult.Success;
         }
 

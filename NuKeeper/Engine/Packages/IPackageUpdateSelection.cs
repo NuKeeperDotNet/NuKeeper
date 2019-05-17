@@ -11,6 +11,7 @@ namespace NuKeeper.Engine.Packages
         Task<IReadOnlyCollection<PackageUpdateSet>> SelectTargets(
             ForkData pushFork,
             IReadOnlyCollection<PackageUpdateSet> potentialUpdates,
-            FilterSettings settings);
+            FilterSettings filterSetting,
+            BranchSettings branchSettings);
     }
 }

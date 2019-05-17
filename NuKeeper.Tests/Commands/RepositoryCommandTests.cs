@@ -220,6 +220,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.False);
 
             Assert.That(settings.BranchSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.Null);
             Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
@@ -285,6 +286,21 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.True);
+        }
+
+        [Test]
+        public async Task WillReadBranchNamePrefixFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                BranchNamePrefix = "nukeeper/"
+            };
+
+            var (settings, _) = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.BranchSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.EqualTo("nukeeper/"));
         }
 
         [Test]

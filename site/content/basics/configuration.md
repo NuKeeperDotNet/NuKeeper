@@ -33,7 +33,8 @@ title: "Configuration"
 | includerepos     |           | `org`, `global`           | _null_                  |
 | excluderepos     |           | `org`, `global`           | _null_                  |
 |                  |           |                           |                         |
-| deletebranchaftermerge |     | _all_                     | true                   |
+| branchnameprefix |           | `repo`, `org`, `global`, `update`| _null_           |
+| deletebranchaftermerge |     | _all_                     | true                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
@@ -73,4 +74,5 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 
+* *branchnameprefix* A prefix that gets added to branch name that NuKeeper creates. Allows you to put those branches in hierarchy (E.G. 'nukeeper/').
 * *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.

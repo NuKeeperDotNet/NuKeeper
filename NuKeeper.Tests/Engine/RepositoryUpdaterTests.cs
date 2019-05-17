@@ -164,7 +164,8 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<FilterSettings>())
+                    Arg.Any<FilterSettings>(),
+                    Arg.Any<BranchSettings>())
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
@@ -173,7 +174,8 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<FilterSettings>())
+                    Arg.Any<FilterSettings>(),
+                    Arg.Any<BranchSettings>())
                 .Returns(new List<PackageUpdateSet>());
         }
 
