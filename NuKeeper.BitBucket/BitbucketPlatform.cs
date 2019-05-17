@@ -60,7 +60,8 @@ namespace NuKeeper.BitBucket
                         name = request.BaseRef
                     }
                 },
-                description = request.Body
+                description = request.Body,
+                close_source_branch = true
             };
 
             await _client.CreatePullRequest(req, target.Owner, repo.name);
