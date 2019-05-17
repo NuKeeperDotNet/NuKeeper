@@ -13,7 +13,5 @@ namespace NuKeeper.Abstractions.Configuration
         public BranchSettings BranchSettings { get; set; }
 
         public IFolder WorkingFolder { get; set; }
-
-        public BranchSettings BranchSettings { get; set; }
     }
 }
