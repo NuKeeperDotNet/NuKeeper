@@ -70,7 +70,7 @@ namespace NuKeeper.Engine
             }
 
             var targetUpdates = await _updateSelection.SelectTargets(
-                repository.Push, updates, settings.PackageFilters);
+                repository.Push, updates, settings.PackageFilters, settings.BranchSettings);
 
             return await DoTargetUpdates(git, repository, targetUpdates,
                 sources, settings);

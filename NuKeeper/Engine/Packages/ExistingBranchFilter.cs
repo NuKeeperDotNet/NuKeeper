@@ -19,11 +19,11 @@ namespace NuKeeper.Engine.Packages
         }
 
         public async Task<bool> CanMakeBranchFor(PackageUpdateSet packageUpdateSet,
-            ForkData pushFork)
+            ForkData pushFork, string branchNamePrefix = null)
         {
             try
             {
-                var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet);
+                var branchName = BranchNamer.MakeSinglePackageName(packageUpdateSet, branchNamePrefix);
                 var branchExists = await _collaborationFactory.CollaborationPlatform.RepositoryBranchExists(pushFork.Owner, pushFork.Name, branchName);
                 return !branchExists;
             }

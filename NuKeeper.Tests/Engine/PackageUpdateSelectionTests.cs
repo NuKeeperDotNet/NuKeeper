@@ -24,7 +24,7 @@ namespace NuKeeper.Tests.Engine
             var target = SelectionForFilter(BranchFilter(true));
 
             var results = await target.SelectTargets(PushFork(),
-                new List<PackageUpdateSet>(), NoFilter());
+                new List<PackageUpdateSet>(), NoFilter(), DefaultBranchSettings());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -38,7 +38,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = SelectionForFilter(BranchFilter(true));
 
-            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
+            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter(), DefaultBranchSettings());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -57,7 +57,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = SelectionForFilter(BranchFilter(true));
 
-            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
+            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter(), DefaultBranchSettings());
 
             Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
@@ -75,7 +75,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = SelectionForFilter(BranchFilter(true));
 
-            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
+            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter(), DefaultBranchSettings());
 
             Assert.That(results.Count, Is.EqualTo(2));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
@@ -94,7 +94,7 @@ namespace NuKeeper.Tests.Engine
 
             var target = SelectionForFilter(filter);
 
-            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter());
+            var results = await target.SelectTargets(PushFork(), updateSets, NoFilter(), DefaultBranchSettings());
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -114,6 +114,11 @@ namespace NuKeeper.Tests.Engine
                 MaxPackageUpdates = Int32.MaxValue,
                 MinimumAge = TimeSpan.Zero
             };
+        }
+
+        private BranchSettings DefaultBranchSettings()
+        {
+            return new BranchSettings();
         }
 
         private static ForkData PushFork()
