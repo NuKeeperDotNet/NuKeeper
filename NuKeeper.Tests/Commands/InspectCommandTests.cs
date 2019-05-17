@@ -43,6 +43,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.UserSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings, Is.Not.Null);
 
             Assert.That(settings.PackageFilters.MinimumAge, Is.EqualTo(TimeSpan.FromDays(7)));
             Assert.That(settings.PackageFilters.Excludes, Is.Null);
@@ -53,6 +54,8 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
             Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Console));
             Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Text));
+
+            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.Null);
         }
 
         [Test]
@@ -99,6 +102,21 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.PackageFilters, Is.Not.Null);
             Assert.That(settings.PackageFilters.Includes.ToString(), Is.EqualTo("foo"));
             Assert.That(settings.PackageFilters.Excludes.ToString(), Is.EqualTo("bar"));
+        }
+
+        [Test]
+        public async Task WillReadBranchNamePrefixFromFile()
+        {
+            var fileSettings = new FileSettings
+            {
+                BranchNamePrefix = "nukeeper/"
+            };
+
+            var settings = await CaptureSettings(fileSettings);
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.BranchSettings, Is.Not.Null);
+            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.EqualTo("nukeeper/"));
         }
 
         [Test]

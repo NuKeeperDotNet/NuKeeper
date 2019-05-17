@@ -8,6 +8,7 @@ namespace NuKeeper.Engine.Packages
     {
         Task<bool> CanMakeBranchFor(
             PackageUpdateSet packageUpdateSet,
-            ForkData pushFork);
+            ForkData pushFork,
+            string branchNamePrefix = null);
     }
 }
