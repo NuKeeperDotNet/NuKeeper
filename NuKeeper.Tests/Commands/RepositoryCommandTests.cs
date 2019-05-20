@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -13,7 +12,6 @@ using NuKeeper.Abstractions.Output;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
-using NuKeeper.Git;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -223,6 +221,7 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings.BranchSettings, Is.Not.Null);
             Assert.That(settings.BranchSettings.BranchNamePrefix, Is.Null);
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);

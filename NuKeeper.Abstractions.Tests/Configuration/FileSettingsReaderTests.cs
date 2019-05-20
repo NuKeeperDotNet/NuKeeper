@@ -41,6 +41,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
             Assert.That(data.BranchNamePrefix, Is.Null);
+            Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
         [Test]
@@ -71,6 +72,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
             Assert.That(data.BranchNamePrefix, Is.Null);
+            Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
         private const string FullFileData = @"{
@@ -93,7 +95,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""OutputDestination"": ""Console"",
                ""OutputFileName"" : ""out_42.txt"",
                ""LogDestination"" : ""file"",
-               ""Platform"" : ""Bitbucket""
+               ""Platform"" : ""Bitbucket"",
+               ""DeleteBranchAfterMerge"": ""true""
         }";
 
         [Test]
@@ -115,6 +118,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
             Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
+            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
         [Test]
@@ -179,7 +183,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH"",
-               ""bRanCHNamEPREfiX"": ""nukeeper""
+               ""bRanCHNamEPREfiX"": ""nukeeper"",
+               ""deLeTEBranCHafTERMerge"": ""true""
             }";
 
             var path = MakeTestFile(configData);
@@ -201,6 +206,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
             Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
+            Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
         [Test]
@@ -222,7 +228,6 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Age, Is.EqualTo("3d"));
             Assert.That(data.Api, Is.EqualTo("http://api.com"));
         }
-
 
         private static string MakeTestFile(string contents)
         {

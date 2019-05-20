@@ -40,6 +40,7 @@ namespace NuKeeper.Abstractions.Configuration
         public Platform? Platform { get; set; }
 
         public string BranchNamePrefix { get; set; }
+        public bool? DeleteBranchAfterMerge { get; set; }
 
         public static FileSettings Empty()
         {
