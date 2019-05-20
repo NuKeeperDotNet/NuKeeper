@@ -34,6 +34,7 @@ title: "Configuration"
 | excluderepos     |           | `org`, `global`           | _null_                  |
 |                  |           |                           |                         |
 | branchnameprefix |           | `repo`, `org`, `global`, `update`| _null_           |
+| deletebranchaftermerge |     | _all_                     | true                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
@@ -68,9 +69,10 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *maxpackageupdates* The maximum number of package updates to apply. In `repo`,`org` and `global` commands, this limits the number of updates per repository. If the `--consolidate` flag is used, these wll be consolidated into one Pull Request. If not, then there will be one Pull Request per update applied. In the `update` command, The default value is 1. When changed, multiple updates can be applied in a single `update` run, up to this number.
 * *maxrepo* The maximum number of repositories to change. Used in Organisation and Global mode.
 * *consolidate* Consolidate updates into a single pull request, instead of the default of 1 pull request per package update applied.
-* *platform* One of `GitHub`, `AzureDevOps`, `Bitbucket`, `BitbucketLocal`. Determines which kind of source control api will be used. This is typicaly infered from the api url structure, but since this does not always work, it can be specified here if neccessary.
+* *platform* One of `GitHub`, `AzureDevOps`, `Bitbucket`, `BitbucketLocal`, `Gitlab`, `Gitea`. Determines which kind of source control api will be used. This is typicaly infered from the api url structure, but since this does not always work, it can be specified here if neccessary.
 
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 
 * *branchnameprefix* A prefix that gets added to branch name that NuKeeper creates. Allows you to put those branches in hierarchy (E.G. 'nukeeper/').
+* *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.

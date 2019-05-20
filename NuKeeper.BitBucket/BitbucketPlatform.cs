@@ -61,7 +61,7 @@ namespace NuKeeper.BitBucket
                     }
                 },
                 description = request.Body,
-                close_source_branch = true
+                close_source_branch = request.DeleteBranchAfterMerge
             };
 
             await _client.CreatePullRequest(req, target.Owner, repo.name);

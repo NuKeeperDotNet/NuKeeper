@@ -113,6 +113,8 @@ namespace NuKeeper.Tests.Commands
 
             Assert.That(settings.UserSettings.MaxRepositoriesChanged, Is.EqualTo(10));
 
+            Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
+
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
             Assert.That(settings.SourceControlServerSettings.ExcludeRepos, Is.Null);
         }
