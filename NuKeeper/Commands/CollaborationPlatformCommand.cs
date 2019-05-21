@@ -46,8 +46,8 @@ namespace NuKeeper.Commands
             Description = "Sets the collaboration platform type. By default this is inferred from the Url.")]
         public Platform? Platform { get; set; }
 
-        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "deletebranchaftermerge",
-            Description = "Deletes branch created by NuKeeper after merge. Defaults to false.")]
+        [Option(CommandOptionType.SingleValue, ShortName = "d", LongName = "deletebranchaftermerge",
+            Description = "Deletes branch created by NuKeeper after merge. Defaults to true.")]
         public bool? DeleteBranchAfterMerge { get; set; }
 
         protected CollaborationPlatformCommand(ICollaborationEngine engine, IConfigureLogger logger,
