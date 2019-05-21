@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Git
 {
     public class LibGit2SharpDiscoveryDriver : IGitDiscoveryDriver
     {
+        private readonly INuKeeperLogger _logger;
+
+        public LibGit2SharpDiscoveryDriver(INuKeeperLogger logger)
+        {
+            _logger = logger;
+        }
+
         public bool IsGitRepo(Uri repositoryUri)
         {
             var discovered = DiscoverRepo(repositoryUri);
@@ -35,12 +44,21 @@ namespace NuKeeper.Git
             {
                 foreach (var remote in repo.Network.Remotes)
                 {
-                    var gitRemote = new GitRemote
+                    Uri.TryCreate(remote.Url, UriKind.Absolute, out repositoryUri);
+
+                    if (repositoryUri != null)
                     {
-                        Name = remote.Name,
-                        Url = new Uri(remote.Url)
-                    };
-                    gitRemotes.Add(gitRemote);
+                        var gitRemote = new GitRemote
+                        {
+                            Name = remote.Name,
+                            Url = repositoryUri
+                        };
+                        gitRemotes.Add(gitRemote);
+                    }
+                    else
+                    {
+                        _logger.Normal($"Cannot parse {remote.Url} to URI. SSH remote is currently not supported");
+                    }
                 }
 
                 return gitRemotes;
