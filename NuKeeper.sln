@@ -9,12 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Tests", "NuKeeper.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Integration.Tests", "NuKeeper.Integration.Tests\NuKeeper.Integration.Tests.csproj", "{68B2FDA7-A728-4D4C-8B7F-4F824FD4E03C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBD0650A-1EAB-479B-B210-A8F63FAC162C}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\Dockerfile = Docker\Dockerfile
-		global.json = global.json
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection", "NuKeeper.Inspection\NuKeeper.Inspection.csproj", "{6EA16D83-81DF-4E55-8761-22ADF468C56B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Inspection.Tests", "NuKeeper.Inspection.Tests\NuKeeper.Inspection.Tests.csproj", "{79562D03-D39D-4822-9F4B-B1001F556EA4}"
@@ -47,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitlab.Tests", "Nu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitea", "NuKeeper.Gitea\NuKeeper.Gitea.csproj", "{17965A24-8BF5-44C2-BA5C-E3233A991AF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Gitea.Tests", "NuKeeper.Gitea.Tests\NuKeeper.Gitea.Tests.csproj", "{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitea.Tests", "NuKeeper.Gitea.Tests\NuKeeper.Gitea.Tests.csproj", "{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
