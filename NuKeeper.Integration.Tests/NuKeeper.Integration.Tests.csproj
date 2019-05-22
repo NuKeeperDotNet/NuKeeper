@@ -3,7 +3,10 @@
     <CodeAnalysisRuleSet>..\CodeAnalysisRulesForTests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.0" />
+    <PackageReference Include="coverlet.msbuild" Version="2.6.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="NSubstitute" Version="4.1.0" />
     <PackageReference Include="NUnit" Version="3.11.0" />
