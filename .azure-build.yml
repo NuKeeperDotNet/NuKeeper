@@ -5,9 +5,9 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 steps:
 - task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 2.1.507'
+  displayName: 'Use .NET Core sdk 2.2.x'
   inputs:
-    version: 2.1.507
+    version: 2.2.x
 
 - bash: echo NugetVersion is $NugetVersion; export NugetVersion
   displayName: 'export NugetVersion into env vars'
