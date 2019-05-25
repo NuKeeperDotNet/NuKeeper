@@ -29,10 +29,18 @@ namespace NuKeeper.Gitea
 
             try
             {
+                // ssh is i.O
+                if (repositoryUri.Scheme == "ssh")
+                {
+                    return true;
+                }
+
+                var baseaddress = GetBaseAddress(repositoryUri);
+
                 // There is no real identifier for gitea repos so try to get the gitea swagger json
                 var client = new HttpClient()
                 {
-                    BaseAddress = GetBaseAddress(repositoryUri)
+                    BaseAddress = baseaddress
                 };
 
                 client.DefaultRequestHeaders.Accept.Add(
@@ -98,7 +106,7 @@ namespace NuKeeper.Gitea
             };
         }
 
-        private Uri GetBaseAddress (Uri repoUri)
+        private Uri GetBaseAddress(Uri repoUri)
         {
             var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
             var ub = new UriBuilder(repoUri);
