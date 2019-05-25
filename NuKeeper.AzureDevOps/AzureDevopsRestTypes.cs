@@ -95,7 +95,13 @@ namespace NuKeeper.AzureDevOps
         public string targetRefName { get; set; }
         public string title { get; set; }
         public string description { get; set; }
+        public GitPullRequestCompletionOptions completionOptions { get; set; }
     }
+    public class GitPullRequestCompletionOptions
+    {
+        public bool deleteSourceBranch { get; set; }
+    }
+
     public class AzureRepository
     {
         public string id { get; set; }

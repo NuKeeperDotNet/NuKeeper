@@ -9,6 +9,8 @@ namespace NuKeeper.Tests.Engine
     [TestFixture]
     public class BranchNamerTests
     {
+        private const string BranchNamePrefix = "nukeeper/";
+
         [Test]
         public void TestWithSinglePackage()
         {
@@ -18,6 +20,17 @@ namespace NuKeeper.Tests.Engine
             var branchName = BranchNamer.MakeName(packages);
 
             Assert.That(branchName, Is.EqualTo("nukeeper-update-SomePackage-to-1.2.3"));
+        }
+
+        [Test]
+        public void TestWithSinglePackageAndBranchNamePrefix()
+        {
+            var packages = PackageUpdates.MakeUpdateSet("SomePackage")
+                .InList();
+
+            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+
+            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-SomePackage-to-1.2.3"));
         }
 
         [Test]
@@ -35,6 +48,20 @@ namespace NuKeeper.Tests.Engine
         }
 
         [Test]
+        public void TestWithTwoPackagesAndBranchNamePrefix()
+        {
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage"),
+                PackageUpdates.MakeUpdateSet("OtherPackage")
+            };
+
+            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+
+            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
+        }
+
+        [Test]
         public void TestWithThreePackages()
         {
             var packages = new List<PackageUpdateSet>
@@ -47,6 +74,21 @@ namespace NuKeeper.Tests.Engine
             var branchName = BranchNamer.MakeName(packages);
 
             Assert.That(branchName, Is.EqualTo("nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
+        }
+
+        [Test]
+        public void TestWithThreePackagesAndBranchNamePrefix()
+        {
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage"),
+                PackageUpdates.MakeUpdateSet("OtherPackage"),
+                PackageUpdates.MakeUpdateSet("SomethingElse"),
+            };
+
+            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+
+            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
         }
 
         [Test]
@@ -70,6 +112,26 @@ namespace NuKeeper.Tests.Engine
             Assert.That(branchName1, Is.EqualTo(branchName2));
         }
 
+        [Test]
+        public void EquivalentInputsWithBranchNamePrefix_HaveSameHash()
+        {
+            var packages1 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
+            };
+
+            var packages2 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
+            };
+
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
+
+            Assert.That(branchName1, Is.EqualTo(branchName2));
+        }
 
         [Test]
         public void VersionChange_ChangesHash()
@@ -88,6 +150,27 @@ namespace NuKeeper.Tests.Engine
 
             var branchName1 = BranchNamer.MakeName(packages1);
             var branchName2 = BranchNamer.MakeName(packages2);
+
+            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+        }
+
+        [Test]
+        public void VersionChangeWithBranchNamePrefix_ChangesHash()
+        {
+            var packages1 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
+            };
+
+            var packages2 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.5")
+            };
+
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
 
             Assert.That(branchName1, Is.Not.EqualTo(branchName2));
         }
@@ -113,5 +196,25 @@ namespace NuKeeper.Tests.Engine
             Assert.That(branchName1, Is.Not.EqualTo(branchName2));
         }
 
+        [Test]
+        public void NameChangeWithBranchNamePrefix_ChangesHash()
+        {
+            var packages1 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
+            };
+
+            var packages2 = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("ZomePackage", "2.3.4"),
+                PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
+            };
+
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
+
+            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+        }
     }
 }

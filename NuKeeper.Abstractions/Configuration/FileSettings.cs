@@ -39,6 +39,9 @@ namespace NuKeeper.Abstractions.Configuration
         public LogDestination? LogDestination { get; set; }
         public Platform? Platform { get; set; }
 
+        public string BranchNamePrefix { get; set; }
+        public bool? DeleteBranchAfterMerge { get; set; }
+
         public static FileSettings Empty()
         {
             return new FileSettings();

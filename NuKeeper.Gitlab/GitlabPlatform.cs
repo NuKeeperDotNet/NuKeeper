@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -48,7 +48,8 @@ namespace NuKeeper.Gitlab
                 SourceBranch = request.Head,
                 Description = request.Body,
                 TargetBranch = request.BaseRef,
-                Id = $"{projectName}/{repositoryName}"
+                Id = $"{projectName}/{repositoryName}",
+                RemoveSourceBranch = request.DeleteBranchAfterMerge
             };
 
             await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest);

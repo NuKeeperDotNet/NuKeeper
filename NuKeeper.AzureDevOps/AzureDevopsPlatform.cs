@@ -44,7 +44,11 @@ namespace NuKeeper.AzureDevOps
                 title = request.Title,
                 sourceRefName = $"refs/heads/{request.Head}",
                 description = request.Body,
-                targetRefName = $"refs/heads/{request.BaseRef}"
+                targetRefName = $"refs/heads/{request.BaseRef}",
+                completionOptions = new GitPullRequestCompletionOptions
+                {
+                    deleteSourceBranch = request.DeleteBranchAfterMerge
+                }
             };
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
