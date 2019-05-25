@@ -34,7 +34,7 @@ title: "Configuration"
 | excluderepos     |           | `org`, `global`           | _null_                  |
 |                  |           |                           |                         |
 | branchnameprefix |           | `repo`, `org`, `global`, `update`| _null_           |
-| deletebranchaftermerge |     | _all_                     | true                    |
+| deletebranchaftermerge | d   | _all_                     | true                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
