@@ -3,8 +3,7 @@ using NuKeeper.Abstractions.Output;
 
 namespace NuKeeper.Abstractions.Configuration
 {
-    public class 
-        UserSettings
+    public class UserSettings
     {
         public NuGetSources NuGetSources { get; set; }
 
