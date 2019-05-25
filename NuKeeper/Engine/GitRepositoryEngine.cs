@@ -78,9 +78,9 @@ namespace NuKeeper.Engine
                 }
 
                 repositoryData.IsLocalRepo = repository.IsLocalRepo;
-
-                //var git = new GitCmdDriver(@"C:\Program Files\Git\bin\git.exe", _logger, folder, credentials, user);
-                var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
+                IGitDriver git = string.IsNullOrWhiteSpace(settings.UserSettings.GitPath) ?
+                    new LibGit2SharpDriver(_logger, folder, credentials, user) as IGitDriver:
+                    new GitCmdDriver(@"C:\Program Files\Git\bin\git.exe", _logger, folder, credentials, user) as IGitDriver;
 
                 var updatesDone = await _repositoryUpdater.Run(git, repositoryData, settings);
 

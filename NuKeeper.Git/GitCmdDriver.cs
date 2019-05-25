@@ -5,6 +5,7 @@ using NuKeeper.Abstractions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace NuKeeper.Git
@@ -23,6 +24,11 @@ namespace NuKeeper.Git
             if (string.IsNullOrWhiteSpace(pathToGit))
             {
                 throw new ArgumentNullException(nameof(pathToGit));
+            }
+
+            if (Path.GetFileName(pathToGit) != "git.exe")
+            {
+                throw new InvalidOperationException($"Invalid path '{pathToGit}'. Path must point to 'git.exe'");
             }
 
             if (workingFolder == null)
@@ -68,7 +74,7 @@ namespace NuKeeper.Git
         {
             _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
             var branchparam = branchName == null ? "" : $" -b {branchName}";
-            StartGitProzess($"clone{branchparam} {pullEndpoint} ."); // Clone into current folder
+            StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} ."); // Clone into current folder
             _logger.Detailed("Git clone complete");
         }
 
@@ -97,23 +103,23 @@ namespace NuKeeper.Git
         {
             try
             {
-                ProcessStartInfo gitInfo = new ProcessStartInfo();
-                gitInfo.CreateNoWindow = false;
-                gitInfo.UseShellExecute = false;
-                gitInfo.RedirectStandardError = true;
-                gitInfo.RedirectStandardOutput = true;
-                gitInfo.FileName = _pathGit;
-                gitInfo.WorkingDirectory = WorkingFolder.FullPath;
+                ProcessStartInfo gitInfo = new ProcessStartInfo
+                {
+                    CreateNoWindow = false,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    FileName = _pathGit,
+                    WorkingDirectory = WorkingFolder.FullPath,
+                    Arguments = arguments
+                };
 
-                Process gitProcess = new Process();
-                gitInfo.Arguments = arguments; // such as "fetch orign"
+                Process gitProcess = new Process
+                {
+                    StartInfo = gitInfo
+                };
 
-                gitProcess.StartInfo = gitInfo;
                 gitProcess.Start();
-
-                //string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
-                //sstring stdout_str = gitProcess.StandardOutput.ReadToEnd(); // pick up STDOUT
-
                 gitProcess.WaitForExit();
 
                 string stderr_str = "";
@@ -151,6 +157,16 @@ namespace NuKeeper.Git
             }
 
             return "";
+        }
+
+        private Uri CreateCredentialsUri(Uri pullEndpoint, GitUsernamePasswordCredentials gitCredentials)
+        {
+            if (_gitCredentials == null)
+            {
+                return pullEndpoint;
+            }
+
+            return new UriBuilder(pullEndpoint) { UserName = gitCredentials.Username, Password = gitCredentials.Password }.Uri;
         }
     }
 }

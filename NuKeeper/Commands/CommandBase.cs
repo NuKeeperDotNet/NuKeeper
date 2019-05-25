@@ -77,6 +77,10 @@ namespace NuKeeper.Commands
             Description = "Prefix that will be added to created branch name.")]
         public string BranchNamePrefix { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
+            Description = "Path to git.exe to use instead of lib2gitsharp implementation")]
+        public string GitCliPath { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
@@ -124,6 +128,7 @@ namespace NuKeeper.Commands
             var usePrerelease =
                 Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchPrefixName = Concat.FirstValue(BranchNamePrefix, fileSettings.BranchNamePrefix);
+            var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
             {
@@ -133,7 +138,8 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
-                    NuGetSources = NuGetSources
+                    NuGetSources = NuGetSources,
+                    GitPath = gitpath
                 },
                 BranchSettings = new BranchSettings
                 {

@@ -3,7 +3,8 @@ using NuKeeper.Abstractions.Output;
 
 namespace NuKeeper.Abstractions.Configuration
 {
-    public class UserSettings
+    public class 
+        UserSettings
     {
         public NuGetSources NuGetSources { get; set; }
 
@@ -21,5 +22,7 @@ namespace NuKeeper.Abstractions.Configuration
         public string OutputFileName { get; set; }
 
         public string Directory { get; set; }
+
+        public string GitPath { get; set; }
     }
 }
