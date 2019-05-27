@@ -64,6 +64,7 @@ namespace NuKeeper.Engine
                 {
                     folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
                     settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
+                    repositoryData.IsLocalRepo = repository.IsLocalRepo;
 
                     if (!repositoryData.IsFork) //check if we are on a fork. If not on a fork we set the remote to the locally found remote
                     {
@@ -80,8 +81,6 @@ namespace NuKeeper.Engine
                 {
                     repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
                 }
-
-                repositoryData.IsLocalRepo = repository.IsLocalRepo;
 
                 var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
 
