@@ -11,10 +11,10 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         public static PackageLookupResult MakeVersions(
             NuGetVersion current,
-            IEnumerable<PackageSearchMedatadata> candiateVersions,
+            IEnumerable<PackageSearchMedatadata> candidateVersions,
             VersionChange allowedChange)
         {
-            var orderedCandidates = candiateVersions
+            var orderedCandidates = candidateVersions
                 .OrderByDescending(p => p.Identity.Version)
                 .ToList();
 
