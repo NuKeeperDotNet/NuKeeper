@@ -1,12 +1,10 @@
+using System;
+using System.IO;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
+using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Git
 {
@@ -14,12 +12,11 @@ namespace NuKeeper.Git
     {
 
         private GitUsernamePasswordCredentials _gitCredentials;
-        private User _user;
         private string _pathGit;
         private INuKeeperLogger _logger;
 
         public GitCmdDriver(string pathToGit, INuKeeperLogger logger,
-            IFolder workingFolder, GitUsernamePasswordCredentials credentials, User user)
+            IFolder workingFolder, GitUsernamePasswordCredentials credentials)
         {
             if (string.IsNullOrWhiteSpace(pathToGit))
             {
@@ -45,24 +42,23 @@ namespace NuKeeper.Git
             _logger = logger;
             WorkingFolder = workingFolder;
             _gitCredentials = credentials;
-            _user = user;
         }
 
         public IFolder WorkingFolder { get; }
 
         public void AddRemote(string name, Uri endpoint)
         {
-            StartGitProzess($"remote add {name} {endpoint}");
+            StartGitProzess($"remote add {name} {CreateCredentialsUri(endpoint, _gitCredentials)}", true);
         }
 
         public void Checkout(string branchName)
         {
-            StartGitProzess($"checkout -b {branchName} origin/{branchName}");
+            StartGitProzess($"checkout -b {branchName} origin/{branchName}", false);
         }
 
         public void CheckoutNewBranch(string branchName)
         {
-            StartGitProzess($"checkout -b {branchName}");
+            StartGitProzess($"checkout -b {branchName}", true);
         }
 
         public void Clone(Uri pullEndpoint)
@@ -74,89 +70,36 @@ namespace NuKeeper.Git
         {
             _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
             var branchparam = branchName == null ? "" : $" -b {branchName}";
-            StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} ."); // Clone into current folder
+            StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} .", true); // Clone into current folder
             _logger.Detailed("Git clone complete");
         }
 
         public void Commit(string message)
         {
             _logger.Detailed($"Git commit with message '{message}'");
-            StartGitProzess($"commit -m \"{message}\"");
+            StartGitProzess($"commit -a -m \"{message}\"", true);
         }
 
         public string GetCurrentHead()
         {
-            var getBranchHead = StartGitProzess($"symbolic-ref -q --short HEAD");
+            var getBranchHead = StartGitProzess($"symbolic-ref -q --short HEAD", true);
             return string.IsNullOrEmpty(getBranchHead) ?
-                StartGitProzess($"rev-parse HEAD") :
+                StartGitProzess($"rev-parse HEAD", true) :
                 getBranchHead;
         }
 
         public void Push(string remoteName, string branchName)
         {
             _logger.Detailed($"Git push to {remoteName}/{branchName}");
-            StartGitProzess($"push {remoteName} {branchName}");
+            StartGitProzess($"push {remoteName} {branchName}", true);
         }
 
 
-        private string StartGitProzess(string arguments)
+        private string StartGitProzess(string arguments, bool ensureSuccess)
         {
-            try
-            {
-                ProcessStartInfo gitInfo = new ProcessStartInfo
-                {
-                    CreateNoWindow = false,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    FileName = _pathGit,
-                    WorkingDirectory = WorkingFolder.FullPath,
-                    Arguments = arguments
-                };
-
-                Process gitProcess = new Process
-                {
-                    StartInfo = gitInfo
-                };
-
-                gitProcess.Start();
-                gitProcess.WaitForExit();
-
-                string stderr_str = "";
-                while ((stderr_str = gitProcess.StandardError.ReadLine()) != null)
-                {
-                    if (gitProcess.ExitCode == 0)
-                    {
-                        _logger.Normal($"Git {arguments}: {stderr_str}");
-                    }
-                    else
-                    {
-                        _logger.Error($"Git {arguments}: {stderr_str}");
-                    }
-                }
-
-                string stdout_str = "";
-                string returnValue = "";
-                while ((stdout_str = gitProcess.StandardOutput.ReadLine()) != null)
-                {
-                    if (!string.IsNullOrEmpty(returnValue))
-                    {
-                        returnValue += "\n";
-                    }
-
-                    returnValue += stdout_str;
-                    _logger.Detailed($"Git {arguments}: {stderr_str}");
-                }
-
-                gitProcess.Close();
-                return returnValue;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("bla", ex);
-            }
-
-            return "";
+            var process = new ExternalProcess(_logger);
+            var output = process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess).Result;
+            return output.Output.TrimEnd(Environment.NewLine.ToCharArray());
         }
 
         private Uri CreateCredentialsUri(Uri pullEndpoint, GitUsernamePasswordCredentials gitCredentials)

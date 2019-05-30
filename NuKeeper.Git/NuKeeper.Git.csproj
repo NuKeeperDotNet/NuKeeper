@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
+    <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
