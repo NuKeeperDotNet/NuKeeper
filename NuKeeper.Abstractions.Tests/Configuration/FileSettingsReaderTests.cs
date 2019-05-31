@@ -30,6 +30,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                 Directory.Delete(_uniqueTemporaryFolder, true);
             }
         }
+        
 
 
         [Test]
