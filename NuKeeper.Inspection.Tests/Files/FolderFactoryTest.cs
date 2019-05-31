@@ -11,27 +11,6 @@ namespace NuKeeper.Inspection.Tests.Files
     [TestFixture]
     public class FolderFactoryTest
     {
-        [SetUp]
-        public void Setup()
-        {
-            ClearTemp();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            ClearTemp();
-        }
-
-        private static void ClearTemp()
-        {
-            var path = FolderFactory.NuKeeperTempFilesPath();
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, recursive: true);
-            }
-        }
-
         [Test]
         public void OnlySelectTempFoldersOlderThanOneHour()
         {
@@ -49,6 +28,9 @@ namespace NuKeeper.Inspection.Tests.Files
 
             Assert.AreEqual(1, toDelete.Length, "Only 1 folder should be marked for deletion");
             Assert.AreEqual(folder1.FullPath, toDelete[0].FullName, "wrong folder marked for deletion");
+
+            folder1.TryDelete();
+            folder2.TryDelete();
         }
 
         [Test]
@@ -69,6 +51,12 @@ namespace NuKeeper.Inspection.Tests.Files
 
             Assert.AreEqual(1, toDelete.Length, "Only 1 folder should be marked for deletion");
             Assert.AreEqual(folder1.FullPath, toDelete[0].FullName, "wrong folder marked for deletion");
+
+            folder1.TryDelete();
+            if (Directory.Exists(notToToDeletePath))
+            {
+                Directory.Delete(notToToDeletePath);
+            }
         }
     }
 }

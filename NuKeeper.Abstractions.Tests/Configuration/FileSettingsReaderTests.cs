@@ -4,6 +4,7 @@ using System.IO;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NUnit.Framework;
@@ -13,35 +14,30 @@ namespace NuKeeper.Abstractions.Tests.Configuration
     [TestFixture]
     public class FileSettingsReaderTests
     {
+        private string _uniqueTemporaryFolder = null;
+
         [SetUp]
         public void Setup()
         {
-            ClearTemp();
+            _uniqueTemporaryFolder = UniqueTemporaryFolder();
         }
 
         [TearDown]
         public void TearDown()
         {
-            ClearTemp();
-        }
-
-        private static void ClearTemp()
-        {
-            var path = NuKeeperTempFilesPath();
-            if (Directory.Exists(path))
+            if (Directory.Exists(_uniqueTemporaryFolder))
             {
-                Directory.Delete(path, recursive: true);
+                Directory.Delete(_uniqueTemporaryFolder, true);
             }
         }
+
 
         [Test]
         public void MissingFileReturnsNoSettings()
         {
-            var folder = TemporaryFolder();
-
             var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
 
-            var data = fsr.Read(folder);
+            var data = fsr.Read(_uniqueTemporaryFolder);
 
             Assert.That(data, Is.Not.Null);
             Assert.That(data.Age, Is.Null);
@@ -191,7 +187,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         }
 
         [Test]
-        public void ConfigKeysAreCaseInsensitive()
+            public void ConfigKeysAreCaseInsensitive()
         {
             const string configData = @"{
                ""Age"":""3d"",
@@ -250,28 +246,22 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Api, Is.EqualTo("http://api.com"));
         }
 
-        private static string MakeTestFile(string contents)
+        private string MakeTestFile(string contents)
         {
-            var folder = TemporaryFolder();
-            var path = Path.Join(folder, "nukeeper.settings.json");
+            var path = Path.Join(_uniqueTemporaryFolder, "nukeeper.settings.json");
             File.WriteAllText(path, contents);
-            return folder;
+            return _uniqueTemporaryFolder;
         }
 
-        private static string TemporaryFolder()
+        private static string UniqueTemporaryFolder()
         {
             var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
-            var folder = Path.Combine(NuKeeperTempFilesPath(), uniqueName);
+            var folder = Path.Combine(Path.GetTempPath(), "NuKeeper", uniqueName);
 
             var tempDir = new DirectoryInfo(folder);
             tempDir.Create();
 
             return folder;
-        }
-
-        private static string NuKeeperTempFilesPath()
-        {
-            return Path.Combine(Path.GetTempPath(), "NuKeeper");
         }
     }
 }

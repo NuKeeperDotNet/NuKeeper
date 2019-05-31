@@ -65,27 +65,18 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
   <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
 </Project>";
 
-        private readonly IFolder _tempFolder = UniqueTemporaryFolder();
+        private IFolder _uniqueTemporaryFolder = null;
 
         [SetUp]
         public void Setup()
         {
-            ClearTemp();
+            _uniqueTemporaryFolder = UniqueTemporaryFolder();
         }
 
         [TearDown]
         public void TearDown()
         {
-            ClearTemp();
-        }
-
-        private static void ClearTemp()
-        {
-            var path = FolderFactory.NuKeeperTempFilesPath();
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, recursive: true);
-            }
+            _uniqueTemporaryFolder.TryDelete();
         }
 
         [Test]
@@ -104,7 +95,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         public async Task ShouldUpdateDuplicateProject()
         {
             const string name = nameof(ShouldUpdateDuplicateProject);
-            var projectPath = Path.Combine(_tempFolder.FullPath, name, "AnotherProject.csproj");
+            var projectPath = Path.Combine(_uniqueTemporaryFolder.FullPath, name, "AnotherProject.csproj");
             Directory.CreateDirectory(Path.GetDirectoryName(projectPath));
             using (File.Create(projectPath))
             {
@@ -133,7 +124,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var testFolder = memberName;
             var testProject = $"{memberName}.csproj";
 
-            var workDirectory = Path.Combine(_tempFolder.FullPath, testFolder);
+            var workDirectory = Path.Combine(_uniqueTemporaryFolder.FullPath, testFolder);
             Directory.CreateDirectory(workDirectory);
 
             var projectContents = testProjectContents.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
@@ -152,8 +143,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
             Assert.That(contents,
                 Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
-
-            _tempFolder.TryDelete();
         }
 
         private static IFolder UniqueTemporaryFolder()
