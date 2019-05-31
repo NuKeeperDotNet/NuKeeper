@@ -67,6 +67,27 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
         private readonly IFolder _tempFolder = UniqueTemporaryFolder();
 
+        [SetUp]
+        public void Setup()
+        {
+            ClearTemp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ClearTemp();
+        }
+
+        private static void ClearTemp()
+        {
+            var path = FolderFactory.NuKeeperTempFilesPath();
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+
         [Test]
         public async Task ShouldNotThrowOnWebProjectMixedStyleUpdates()
         {

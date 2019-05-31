@@ -1,3 +1,4 @@
+using System.IO;
 using NSubstitute;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
@@ -9,6 +10,27 @@ namespace NuKeeper.Integration.Tests.Files
     [TestFixture]
     public class FolderTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            ClearTemp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ClearTemp();
+        }
+
+        private static void ClearTemp()
+        {
+            var path = FolderFactory.NuKeeperTempFilesPath();
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+
         [Test]
         public void FolderExists()
         {

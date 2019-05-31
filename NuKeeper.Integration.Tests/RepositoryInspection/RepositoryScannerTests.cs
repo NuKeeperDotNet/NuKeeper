@@ -33,6 +33,27 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             @"<package><metadata><dependencies>
 <dependency id=""foo"" version=""3.3.3.5"" /></dependencies></metadata></package>";
 
+        [SetUp]
+        public void Setup()
+        {
+            ClearTemp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ClearTemp();
+        }
+
+        private static void ClearTemp()
+        {
+            var path = FolderFactory.NuKeeperTempFilesPath();
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+
         [Test]
         public void ValidEmptyDirectoryWorks()
         {

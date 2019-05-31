@@ -13,6 +13,27 @@ namespace NuKeeper.Abstractions.Tests.Configuration
     [TestFixture]
     public class FileSettingsReaderTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            ClearTemp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ClearTemp();
+        }
+
+        private static void ClearTemp()
+        {
+            var path = NuKeeperTempFilesPath();
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+
         [Test]
         public void MissingFileReturnsNoSettings()
         {
@@ -240,12 +261,17 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         private static string TemporaryFolder()
         {
             var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
-            var folder = Path.Combine(Path.GetTempPath(), "NuKeeper", uniqueName);
+            var folder = Path.Combine(NuKeeperTempFilesPath(), uniqueName);
 
             var tempDir = new DirectoryInfo(folder);
             tempDir.Create();
 
             return folder;
+        }
+
+        private static string NuKeeperTempFilesPath()
+        {
+            return Path.Combine(Path.GetTempPath(), "NuKeeper");
         }
     }
 }

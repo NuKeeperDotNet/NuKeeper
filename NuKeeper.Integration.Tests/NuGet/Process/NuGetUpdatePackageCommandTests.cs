@@ -34,6 +34,27 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         private readonly string _nugetConfig =
 @"<configuration><config><add key=""repositoryPath"" value="".\packages"" /></config></configuration>";
 
+        [SetUp]
+        public void Setup()
+        {
+            ClearTemp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ClearTemp();
+        }
+
+        private static void ClearTemp()
+        {
+            var path = FolderFactory.NuKeeperTempFilesPath();
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+
         [Test]
         public async Task ShouldUpdateDotnetClassicProject()
         {
