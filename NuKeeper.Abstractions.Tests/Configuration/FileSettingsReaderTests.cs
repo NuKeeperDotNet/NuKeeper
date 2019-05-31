@@ -33,6 +33,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                 Directory.Delete(path, recursive: true);
             }
         }
+        
 
         [Test]
         public void MissingFileReturnsNoSettings()
