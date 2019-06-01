@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
@@ -46,59 +47,59 @@ namespace NuKeeper.Git
 
         public IFolder WorkingFolder { get; }
 
-        public void AddRemote(string name, Uri endpoint)
+        public async Task AddRemote(string name, Uri endpoint)
         {
-            StartGitProzess($"remote add {name} {CreateCredentialsUri(endpoint, _gitCredentials)}", true);
+            await StartGitProzess($"remote add {name} {CreateCredentialsUri(endpoint, _gitCredentials)}", true);
         }
 
-        public void Checkout(string branchName)
+        public async Task Checkout(string branchName)
         {
-            StartGitProzess($"checkout -b {branchName} origin/{branchName}", false);
+            await StartGitProzess($"checkout -b {branchName} origin/{branchName}", false);
         }
 
-        public void CheckoutNewBranch(string branchName)
+        public async Task CheckoutNewBranch(string branchName)
         {
-            StartGitProzess($"checkout -b {branchName}", true);
+            await StartGitProzess($"checkout -b {branchName}", true);
         }
 
-        public void Clone(Uri pullEndpoint)
+        public async Task Clone(Uri pullEndpoint)
         {
-            Clone(pullEndpoint, null);
+            await Clone(pullEndpoint, null);
         }
 
-        public void Clone(Uri pullEndpoint, string branchName)
+        public async Task Clone(Uri pullEndpoint, string branchName)
         {
             _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
             var branchparam = branchName == null ? "" : $" -b {branchName}";
-            StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} .", true); // Clone into current folder
+            await StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} .", true); // Clone into current folder
             _logger.Detailed("Git clone complete");
         }
 
-        public void Commit(string message)
+        public async Task Commit(string message)
         {
             _logger.Detailed($"Git commit with message '{message}'");
-            StartGitProzess($"commit -a -m \"{message}\"", true);
+            await StartGitProzess($"commit -a -m \"{message}\"", true);
         }
 
-        public string GetCurrentHead()
+        public async Task<string> GetCurrentHead()
         {
-            var getBranchHead = StartGitProzess($"symbolic-ref -q --short HEAD", true);
+            var getBranchHead = await StartGitProzess($"symbolic-ref -q --short HEAD", true);
             return string.IsNullOrEmpty(getBranchHead) ?
-                StartGitProzess($"rev-parse HEAD", true) :
+                await StartGitProzess($"rev-parse HEAD", true) :
                 getBranchHead;
         }
 
-        public void Push(string remoteName, string branchName)
+        public async Task Push(string remoteName, string branchName)
         {
             _logger.Detailed($"Git push to {remoteName}/{branchName}");
-            StartGitProzess($"push {remoteName} {branchName}", true);
+            await StartGitProzess($"push {remoteName} {branchName}", true);
         }
 
 
-        private string StartGitProzess(string arguments, bool ensureSuccess)
+        private async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
         {
             var process = new ExternalProcess(_logger);
-            var output = process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess).Result;
+            var output = await process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess);
             return output.Output.TrimEnd(Environment.NewLine.ToCharArray());
         }
 

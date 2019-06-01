@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -40,24 +41,27 @@ namespace NuKeeper.Git
             _identity = GetUserIdentity(user);
         }
 
-        public void Clone(Uri pullEndpoint)
+        public async Task Clone(Uri pullEndpoint)
         {
-            Clone(pullEndpoint, null);
+            await Clone(pullEndpoint, null);
         }
 
-        public void Clone(Uri pullEndpoint, string branchName)
+        public Task Clone(Uri pullEndpoint, string branchName)
         {
-            _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
+            return Task.Run(() =>
+            {
+                _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
 
-            Repository.Clone(pullEndpoint.AbsoluteUri, WorkingFolder.FullPath,
-                new CloneOptions
-                {
-                    CredentialsProvider = UsernamePasswordCredentials,
-                    OnTransferProgress = OnTransferProgress,
-                    BranchName = branchName
-                });
+                Repository.Clone(pullEndpoint.AbsoluteUri, WorkingFolder.FullPath,
+                    new CloneOptions
+                    {
+                        CredentialsProvider = UsernamePasswordCredentials,
+                        OnTransferProgress = OnTransferProgress,
+                        BranchName = branchName
+                    });
 
-            _logger.Detailed("Git clone complete");
+                _logger.Detailed("Git clone complete");
+            });
         }
 
         private bool OnTransferProgress(TransferProgress progress)
@@ -71,46 +75,55 @@ namespace NuKeeper.Git
             return true;
         }
 
-        public void AddRemote(string name, Uri endpoint)
+        public Task AddRemote(string name, Uri endpoint)
         {
-            using (var repo = MakeRepo())
+            return Task.Run(() =>
             {
-                repo.Network.Remotes.Add(name, endpoint.AbsoluteUri);
-            }
+                using (var repo = MakeRepo())
+                {
+                    repo.Network.Remotes.Add(name, endpoint.AbsoluteUri);
+                }
+            });
         }
 
-        public void Checkout(string branchName)
+        public Task Checkout(string branchName)
         {
-            _logger.Detailed($"Git checkout '{branchName}'");
-            using (var repo = MakeRepo())
+            return Task.Run(() =>
             {
-                if (BranchExists(branchName))
+                _logger.Detailed($"Git checkout '{branchName}'");
+                using (var repo = MakeRepo())
                 {
-                    GitCommands.Checkout(repo, repo.Branches[branchName]);
+                    if (BranchExists(branchName))
+                    {
+                        GitCommands.Checkout(repo, repo.Branches[branchName]);
+                    }
+                    else
+                    {
+                        throw new NuKeeperException(
+                            $"Git Cannot checkout branch: the branch named '{branchName}' doesn't exist");
+                    }
                 }
-                else
-                {
-                    throw new NuKeeperException(
-                        $"Git Cannot checkout branch: the branch named '{branchName}' doesn't exist");
-                }
-            }
+            });
         }
 
-        public void CheckoutNewBranch(string branchName)
+        public Task CheckoutNewBranch(string branchName)
         {
-            var qualifiedBranchName = "origin/" + branchName;
-            if (BranchExists(qualifiedBranchName))
+            return Task.Run(() =>
             {
-                _logger.Normal($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
-                return;
-            }
+                var qualifiedBranchName = "origin/" + branchName;
+                if (BranchExists(qualifiedBranchName))
+                {
+                    _logger.Normal($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
+                    return;
+                }
 
-            _logger.Detailed($"Git checkout new branch '{branchName}'");
-            using (var repo = MakeRepo())
-            {
-                var branch = repo.CreateBranch(branchName);
-                GitCommands.Checkout(repo, branch);
-            }
+                _logger.Detailed($"Git checkout new branch '{branchName}'");
+                using (var repo = MakeRepo())
+                {
+                    var branch = repo.CreateBranch(branchName);
+                    GitCommands.Checkout(repo, branch);
+                }
+            });
         }
 
         private bool BranchExists(string branchName)
@@ -123,15 +136,18 @@ namespace NuKeeper.Git
             }
         }
 
-        public void Commit(string message)
+        public Task Commit(string message)
         {
-            _logger.Detailed($"Git commit with message '{message}'");
-            using (var repo = MakeRepo())
+            return Task.Run(() =>
             {
-                var signature = GetSignature(repo);
-                GitCommands.Stage(repo, "*");
-                repo.Commit(message, signature, signature);
-            }
+                _logger.Detailed($"Git commit with message '{message}'");
+                using (var repo = MakeRepo())
+                {
+                    var signature = GetSignature(repo);
+                    GitCommands.Stage(repo, "*");
+                    repo.Commit(message, signature, signature);
+                }
+            });
         }
 
         private Signature GetSignature(Repository repo)
@@ -152,35 +168,41 @@ namespace NuKeeper.Git
             return repoSignature;
         }
 
-        public void Push(string remoteName, string branchName)
+        public Task Push(string remoteName, string branchName)
         {
-            _logger.Detailed($"Git push to {remoteName}/{branchName}");
-
-            using (var repo = MakeRepo())
+            return Task.Run(() =>
             {
+                _logger.Detailed($"Git push to {remoteName}/{branchName}");
 
-                var localBranch = repo.Branches
-                    .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
-                var remote = repo.Network.Remotes
-                    .Single(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
-
-                repo.Branches.Update(localBranch,
-                    b => b.Remote = remote.Name,
-                    b => b.UpstreamBranch = localBranch.CanonicalName);
-
-                repo.Network.Push(localBranch, new PushOptions
+                using (var repo = MakeRepo())
                 {
-                    CredentialsProvider = UsernamePasswordCredentials
-                });
-            }
+
+                    var localBranch = repo.Branches
+                        .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
+                    var remote = repo.Network.Remotes
+                        .Single(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
+
+                    repo.Branches.Update(localBranch,
+                        b => b.Remote = remote.Name,
+                        b => b.UpstreamBranch = localBranch.CanonicalName);
+
+                    repo.Network.Push(localBranch, new PushOptions
+                    {
+                        CredentialsProvider = UsernamePasswordCredentials
+                    });
+                }
+            });
         }
 
-        public string GetCurrentHead()
+        public Task<string> GetCurrentHead()
         {
-            using (var repo = MakeRepo())
+            return Task.Run(() =>
             {
-                return repo.Branches.Single(b => b.IsCurrentRepositoryHead).FriendlyName;
-            }
+                using (var repo = MakeRepo())
+                {
+                    return repo.Branches.Single(b => b.IsCurrentRepositoryHead).FriendlyName;
+                }
+            });
         }
 
         private Repository MakeRepo()
