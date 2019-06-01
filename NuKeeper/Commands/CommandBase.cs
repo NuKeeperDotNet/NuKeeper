@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using NuGet.Configuration;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -28,12 +32,12 @@ namespace NuKeeper.Commands
 
         [Option(CommandOptionType.MultipleValue, ShortName = "s", LongName = "source",
             Description =
-                "Specifies a NuGet package source to use during the operation. This setting overrides all of the sources specified in the NuGet.config files. Multiple sources can be provided by specifying this option multiple times.")]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
-        // ReSharper disable once MemberCanBePrivate.Global
-        protected string[] Source { get; }
+                "Specifies a NuGet package source to use during the operation. This setting overrides all of the sources specified in implicit NuGet.config files, and will be appended to an explicit NuGet.config file. Multiple sources can be provided by specifying this option multiple times.")]
+        public List<string> Sources { get; set; }
 
-        protected NuGetSources NuGetSources => Source == null ? null : new NuGetSources(Source);
+        [Option(CommandOptionType.SingleValue, ShortName = "p", LongName = "nugetconfigpath",
+            Description = "Specifies an explicit NuGet config file to use during the operation.")]
+        public string NuGetConfigPath { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "a", LongName = "age",
             Description = "Exclude updates that do not meet a minimum age, in order to not consume packages immediately after they are released. Examples: 0 = zero, 12h = 12 hours, 3d = 3 days, 2w = two weeks. The default is 7 days.")]
@@ -124,6 +128,8 @@ namespace NuKeeper.Commands
             var usePrerelease =
                 Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchPrefixName = Concat.FirstValue(BranchNamePrefix, fileSettings.BranchNamePrefix);
+            var nugetConfigPath = Concat.FirstValue(NuGetConfigPath, fileSettings.NuGetConfigPath);
+            var sources = Concat.FirstPopulatedList(Sources, fileSettings.Sources);
 
             var settings = new SettingsContainer
             {
@@ -133,7 +139,7 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
-                    NuGetSources = NuGetSources
+                    NuGetSources = GetNuGetSources(nugetConfigPath, sources)
                 },
                 BranchSettings = new BranchSettings
                 {
@@ -280,6 +286,26 @@ namespace NuKeeper.Commands
 
             settings.BranchSettings.BranchNamePrefix = value;
             return ValidationResult.Success;
+        }
+
+        private static NuGetSources GetNuGetSources(string nugetConfigPath, IReadOnlyCollection<string> sources)
+        {
+            var packageSources = new List<PackageSource>();
+
+            if (!string.IsNullOrEmpty(nugetConfigPath))
+            {
+                var path = Path.GetFullPath(nugetConfigPath);
+                var settings = Settings.LoadSettingsGivenConfigPaths(new[] {path});
+
+                packageSources.AddRange(SettingsUtility.GetEnabledSources(settings));
+            }
+
+            if (sources != null)
+            {
+                packageSources.AddRange(sources.Select(s => new PackageSource(s)));
+            }
+
+            return packageSources.Any() ? new NuGetSources(packageSources) : null;
         }
 
         protected abstract Task<int> Run(SettingsContainer settings);

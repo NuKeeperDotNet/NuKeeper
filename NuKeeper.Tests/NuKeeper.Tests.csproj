@@ -19,4 +19,12 @@
     <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
     <ProjectReference Include="..\NuKeeper\NuKeeper.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="NuGetConfigs\via-cli.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NuGetConfigs\via-file.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

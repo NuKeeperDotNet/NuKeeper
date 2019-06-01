@@ -23,6 +23,9 @@ namespace NuKeeper.Abstractions.Configuration
         public string IncludeRepos { get; set; }
         public string ExcludeRepos { get; set; }
 
+        public string NuGetConfigPath { get; set; }
+        public List<string> Sources { get; set; }
+
         public List<string> Label { get; set; }
 
         public string LogFile { get; set; }

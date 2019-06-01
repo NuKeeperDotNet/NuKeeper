@@ -82,6 +82,8 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""exclude"":""fish"",
                ""includeRepos"":""repoIn"",
                ""excludeRepos"":""repoOut"",
+               ""nuGetConfigPath"":""pathToNuGetConfig"",
+               ""sources"": [ ""source1"", ""source2"" ],
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
                ""branchNamePrefix"": ""nukeeper"",
@@ -133,6 +135,32 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.Label.Count, Is.EqualTo(2));
             Assert.That(data.Label, Does.Contain("foo"));
             Assert.That(data.Label, Does.Contain("bar"));
+        }
+
+        [Test]
+        public void PopulatedConfigReturnsSources()
+        {
+            var path = MakeTestFile(FullFileData);
+
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+
+            var data = fsr.Read(path);
+
+            Assert.That(data.Sources.Count, Is.EqualTo(2));
+            Assert.That(data.Sources, Does.Contain("source1"));
+            Assert.That(data.Sources, Does.Contain("source2"));
+        }
+
+        [Test]
+        public void PopulatedConfigReturnsNuGetConfigPath()
+        {
+            var path = MakeTestFile(FullFileData);
+
+            var fsr = new FileSettingsReader(Substitute.For<INuKeeperLogger>());
+
+            var data = fsr.Read(path);
+
+            Assert.That(data.NuGetConfigPath, Does.Contain("pathToNuGetConfig"));
         }
 
         [Test]
