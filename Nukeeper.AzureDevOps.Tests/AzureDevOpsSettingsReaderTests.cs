@@ -92,16 +92,16 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void RepositorySettings_ReturnsNull()
+        public async Task RepositorySettings_ReturnsNull()
         {
-            var settings = _azureSettingsReader.RepositorySettings(null);
+            var settings = await _azureSettingsReader.RepositorySettings(null);
             Assert.IsNull(settings);
         }
 
         [Test]
         public void RepositorySettings_PathTooLong()
         {
-            Assert.Throws<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
+            Assert.ThrowsAsync<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
 
         }
 
