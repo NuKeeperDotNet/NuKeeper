@@ -88,7 +88,7 @@ namespace NuKeeper.Engine.Packages
             var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
             string qualifiedBranch;
-            if (repository.Pull.Owner == repository.Push.Owner)
+            if (!repository.IsFork) //check if we are on a fork, if so qualify the branch name
             {
                 qualifiedBranch = branchWithChanges;
             }
