@@ -25,10 +25,16 @@ namespace NuKeeper.Git.Tests
 
             foreach (var path in env)
             {
-                var files = Directory.GetFiles(path).Where(x => Path.GetFileNameWithoutExtension(x) == "git");
-                if (files.Any())
+                try
                 {
-                    return files.FirstOrDefault();
+                    var files = Directory.GetFiles(path).Where(x => Path.GetFileNameWithoutExtension(x) == "git");
+                    if (files.Any())
+                    {
+                        return files.FirstOrDefault();
+                    }
+                }
+                catch(DirectoryNotFoundException)
+                {
                 }
             }
 
