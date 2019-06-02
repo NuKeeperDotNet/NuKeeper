@@ -21,7 +21,7 @@ namespace NuKeeper.Git.Tests
         public static string DiscoverPathToGit()
         {
             var env = Environment.GetEnvironmentVariable("PATH")
-                .Split(";");
+                .Split(System.IO.Path.PathSeparator);
 
             foreach (var path in env)
             {
