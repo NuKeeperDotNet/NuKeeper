@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -22,7 +23,7 @@ namespace NuKeeper.Gitea
 
         public Platform Platform => Platform.Gitea;
 
-        public bool CanRead(Uri repositoryUri)
+        public async Task<bool> CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null || repositoryUri.Segments == null || repositoryUri.Segments.Length < 3)
                 return false;
@@ -38,7 +39,7 @@ namespace NuKeeper.Gitea
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = client.GetAsync($"swagger.v1.json").Result;
+                HttpResponseMessage response = await client.GetAsync($"swagger.v1.json");
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -59,7 +60,7 @@ namespace NuKeeper.Gitea
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
@@ -86,7 +87,7 @@ namespace NuKeeper.Gitea
             var baseAddress = GetBaseAddress(repositoryUri);
             var apiUri = new Uri(baseAddress, ApiBaseAdress);
 
-            return new RepositorySettings
+            return Task.FromResult(new RepositorySettings
             {
                 ApiUri = apiUri,
                 RepositoryUri = repositoryUri,
@@ -95,7 +96,7 @@ namespace NuKeeper.Gitea
                 RemoteInfo = targetBranch == null
                     ? null
                     : new RemoteInfo { BranchName = targetBranch }
-            };
+            });
         }
 
         private Uri GetBaseAddress(Uri repoUri)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -40,10 +41,10 @@ namespace NuKeeper.Collaboration
             Settings = new CollaborationPlatformSettings();
         }
 
-        public ValidationResult Initialise(Uri apiEndpoint, string token,
+        public async Task<ValidationResult> Initialise(Uri apiEndpoint, string token,
             ForkMode? forkModeFromSettings, Platform? platformFromSettings)
         {
-            var platformSettingsReader = FindPlatformSettingsReader(platformFromSettings, apiEndpoint);
+            var platformSettingsReader = await FindPlatformSettingsReader(platformFromSettings, apiEndpoint);
             if (platformSettingsReader != null)
             {
                 _platform = platformSettingsReader.Platform;
@@ -69,7 +70,7 @@ namespace NuKeeper.Collaboration
             return ValidationResult.Success;
         }
 
-        private ISettingsReader FindPlatformSettingsReader(
+        private async Task<ISettingsReader> FindPlatformSettingsReader(
             Platform? platformFromSettings, Uri apiEndpoint)
         {
             if (platformFromSettings.HasValue)
@@ -86,8 +87,8 @@ namespace NuKeeper.Collaboration
             }
             else
             {
-                var reader = _settingReaders
-                    .FirstOrDefault(s => s.CanRead(apiEndpoint));
+                var reader = await _settingReaders
+                    .FirstOrDefaultAsync(s => s.CanRead(apiEndpoint));
 
                 if (reader != null)
                 {

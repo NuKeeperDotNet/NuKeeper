@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -24,9 +25,9 @@ namespace Nukeeper.AzureDevOps.Tests
 
         [TestCase("https://tfs/")]
         [TestCase("https://internalserver/tfs/")]
-        public void ReturnsTrueIfCanRead(string value)
+        public async Task ReturnsTrueIfCanRead(string value)
         {
-            var canRead = _azureSettingsReader.CanRead(new Uri(value));
+            var canRead = await _azureSettingsReader.CanRead(new Uri(value));
             Assert.IsTrue(canRead);
         }
 
@@ -71,18 +72,18 @@ namespace Nukeeper.AzureDevOps.Tests
 
         [TestCase(null)]
         [TestCase("htps://dev.azure.com")]
-        public void InvalidUrlReturnsNull(string value)
+        public async Task InvalidUrlReturnsNull(string value)
         {
             var uriToTest = value == null ? null : new Uri(value);
-            var canRead = _azureSettingsReader.CanRead(uriToTest);
+            var canRead = await _azureSettingsReader.CanRead(uriToTest);
 
             Assert.IsFalse(canRead);
         }
 
         [Test]
-        public void RepositorySettings_GetsCorrectSettings()
+        public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project/_git/reponame"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://internalserver/tfs", settings.ApiUri.ToString());
@@ -107,9 +108,9 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void RepositorySettings_HandlesSpaces()
+        public async Task RepositorySettings_HandlesSpaces()
         {
-            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project%20name/_git/repo%20name"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project%20name/_git/repo%20name"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://internalserver/tfs", settings.ApiUri.ToString());

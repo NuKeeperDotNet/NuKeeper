@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -20,9 +21,9 @@ namespace NuKeeper.BitBucket
 
         private string Username { get; set; }
 
-        public bool CanRead(Uri repositoryUri)
+        public Task<bool> CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == true;
+            return Task.FromResult(repositoryUri?.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == true);
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
@@ -33,7 +34,7 @@ namespace NuKeeper.BitBucket
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
@@ -66,13 +67,13 @@ namespace NuKeeper.BitBucket
                 : repoName;
             var owner = pathParts[0];
 
-            return new RepositorySettings
+            return Task.FromResult(new RepositorySettings
             {
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = owner
-            };
+            });
         }
     }
 }

@@ -93,7 +93,7 @@ namespace NuKeeper.Commands
 
             var settings = MakeSettings();
 
-            var validationResult = PopulateSettings(settings);
+            var validationResult = await PopulateSettings(settings);
             if (!validationResult.IsSuccess)
             {
                 var logger = _configureLogger as INuKeeperLogger;
@@ -150,12 +150,12 @@ namespace NuKeeper.Commands
             return settings;
         }
 
-        protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
+        protected virtual async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
             var minPackageAge = ReadMinPackageAge();
             if (!minPackageAge.HasValue)
             {
-                return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
+                return await Task.FromResult(ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed"));
             }
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
@@ -196,7 +196,7 @@ namespace NuKeeper.Commands
                 return branchNamePrefixValid;
             }
 
-            return ValidationResult.Success;
+            return await Task.FromResult(ValidationResult.Success);
         }
 
         private TimeSpan? ReadMinPackageAge()

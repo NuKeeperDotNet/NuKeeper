@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -16,7 +17,7 @@ namespace NuKeeper.AzureDevOps
 
         public Platform Platform => Platform.AzureDevOps;
 
-        public abstract bool CanRead(Uri repositoryUri);
+        public abstract Task<bool> CanRead(Uri repositoryUri);
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
@@ -26,6 +27,6 @@ namespace NuKeeper.AzureDevOps
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public abstract RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch);
+        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Formats;
@@ -19,9 +20,9 @@ namespace NuKeeper.Git
             _logger = logger;
         }
 
-        public bool IsGitRepo(Uri repositoryUri)
+        public async Task<bool> IsGitRepo(Uri repositoryUri)
         {
-            var discovered = DiscoverRepo(repositoryUri);
+            var discovered = await DiscoverRepo(repositoryUri);
             if (discovered == null)
             {
                 return false;
@@ -30,9 +31,9 @@ namespace NuKeeper.Git
             return Repository.IsValid(discovered.AbsolutePath);
         }
 
-        public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
+        public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
-            if (!IsGitRepo(repositoryUri))
+            if (!await IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();
             }
@@ -65,21 +66,24 @@ namespace NuKeeper.Git
             }
         }
 
-        public Uri DiscoverRepo(Uri repositoryUri)
+        public Task<Uri> DiscoverRepo(Uri repositoryUri)
         {
-            var discovery = Repository.Discover(repositoryUri.AbsolutePath);
-
-            if (string.IsNullOrEmpty(discovery))
+            return Task.Run(() =>
             {
-                return null;
-            }
+                var discovery = Repository.Discover(repositoryUri.AbsolutePath);
 
-            return new Uri(discovery);
+                if (string.IsNullOrEmpty(discovery))
+                {
+                    return null;
+                }
+
+                return new Uri(discovery);
+            });
         }
 
-        public string GetCurrentHead(Uri repositoryUri)
+        public async Task<string> GetCurrentHead(Uri repositoryUri)
         {
-            var repoRoot = DiscoverRepo(repositoryUri).AbsolutePath;
+            var repoRoot = (await DiscoverRepo(repositoryUri)).AbsolutePath;
             using (var repo = new Repository(repoRoot))
             {
                 var repoHeadBranch = repo.Branches.
@@ -94,9 +98,9 @@ namespace NuKeeper.Git
             }
         }
 
-        public GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost)
+        public async Task<GitRemote> GetRemoteForPlatform(Uri repositoryUri, string platformHost)
         {
-            var remotes = GetRemotes(repositoryUri);
+            var remotes = await GetRemotes(repositoryUri);
             return remotes
                 .FirstOrDefault(rm => rm.Url.Host.Contains(platformHost, StringComparison.OrdinalIgnoreCase));
         }

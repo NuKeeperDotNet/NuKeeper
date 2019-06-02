@@ -24,25 +24,15 @@ namespace NuKeeper.Git
                 throw new ArgumentNullException(nameof(pathToGit));
             }
 
-            if (Path.GetFileName(pathToGit) != "git.exe")
+            if (Path.GetFileNameWithoutExtension(pathToGit) != "git")
             {
-                throw new InvalidOperationException($"Invalid path '{pathToGit}'. Path must point to 'git.exe'");
-            }
-
-            if (workingFolder == null)
-            {
-                throw new ArgumentNullException(nameof(workingFolder));
-            }
-
-            if (credentials == null)
-            {
-                throw new ArgumentNullException(nameof(credentials));
+                throw new InvalidOperationException($"Invalid path '{pathToGit}'. Path must point to 'git' cmd");
             }
 
             _pathGit = pathToGit;
             _logger = logger;
-            WorkingFolder = workingFolder;
-            _gitCredentials = credentials;
+            WorkingFolder = workingFolder ?? throw new ArgumentNullException(nameof(workingFolder));
+            _gitCredentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
         }
 
         public IFolder WorkingFolder { get; }
@@ -96,7 +86,7 @@ namespace NuKeeper.Git
         }
 
 
-        private async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
+        private  async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
         {
             var process = new ExternalProcess(_logger);
             var output = await process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess);
