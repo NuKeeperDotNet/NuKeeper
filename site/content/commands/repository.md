@@ -60,7 +60,7 @@ The --targetBranch option makes this possible. It will create pull-requests on a
 I want one Pull Request that applies updates to all packages to the feature-branch CoolNewFeature:
 
 ```sh
-nukeeper repo url token --consolidate --tagetBranch CoolNewFeature
+nukeeper repo url token --consolidate --targetBranch CoolNewFeature
 ```
 
 
