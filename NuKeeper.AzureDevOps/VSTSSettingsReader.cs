@@ -13,7 +13,6 @@ namespace NuKeeper.AzureDevOps
         private const string UrlPattern = "https://{org}.visualstudio.com/{project}/_git/{repo}";
 
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isLocalGitRepo;
 
         public VstsSettingsReader(IGitDiscoveryDriver gitDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
             : base(environmentVariablesProvider)
@@ -32,7 +31,6 @@ namespace NuKeeper.AzureDevOps
             if (repositoryUri.IsFile)
             {
                 repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
-                _isLocalGitRepo = true;
             }
 
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
@@ -45,7 +43,9 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
-            var settings = _isLocalGitRepo ? CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri);
+            var settings = repositoryUri.IsFile
+                ? CreateSettingsFromLocal(repositoryUri, targetBranch)
+                : CreateSettingsFromRemote(repositoryUri);
             if (settings == null)
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
