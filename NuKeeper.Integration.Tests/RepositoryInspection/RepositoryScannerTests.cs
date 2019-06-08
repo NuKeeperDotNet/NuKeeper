@@ -33,12 +33,26 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             @"<package><metadata><dependencies>
 <dependency id=""foo"" version=""3.3.3.5"" /></dependencies></metadata></package>";
 
+        private IFolder _uniqueTemporaryFolder = null;
+
+        [SetUp]
+        public void Setup()
+        {
+            _uniqueTemporaryFolder = UniqueTemporaryFolder();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _uniqueTemporaryFolder.TryDelete();
+        }
+
         [Test]
         public void ValidEmptyDirectoryWorks()
         {
             var scanner = MakeScanner();
 
-            var results = scanner.FindAllNuGetPackages(GetUniqueTempFolder());
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
@@ -49,10 +63,9 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         {
             var scanner = MakeScanner();
 
-            var temporaryPath = GetUniqueTempFolder();
-            WriteFile(temporaryPath, "packages.config", SinglePackageInFile);
+            WriteFile(_uniqueTemporaryFolder, "packages.config", SinglePackageInFile);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Has.Count.EqualTo(1));
         }
@@ -62,10 +75,9 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         {
             var scanner = MakeScanner();
 
-            var temporaryPath = GetUniqueTempFolder();
-            WriteFile(temporaryPath, "packages.config", SinglePackageInFile);
+            WriteFile(_uniqueTemporaryFolder, "packages.config", SinglePackageInFile);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             var item = results.FirstOrDefault();
 
@@ -79,11 +91,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void FindsCsprojFile()
         {
             var scanner = MakeScanner();
-            var temporaryPath = GetUniqueTempFolder();
 
-            WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
+            WriteFile(_uniqueTemporaryFolder, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Has.Count.EqualTo(1));
         }
@@ -92,11 +103,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void FindsVbprojFile()
         {
             var scanner = MakeScanner();
-            var temporaryPath = GetUniqueTempFolder();
 
-            WriteFile(temporaryPath, "sample.vbproj", Vs2017ProjectFileTemplateWithPackages);
+            WriteFile(_uniqueTemporaryFolder, "sample.vbproj", Vs2017ProjectFileTemplateWithPackages);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Has.Count.EqualTo(1));
         }
@@ -105,11 +115,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void FindsFsprojFile()
         {
             var scanner = MakeScanner();
-            var temporaryPath = GetUniqueTempFolder();
 
-            WriteFile(temporaryPath, "sample.fsproj", Vs2017ProjectFileTemplateWithPackages);
+            WriteFile(_uniqueTemporaryFolder, "sample.fsproj", Vs2017ProjectFileTemplateWithPackages);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Has.Count.EqualTo(1));
         }
@@ -118,11 +127,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void FindsNuspec()
         {
             var scanner = MakeScanner();
-            var temporaryPath = GetUniqueTempFolder();
 
-            WriteFile(temporaryPath, "sample.nuspec", NuspecWithDependency);
+            WriteFile(_uniqueTemporaryFolder, "sample.nuspec", NuspecWithDependency);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             Assert.That(results, Has.Count.EqualTo(1));
         }
@@ -131,11 +139,10 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void CorrectItemInCsProjFile()
         {
             var scanner = MakeScanner();
-            var temporaryPath = GetUniqueTempFolder();
 
-            WriteFile(temporaryPath, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
+            WriteFile(_uniqueTemporaryFolder, "sample.csproj", Vs2017ProjectFileTemplateWithPackages);
 
-            var results = scanner.FindAllNuGetPackages(temporaryPath);
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
 
             var item = results.FirstOrDefault();
 
@@ -172,7 +179,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             return projectRootDir;
         }
 
-        private static IFolder GetUniqueTempFolder()
+        private static IFolder UniqueTemporaryFolder()
         {
             var folderFactory = new FolderFactory(Substitute.For<INuKeeperLogger>());
             return folderFactory.UniqueTemporaryFolder();

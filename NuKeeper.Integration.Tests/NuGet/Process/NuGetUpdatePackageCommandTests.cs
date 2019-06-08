@@ -34,6 +34,20 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         private readonly string _nugetConfig =
 @"<configuration><config><add key=""repositoryPath"" value="".\packages"" /></config></configuration>";
 
+        private IFolder _uniqueTemporaryFolder = null;
+
+        [SetUp]
+        public void Setup()
+        {
+            _uniqueTemporaryFolder = UniqueTemporaryFolder();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _uniqueTemporaryFolder.TryDelete();
+        }
+
         [Test]
         public async Task ShouldUpdateDotnetClassicProject()
         {
@@ -44,9 +58,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             const string testFolder = nameof(ShouldUpdateDotnetClassicProject);
 
             var testProject = $"{testFolder}.csproj";
-            var tempFolder = UniqueTemporaryFolder();
 
-            var workDirectory = Path.Combine(tempFolder.FullPath, testFolder);
+            var workDirectory = Path.Combine(_uniqueTemporaryFolder.FullPath, testFolder);
             Directory.CreateDirectory(workDirectory);
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
@@ -73,8 +86,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
             Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
             Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
-
-            tempFolder.TryDelete();
         }
 
         private static IFolder UniqueTemporaryFolder()
