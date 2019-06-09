@@ -16,7 +16,7 @@ namespace NuKeeper.Git.Tests
         private string _pathTogit;
         private string _repoPath;
 
-        private string _origin = "https://github.com/NuKeeperDotNet/NuKeeper.git";
+        private const string _origin = "https://github.com/NuKeeperDotNet/NuKeeper.git";
 
         [OneTimeSetUp]
         public void Setup()
@@ -47,6 +47,17 @@ namespace NuKeeper.Git.Tests
             var gitDiscoveryDriver = new GitCmdDiscoveryDriver(_pathTogit, _logger);
             var repo = await gitDiscoveryDriver.DiscoverRepo(new Uri(_repoPath));
             Assert.AreEqual(_origin, repo.AbsoluteUri);
+        }
+
+        [Test]
+        public async Task ShouldGetRemotes()
+        {
+            var gitDiscoveryDriver = new GitCmdDiscoveryDriver(_pathTogit, _logger);
+            var classicgitDiscoveryDriver = new LibGit2SharpDiscoveryDriver(_logger);
+            var remotes = await gitDiscoveryDriver.GetRemotes(new Uri(_repoPath));
+            var classicRemotes = await classicgitDiscoveryDriver.GetRemotes(new Uri(_repoPath));
+
+            // Lib2Sharp and GitCmd should have the same results
         }
     }
 }
