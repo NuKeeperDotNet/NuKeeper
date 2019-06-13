@@ -9,6 +9,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
+using NuKeeper.BitBucketLocal;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
 using NuKeeper.Engine;
@@ -177,6 +178,39 @@ namespace NuKeeper.Tests.Commands
                     Arg.Is("abc"),
                     Arg.Is((ForkMode?)null),
                     Arg.Is((Platform?)Platform.BitbucketLocal));
+        }
+
+        [TestCase(Platform.BitbucketLocal, "https://myRepo.ch/")]
+        [TestCase(Platform.GitHub, "https://api.github.com")]
+        public async Task ShouldInitialisePlatformFromParameter(Platform platform, string expectedApi)
+        {
+            var engine = Substitute.For<ICollaborationEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(new FileSettings());
+
+            var gitHubSettingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
+            var bitbucketLocalSettingReader = new BitBucketLocalSettingsReader( _environmentVariablesProvider);
+            var settingsReaders = new List<ISettingsReader> { gitHubSettingReader, bitbucketLocalSettingReader };
+            var collaborationFactory = Substitute.For<ICollaborationFactory>();
+            collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());
+            collaborationFactory.Initialise(default, default, default, default).ReturnsForAnyArgs(ValidationResult.Success);
+
+            var command = new RepositoryCommand(engine, logger, fileSettings, collaborationFactory, settingsReaders)
+            {
+                Platform = platform,
+                RepositoryUri = "https://myRepo.ch/abc/abc" // Repo Uri does not contain any information about the platform.
+            };
+
+            await command.OnExecute();
+
+            await collaborationFactory
+                .Received(1)
+                .Initialise(
+                    Arg.Is(new Uri(expectedApi)), // Is populated by the settings reader. Thus, can be used to check if the correct one was selected.
+                    Arg.Is((string)null),
+                    Arg.Is((ForkMode?)null),
+                    Arg.Is((Platform?)platform));
         }
 
         [Test]
