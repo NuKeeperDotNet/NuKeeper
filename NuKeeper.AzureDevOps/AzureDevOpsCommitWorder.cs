@@ -193,17 +193,8 @@ namespace NuKeeper.AzureDevOps
         private static void LogHighestVersion(PackageUpdateSet updates, NuGetVersion highestVersion, StringBuilder builder)
         {
             var allowedChange = CodeQuote(updates.AllowedChange.ToString());
+            var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
             var highestPublishedAt = HighestPublishedAt(updates.Packages.Major.Published);
-
-            string highest;
-            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
-            {
-                highest = $"{CodeQuote(updates.SelectedId)} {NuGetVersionPackageLink(updates.Selected.Identity)}";
-            }
-            else
-            {
-                highest = CodeQuote(updates.SelectedId + " " + highestVersion);
-            }
 
             builder.AppendLine(
                 $"There is also a higher version, {highest}{highestPublishedAt}, " +
