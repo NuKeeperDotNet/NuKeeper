@@ -242,7 +242,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             var report = _sut.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar` {NuGetVersionPackageLink("foo.bar", "1.2.3")}, but this was not applied as only `Minor` version changes are allowed."));
+            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar 1.2.3`, but this was not applied as only `Minor` version changes are allowed."));
         }
 
         [Test]
@@ -255,7 +255,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             var report = _sut.MakeCommitDetails(updates);
 
-            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar` {NuGetVersionPackageLink("foo.bar", "1.2.3")} published at `2018-02-20T11:32:45Z`,"));
+            Assert.That(report, Does.Contain($"There is also a higher version, `foo.bar 1.2.3` published at `2018-02-20T11:32:45Z`,"));
             Assert.That(report, Does.Contain(" ago, but this was not applied as only `Minor` version changes are allowed."));
         }
 
