@@ -33,6 +33,23 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             @"<package><metadata><dependencies>
 <dependency id=""foo"" version=""3.3.3.5"" /></dependencies></metadata></package>";
 
+        private const string DirectoryBuildProps =
+            @"<Project>
+  <ItemGroup>
+    <PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
+  </ItemGroup>
+</Project>";
+
+        private const string DirectoryBuildTargetsWithManyItemGroups =
+            @"<Project>
+  <ItemGroup>
+    <PackageReference Include=""foo"" Version=""1.2.3""></PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include=""foo2"" Version=""3.2.1""></PackageReference>
+  </ItemGroup>
+</Project>";
+
         private IFolder _uniqueTemporaryFolder = null;
 
         [SetUp]
@@ -150,6 +167,46 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             Assert.That(item.Id, Is.EqualTo("foo"));
             Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
             Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.ProjectFile));
+        }
+
+        [Test]
+        public void CorrectItemInDirectoryBuildProps()
+        {
+            var scanner = MakeScanner();
+
+            WriteFile(_uniqueTemporaryFolder, "Directory.Build.props", DirectoryBuildProps);
+
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
+
+            var item = results.FirstOrDefault();
+
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Id, Is.EqualTo("foo"));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
+            Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
+        public void CorrectItemsInDirectoryBuildTargets()
+        {
+            var scanner = MakeScanner();
+
+            WriteFile(_uniqueTemporaryFolder, "Directory.Build.targets", DirectoryBuildTargetsWithManyItemGroups);
+
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
+
+            var item = results.FirstOrDefault();
+            var item2 = results.Skip(1).FirstOrDefault();
+
+            Assert.That(results.Count, Is.EqualTo(2));
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Id, Is.EqualTo("foo"));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
+            Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+            Assert.That(item2, Is.Not.Null);
+            Assert.That(item2.Id, Is.EqualTo("foo2"));
+            Assert.That(item2.Version, Is.EqualTo(new NuGetVersion(3, 2, 1)));
+            Assert.That(item2.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
         }
 
         [Test]

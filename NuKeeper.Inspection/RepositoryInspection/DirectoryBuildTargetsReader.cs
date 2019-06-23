@@ -45,14 +45,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
         {
             var xml = XDocument.Load(fileContents);
 
-            var packagesNode = xml.Element("Project")?.Element("ItemGroup");
+            var packagesNode = xml.Element("Project")?.Elements("ItemGroup");
             if (packagesNode == null)
             {
                 return Array.Empty<PackageInProject>();
             }
 
-            var packageNodeList = packagesNode.Elements()
-                .Where(x => x.Name == "PackageReference");
+            var packageNodeList = packagesNode.Elements("PackageReference");
 
             return packageNodeList
                 .Select(el => XmlToPackage(el, path))
