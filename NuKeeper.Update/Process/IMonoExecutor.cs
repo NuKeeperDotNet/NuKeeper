@@ -5,6 +5,6 @@ namespace NuKeeper.Update.Process
 {
     public interface IMonoExecutor: IExternalProcess
     {
-        Task<bool> HasMono();
+        Task<bool> CanRun();
     }
 }

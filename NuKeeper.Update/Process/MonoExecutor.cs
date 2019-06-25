@@ -20,23 +20,22 @@ namespace NuKeeper.Update.Process
             _checkMono = new AsyncLazy<bool>(CheckMonoExists);
         }
 
-        public async Task<bool> HasMono()
+        public async Task<bool> CanRun()
         {
             return await _checkMono;
         }
 
         public async Task<ProcessOutput> Run(string workingDirectory, string command, string arguments, bool ensureSuccess)
         {
-            _logger.Normal($"Using mono to run '{command}'");
+            _logger.Normal($"Using Mono to run '{command}'");
 
-            if (!await HasMono())
+            if (!await CanRun())
             {
-                _logger.Error($"Cannot run '{command}' on mono since mono was not found");
-                throw new InvalidOperationException("Mono was not found");
+                _logger.Error($"Cannot run '{command}' on Mono since Mono installation was not found");
+                throw new InvalidOperationException("Mono installation was not found");
             }
 
-            var process = new ExternalProcess(_logger);
-            var processOutput = await process.Run(workingDirectory, "mono", $"{command} {arguments}", false);
+            var processOutput = await _externalProcess.Run(workingDirectory, "mono", $"{command} {arguments}", false);
 
             return processOutput;
         }

@@ -48,7 +48,7 @@ namespace NuKeeper.Update.Process
             ProcessOutput processOutput;
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (await _monoExecutor.HasMono())
+                if (await _monoExecutor.CanRun())
                 {
                     processOutput = await _monoExecutor.Run(file.DirectoryName,
                         nuget,
@@ -57,7 +57,7 @@ namespace NuKeeper.Update.Process
                 }
                 else
                 {
-                    _logger.Normal("Cannot run NuGet.exe file restore as OS Platform is not Windows");
+                    _logger.Normal("Cannot run NuGet.exe. It requires either Windows OS Platform or Mono installation");
                     return;
                 }
             }
