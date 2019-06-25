@@ -44,7 +44,7 @@ namespace NuKeeper.Abstractions.RepositoryInspection
         public IReadOnlyCollection<PackageInProject> CurrentPackages { get; }
 
         public VersionChange AllowedChange => Packages.AllowedChange;
-        public PackageSearchMedatadata Selected => Packages.Selected();
+        public PackageSearchMetadata Selected => Packages.Selected();
 
         public string SelectedId => Selected.Identity.Id;
         public NuGetVersion SelectedVersion => Selected.Identity.Version;

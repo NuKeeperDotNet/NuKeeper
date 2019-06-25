@@ -252,7 +252,7 @@ namespace NuKeeper.Inspection.Tests
         private PackageUpdateSet BuildPackageUpdateSet(PackageInProject pip)
         {
             var package = new PackageIdentity(pip.Id, new NuGetVersion("1.4.5"));
-            var latest = new PackageSearchMedatadata(package, new PackageSource("http://none"), null, null);
+            var latest = new PackageSearchMetadata(package, new PackageSource("http://none"), null, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
 

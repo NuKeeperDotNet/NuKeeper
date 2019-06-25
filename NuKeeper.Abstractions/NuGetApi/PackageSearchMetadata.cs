@@ -7,9 +7,9 @@ using NuKeeper.Abstractions.Formats;
 
 namespace NuKeeper.Abstractions.NuGetApi
 {
-    public class PackageSearchMedatadata
+    public class PackageSearchMetadata
     {
-        public PackageSearchMedatadata(
+        public PackageSearchMetadata(
             PackageIdentity identity,
             PackageSource source,
             DateTimeOffset? published,

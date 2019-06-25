@@ -59,7 +59,7 @@ namespace NuKeeper.Inspection.Report.Formats
                 $"{majorData},{minorData},{patchData}");
         }
 
-        private static string PackageVersionAndDate(NuGetVersion baseline, PackageSearchMedatadata packageVersion)
+        private static string PackageVersionAndDate(NuGetVersion baseline, PackageSearchMetadata packageVersion)
         {
             const string none = ",";
 

@@ -194,7 +194,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             Assert.That(updates.Major.Identity.Version, Is.EqualTo(HighestVersion(resultPackages)));
         }
 
-        private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMedatadata> actualResults)
+        private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMetadata> actualResults)
         {
             var allVersions = Substitute.For<IPackageVersionsLookup>();
             allVersions.Lookup(Arg.Any<string>(), false, Arg.Any<NuGetSources>())
@@ -223,14 +223,14 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             Assert.That(packages.Major.Identity.Version, Is.GreaterThanOrEqualTo(packages.Selected().Identity));
         }
 
-        private static void AssertPackageIdentityIs(PackageSearchMedatadata package, string id)
+        private static void AssertPackageIdentityIs(PackageSearchMetadata package, string id)
         {
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Identity, Is.Not.Null);
             Assert.That(package.Identity.Id, Is.EqualTo(id));
         }
 
-        private static NuGetVersion HighestVersion(IEnumerable<PackageSearchMedatadata> packages)
+        private static NuGetVersion HighestVersion(IEnumerable<PackageSearchMetadata> packages)
         {
             return packages
                 .Select(p => p.Identity.Version)
