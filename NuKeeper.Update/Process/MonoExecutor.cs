@@ -35,9 +35,7 @@ namespace NuKeeper.Update.Process
                 throw new InvalidOperationException("Mono installation was not found");
             }
 
-            var processOutput = await _externalProcess.Run(workingDirectory, "mono", $"{command} {arguments}", false);
-
-            return processOutput;
+            return await _externalProcess.Run(workingDirectory, "mono", $"{command} {arguments}", ensureSuccess);
         }
 
         private async Task<bool> CheckMonoExists()
