@@ -14,7 +14,6 @@ namespace NuKeeper.AzureDevOps
         private const string UrlPattern = "https://dev.azure.com/{org}/{project}/_git/{repo}/";
 
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isLocalGitRepo;
 
         public AzureDevOpsSettingsReader(IGitDiscoveryDriver gitDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
             : base(environmentVariablesProvider)
@@ -32,7 +31,6 @@ namespace NuKeeper.AzureDevOps
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
-                _isLocalGitRepo = true;
                 repositoryUri = await repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
             }
 
@@ -47,10 +45,13 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
-            var settings = _isLocalGitRepo ? await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri);
+            var settings = repositoryUri.IsFile
+                ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
+                : CreateSettingsFromRemote(repositoryUri);
+
             if (settings == null)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             return settings;

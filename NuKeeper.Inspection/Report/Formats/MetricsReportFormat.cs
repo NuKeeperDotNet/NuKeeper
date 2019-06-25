@@ -86,7 +86,7 @@ namespace NuKeeper.Inspection.Report.Formats
             _writer.WriteLine($"LibYears: {displayValue}");
         }
 
-        private static PackageSearchMedatadata FilteredPackageVersion(NuGetVersion baseline, PackageSearchMedatadata packageVersion)
+        private static PackageSearchMetadata FilteredPackageVersion(NuGetVersion baseline, PackageSearchMetadata packageVersion)
         {
             if (packageVersion == null)
             {

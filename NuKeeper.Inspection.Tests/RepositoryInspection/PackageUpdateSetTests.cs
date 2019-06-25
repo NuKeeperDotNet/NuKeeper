@@ -67,7 +67,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         public void OneUpdate_IsValid()
         {
             var fooVersionFour = new PackageIdentity("foo", VersionFour());
-            var highest = new PackageSearchMedatadata(fooVersionFour, _source, DateTimeOffset.Now, null);
+            var highest = new PackageSearchMetadata(fooVersionFour, _source, DateTimeOffset.Now, null);
 
             var currentPackages = new List<PackageInProject>
             {
@@ -241,9 +241,9 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             return new PackageIdentity("foo", new NuGetVersion("1.2.3"));
         }
 
-        private PackageSearchMedatadata LatestFooMetadata()
+        private PackageSearchMetadata LatestFooMetadata()
         {
-            return new PackageSearchMedatadata(
+            return new PackageSearchMetadata(
                 LatestVersionOfPackageFoo(),
                 _source, DateTimeOffset.Now, null);
         }

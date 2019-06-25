@@ -15,7 +15,6 @@ namespace NuKeeper.GitHub
         private const string PlatformHost = "github";
         private const string UrlPattern = "https://github.com/{owner}/{reponame}.git";
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isLocalGitRepo;
 
 
         public GitHubSettingsReader(IGitDiscoveryDriver gitDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
@@ -37,7 +36,6 @@ namespace NuKeeper.GitHub
             if (repositoryUri.IsFile)
             {
                 repositoryUri = await repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
-                _isLocalGitRepo = true;
             }
 
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
@@ -52,10 +50,15 @@ namespace NuKeeper.GitHub
 
         public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
-            var settings = _isLocalGitRepo ? await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri, targetBranch);
+            if (repositoryUri == null)
+            {
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
+            }
+
+            var settings = repositoryUri.IsFile ?  await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri, targetBranch);
             if (settings == null)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             return settings;
@@ -121,7 +124,7 @@ namespace NuKeeper.GitHub
 
             if (pathParts.Count != 2)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             var repoOwner = pathParts[0];

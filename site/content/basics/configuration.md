@@ -45,12 +45,12 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
  See [Semver](http://semver.org/) for what these mean.
  The default value `Major` will allow updates to the overall latest version even if it means accepting a new major version.
 
-* *UsePrerelease* Should NuKeeper suggest updates to a pre-release (beta) package version. Values are `Always`, `Never`, `FromPrerelease`. The default is `FromPrerelease`, meaning that only a package that is currently used at a pre-release version will be updated to a later pre-release version.
-
   For example, if you are currently using package `Foo` at version `1.2.3` and these new versions are available: `1.2.4` - a patch version change, `1.3.0` - a minor version change and `2.0.0` - a new major version.
   * If the allowed version change is `Major` (the default) you will get an update to the overall latest version, i.e. `2.0.0`.
   * If you set the allowed version change to `Minor`, you will get an update to `1.3.0` as now changes to the major version number are not allowed. Version `1.2.4` is also allowed, but the largest allowed update is applied.
   * If the allowed version change is `Patch` you will only get an update to version `1.2.4`.
+
+* *UsePrerelease* Should NuKeeper suggest updates to a pre-release (beta) package version. Values are `Always`, `Never`, `FromPrerelease`. The default is `FromPrerelease`, meaning that only a package that is currently used at a pre-release version will be updated to a later pre-release version.
 
 * *exclude* Do not consider packages matching this regex pattern.
 * *include* Only consider packages matching this regex pattern.

@@ -7,9 +7,9 @@ namespace NuKeeper.Abstractions.NuGetApi
     {
         public PackageLookupResult(
             VersionChange allowedChange,
-            PackageSearchMedatadata major,
-            PackageSearchMedatadata minor,
-            PackageSearchMedatadata patch)
+            PackageSearchMetadata major,
+            PackageSearchMetadata minor,
+            PackageSearchMetadata patch)
         {
             AllowedChange = allowedChange;
             Major = major;
@@ -19,11 +19,11 @@ namespace NuKeeper.Abstractions.NuGetApi
 
         public VersionChange AllowedChange { get; }
 
-        public PackageSearchMedatadata Major { get; }
-        public PackageSearchMedatadata Minor { get; }
-        public PackageSearchMedatadata Patch { get; }
+        public PackageSearchMetadata Major { get; }
+        public PackageSearchMetadata Minor { get; }
+        public PackageSearchMetadata Patch { get; }
 
-        public PackageSearchMedatadata Selected()
+        public PackageSearchMetadata Selected()
         {
             switch (AllowedChange)
             {

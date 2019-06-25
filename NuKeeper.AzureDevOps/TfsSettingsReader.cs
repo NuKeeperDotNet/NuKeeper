@@ -14,7 +14,6 @@ namespace NuKeeper.AzureDevOps
         private const string UrlPattern = "https://tfs.company.local:{port}/<nothingOrVirtualSite>/{project}/_git/{repo}";
 
         private readonly IGitDiscoveryDriver _gitDriver;
-        private bool _isLocalGitRepo;
 
         public TfsSettingsReader(IGitDiscoveryDriver gitDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
         : base(environmentVariablesProvider)
@@ -33,7 +32,6 @@ namespace NuKeeper.AzureDevOps
             if (repositoryUri.IsFile)
             {
                 repositoryUri = await repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
-                _isLocalGitRepo = true;
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -53,7 +51,9 @@ namespace NuKeeper.AzureDevOps
                 return null;
             }
 
-            var settings = _isLocalGitRepo ? await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri);
+            var settings = repositoryUri.IsFile
+                ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
+                : CreateSettingsFromRemote(repositoryUri);
             if (settings == null)
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");

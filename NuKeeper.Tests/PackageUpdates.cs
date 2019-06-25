@@ -27,7 +27,7 @@ namespace NuKeeper.Tests
         {
             var packageId = PackageVersionRange.Parse(packageName, version);
 
-            var latest = new PackageSearchMedatadata(
+            var latest = new PackageSearchMetadata(
                 packageId.SingleVersionIdentity(), OfficialPackageSource(),
                 null,
                 Enumerable.Empty<PackageDependency>());
@@ -46,7 +46,7 @@ namespace NuKeeper.Tests
             IEnumerable<PackageInProject> packages,
             IEnumerable<PackageDependency> dependencies)
         {
-            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, dependencies);
+            var latest = new PackageSearchMetadata(package, OfficialPackageSource(), published, dependencies);
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
         }
@@ -65,7 +65,7 @@ namespace NuKeeper.Tests
         public static PackageUpdateSet ForNewVersion(PackageIdentity newPackage, params PackageInProject[] packages)
         {
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage, OfficialPackageSource(), publishedDate, null);
+            var latest = new PackageSearchMetadata(newPackage, OfficialPackageSource(), publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -75,7 +75,7 @@ namespace NuKeeper.Tests
         {
             var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
             var publishedDate = new DateTimeOffset(2018, 2, 19, 11, 12, 7, TimeSpan.Zero);
-            var latest = new PackageSearchMedatadata(newPackage,
+            var latest = new PackageSearchMetadata(newPackage,
                 InternalPackageSource(), publishedDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
@@ -89,7 +89,7 @@ namespace NuKeeper.Tests
 
         public static PackageUpdateSet UpdateSetFor(PackageIdentity package, DateTimeOffset published, params PackageInProject[] packages)
         {
-            var latest = new PackageSearchMedatadata(package, OfficialPackageSource(), published, null);
+            var latest = new PackageSearchMetadata(package, OfficialPackageSource(), published, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, latest, null, null);
             return new PackageUpdateSet(updates, packages);
@@ -104,9 +104,9 @@ namespace NuKeeper.Tests
             params PackageInProject[] packages)
         {
             var latestId = new PackageIdentity("foo.bar", new NuGetVersion("2.3.4"));
-            var latest = new PackageSearchMedatadata(latestId, OfficialPackageSource(), publishedAt, null);
+            var latest = new PackageSearchMetadata(latestId, OfficialPackageSource(), publishedAt, null);
 
-            var match = new PackageSearchMedatadata(
+            var match = new PackageSearchMetadata(
                 new PackageIdentity("foo.bar", new NuGetVersion("1.2.3")), OfficialPackageSource(), null, null);
 
             var updates = new PackageLookupResult(VersionChange.Minor, latest, match, null);
@@ -125,7 +125,7 @@ namespace NuKeeper.Tests
             };
 
             var matchVersion = new NuGetVersion("4.0.0");
-            var match = new PackageSearchMedatadata(new PackageIdentity("foo", matchVersion),
+            var match = new PackageSearchMetadata(new PackageIdentity("foo", matchVersion),
                 OfficialPackageSource(), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
@@ -143,7 +143,7 @@ namespace NuKeeper.Tests
             };
 
             var matchId = new PackageIdentity("bar", new NuGetVersion("4.0.0"));
-            var match = new PackageSearchMedatadata(matchId, OfficialPackageSource(), pubDate, null);
+            var match = new PackageSearchMetadata(matchId, OfficialPackageSource(), pubDate, null);
 
             var updates = new PackageLookupResult(VersionChange.Major, match, null, null);
             return new PackageUpdateSet(updates, currentPackages);

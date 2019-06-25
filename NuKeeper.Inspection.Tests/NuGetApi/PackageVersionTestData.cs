@@ -13,7 +13,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
     {
         public const string PrereleaseLabel = "prerelease";
 
-        public static List<PackageSearchMedatadata> VersionsFor(VersionChange change)
+        public static List<PackageSearchMetadata> VersionsFor(VersionChange change)
         {
             switch (change)
             {
@@ -48,7 +48,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             }
         }
 
-        private static List<PackageSearchMedatadata> ConvertToPrerelease(List<PackageSearchMedatadata> packages)
+        private static List<PackageSearchMetadata> ConvertToPrerelease(List<PackageSearchMetadata> packages)
         {
             return packages.Select(p =>
                 PackageVersion(p.Identity.Version.Major, p.Identity.Version.Minor, p.Identity.Version.Patch, PrereleaseLabel))
@@ -56,9 +56,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
         }
 
-        private static List<PackageSearchMedatadata> NewMajorVersion()
+        private static List<PackageSearchMetadata> NewMajorVersion()
         {
-            return new List<PackageSearchMedatadata>
+            return new List<PackageSearchMetadata>
             {
                 PackageVersion(2, 3, 4),
                 PackageVersion(2, 3, 1),
@@ -69,18 +69,18 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
         }
 
-        private static List<PackageSearchMedatadata> MinorVersions()
+        private static List<PackageSearchMetadata> MinorVersions()
         {
-            return new List<PackageSearchMedatadata>
+            return new List<PackageSearchMetadata>
             {
                 PackageVersion(1, 3, 1),
                 PackageVersion(1, 3, 0)
             };
         }
 
-        private static List<PackageSearchMedatadata> PatchVersions()
+        private static List<PackageSearchMetadata> PatchVersions()
         {
-            return new List<PackageSearchMedatadata>
+            return new List<PackageSearchMetadata>
             {
                 PackageVersion(1, 2, 5),
                 PackageVersion(1, 2, 4),
@@ -94,19 +94,19 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             };
         }
 
-        private static List<PackageSearchMedatadata> CurrentVersionOnly()
+        private static List<PackageSearchMetadata> CurrentVersionOnly()
         {
-            return new List<PackageSearchMedatadata>
+            return new List<PackageSearchMetadata>
             {
                 PackageVersion(1, 2, 3)
             };
         }
 
-        public static PackageSearchMedatadata PackageVersion(int major, int minor, int patch, string releaseLabel = "")
+        public static PackageSearchMetadata PackageVersion(int major, int minor, int patch, string releaseLabel = "")
         {
             var version = new NuGetVersion(major, minor, patch, releaseLabel);
             var metadata = new PackageIdentity("TestPackage", version);
-            return new PackageSearchMedatadata(metadata, new PackageSource("http://none"), DateTimeOffset.Now, null);
+            return new PackageSearchMetadata(metadata, new PackageSource("http://none"), DateTimeOffset.Now, null);
         }
     }
 }
