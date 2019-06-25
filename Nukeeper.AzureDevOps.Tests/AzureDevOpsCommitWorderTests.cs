@@ -13,6 +13,8 @@ namespace NuKeeper.AzureDevOps.Tests
     [TestFixture]
     public class AzureDevOpsCommitWorderTests
     {
+        private const string CommitEmoji = "📦";
+        
         // Azure DevOps allows a maximum of 4000 characters to be used in a pull request description:
         // https://visualstudio.uservoice.com/forums/330519-azure-devops-formerly-visual-studio-team-services/suggestions/20217283-raise-the-character-limit-for-pull-request-descrip
         private const int MaxCharacterCount = 4000;
@@ -47,7 +49,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo($"{CommitEmoji} Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -59,7 +61,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo($"{CommitEmoji} Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -71,7 +73,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo($"{CommitEmoji} Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
