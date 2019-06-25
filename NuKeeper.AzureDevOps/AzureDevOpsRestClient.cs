@@ -15,15 +15,16 @@ namespace NuKeeper.AzureDevOps
 {
     public class AzureDevOpsRestClient
     {
-        private readonly HttpClient _client;
+        internal readonly HttpClient _httpClient;
         private readonly INuKeeperLogger _logger;
 
         public AzureDevOpsRestClient(HttpClient client, INuKeeperLogger logger, string personalAccessToken)
         {
-            _client = client;
+            _httpClient = client;
             _logger = logger;
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Authorization =
+            
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:{personalAccessToken}")));
         }
 
@@ -32,7 +33,7 @@ namespace NuKeeper.AzureDevOps
             var fullUrl = BuildAzureDevOpsUri(url, previewApi);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
-            var response = await _client.PostAsync(fullUrl, content);
+            var response = await _httpClient.PostAsync(fullUrl, content);
             return await HandleResponse<T>(response, caller);
         }
 
@@ -41,7 +42,7 @@ namespace NuKeeper.AzureDevOps
             var fullUrl = BuildAzureDevOpsUri(url, previewApi);
             _logger.Detailed($"{caller}: Requesting {fullUrl}");
 
-            var response = await _client.GetAsync(fullUrl);
+            var response = await _httpClient.GetAsync(fullUrl);
             return await HandleResponse<T>(response, caller);
         }
 

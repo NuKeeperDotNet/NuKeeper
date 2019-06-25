@@ -15,5 +15,16 @@ namespace Nukeeper.AzureDevOps.Tests
             var platform = new AzureDevOpsPlatform(Substitute.For<INuKeeperLogger>());
             platform.Initialise(new AuthSettings(new Uri("https://uri.com"), "token"));
         }
+
+        [Test]
+        public void AssertHttpClientIsCreated()
+        {
+            var platform = new AzureDevOpsPlatform(Substitute.For<INuKeeperLogger>());
+            platform.Initialise(new AuthSettings(new Uri("https://uri.com"), "token"));
+
+            Assert.IsNotNull(platform._restClient);
+            Assert.IsNotNull(platform._restClient._httpClient);
+         
+        }
     }
 }

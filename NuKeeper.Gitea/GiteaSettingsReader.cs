@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using NuKeeper.Abstractions;
@@ -30,7 +31,14 @@ namespace NuKeeper.Gitea
             try
             {
                 // There is no real identifier for gitea repos so try to get the gitea swagger json
-                var client = new HttpClient()
+                var handler = new HttpClientHandler();
+                if (handler.SupportsAutomaticDecompression)
+                {
+                    // Add support for compression on the http calls. This will send an accept header to indicate that the server can send back compressed
+                    // content. The handler will then decompress this. 
+                    handler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                }
+                var client = new HttpClient(handler)
                 {
                     BaseAddress = GetBaseAddress(repositoryUri)
                 };

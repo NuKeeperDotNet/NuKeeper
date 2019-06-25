@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -23,7 +24,14 @@ namespace NuKeeper.Gitlab
 
         public void Initialise(AuthSettings settings)
         {
-            var httpClient = new HttpClient
+            var handler = new HttpClientHandler();
+            if (handler.SupportsAutomaticDecompression)
+            {
+                // Add support for compression on the http calls. This will send an accept header to indicate that the server can send back compressed
+                // content. The handler will then decompress this. 
+                handler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+            }
+            var httpClient = new HttpClient(handler)
             {
                 BaseAddress = settings.ApiBase
             };

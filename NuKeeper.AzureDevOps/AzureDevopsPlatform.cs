@@ -4,6 +4,7 @@ using NuKeeper.Abstractions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -13,7 +14,7 @@ namespace NuKeeper.AzureDevOps
     public class AzureDevOpsPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
-        private AzureDevOpsRestClient _client;
+        internal AzureDevOpsRestClient _restClient;
 
         public AzureDevOpsPlatform(INuKeeperLogger logger)
         {
@@ -22,11 +23,18 @@ namespace NuKeeper.AzureDevOps
 
         public void Initialise(AuthSettings settings)
         {
-            var httpClient = new HttpClient
+            var handler = new HttpClientHandler();
+            if (handler.SupportsAutomaticDecompression)
             {
-                BaseAddress = settings.ApiBase
+                // Add support for compression on the http calls. This will send an accept header to indicate that the server can send back compressed
+                // content. The handler will then decompress this. 
+                handler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+            }
+            var httpClient = new HttpClient(handler)
+            {
+                BaseAddress = settings.ApiBase  
             };
-            _client = new AzureDevOpsRestClient(httpClient, _logger, settings.Token);
+            _restClient = new AzureDevOpsRestClient(httpClient, _logger, settings.Token);
         }
 
         public Task<User> GetCurrentUser()
@@ -36,7 +44,7 @@ namespace NuKeeper.AzureDevOps
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
-            var repos = await _client.GetGitRepositories(target.Owner);
+            var repos = await _restClient.GetGitRepositories(target.Owner);
             var repo = repos.Single(x => x.name == target.Name);
 
             var req = new PRRequest
@@ -51,17 +59,17 @@ namespace NuKeeper.AzureDevOps
                 }
             };
 
-            var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
+            var pullRequest = await _restClient.CreatePullRequest(req, target.Owner, repo.id);
 
             foreach (var label in labels)
             {
-                await _client.CreatePullRequestLabel(new LabelRequest { name = label }, target.Owner, repo.id, pullRequest.PullRequestId);
+                await _restClient.CreatePullRequestLabel(new LabelRequest { name = label }, target.Owner, repo.id, pullRequest.PullRequestId);
             }
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
-            var projects = await _client.GetProjects();
+            var projects = await _restClient.GetProjects();
             return projects
                 .Select(project => new Organization(project.name))
                 .ToList();
@@ -69,7 +77,7 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string projectName)
         {
-            var repos = await _client.GetGitRepositories(projectName);
+            var repos = await _restClient.GetGitRepositories(projectName);
             return repos.Select(x =>
                     new Repository(x.name, false,
                         new UserPermissions(true, true, true),
@@ -91,9 +99,9 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
-            var repos = await _client.GetGitRepositories(projectName);
+            var repos = await _restClient.GetGitRepositories(projectName);
             var repo = repos.Single(x => x.name == repositoryName);
-            var refs = await _client.GetRepositoryRefs(projectName, repo.id);
+            var refs = await _restClient.GetRepositoryRefs(projectName, repo.id);
             var count = refs.Count(x => x.name.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
             {
