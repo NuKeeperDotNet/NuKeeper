@@ -60,7 +60,7 @@ namespace NuKeeper.Tests.Engine
             return updates;
         }
 
-        private static PackageSearchMedatadata Metadata(string packageId, string version, PackageDependency upstream)
+        private static PackageSearchMetadata Metadata(string packageId, string version, PackageDependency upstream)
         {
             var upstreams = new List<PackageDependency>();
             if (upstream != null)
@@ -68,7 +68,7 @@ namespace NuKeeper.Tests.Engine
                 upstreams.Add(upstream);
             }
 
-            return new PackageSearchMedatadata(
+            return new PackageSearchMetadata(
                 new PackageIdentity(packageId, new NuGetVersion(version)),
                 new PackageSource(NuGetConstants.V3FeedUrl),
                 DateTimeOffset.Now, upstreams);

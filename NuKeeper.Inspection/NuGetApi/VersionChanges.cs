@@ -11,7 +11,7 @@ namespace NuKeeper.Inspection.NuGetApi
     {
         public static PackageLookupResult MakeVersions(
             NuGetVersion current,
-            IEnumerable<PackageSearchMedatadata> candidateVersions,
+            IEnumerable<PackageSearchMetadata> candidateVersions,
             VersionChange allowedChange)
         {
             var orderedCandidates = candidateVersions
@@ -24,8 +24,8 @@ namespace NuKeeper.Inspection.NuGetApi
             return new PackageLookupResult(allowedChange, major, minor, patch);
         }
 
-        private static PackageSearchMedatadata FirstMatch(
-            IList<PackageSearchMedatadata> candidates,
+        private static PackageSearchMetadata FirstMatch(
+            IList<PackageSearchMetadata> candidates,
             NuGetVersion current,
             VersionChange allowedChange)
         {

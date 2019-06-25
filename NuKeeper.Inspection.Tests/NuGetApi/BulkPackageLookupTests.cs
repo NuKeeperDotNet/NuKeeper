@@ -170,7 +170,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
 
         private static void ApiHasNewVersionForPackage(IApiPackageLookup lookup, string packageName)
         {
-            var responseMetaData = new PackageSearchMedatadata(
+            var responseMetaData = new PackageSearchMetadata(
                 new PackageIdentity(packageName, new NuGetVersion(2, 3, 4)), new PackageSource("http://none"),
                 DateTimeOffset.Now, null);
 

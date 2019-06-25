@@ -25,7 +25,7 @@ namespace NuKeeper.Inspection.NuGetApi
             _nuKeeperLogger = nuKeeperLogger;
         }
 
-        public async Task<IReadOnlyCollection<PackageSearchMedatadata>> Lookup(
+        public async Task<IReadOnlyCollection<PackageSearchMetadata>> Lookup(
             string packageName, bool includePrerelease,
             NuGetSources sources)
         {
@@ -39,7 +39,7 @@ namespace NuKeeper.Inspection.NuGetApi
                 .ToList();
         }
 
-        private async Task<IEnumerable<PackageSearchMedatadata>> RunFinderForSource(
+        private async Task<IEnumerable<PackageSearchMetadata>> RunFinderForSource(
             string packageName, bool includePrerelease, PackageSource source)
         {
             var sourceRepository = _packageSources.Get(source);
@@ -54,7 +54,7 @@ namespace NuKeeper.Inspection.NuGetApi
 #pragma warning restore CA1031
             {
                 _nuKeeperLogger.Normal($"Getting {packageName} from {source} returned exception: {ex.Message}");
-                return Enumerable.Empty<PackageSearchMedatadata>();
+                return Enumerable.Empty<PackageSearchMetadata>();
             }
         }
 
@@ -69,13 +69,13 @@ namespace NuKeeper.Inspection.NuGetApi
             }
         }
 
-        private static PackageSearchMedatadata BuildPackageData(PackageSource source, IPackageSearchMetadata metadata)
+        private static PackageSearchMetadata BuildPackageData(PackageSource source, IPackageSearchMetadata metadata)
         {
             var deps = metadata.DependencySets
                 .SelectMany(set => set.Packages)
                 .Distinct();
 
-            return new PackageSearchMedatadata(metadata.Identity, source, metadata.Published, deps);
+            return new PackageSearchMetadata(metadata.Identity, source, metadata.Published, deps);
         }
     }
 }
