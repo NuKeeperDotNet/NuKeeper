@@ -210,6 +210,23 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         }
 
         [Test]
+        public void CorrectItemsInPackagesProps()
+        {
+            var scanner = MakeScanner();
+
+            WriteFile(_uniqueTemporaryFolder, "Packages.props", DirectoryBuildProps);
+
+            var results = scanner.FindAllNuGetPackages(_uniqueTemporaryFolder);
+
+            var item = results.FirstOrDefault();
+
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Id, Is.EqualTo("foo"));
+            Assert.That(item.Version, Is.EqualTo(new NuGetVersion(1, 2, 3)));
+            Assert.That(item.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
         public void SelfTest()
         {
             var scanner = MakeScanner();
