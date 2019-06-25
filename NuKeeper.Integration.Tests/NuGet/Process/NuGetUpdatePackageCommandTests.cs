@@ -75,7 +75,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
             var logger = Substitute.For<INuKeeperLogger>();
-            var command = new NuGetUpdatePackageCommand(logger, new NuGetPath(logger), new ExternalProcess(logger));
+            var externalProcess = new ExternalProcess(logger);
+            var command = new NuGetUpdatePackageCommand(logger, new NuGetPath(logger),
+                new MonoExecutor(logger, externalProcess), externalProcess);
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                     new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
