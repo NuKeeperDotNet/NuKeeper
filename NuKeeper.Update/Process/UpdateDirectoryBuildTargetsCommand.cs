@@ -39,17 +39,16 @@ namespace NuKeeper.Update.Process
         private void UpdateFile(Stream fileContents, NuGetVersion newVersion,
             PackageInProject currentPackage, XDocument xml)
         {
-            var packagesNode = xml.Element("Project")?.Element("ItemGroup");
+            var packagesNode = xml.Element("Project")?.Elements("ItemGroup");
             if (packagesNode == null)
             {
                 return;
             }
 
-            var packageNodeList = packagesNode.Elements()
-                .Where(x => x.Name == "PackageReference" && (x.Attributes("Include")
-                                                                 .Any(a => a.Value == currentPackage.Id)
-                                                             || x.Attributes("Update")
-                                                                 .Any(a => a.Value == currentPackage.Id)));
+            var packageNodeList = packagesNode.Elements("PackageReference")
+                .Where(x =>
+                    (x.Attributes("Include").Any(a => a.Value == currentPackage.Id)
+                  || x.Attributes("Update").Any(a => a.Value == currentPackage.Id)));
 
             foreach (var dependencyToUpdate in packageNodeList)
             {
