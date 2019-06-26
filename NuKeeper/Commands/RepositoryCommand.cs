@@ -19,6 +19,10 @@ namespace NuKeeper.Commands
             Description = "If the target branch is another branch than that you are currently on, set this to the target")]
         public string TargetBranch { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "restorebeforepackageupdate",
+            Description = "Performs 'dotnet restore' before each package update. Defaults to false.")]
+        public bool? RestoreBeforePackageUpdate { get; set; }
+
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -76,6 +80,7 @@ namespace NuKeeper.Commands
 
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             settings.UserSettings.MaxRepositoriesChanged = 1;
+            settings.UserSettings.RestoreBeforePackageUpdate = RestoreBeforePackageUpdate ?? false;
             return ValidationResult.Success;
         }
     }

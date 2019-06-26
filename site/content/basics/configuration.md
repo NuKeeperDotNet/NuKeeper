@@ -12,6 +12,7 @@ title: "Configuration"
 | exclude          | e         | _all_                     | _null_                  |
 | include          | i         | _all_                     | _null_                  |
 | source           | s         | _all_                     |[NuGet.org public api url](https://api.nuget.org/v3/index.json)|
+| restorebeforepackageupdate | r | _all_                   | false                   |
 |                  |           |                           |                         |
 | verbosity        | v         | _all_                     | Normal                  |
 | logdestination   |           | _all_                     | Console                 |
@@ -55,6 +56,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *exclude* Do not consider packages matching this regex pattern.
 * *include* Only consider packages matching this regex pattern.
 * *source* Specifies a NuGet package source to use during the operation. This setting overrides all of the sources specified in the `NuGet.config` files. Multiple sources can be provided by specifying this option multiple times.
+* *restorebeforepackageupdate* Specifies whether NuKeeper should perform a `dotnet restore` before each package update. Defaults to false.
 
 * *verbosity*. Controls how much log data is produced. Values are, from least output to most output: `Quiet`, `Minimal`, `Normal`, `Detailed`. `Quiet` should produce no output unless there is an error, and `Detailed` is suitable for debugging issues.  You can also use short names for these log levels: `Q`, `M`, `N`, `D`.
 * *logdestination*: Where log data is sent: One of: `Console`, `File`, `Off`. Default is `Console`.
