@@ -13,11 +13,10 @@ namespace NuKeeper.Update.Tests.Process
     {
         [TestCase(0, true)]
         [TestCase(1, false)]
-        public async Task WhenCallingCanRun_ShouldCheckExtrernalProccessResult(int exitCode, bool expectedCanExecute)
+        public async Task WhenCallingCanRun_ShouldCheckExternalProcessResult(int exitCode, bool expectedCanExecute)
         {
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
-
 
             externalProcess.Run("","mono","--version",false).
                 Returns(Task.FromResult(new ProcessOutput("","",exitCode)));
@@ -34,7 +33,6 @@ namespace NuKeeper.Update.Tests.Process
         {
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
-
 
             externalProcess.Run("","mono","--version",false).
                 Returns(Task.FromResult(new ProcessOutput("","",0)));
@@ -57,7 +55,6 @@ namespace NuKeeper.Update.Tests.Process
         {
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
-
 
             externalProcess.Run("","mono","--version",false).
                 Returns(Task.FromResult(new ProcessOutput("","",1)));
