@@ -40,8 +40,7 @@ namespace NuKeeper.Update.Process
 
         private async Task<bool> CheckMonoExists()
         {
-            var process = new ExternalProcess(_logger);
-            var result = await process.Run("", "mono", "--version", false);
+            var result = await _externalProcess.Run("", "mono", "--version", false);
 
             return result.Success;
         }
