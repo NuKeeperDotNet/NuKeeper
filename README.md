@@ -57,6 +57,26 @@ Commands:
 
 [For detailed information about the commands, please check out the wiki](https://github.com/NuKeeperDotNet/NuKeeper/wiki) 
 
+### How To Uninstall
+
+You can uninstall the tool using the following command.
+
+```console
+dotnet tool uninstall nukeeper --global
+```
+
+### How To Build and Run From Source
+
+You can build and package the tool using the following commands. The instructions assume that you are in the root of the repository.
+
+```console
+dotnet pack .\NuKeeper\NuKeeper.csproj -o ".\artifacts"
+dotnet tool install nukeeper --global --add-source ".\artifacts"
+nukeeper --version
+```
+
+> Note: On macOS and Linux, `.\NuKeeper\NuKeeper.csproj` and `.\artifacts` will need be switched to `./NuKeeper/NuKeeper.csproj` and `./artifacts` to accommodate for the different slash directions.
+
 ### Licensing
 
 NuKeeper is licensed under the [Apache License](http://opensource.org/licenses/apache.html)
