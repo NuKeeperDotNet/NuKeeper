@@ -22,10 +22,6 @@ namespace NuKeeper.Update.Process
             var projectPath = currentPackage.Path.Info.DirectoryName;
             var projectFileName = currentPackage.Path.Info.Name;
             var sourceUrl = packageSource.SourceUri.ToString();
-            var sources = allSources.CommandLine("-s");
-
-            var restoreCommand = $"restore {projectFileName} {sources}";
-            await _externalProcess.Run(projectPath, "dotnet", restoreCommand, true);
 
             if (currentPackage.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle)
             {
