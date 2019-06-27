@@ -1,8 +1,8 @@
 strategy:
   matrix:
-    linux:
+    Linux:
       imageName: 'ubuntu-16.04'
-    windows:
+    Windows:
       imageName: 'vs2017-win2016'
 
 pool:
@@ -41,6 +41,7 @@ steps:
     dotnet tool install -g dotnet-reportgenerator-globaltool
     reportgenerator -reports:$(Build.SourcesDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:HtmlInline_AzurePipelines;Cobertura
   displayName: Create Code coverage report
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
@@ -48,9 +49,10 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
     reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop for master'
   inputs:
     PathtoPublish: '$(Build.SourcesDirectory)'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), eq(variables['Agent.OS'], 'Windows_NT'))
