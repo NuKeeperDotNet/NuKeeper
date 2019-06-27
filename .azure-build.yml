@@ -1,5 +1,13 @@
-queue:
-  name: Hosted VS2017
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+
 variables:
   buildConfiguration: Release
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
