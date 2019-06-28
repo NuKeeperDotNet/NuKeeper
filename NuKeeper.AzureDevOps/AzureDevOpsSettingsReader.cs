@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -20,7 +21,7 @@ namespace NuKeeper.AzureDevOps
             _gitDriver = gitDriver;
         }
 
-        public override bool CanRead(Uri repositoryUri)
+        public override async Task<bool> CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null)
             {
@@ -30,14 +31,14 @@ namespace NuKeeper.AzureDevOps
             // Is the specified folder already a git repository?
             if (repositoryUri.IsFile)
             {
-                repositoryUri = repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
+                repositoryUri = await repositoryUri.GetRemoteUriFromLocalRepo(_gitDriver, PlatformHost);
             }
 
             // Did we specify a Azure DevOps url?
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
@@ -45,7 +46,7 @@ namespace NuKeeper.AzureDevOps
             }
 
             var settings = repositoryUri.IsFile
-                ? CreateSettingsFromLocal(repositoryUri, targetBranch)
+                ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
                 : CreateSettingsFromRemote(repositoryUri);
 
             if (settings == null)
@@ -77,22 +78,22 @@ namespace NuKeeper.AzureDevOps
             return CreateRepositorySettings(org, repositoryUri, project, repoName);
         }
 
-        private RepositorySettings CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
+        private async Task<RepositorySettings> CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
         {
             var remoteInfo = new RemoteInfo();
 
             var localCopy = repositoryUri;
-            if (_gitDriver.IsGitRepo(repositoryUri))
+            if (await _gitDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
-                var origin = _gitDriver.GetRemoteForPlatform(repositoryUri, PlatformHost);
+                var origin = await _gitDriver.GetRemoteForPlatform(repositoryUri, PlatformHost);
 
                 if (origin != null)
                 {
-                    remoteInfo.LocalRepositoryUri = _gitDriver.DiscoverRepo(localCopy); // Set to the folder, because we found a remote git repository
+                    remoteInfo.LocalRepositoryUri = await _gitDriver.DiscoverRepo(localCopy); // Set to the folder, because we found a remote git repository
                     repositoryUri = origin.Url;
                     remoteInfo.WorkingFolder = localCopy;
-                    remoteInfo.BranchName = targetBranch ?? _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
+                    remoteInfo.BranchName = targetBranch ?? await _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
                     remoteInfo.RemoteName = origin.Name;
                 }
             }

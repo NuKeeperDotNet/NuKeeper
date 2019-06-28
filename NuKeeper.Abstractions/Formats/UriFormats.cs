@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Abstractions.Formats
@@ -23,12 +24,12 @@ namespace NuKeeper.Abstractions.Formats
             return new Uri(path + "/");
         }
 
-        public static Uri GetRemoteUriFromLocalRepo(this Uri repositoryUri, IGitDiscoveryDriver discoveryDriver, string shouldMatchTo)
+        public static async Task<Uri> GetRemoteUriFromLocalRepo(this Uri repositoryUri, IGitDiscoveryDriver discoveryDriver, string shouldMatchTo)
         {
-            if (discoveryDriver.IsGitRepo(repositoryUri))
+            if (await discoveryDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
-                var origin = discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
+                var origin = await discoveryDriver.GetRemoteForPlatform(repositoryUri, shouldMatchTo);
 
                 if (origin != null)
                 {

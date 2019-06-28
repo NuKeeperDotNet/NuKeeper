@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.Configuration;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform
@@ -7,9 +8,9 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
     {
         Platform Platform { get; }
 
-        bool CanRead(Uri repositoryUri);
+        Task<bool> CanRead(Uri repositoryUri);
 
-        RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null);
+        Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null);
 
         void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings);
     }

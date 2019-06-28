@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -23,9 +24,9 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void ReturnsTrueIfCanRead()
+        public async Task ReturnsTrueIfCanRead()
         {
-            var canRead = _azureSettingsReader.CanRead(new Uri("https://org.visualstudio.com"));
+            var canRead = await _azureSettingsReader.CanRead(new Uri("https://org.visualstudio.com"));
             Assert.IsTrue(canRead);
         }
 
@@ -70,18 +71,18 @@ namespace Nukeeper.AzureDevOps.Tests
 
         [TestCase(null)]
         [TestCase("htps://dev.azure.com")]
-        public void InvalidUrlReturnsNull(string value)
+        public async Task InvalidUrlReturnsNull(string value)
         {
             var uriToTest = value == null ? null : new Uri(value);
-            var canRead = _azureSettingsReader.CanRead(uriToTest);
+            var canRead = await _azureSettingsReader.CanRead(uriToTest);
 
             Assert.IsFalse(canRead);
         }
 
         [Test]
-        public void RepositorySettings_GetsCorrectSettings()
+        public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://org.visualstudio.com/", settings.ApiUri.ToString());
@@ -91,16 +92,16 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void RepositorySettings_ReturnsNull()
+        public async Task RepositorySettings_ReturnsNull()
         {
-            var settings = _azureSettingsReader.RepositorySettings(null);
+            var settings = await _azureSettingsReader.RepositorySettings(null);
             Assert.IsNull(settings);
         }
 
         [Test]
         public void RepositorySettings_InvalidFormat()
         {
-            Assert.Throws<NuKeeperException>(() =>
+            Assert.ThrowsAsync<NuKeeperException>(() =>
                 _azureSettingsReader.RepositorySettings(
                     new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/")));
         }

@@ -67,22 +67,22 @@ namespace NuKeeper.Engine.Packages
         {
             _logger.Normal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
 
             // branch
             var branchWithChanges = BranchNamer.MakeName(updates, settings.BranchSettings.BranchNamePrefix);
             _logger.Detailed($"Using branch name: '{branchWithChanges}'");
-            git.CheckoutNewBranch(branchWithChanges);
+            await git.CheckoutNewBranch(branchWithChanges);
 
             foreach (var updateSet in updates)
             {
                 await _updateRunner.Update(updateSet, sources);
 
                 var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
-                git.Commit(commitMessage);
+                await git.Commit(commitMessage);
             }
 
-            git.Push(repository.Remote, branchWithChanges);
+            await git.Push(repository.Remote, branchWithChanges);
 
             var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
             var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
@@ -102,7 +102,7 @@ namespace NuKeeper.Engine.Packages
             await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
 
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
             return updates.Count;
         }
     }

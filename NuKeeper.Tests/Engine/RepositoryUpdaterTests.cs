@@ -105,7 +105,7 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<PullRequestRequest>(),
                     Arg.Any<IEnumerable<string>>());
 
-            gitDriver.Received(numberOfUpdates)
+            await gitDriver.Received(numberOfUpdates)
                 .Commit(Arg.Any<string>());
         }
 

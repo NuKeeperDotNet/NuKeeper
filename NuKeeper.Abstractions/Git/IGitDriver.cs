@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Abstractions.Git
@@ -7,21 +8,21 @@ namespace NuKeeper.Abstractions.Git
     {
         IFolder WorkingFolder { get; }
 
-        void Clone(Uri pullEndpoint);
+        Task Clone(Uri pullEndpoint);
 
-        void Clone(Uri pullEndpoint, string branchName);
+        Task Clone(Uri pullEndpoint, string branchName);
 
-        void AddRemote(string name, Uri endpoint);
+        Task AddRemote(string name, Uri endpoint);
 
-        void Checkout(string branchName);
+        Task Checkout(string branchName);
 
-        void CheckoutNewBranch(string branchName);
+        Task CheckoutNewBranch(string branchName);
 
-        void Commit(string message);
+        Task Commit(string message);
 
-        void Push(string remoteName, string branchName);
+        Task Push(string remoteName, string branchName);
 
-        string GetCurrentHead();
+        Task<string> GetCurrentHead();
 
     }
 }
