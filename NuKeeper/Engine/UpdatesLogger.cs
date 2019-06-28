@@ -12,7 +12,7 @@ namespace NuKeeper.Engine
         {
             if (updates.Count == 1)
             {
-                return "Updating" + DescribeOldVersions(updates.First());
+                return $"Updating {DescribeOldVersions(updates.First())}";
             }
 
             return $"Updating {updates.Count} packages" + Environment.NewLine +
