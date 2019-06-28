@@ -67,6 +67,10 @@ dotnet tool uninstall nukeeper --global
 
 ### How To Build and Run From Source
 
+You can install the nukeeper dotnet tool of current build using the `InstallNuKeeperDotNetTool` (.bat for Windows, .sh for macOS and Linux) found in the root of the repository.
+
+>Note: this overrides your existing global installation of the NuKeeper dotnet tool.
+
 You can build and package the tool using the following commands. The instructions assume that you are in the root of the repository.
 
 ```console
