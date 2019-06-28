@@ -15,7 +15,7 @@ using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 using SearchCodeRequest = NuKeeper.Abstractions.CollaborationModels.SearchCodeRequest;
 using SearchCodeResult = NuKeeper.Abstractions.CollaborationModels.SearchCodeResult;
 using User = NuKeeper.Abstractions.CollaborationModels.User;
-
+using Newtonsoft.Json;
 
 namespace NuKeeper.GitHub
 {
@@ -56,31 +56,75 @@ namespace NuKeeper.GitHub
         {
             CheckInitialised();
 
-            var user = await _client.User.Current();
-            var userLogin = user?.Login;
-            _logger.Detailed($"Read github user '{userLogin}'");
-            return new User(user.Login, user.Name, user.Email);
+            try
+            {
+                var user = await _client.User.Current();
+                _logger.Detailed($"Read github user '{user?.Login}'");
+                return new User(user?.Login, user?.Name, user?.Email);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
         {
             CheckInitialised();
 
-            var githubOrgs = await _client.Organization.GetAll();
-            _logger.Normal($"Read {githubOrgs.Count} organisations");
+            try
+            {
+                var githubOrgs = await _client.Organization.GetAll();
+                _logger.Normal($"Read {githubOrgs.Count} organisations");
 
-            return githubOrgs
-                .Select(org => new Organization(org.Name ?? org.Login))
-                .ToList();
+                return githubOrgs
+                    .Select(org => new Organization(org.Name ?? org.Login))
+                    .ToList();
+            }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task<IReadOnlyList<Repository>> GetRepositoriesForOrganisation(string organisationName)
         {
             CheckInitialised();
 
-            var repos = await _client.Repository.GetAllForOrg(organisationName);
-            _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
-            return repos.Select(repo => new GitHubRepository(repo)).ToList();
+            try
+            {
+                var repos = await _client.Repository.GetAllForOrg(organisationName);
+                _logger.Normal($"Read {repos.Count} repos for org '{organisationName}'");
+                return repos.Select(repo => new GitHubRepository(repo)).ToList();
+            }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task<Repository> GetUserRepository(string userName, string repositoryName)
@@ -99,6 +143,18 @@ namespace NuKeeper.GitHub
                 _logger.Detailed("User fork not found");
                 return null;
             }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task<Repository> MakeUserFork(string owner, string repositoryName)
@@ -114,7 +170,16 @@ namespace NuKeeper.GitHub
             }
             catch (ApiException ex)
             {
-                _logger.Error("User fork not created", ex);
+                var message = "";
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        message = $": {response.errors.First.message}";
+                    }
+                }
+                _logger.Error($"User fork not created{message}", ex);
                 return null;
             }
         }
@@ -134,60 +199,118 @@ namespace NuKeeper.GitHub
                 _logger.Detailed($"No branch found for {userName} / {repositoryName} / {branchName}");
                 return false;
             }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
             CheckInitialised();
 
-            _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
-            _logger.Detailed($"PR title: {request.Title}");
-            var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, new NewPullRequest(request.Title, request.Head, request.BaseRef) { Body = request.Body });
+            try
+            {
+                _logger.Normal($"Making PR onto '{_apiBase} {target.Owner}/{target.Name} from {request.Head}");
+                _logger.Detailed($"PR title: {request.Title}");
 
-            await AddLabelsToIssue(target, createdPullRequest.Number, labels);
+                var createdPullRequest = await _client.PullRequest.Create(target.Owner, target.Name, new NewPullRequest(request.Title, request.Head, request.BaseRef) { Body = request.Body });
+
+                await AddLabelsToIssue(target, createdPullRequest.Number, labels);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             CheckInitialised();
-            var repos = new RepositoryCollection();
-            foreach (var repo in search.Repos)
+            try
             {
-                repos.Add(repo.Owner, repo.Name);
-            }
-
-            var result = await _client.Search.SearchCode(
-                new Octokit.SearchCodeRequest(search.Term)
+                var repos = new RepositoryCollection();
+                foreach (var repo in search.Repos)
                 {
-                    Repos = repos,
-                    In = new[] { CodeInQualifier.Path },
-                    PerPage = search.PerPage
-                });
-            return new SearchCodeResult(result.TotalCount);
+                    repos.Add(repo.Owner, repo.Name);
+                }
+
+                var result = await _client.Search.SearchCode(
+                    new Octokit.SearchCodeRequest(search.Term)
+                    {
+                        Repos = repos,
+                        In = new[] { CodeInQualifier.Path },
+                        PerPage = search.PerPage
+                    });
+                return new SearchCodeResult(result.TotalCount);
+            }
+            catch (ApiException ex)
+            {
+                if (ex.HttpResponse?.Body != null)
+                {
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
+                }
+                throw new NuKeeperException(ex.Message, ex);
+            }
         }
 
         private async Task AddLabelsToIssue(ForkData target, int issueNumber, IEnumerable<string> labels)
         {
-            var labelsToApply = labels?
+            try
+            {
+                var labelsToApply = labels?
                 .Where(l => !string.IsNullOrWhiteSpace(l))
                 .ToArray();
 
-            if (labelsToApply != null && labelsToApply.Any())
+                if (labelsToApply != null && labelsToApply.Any())
+                {
+                    _logger.Normal(
+                        $"Adding label(s) '{labelsToApply.JoinWithCommas()}' to issue "
+                        + $"'{_apiBase} {target.Owner}/{target.Name} {issueNumber}'");
+
+                    try
+                    {
+                        await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, issueNumber,
+                            labelsToApply);
+
+                    }
+                    catch (ApiException ex)
+                    {
+                        _logger.Error("Failed to add labels. Continuing", ex);
+                    }
+                }
+            }
+            catch (ApiException ex)
             {
-                _logger.Normal(
-                    $"Adding label(s) '{labelsToApply.JoinWithCommas()}' to issue "
-                    + $"'{_apiBase} {target.Owner}/{target.Name} {issueNumber}'");
-
-                try
+                if (ex.HttpResponse?.Body != null)
                 {
-                    await _client.Issue.Labels.AddToIssue(target.Owner, target.Name, issueNumber,
-                        labelsToApply);
-
+                    dynamic response = JsonConvert.DeserializeObject(ex.HttpResponse.Body.ToString());
+                    if (response?.errors != null && response.errors.Count > 0)
+                    {
+                        throw new NuKeeperException(response.errors.First.message, ex);
+                    }
                 }
-                catch (ApiException ex)
-                {
-                    _logger.Error("Failed to add labels. Continuing", ex);
-                }
+                throw new NuKeeperException(ex.Message, ex);
             }
         }
     }
