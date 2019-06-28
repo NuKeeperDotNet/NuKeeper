@@ -80,10 +80,6 @@ namespace NuKeeper.Update
 
             switch (packageReferenceType)
             {
-                case PackageReferenceType.PackagesConfig:
-                    commands.Add(_fileRestoreCommand);
-                    commands.Add(_nuGetUpdatePackageCommand);
-                    break;
                 case PackageReferenceType.ProjectFileOldStyle:
                     commands.Add(_updateProjectImportsCommand);
                     commands.Add(_fileRestoreCommand);
@@ -91,6 +87,10 @@ namespace NuKeeper.Update
                     break;
                 case PackageReferenceType.ProjectFile:
                     commands.AddRange(GetDotNetUpdatePackageCommand(restoreBeforePackageUpdate));
+                    break;
+                case PackageReferenceType.PackagesConfig:
+                    commands.Add(_fileRestoreCommand);
+                    commands.Add(_nuGetUpdatePackageCommand);
                     break;
                 case PackageReferenceType.Nuspec:
                     commands.Add(_updateNuspecCommand);
