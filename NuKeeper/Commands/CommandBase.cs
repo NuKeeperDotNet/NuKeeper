@@ -77,6 +77,10 @@ namespace NuKeeper.Commands
             Description = "Prefix that will be added to created branch name.")]
         public string BranchNamePrefix { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
+            Description = "Path to git to use instead of lib2gitsharp implementation")]
+        public string GitCliPath { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
@@ -89,7 +93,7 @@ namespace NuKeeper.Commands
 
             var settings = MakeSettings();
 
-            var validationResult = PopulateSettings(settings);
+            var validationResult = await PopulateSettings(settings);
             if (!validationResult.IsSuccess)
             {
                 var logger = _configureLogger as INuKeeperLogger;
@@ -124,6 +128,7 @@ namespace NuKeeper.Commands
             var usePrerelease =
                 Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchPrefixName = Concat.FirstValue(BranchNamePrefix, fileSettings.BranchNamePrefix);
+            var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
             {
@@ -133,7 +138,8 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
-                    NuGetSources = NuGetSources
+                    NuGetSources = NuGetSources,
+                    GitPath = gitpath
                 },
                 BranchSettings = new BranchSettings
                 {
@@ -144,12 +150,12 @@ namespace NuKeeper.Commands
             return settings;
         }
 
-        protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
+        protected virtual async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
             var minPackageAge = ReadMinPackageAge();
             if (!minPackageAge.HasValue)
             {
-                return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
+                return await Task.FromResult(ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed"));
             }
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
@@ -190,7 +196,7 @@ namespace NuKeeper.Commands
                 return branchNamePrefixValid;
             }
 
-            return ValidationResult.Success;
+            return await Task.FromResult(ValidationResult.Success);
         }
 
         private TimeSpan? ReadMinPackageAge()

@@ -10,10 +10,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
+    <ProjectReference Include="..\NuKeeper.Update\NuKeeper.Update.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>1701;1702,CA1031</NoWarn>
   </PropertyGroup>
 
 </Project>

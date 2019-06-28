@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,8 +48,8 @@ namespace NuKeeper.Update.Process
 
             var packageNodeList = packagesNode.Elements("PackageReference")
                 .Where(x =>
-                    (x.Attributes("Include").Any(a => a.Value == currentPackage.Id)
-                  || x.Attributes("Update").Any(a => a.Value == currentPackage.Id)));
+                    (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
+                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id,StringComparison.InvariantCultureIgnoreCase))));
 
             foreach (var dependencyToUpdate in packageNodeList)
             {

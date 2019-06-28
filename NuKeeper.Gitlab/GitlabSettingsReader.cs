@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -20,12 +21,12 @@ namespace NuKeeper.Gitlab
 
         public Platform Platform => Platform.GitLab;
 
-        public bool CanRead(Uri repositoryUri)
+        public Task<bool> CanRead(Uri repositoryUri)
         {
             if (repositoryUri == null)
-                return false;
+                return Task.FromResult(false);
 
-            return repositoryUri.Host.Contains("gitlab", StringComparison.OrdinalIgnoreCase);
+            return Task.FromResult(repositoryUri.Host.Contains("gitlab", StringComparison.OrdinalIgnoreCase));
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
@@ -35,7 +36,7 @@ namespace NuKeeper.Gitlab
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch = null)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
@@ -60,7 +61,7 @@ namespace NuKeeper.Gitlab
 
             var uriBuilder = new UriBuilder(repositoryUri) { Path = "/api/v4/" };
 
-            return new RepositorySettings
+            return Task.FromResult(new RepositorySettings
             {
                 ApiUri = uriBuilder.Uri,
                 RepositoryUri = repositoryUri,
@@ -69,7 +70,7 @@ namespace NuKeeper.Gitlab
                 RemoteInfo = targetBranch == null
                     ? null
                     : new RemoteInfo { BranchName = targetBranch }
-            };
+            });
         }
     }
 }

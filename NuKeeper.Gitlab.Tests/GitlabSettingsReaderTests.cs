@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -44,19 +45,19 @@ namespace NuKeeper.Gitlab.Tests
         }
 
         [Test]
-        public void AssumesItCanReadGitLabUrls()
+        public async Task AssumesItCanReadGitLabUrls()
         {
-            var canRead = _gitlabSettingsReader.CanRead(new Uri("https://gitlab.com/user/projectname.git"));
+            var canRead = await _gitlabSettingsReader.CanRead(new Uri("https://gitlab.com/user/projectname.git"));
 
             Assert.AreEqual(true, canRead);
         }
 
         [TestCase(null)]
         [TestCase("master")]
-        public void GetsCorrectSettingsFromTheUrl(string targetBranch)
+        public async Task GetsCorrectSettingsFromTheUrl(string targetBranch)
         {
             var repositoryUri = new Uri("https://gitlab.com/user/projectname.git");
-            var repositorySettings = _gitlabSettingsReader.RepositorySettings(repositoryUri, targetBranch);
+            var repositorySettings = await _gitlabSettingsReader.RepositorySettings(repositoryUri, targetBranch);
 
             Assert.IsNotNull(repositorySettings);
             Assert.AreEqual(new Uri("https://gitlab.com/api/v4/"), repositorySettings.ApiUri);

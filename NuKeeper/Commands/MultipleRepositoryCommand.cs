@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -26,9 +27,9 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override ValidationResult PopulateSettings(SettingsContainer settings)
+        protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
-            var baseResult = base.PopulateSettings(settings);
+            var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {
                 return baseResult;

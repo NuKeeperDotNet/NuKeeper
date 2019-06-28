@@ -58,9 +58,9 @@ namespace NuKeeper.Commands
             CollaborationFactory = collaborationFactory;
         }
 
-        protected override ValidationResult PopulateSettings(SettingsContainer settings)
+        protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
-            var baseResult = base.PopulateSettings(settings);
+            var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {
                 return baseResult;
@@ -79,7 +79,7 @@ namespace NuKeeper.Commands
 
             try
             {
-                var collaborationResult = CollaborationFactory.Initialise(
+                var collaborationResult = await CollaborationFactory.Initialise(
                     baseUri, PersonalAccessToken,
                     forkMode, platform);
 

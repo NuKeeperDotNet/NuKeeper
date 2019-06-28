@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Collaboration;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
@@ -31,7 +32,7 @@ namespace NuKeeper.Commands
             _settingsReaders = settingsReaders;
         }
 
-        protected override ValidationResult PopulateSettings(SettingsContainer settings)
+        protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
             if (string.IsNullOrWhiteSpace(RepositoryUri))
             {
@@ -54,11 +55,11 @@ namespace NuKeeper.Commands
             {
                 if (didRead) continue;
 
-                if (reader.CanRead(repoUri))
+                if (await reader.CanRead(repoUri))
                 {
                     didRead = true;
                     settings.SourceControlServerSettings.Repository =
-                        reader.RepositorySettings(repoUri, TargetBranch);
+                        await reader.RepositorySettings(repoUri, TargetBranch);
                 }
             }
 
@@ -67,7 +68,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
-            var baseResult = base.PopulateSettings(settings);
+            var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {
                 return baseResult;

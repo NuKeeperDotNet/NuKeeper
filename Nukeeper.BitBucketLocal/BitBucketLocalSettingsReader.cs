@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -21,13 +22,13 @@ namespace NuKeeper.BitBucketLocal
 
         private string Username { get; set; }
 
-        public bool CanRead(Uri repositoryUri)
+        public Task<bool> CanRead(Uri repositoryUri)
         {
-            return repositoryUri?.Host.Contains("bitbucket", StringComparison.OrdinalIgnoreCase) == true &&
-                   repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false;
+            return Task.FromResult(repositoryUri?.Host.Contains("bitbucket", StringComparison.OrdinalIgnoreCase) == true &&
+                   repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false);
         }
 
-        public RepositorySettings RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
@@ -49,13 +50,13 @@ namespace NuKeeper.BitBucketLocal
             var repoName = pathParts[pathParts.Count - 1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);
             var project = pathParts[pathParts.Count - 2];
 
-            return new RepositorySettings
+            return Task.FromResult(new RepositorySettings
             {
                 ApiUri = new Uri($"{repositoryUri.Scheme}://{repositoryUri.Authority}"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = project
-            };
+            });
         }
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)

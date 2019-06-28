@@ -29,6 +29,7 @@ title: "Configuration"
 | maxpackageupdates| m         | `repo`, `org`, `global`, `update`| 3, or when the command is `update`, 1 |
 | consolidate      | n         | `repo`, `org`, `global`   | false                   |
 | platform         |           | `repo`, `org`, `global`   | _null_                  |
+| gitclipath       | git       | `repo`, `org`, `global`   | _null_ (use default Lib2Git-Implementation)                  |
 |                  |           |                           |                         |
 | maxrepo          |           | `org`, `global`           | 10                      |
 | includerepos     |           | `org`, `global`           | _null_                  |
@@ -72,6 +73,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *maxrepo* The maximum number of repositories to change. Used in Organisation and Global mode.
 * *consolidate* Consolidate updates into a single pull request, instead of the default of 1 pull request per package update applied.
 * *platform* One of `GitHub`, `AzureDevOps`, `Bitbucket`, `BitbucketLocal`, `Gitlab`, `Gitea`. Determines which kind of source control api will be used. This is typicaly infered from the api url structure, but since this does not always work, it can be specified here if neccessary.
+* *gitclipath* Path to `git` command line. Alternative use native git via cli instead of the default lib2gitsharp implementation. In special cases lib2gitsharp is not enough. E.g. in enviroments with company-proxies or self hosted git services signed certificates. For Windows it is typically `C:\Program Files\Git\bin\git.exe`. For Linux it is typically `/usr/bin/git`. 
 
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.

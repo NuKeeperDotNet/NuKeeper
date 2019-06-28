@@ -4,6 +4,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Collaboration;
 using NuKeeper.Inspection.Logging;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
@@ -18,12 +19,12 @@ namespace NuKeeper.Commands
         {
         }
 
-        protected override ValidationResult PopulateSettings(SettingsContainer settings)
+        protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
             var fileSettings = FileSettingsCache.GetSettings();
             ApiEndpoint = Concat.FirstValue(ApiEndpoint, fileSettings.Api, "https://api.github.com");
 
-            var baseResult = base.PopulateSettings(settings);
+            var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
             {
                 return baseResult;
