@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.RepositoryInspection;
@@ -13,6 +14,7 @@ namespace NuKeeper.Update
     public class UpdateRunner : IUpdateRunner
     {
         private readonly INuKeeperLogger _logger;
+        private readonly ISettingsContainer _settingsContainer;
         private readonly IFileRestoreCommand _fileRestoreCommand;
         private readonly INuGetUpdatePackageCommand _nuGetUpdatePackageCommand;
         private readonly IDotNetUpdatePackageCommand _dotNetUpdatePackageCommand;
@@ -23,6 +25,7 @@ namespace NuKeeper.Update
 
         public UpdateRunner(
             INuKeeperLogger logger,
+            ISettingsContainer settingsContainer,
             IFileRestoreCommand fileRestoreCommand,
             INuGetUpdatePackageCommand nuGetUpdatePackageCommand,
             IDotNetUpdatePackageCommand dotNetUpdatePackageCommand,
@@ -32,6 +35,7 @@ namespace NuKeeper.Update
             IUpdateDirectoryBuildTargetsCommand updateDirectoryBuildTargetsCommand)
         {
             _logger = logger;
+            _settingsContainer = settingsContainer;
             _fileRestoreCommand = fileRestoreCommand;
             _nuGetUpdatePackageCommand = nuGetUpdatePackageCommand;
             _dotNetUpdatePackageCommand = dotNetUpdatePackageCommand;
@@ -49,8 +53,7 @@ namespace NuKeeper.Update
 
             foreach (var current in sortedUpdates)
             {
-                // TODO: Find a way to access UserSettings.RestoreBeforePackageUpdate here. Should be passed to GetUpdateCommands function.
-                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType, false);
+                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType, _settingsContainer.UserSettings.RestoreBeforePackageUpdate);
                 foreach (var updateCommand in updateCommands)
                 {
                     await updateCommand.Invoke(current,
@@ -118,11 +121,12 @@ namespace NuKeeper.Update
             return commands.ToArray();
         }
 
-        private static IEnumerable<PackageInProject> PackageProjectsRequiringDotNetRestore(IReadOnlyCollection<PackageInProject> packagesInProjects)
+        private static IReadOnlyCollection<PackageInProject> PackageProjectsRequiringDotNetRestore(IReadOnlyCollection<PackageInProject> packagesInProjects)
         {
             return packagesInProjects.Where(
                 x => x.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle
-                || x.Path.PackageReferenceType == PackageReferenceType.ProjectFile);
+                || x.Path.PackageReferenceType == PackageReferenceType.ProjectFile)
+                .ToArray();
         }
     }
 }
