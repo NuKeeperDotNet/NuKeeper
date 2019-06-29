@@ -52,7 +52,7 @@ namespace NuKeeper.Update.Tests
                 _updateDirectoryBuildTargetsCommand);
         }
 
-        [TestCase(true, Description = "Should also perform dotnet restore's before each package update.")]
+        [TestCase(true, Description = "Should perform dotnet restore's before each package update.")]
         [TestCase(false, Description = "Should not perform dotnet restore's before each package update.")]
         public async Task CorrectCommandsAreExecutedForProjectFileUpdate(bool restoreBeforePackageUpdate)
         {
@@ -68,7 +68,7 @@ namespace NuKeeper.Update.Tests
             await AssertCorrectProjectFileCommandsAreExecuted(packageUpdateSet, sources, restoreBeforePackageUpdate);
         }
 
-        [TestCase(true, Description = "Should also perform dotnet restore's before each package update.")]
+        [TestCase(true, Description = "Should perform dotnet restore's before each package update.")]
         [TestCase(false, Description = "Should not perform dotnet restore's before each package update.")]
         public async Task CorrectCommandsAreExecutedForProjectFileOldStyleUpdate(bool restoreBeforePackageUpdate)
         {
