@@ -52,11 +52,11 @@ namespace NuKeeper.Update.Tests
                 _updateDirectoryBuildTargetsCommand);
         }
 
-        [Test]
-        public async Task CorrectCommandsAreExecutedForProjectFileUpdate_RestoreBeforePackageUpdate()
+        [TestCase(true, Description = "Should also perform dotnet restore's before each package update.")]
+        [TestCase(false, Description = "Should not perform dotnet restore's before each package update.")]
+        public async Task CorrectCommandsAreExecutedForProjectFileUpdate(bool restoreBeforePackageUpdate)
         {
             // Arrange
-            var restoreBeforePackageUpdate = true;
             var packageReferenceType = PackageReferenceType.ProjectFile;
             var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
             var sources = NuGetSources.GlobalFeed;
@@ -68,43 +68,11 @@ namespace NuKeeper.Update.Tests
             await AssertCorrectProjectFileCommandsAreExecuted(packageUpdateSet, sources, restoreBeforePackageUpdate);
         }
 
-        [Test]
-        public async Task CorrectCommandsAreExecutedForProjectFileUpdate_NoRestoreBeforePackageUpdate()
+        [TestCase(true, Description = "Should also perform dotnet restore's before each package update.")]
+        [TestCase(false, Description = "Should not perform dotnet restore's before each package update.")]
+        public async Task CorrectCommandsAreExecutedForProjectFileOldStyleUpdate(bool restoreBeforePackageUpdate)
         {
             // Arrange
-            var restoreBeforePackageUpdate = false;
-            var packageReferenceType = PackageReferenceType.ProjectFile;
-            var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
-            var sources = NuGetSources.GlobalFeed;
-
-            // Act
-            await _sut.Update(packageUpdateSet, sources);
-
-            // Assert
-            await AssertCorrectProjectFileCommandsAreExecuted(packageUpdateSet, sources, restoreBeforePackageUpdate);
-        }
-
-        [Test]
-        public async Task CorrectCommandsAreExecutedForProjectFileOldStyleUpdate_RestoreBeforePackageUpdate()
-        {
-            // Arrange
-            var restoreBeforePackageUpdate = true;
-            var packageReferenceType = PackageReferenceType.ProjectFileOldStyle;
-            var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
-            var sources = NuGetSources.GlobalFeed;
-
-            // Act
-            await _sut.Update(packageUpdateSet, sources);
-
-            // Assert
-            await AssertCorrectProjectFileOldStyleCommandsAreExecuted(packageUpdateSet, sources, restoreBeforePackageUpdate);
-        }
-
-        [Test]
-        public async Task CorrectCommandsAreExecutedForProjectFileOldStyleUpdate_NoRestoreBeforePackageUpdate()
-        {
-            // Arrange
-            var restoreBeforePackageUpdate = false;
             var packageReferenceType = PackageReferenceType.ProjectFileOldStyle;
             var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
             var sources = NuGetSources.GlobalFeed;
