@@ -12,7 +12,6 @@ using NuKeeper.Update.Process;
 using NUnit.Framework;
 using NuKeeper.Abstractions.NuGet;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace NuKeeper.Update.Tests
 {
@@ -20,6 +19,7 @@ namespace NuKeeper.Update.Tests
     public class UpdateRunnerTests
     {
         private INuKeeperLogger _nuKeeperLogger;
+        private ISettingsContainer _settingsContainer;
         private IFileRestoreCommand _fileRestoreCommand;
         private INuGetUpdatePackageCommand _nuGetUpdatePackageCommand;
         private IDotNetUpdatePackageCommand _dotNetUpdatePackageCommand;
@@ -33,6 +33,10 @@ namespace NuKeeper.Update.Tests
         public void SetUp()
         {
             _nuKeeperLogger = Substitute.For<INuKeeperLogger>();
+
+            _settingsContainer = Substitute.For<ISettingsContainer>();
+            _settingsContainer.UserSettings = new UserSettings();
+
             _fileRestoreCommand = Substitute.For<IFileRestoreCommand>();
             _nuGetUpdatePackageCommand = Substitute.For<INuGetUpdatePackageCommand>();
             _dotNetUpdatePackageCommand = Substitute.For<IDotNetUpdatePackageCommand>();
@@ -43,6 +47,7 @@ namespace NuKeeper.Update.Tests
 
             _sut = new UpdateRunner(
                 _nuKeeperLogger,
+                _settingsContainer,
                 _fileRestoreCommand,
                 _nuGetUpdatePackageCommand,
                 _dotNetUpdatePackageCommand,
@@ -57,6 +62,7 @@ namespace NuKeeper.Update.Tests
         public async Task CorrectCommandsAreExecutedForProjectFileUpdate(bool restoreBeforePackageUpdate)
         {
             // Arrange
+            _settingsContainer.UserSettings.RestoreBeforePackageUpdate = restoreBeforePackageUpdate;
             var packageReferenceType = PackageReferenceType.ProjectFile;
             var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
             var sources = NuGetSources.GlobalFeed;
@@ -73,6 +79,7 @@ namespace NuKeeper.Update.Tests
         public async Task CorrectCommandsAreExecutedForProjectFileOldStyleUpdate(bool restoreBeforePackageUpdate)
         {
             // Arrange
+            _settingsContainer.UserSettings.RestoreBeforePackageUpdate = restoreBeforePackageUpdate;
             var packageReferenceType = PackageReferenceType.ProjectFileOldStyle;
             var packageUpdateSet = UpdateFooFromOneVersion(packageReferenceType);
             var sources = NuGetSources.GlobalFeed;
