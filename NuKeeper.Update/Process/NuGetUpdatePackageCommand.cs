@@ -51,7 +51,7 @@ namespace NuKeeper.Update.Process
                 }
                 else
                 {
-                    _logger.Normal("Cannot run NuGet.exe. It requires either Windows OS Platform or Mono installation");
+                    _logger.Error("Cannot run NuGet.exe. It requires either Windows OS Platform or Mono installation");
                 }
             }
             else
