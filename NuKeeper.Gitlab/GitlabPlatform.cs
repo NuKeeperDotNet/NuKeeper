@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Gitlab.Model;
 using User = NuKeeper.Abstractions.CollaborationModels.User;
@@ -49,7 +50,8 @@ namespace NuKeeper.Gitlab
                 Description = request.Body,
                 TargetBranch = request.BaseRef,
                 Id = $"{projectName}/{repositoryName}",
-                RemoveSourceBranch = request.DeleteBranchAfterMerge
+                RemoveSourceBranch = request.DeleteBranchAfterMerge,
+                Labels = labels.JoinWithCommas()
             };
 
             await _client.OpenMergeRequest(projectName, repositoryName, mergeRequest);

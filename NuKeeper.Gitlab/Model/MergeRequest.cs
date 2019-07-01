@@ -21,5 +21,8 @@ namespace NuKeeper.Gitlab.Model
 
         [JsonProperty("remove_source_branch")]
         public bool RemoveSourceBranch { get; set; }
+
+        [JsonProperty("labels")]
+        public string Labels { get; set; }
     }
 }
