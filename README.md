@@ -24,7 +24,7 @@ Installation is very easy. Just run this command and the tool will be installed.
 
 Install: `dotnet tool install nukeeper --global`
 
-> Note: NuKeeper has experimental support for running package updates on Linux/MacOs. This functionality relies on Mono installation on local system. Please refer to https://www.mono-project.com/ for more information about how to install mono.
+> Note: NuKeeper has experimental support for running package updates on Linux/macOS. This functionality relies on Mono installation on local system. Please refer to https://www.mono-project.com/ for more information about how to install mono.
 
 ### Platform support
 
