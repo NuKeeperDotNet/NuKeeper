@@ -1,3 +1,4 @@
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.AzureDevOps
 {
@@ -32,6 +32,20 @@ namespace NuKeeper.AzureDevOps
         public Task<User> GetCurrentUser()
         {
             return Task.FromResult(new User("user@email.com", "", ""));
+        }
+
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            var repos = await _client.GetGitRepositories(target.Owner);
+            var repo = repos.Single(x => x.name == target.Name);
+
+            var result = await _client.GetPullRequests(
+                target.Owner,
+                repo.id,
+                $"refs/heads/{headBranch}",
+                $"refs/heads/{baseBranch}");
+
+            return result.Any();
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

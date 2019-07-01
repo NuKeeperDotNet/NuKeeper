@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucketLocal.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 
 
@@ -38,6 +38,11 @@ namespace NuKeeper.BitBucketLocal
         public Task<User> GetCurrentUser()
         {
             return Task.FromResult(new User(_settings.Username, "", ""));
+        }
+
+        public Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

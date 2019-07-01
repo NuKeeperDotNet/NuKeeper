@@ -1,4 +1,3 @@
-using System;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -6,6 +5,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.AzureDevOps;
 using NuKeeper.Tests;
 using NUnit.Framework;
+using System;
 
 namespace Nukeeper.AzureDevOps.Tests
 {
@@ -79,7 +79,7 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public void RepositorySettings_GetsCorrectSettings()
+        public void RepositorySettings_GetsCorrectSettingsOrganisation()
         {
             var settings = _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
 
@@ -88,6 +88,18 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
+        }
+
+        [Test]
+        public void RepositorySettings_GetsCorrectSettingsPrivate()
+        {
+            var settings = _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"));
+
+            Assert.IsNotNull(settings);
+            Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/");
+            Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/owner/_git/reponame");
+            Assert.AreEqual(settings.RepositoryName, "reponame");
+            Assert.AreEqual(settings.RepositoryOwner, "owner");
         }
 
         [Test]

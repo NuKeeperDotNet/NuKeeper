@@ -1,5 +1,6 @@
-using System;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
+using System;
 
 namespace NuKeeper.Inspection.Logging
 {
@@ -64,7 +65,7 @@ namespace NuKeeper.Inspection.Logging
                     return new NullLogger();
 
                 default:
-                    throw new Exception($"Unknown log destination {destination}");
+                    throw new NuKeeperException($"Unknown log destination {destination}");
             }
         }
     }

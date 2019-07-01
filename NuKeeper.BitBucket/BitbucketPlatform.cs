@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucket.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 using User = NuKeeper.Abstractions.CollaborationModels.User;
 
@@ -36,8 +36,14 @@ namespace NuKeeper.BitBucket
 
         public Task<User> GetCurrentUser()
         {
-
             return Task.FromResult(new User(_settings.Username, "", ""));
+        }
+
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            var result = await _client.GetPullRequests(target.Owner, target.Name, headBranch, baseBranch);
+
+            return result.values.Any();
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
@@ -64,7 +70,7 @@ namespace NuKeeper.BitBucket
                 close_source_branch = request.DeleteBranchAfterMerge
             };
 
-            await _client.CreatePullRequest(req, target.Owner, repo.name);
+            await _client.CreatePullRequest(target.Owner, repo.name, req);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()

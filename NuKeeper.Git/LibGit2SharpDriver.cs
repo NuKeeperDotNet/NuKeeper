@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
 using LibGit2Sharp;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
+using System;
+using System.Linq;
 using GitCommands = LibGit2Sharp.Commands;
 using Repository = LibGit2Sharp.Repository;
 
@@ -86,7 +86,11 @@ namespace NuKeeper.Git
             {
                 if (BranchExists(branchName))
                 {
-                    GitCommands.Checkout(repo, repo.Branches[branchName]);
+                    _logger.Normal($"Git checkout local branch '{branchName}'");
+                    // Some files are automatically generated in /obj folder.
+                    // If there is no .gitignore there will be conflicts because of this and you cannot change branches
+                    // CheckoutModifiers.Force makes that all changes are ignored.
+                    GitCommands.Checkout(repo, repo.Branches[branchName], new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
                 }
                 else
                 {
@@ -96,13 +100,46 @@ namespace NuKeeper.Git
             }
         }
 
-        public void CheckoutNewBranch(string branchName)
+        public void CheckoutRemoteToLocal(string branchName)
+        {
+            var qualifiedBranchName = "origin/" + branchName;
+
+            _logger.Detailed($"Git checkout '{qualifiedBranchName}'");
+            using (var repo = MakeRepo())
+            {
+                if (!BranchExists(qualifiedBranchName))
+                {
+                    throw new NuKeeperException(
+                        $"Git Cannot checkout branch: the branch named '{qualifiedBranchName}' doesn't exist");
+                }
+
+                if (BranchExists(branchName))
+                {
+                    throw new NuKeeperException(
+                        $"Git Cannot checkout branch '{qualifiedBranchName}' to '{branchName}': the branch named '{branchName}' does already exist");
+                }
+
+                _logger.Normal($"Git checkout existing branch '{qualifiedBranchName}' to '{branchName}'");
+
+                // Get a reference on the remote tracking branch
+                var trackedBranch = repo.Branches[qualifiedBranchName];
+                // Create a local branch pointing at the same Commit
+                var branch = repo.CreateBranch(branchName, trackedBranch.Tip);
+                // Configure the local branch to track the remote one.
+                repo.Branches.Update(branch, b => b.TrackedBranch = trackedBranch.CanonicalName);
+
+                // go to the just created branch
+                Checkout(branchName);
+            }
+        }
+
+        public bool CheckoutNewBranch(string branchName)
         {
             var qualifiedBranchName = "origin/" + branchName;
             if (BranchExists(qualifiedBranchName))
             {
                 _logger.Normal($"Git Cannot checkout new branch: a branch named '{qualifiedBranchName}' already exists");
-                return;
+                return false;
             }
 
             _logger.Detailed($"Git checkout new branch '{branchName}'");
@@ -111,6 +148,7 @@ namespace NuKeeper.Git
                 var branch = repo.CreateBranch(branchName);
                 GitCommands.Checkout(repo, branch);
             }
+            return true;
         }
 
         private bool BranchExists(string branchName)
@@ -160,9 +198,9 @@ namespace NuKeeper.Git
             {
 
                 var localBranch = repo.Branches
-                    .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
+                    .Single(b => b.CanonicalName.EndsWith(branchName, StringComparison.OrdinalIgnoreCase) && !b.IsRemote);
                 var remote = repo.Network.Remotes
-                    .Single(b => b.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
+                    .Single(r => r.Name.EndsWith(remoteName, StringComparison.OrdinalIgnoreCase));
 
                 repo.Branches.Update(localBranch,
                     b => b.Remote = remote.Name,
@@ -209,6 +247,35 @@ namespace NuKeeper.Git
             }
 
             return new Identity(user.Name, user.Email);
+        }
+
+        public string[] GetNewCommitMessages(string baseBranchName, string headBranchName)
+        {
+            if (!BranchExists(baseBranchName))
+            {
+                throw new NuKeeperException(
+                    $"Git Cannot compare branches: the branch named '{baseBranchName}' doesn't exist");
+            }
+            if (!BranchExists(headBranchName))
+            {
+                throw new NuKeeperException(
+                    $"Git Cannot compare branches: the branch named '{headBranchName}' doesn't exist");
+            }
+
+            using (var repo = MakeRepo())
+            {
+                var baseBranch = repo.Branches[baseBranchName];
+                var headBranch = repo.Branches[headBranchName];
+
+                var filter = new CommitFilter
+                {
+                    SortBy = CommitSortStrategies.Time,
+                    ExcludeReachableFrom = baseBranch,
+                    IncludeReachableFrom = headBranch
+                };
+
+                return repo.Commits.QueryBy(filter).Select(c => c.MessageShort).ToArray();
+            }
         }
     }
 }

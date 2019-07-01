@@ -1,4 +1,5 @@
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -8,14 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
 using Organization = NuKeeper.Abstractions.CollaborationModels.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.CollaborationModels.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 using SearchCodeRequest = NuKeeper.Abstractions.CollaborationModels.SearchCodeRequest;
 using SearchCodeResult = NuKeeper.Abstractions.CollaborationModels.SearchCodeResult;
 using User = NuKeeper.Abstractions.CollaborationModels.User;
-
 
 namespace NuKeeper.GitHub
 {
@@ -57,9 +56,8 @@ namespace NuKeeper.GitHub
             CheckInitialised();
 
             var user = await _client.User.Current();
-            var userLogin = user?.Login;
-            _logger.Detailed($"Read github user '{userLogin}'");
-            return new User(user.Login, user.Name, user.Email);
+            _logger.Detailed($"Read github user '{user?.Login}'");
+            return new User(user?.Login, user?.Name, user?.Email);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()
@@ -134,6 +132,25 @@ namespace NuKeeper.GitHub
                 _logger.Detailed($"No branch found for {userName} / {repositoryName} / {branchName}");
                 return false;
             }
+        }
+
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            CheckInitialised();
+
+            _logger.Normal($"Checking if PR exists onto '{_apiBase} {target.Owner}/{target.Name}: {baseBranch} <= {headBranch}");
+
+            var prRequest = new Octokit.PullRequestRequest
+            {
+                State = ItemStateFilter.Open,
+                SortDirection = SortDirection.Descending,
+                SortProperty = PullRequestSort.Created,
+                Head = $"{target.Owner}:{headBranch}",
+            };
+
+            var pullReqList = await _client.PullRequest.GetAllForRepository(target.Owner, target.Name, prRequest).ConfigureAwait(false);
+
+            return pullReqList.Any(pr => pr.Base.Ref.EndsWith(baseBranch, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

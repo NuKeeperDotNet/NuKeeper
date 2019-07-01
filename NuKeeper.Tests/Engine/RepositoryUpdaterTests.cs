@@ -1,9 +1,13 @@
 using NSubstitute;
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Inspection;
@@ -16,10 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
-using NuKeeper.Abstractions.Git;
-using NuKeeper.Abstractions.Inspections.Files;
-using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine
 {
@@ -66,25 +66,53 @@ namespace NuKeeper.Tests.Engine
             await AssertReceivedMakeUpdate(packageUpdater, 1);
         }
 
-        [TestCase(0, true, 0, 0)]
-        [TestCase(1, true, 1, 1)]
-        [TestCase(2, true, 2, 1)]
-        [TestCase(1, false, 1, 1)]
-        [TestCase(2, false, 2, 2)]
-        public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, bool consolidateUpdates, int expectedUpdates, int expectedPrs)
+#pragma warning disable CA1801
+        [TestCase(0, 0, true, true, 0, 0)]
+        [TestCase(1, 0, true, true, 1, 0)]
+        [TestCase(2, 0, true, true, 2, 0)]
+        [TestCase(3, 0, true, true, 3, 0)]
+        [TestCase(1, 1, true, true, 0, 0)]
+        [TestCase(2, 1, true, true, 1, 0)]
+        [TestCase(3, 1, true, true, 2, 0)]
+        [TestCase(1, 0, false, true, 1, 0)]
+        [TestCase(1, 1, false, true, 0, 0)]
+        [TestCase(1, 0, true, false, 1, 1)]
+        [TestCase(2, 0, true, false, 2, 1)]
+        [TestCase(3, 0, true, false, 3, 1)]
+        [TestCase(1, 1, true, false, 0, 1)]
+        [TestCase(2, 1, true, false, 1, 1)]
+        [TestCase(3, 1, true, false, 2, 1)]
+        [TestCase(1, 0, false, false, 1, 1)]
+        [TestCase(1, 1, false, false, 0, 1)]
+
+        public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, int existingCommitsPerBranch, bool consolidateUpdates, bool pullRequestExists, int expectedUpdates, int expectedPrs)
         {
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var gitDriver = Substitute.For<IGitDriver>();
+            var existingCommitFilder = Substitute.For<IExistingCommitFilter>();
             UpdateSelectionAll(updateSelection);
 
+            gitDriver.GetCurrentHead().Returns("def");
+            gitDriver.CheckoutNewBranch(Arg.Any<string>()).Returns(true);
+
+            collaborationFactory
+                .CollaborationPlatform
+                .PullRequestExists(Arg.Any<ForkData>(), Arg.Any<string>(), Arg.Any<string>())
+                .Returns(pullRequestExists);
+
             var packageUpdater = new PackageUpdater(collaborationFactory,
+                existingCommitFilder,
                 Substitute.For<IUpdateRunner>(),
                 Substitute.For<INuKeeperLogger>());
 
             var updates = Enumerable.Range(1, numberOfUpdates)
                 .Select(_ => PackageUpdates.UpdateSet())
                 .ToList();
+
+            var filteredUpdates = updates.Skip(existingCommitsPerBranch).ToList().AsReadOnly();
+
+            existingCommitFilder.Filter(Arg.Any<IGitDriver>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(), Arg.Any<string>(), Arg.Any<string>()).Returns(filteredUpdates);
 
             var settings = MakeSettings(consolidateUpdates);
 
@@ -93,11 +121,9 @@ namespace NuKeeper.Tests.Engine
 
             var repo = MakeRepositoryData();
 
-            gitDriver.GetCurrentHead().Returns("def");
-
             var count = await repoUpdater.Run(gitDriver, repo, settings);
 
-            Assert.That(count, Is.EqualTo(expectedUpdates));
+            Assert.That(count, Is.EqualTo(expectedUpdates), "Returned count of updates");
 
             await collaborationFactory.CollaborationPlatform.Received(expectedPrs)
                 .OpenPullRequest(
@@ -105,9 +131,9 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<PullRequestRequest>(),
                     Arg.Any<IEnumerable<string>>());
 
-            gitDriver.Received(numberOfUpdates)
-                .Commit(Arg.Any<string>());
+            gitDriver.Received(expectedUpdates).Commit(Arg.Any<string>());
         }
+#pragma warning restore CA1801
 
         [Test]
         public async Task WhenUpdatesAreFilteredOut_CountIsZero()
@@ -164,8 +190,7 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<FilterSettings>(),
-                    Arg.Any<BranchSettings>())
+                    Arg.Any<FilterSettings>())
                 .Returns(c => c.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(1));
         }
 
@@ -174,8 +199,7 @@ namespace NuKeeper.Tests.Engine
             updateSelection.SelectTargets(
                     Arg.Any<ForkData>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<FilterSettings>(),
-                    Arg.Any<BranchSettings>())
+                    Arg.Any<FilterSettings>())
                 .Returns(new List<PackageUpdateSet>());
         }
 

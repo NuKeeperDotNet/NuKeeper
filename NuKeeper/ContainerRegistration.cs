@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Reflection;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
@@ -16,6 +14,8 @@ using NuKeeper.Gitlab;
 using NuKeeper.Local;
 using NuKeeper.Update.Selection;
 using SimpleInjector;
+using System.Linq;
+using System.Reflection;
 
 namespace NuKeeper
 {
@@ -39,7 +39,7 @@ namespace NuKeeper
             container.Register<IGitRepositoryEngine, GitRepositoryEngine>();
             container.Register<IRepositoryUpdater, RepositoryUpdater>();
             container.Register<IPackageUpdateSelection, PackageUpdateSelection>();
-            container.Register<IExistingBranchFilter, ExistingBranchFilter>();
+            container.Register<IExistingCommitFilter, ExistingCommitFilter>();
             container.Register<IPackageUpdater, PackageUpdater>();
             container.Register<IRepositoryFilter, RepositoryFilter>();
 
