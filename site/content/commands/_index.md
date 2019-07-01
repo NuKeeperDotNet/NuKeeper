@@ -20,5 +20,5 @@ chapter: true
 
 
 {{% notice info %}}
-The organisation and the global command are only available for *github*, because the other platforms don't allow such a powerfull token.
+The organisation and the global command are only available for *github*, because the other platforms don't allow such a powerful token.
 {{% /notice %}}
