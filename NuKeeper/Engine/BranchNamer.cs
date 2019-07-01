@@ -42,7 +42,7 @@ namespace NuKeeper.Engine
                     case "Version":
                         //Multiple nugets, same version?
                         var versions = updates.Select(u => u.SelectedVersion).Distinct();
-                        value = versions.Count() > 1 ? "Several-Versions" : $"{versions.First()}";
+                        value = versions.Count() > 1 ? "Multiple-Versions" : $"{versions.First()}";
                         break;
                     case "Count":
                         value = $"{updates.Count}";
