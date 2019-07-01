@@ -43,6 +43,8 @@ namespace NuKeeper.Integration.Tests.Engine
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual("First.Nuget", result.FirstOrDefault()?.SelectedId);
         }
+
+        [Test]
         public void DoNotFilter()
         {
             var nugetsToUpdate = new[]
@@ -83,7 +85,7 @@ namespace NuKeeper.Integration.Tests.Engine
             return new ExistingCommitFilter(collaborationFactory, logger);
         }
 
-        private IGitDriver MakeGitDriver(string[] ids)
+        private static IGitDriver MakeGitDriver(string[] ids)
         {
             var l = ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToArray();
 
