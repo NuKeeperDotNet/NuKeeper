@@ -40,9 +40,14 @@ namespace NuKeeper.BitBucketLocal
             return Task.FromResult(new User(_settings.Username, "", ""));
         }
 
-        public Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
         {
-            throw new NotImplementedException();
+            var repositories = await _client.GetGitRepositories(target.Owner);
+            var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
+
+            var pullRequests = await _client.GetPullRequests(target.Owner, targetRepository.Name, headBranch, baseBranch);
+
+            return pullRequests.Any();
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
