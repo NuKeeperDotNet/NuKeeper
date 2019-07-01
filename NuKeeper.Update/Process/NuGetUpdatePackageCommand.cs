@@ -14,38 +14,50 @@ namespace NuKeeper.Update.Process
         private readonly IExternalProcess _externalProcess;
         private readonly INuKeeperLogger _logger;
         private readonly INuGetPath _nuGetPath;
+        private readonly IMonoExecutor _monoExecutor;
 
         public NuGetUpdatePackageCommand(
             INuKeeperLogger logger,
             INuGetPath nuGetPath,
+            IMonoExecutor monoExecutor,
             IExternalProcess externalProcess)
         {
             _logger = logger;
             _nuGetPath = nuGetPath;
+            _monoExecutor = monoExecutor;
             _externalProcess = externalProcess;
         }
 
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.Normal("Cannot run NuGet.exe package update as OS Platform is not Windows");
-                return;
-            }
-
             var projectPath = currentPackage.Path.Info.DirectoryName;
 
             var nuget = _nuGetPath.Executable;
             if (string.IsNullOrWhiteSpace(nuget))
             {
-                _logger.Normal("Cannot find NuGet exe for package update");
+                _logger.Normal("Cannot find NuGet.exe for package update");
                 return;
             }
 
             var sources = allSources.CommandLine("-Source");
             var updateCommand = $"update packages.config -Id {currentPackage.Id} -Version {newVersion} {sources} -NonInteractive";
-            await _externalProcess.Run(projectPath, nuget, updateCommand, true);
+
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (await _monoExecutor.CanRun())
+                {
+                    await _monoExecutor.Run(projectPath, nuget, updateCommand, true);
+                }
+                else
+                {
+                    _logger.Error("Cannot run NuGet.exe. It requires either Windows OS Platform or Mono installation");
+                }
+            }
+            else
+            {
+                await _externalProcess.Run(projectPath, nuget, updateCommand, true);
+            }
         }
     }
 }

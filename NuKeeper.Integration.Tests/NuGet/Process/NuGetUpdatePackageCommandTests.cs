@@ -16,11 +16,10 @@ using NuKeeper.Abstractions.RepositoryInspection;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    [Category("WindowsOnly")] // Windows only due to NuGetUpdatePackageCommand
     public class NuGetUpdatePackageCommandTests
     {
         private readonly string _testDotNetClassicProject =
-@"<Project ToolsVersion=""15.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+            @"<Project ToolsVersion=""15.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
   <Import Project=""$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"" Condition=""Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"" />
   <PropertyGroup>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
@@ -29,10 +28,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 </Project>";
 
         private readonly string _testPackagesConfig =
-@"<packages><package id=""Microsoft.AspNet.WebApi.Client"" version=""{packageVersion}"" targetFramework=""net47"" /></packages>";
+            @"<packages><package id=""Microsoft.AspNet.WebApi.Client"" version=""{packageVersion}"" targetFramework=""net47"" /></packages>";
 
         private readonly string _nugetConfig =
-@"<configuration><config><add key=""repositoryPath"" value="".\packages"" /></config></configuration>";
+            @"<configuration><config><add key=""repositoryPath"" value="".\packages"" /></config></configuration>";
 
         private IFolder _uniqueTemporaryFolder = null;
 
@@ -64,28 +63,44 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var packagesFolder = Path.Combine(workDirectory, "packages");
             Directory.CreateDirectory(packagesFolder);
 
-            var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
+            var projectContents = _testDotNetClassicProject.Replace("{packageVersion}", oldPackageVersion,
+                StringComparison.OrdinalIgnoreCase);
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var packagesConfigContents = _testPackagesConfig.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase);
+            var packagesConfigContents = _testPackagesConfig.Replace("{packageVersion}", oldPackageVersion,
+                StringComparison.OrdinalIgnoreCase);
             var packagesConfigPath = Path.Combine(workDirectory, "packages.config");
             await File.WriteAllTextAsync(packagesConfigPath, packagesConfigContents);
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
             var logger = Substitute.For<INuKeeperLogger>();
-            var command = new NuGetUpdatePackageCommand(logger, new NuGetPath(logger), new ExternalProcess(logger));
+            var externalProcess = new ExternalProcess(logger);
+
+            var monoExecutor = new MonoExecutor(logger, externalProcess);
+
+            var nuGetPath = new NuGetPath(logger);
+            var nuGetVersion = new NuGetVersion(newPackageVersion);
+            var packageSource = new PackageSource(NuGetConstants.V3FeedUrl);
+
+            var restoreCommand = new NuGetFileRestoreCommand(logger, nuGetPath, monoExecutor, externalProcess);
+            var updateCommand = new NuGetUpdatePackageCommand(logger, nuGetPath, monoExecutor, externalProcess);
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
-                    new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
+                new PackagePath(workDirectory, testProject, PackageReferenceType.PackagesConfig));
 
-            await command.Invoke(packageToUpdate, new NuGetVersion(newPackageVersion),
-                new PackageSource(NuGetConstants.V3FeedUrl), NuGetSources.GlobalFeed);
+            await restoreCommand.Invoke(packageToUpdate, nuGetVersion, packageSource, NuGetSources.GlobalFeed);
+
+            await updateCommand.Invoke(packageToUpdate, nuGetVersion, packageSource, NuGetSources.GlobalFeed);
 
             var contents = await File.ReadAllTextAsync(packagesConfigPath);
-            Assert.That(contents, Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion, StringComparison.OrdinalIgnoreCase)));
-            Assert.That(contents, Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
+            Assert.That(contents,
+                Does.Contain(expectedPackageString.Replace("{packageVersion}", newPackageVersion,
+                    StringComparison.OrdinalIgnoreCase)));
+            Assert.That(contents,
+                Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion,
+                    StringComparison.OrdinalIgnoreCase)));
         }
 
         private static IFolder UniqueTemporaryFolder()
