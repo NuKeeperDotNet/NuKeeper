@@ -19,7 +19,7 @@ namespace NuKeeper.Update.Tests.Process
             var externalProcess = Substitute.For<IExternalProcess>();
 
             externalProcess.Run("","mono","--version",false).
-                Returns(Task.FromResult(new ProcessOutput("","",exitCode)));
+                Returns(new ProcessOutput("","",exitCode));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -35,7 +35,7 @@ namespace NuKeeper.Update.Tests.Process
             var externalProcess = Substitute.For<IExternalProcess>();
 
             externalProcess.Run("","mono","--version",false).
-                Returns(Task.FromResult(new ProcessOutput("","",0)));
+                Returns(new ProcessOutput("","",0));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -57,7 +57,7 @@ namespace NuKeeper.Update.Tests.Process
             var externalProcess = Substitute.For<IExternalProcess>();
 
             externalProcess.Run("","mono","--version",false).
-                Returns(Task.FromResult(new ProcessOutput("","",1)));
+                Returns(new ProcessOutput("","",1));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -72,7 +72,7 @@ namespace NuKeeper.Update.Tests.Process
             var externalProcess = Substitute.For<IExternalProcess>();
 
             externalProcess.Run("","mono","--version",false).
-                Returns(Task.FromResult(new ProcessOutput("","",0)));
+                Returns(new ProcessOutput("","",0));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
             await monoExecutor.Run("wd", "command", "args", true);
