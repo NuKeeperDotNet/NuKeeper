@@ -59,23 +59,38 @@ namespace NuKeeper.AzureDevOps
 
         private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
         {
-            // URL pattern is
+            // URL pattern is 
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
+            // for a organisation or
+            // https://dev.azure.com/{owner}/_git/{repo}
+            // for a private repository
             var path = repositoryUri.AbsolutePath;
+
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToList();
+                .ToArray();
 
-            if (pathParts.Count != 4)
+            var indexOfGit = Array.FindIndex(pathParts, t => t.Equals("_git", StringComparison.InvariantCultureIgnoreCase));
+
+            if (indexOfGit == 2 && pathParts.Length == 4)
             {
-                return null;
+                return CreateRepositorySettings(
+                    pathParts[0],  //org
+                    repositoryUri, //uri
+                    Uri.UnescapeDataString(pathParts[1]),  // project
+                    Uri.UnescapeDataString(pathParts[3])   // reponame
+                    );
             }
-
-            var org = pathParts[0];
-            var project = Uri.UnescapeDataString(pathParts[1]);
-            var repoName = Uri.UnescapeDataString(pathParts[3]);
-
-            return CreateRepositorySettings(org, repositoryUri, project, repoName);
+            else if (indexOfGit == 1 && pathParts.Length == 3)
+            {
+                return CreateRepositorySettings(
+                    null,          //org
+                    repositoryUri, //uri
+                    Uri.UnescapeDataString(pathParts[0]),  // project
+                    Uri.UnescapeDataString(pathParts[2])   // reponame
+                    );
+            }
+            return null;
         }
 
         private async Task<RepositorySettings> CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
@@ -102,28 +117,43 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException("No git repository found");
             }
 
-            // URL pattern is
+            // URL pattern is 
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
+            // for a organisation or
+            // https://dev.azure.com/{owner}/_git/{repo}
+            // for a private repository
             var path = repositoryUri.AbsolutePath;
+
             var pathParts = path.Split('/')
                 .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToList();
+                .ToArray();
 
-            if (pathParts.Count != 4)
+            var indexOfGit = Array.FindIndex(pathParts, t => t.Equals("_git", StringComparison.InvariantCultureIgnoreCase));
+
+            if (indexOfGit == 2 && pathParts.Length == 4)
             {
-                return null;
+                return CreateRepositorySettings(
+                    pathParts[0],  //org
+                    repositoryUri, //uri
+                    Uri.UnescapeDataString(pathParts[1]),  // project
+                    Uri.UnescapeDataString(pathParts[3])   // reponame
+                    );
             }
-
-            var org = pathParts[0];
-            var project = Uri.UnescapeDataString(pathParts[1]);
-            var repoName = Uri.UnescapeDataString(pathParts[3]);
-
-            return CreateRepositorySettings(org, repositoryUri, project, repoName, remoteInfo);
+            else if (indexOfGit == 1 && pathParts.Length == 3)
+            {
+                return CreateRepositorySettings(
+                    null,          //org
+                    repositoryUri, //uri
+                    Uri.UnescapeDataString(pathParts[0]),  // project
+                    Uri.UnescapeDataString(pathParts[2])   // reponame
+                    );
+            }
+            return null;
         }
 
         private static RepositorySettings CreateRepositorySettings(string org, Uri repositoryUri, string project, string repoName, RemoteInfo remoteInfo = null) => new RepositorySettings
         {
-            ApiUri = new Uri($"https://dev.azure.com/{org}/"),
+            ApiUri = string.IsNullOrWhiteSpace(org) ? new Uri($"https://dev.azure.com/") : new Uri($"https://dev.azure.com/{org}/"),
             RepositoryUri = repositoryUri,
             RepositoryName = repoName,
             RepositoryOwner = project,

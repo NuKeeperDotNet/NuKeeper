@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Gitlab.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 namespace NuKeeper.Gitlab
@@ -36,6 +37,16 @@ namespace NuKeeper.Gitlab
             var user = await _client.GetCurrentUser();
 
             return new User(user.UserName, user.Name, user.Email);
+        }
+
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            var projectName = target.Owner;
+            var repositoryName = target.Name;
+
+            var result = await _client.GetMergeRequests(projectName, repositoryName, headBranch, baseBranch);
+
+            return result.Any();
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

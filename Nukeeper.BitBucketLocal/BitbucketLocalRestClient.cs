@@ -111,6 +111,21 @@ namespace NuKeeper.BitBucketLocal
             return response.Values;
         }
 
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(
+            string projectName,
+            string repositoryName,
+            string headBranch,
+            string baseBranch,
+            [CallerMemberName] string caller = null)
+        {
+            var response = await GetResourceOrEmpty<IteratorBasedPage<PullRequest>>($@"{ApiPath}/projects/{projectName}/repos/{repositoryName}/pull-requests", caller);
+
+            return response.Values
+                .Where(p => p.Open
+                && p.FromRef.Id.Equals(headBranch,StringComparison.InvariantCultureIgnoreCase)
+                && p.ToRef.Id.Equals(baseBranch,StringComparison.InvariantCultureIgnoreCase));
+        }
+
         public async Task<PullRequest> CreatePullRequest(PullRequest pullReq, string projectName, string repositoryName, [CallerMemberName] string caller = null)
         {
             var requestJson = JsonConvert.SerializeObject(pullReq, Formatting.None, JsonSerializerSettings);

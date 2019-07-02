@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
+using System.Collections.Generic;
 
 #pragma warning disable CA2227
 
@@ -39,7 +39,7 @@ namespace NuKeeper.Abstractions.Configuration
         public LogDestination? LogDestination { get; set; }
         public Platform? Platform { get; set; }
 
-        public string BranchNamePrefix { get; set; }
+        public string BranchNameTemplate { get; set; }
         public bool? DeleteBranchAfterMerge { get; set; }
 
         public string GitCliPath { get; set; }

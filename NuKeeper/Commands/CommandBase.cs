@@ -1,6 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
@@ -8,7 +5,14 @@ using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.Output;
+using NuKeeper.Engine;
 using NuKeeper.Inspection.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
@@ -73,9 +77,13 @@ namespace NuKeeper.Commands
             Description = "File name for output.")]
         public string OutputFileName { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "branchnameprefix",
-            Description = "Prefix that will be added to created branch name.")]
-        public string BranchNamePrefix { get; set; }
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "branchnametemplate",
+            Description = "Template used for creating the branch name.")]
+        public string BranchNameTemplate { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
+            Description = "Path to git to use instead of lib2gitsharp implementation")]
+        public string GitCliPath { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
             Description = "Path to git to use instead of lib2gitsharp implementation")]
@@ -125,9 +133,8 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.GetSettings();
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
-            var usePrerelease =
-                Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
-            var branchPrefixName = Concat.FirstValue(BranchNamePrefix, fileSettings.BranchNamePrefix);
+            var usePrerelease = Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
+            var branchNameTemplate = Concat.FirstValue(BranchNameTemplate, fileSettings.BranchNameTemplate);
             var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
@@ -143,7 +150,7 @@ namespace NuKeeper.Commands
                 },
                 BranchSettings = new BranchSettings
                 {
-                    BranchNamePrefix = branchPrefixName
+                    BranchNameTemplate = branchNameTemplate
                 }
             };
 
@@ -190,10 +197,10 @@ namespace NuKeeper.Commands
                 Concat.FirstValue(OutputFileName, settingsFromFile.OutputFileName,
                     "nukeeper.out");
 
-            var branchNamePrefixValid = PopulateBranchNamePrefix(settings);
-            if (!branchNamePrefixValid.IsSuccess)
+            var branchNameTemplateValid = PopulateBranchNameTemplate(settings);
+            if (!branchNameTemplateValid.IsSuccess)
             {
-                return branchNamePrefixValid;
+                return branchNameTemplateValid;
             }
 
             return await Task.FromResult(ValidationResult.Success);
@@ -262,29 +269,55 @@ namespace NuKeeper.Commands
             return ValidationResult.Success;
         }
 
-        private ValidationResult PopulateBranchNamePrefix(
+        private ValidationResult PopulateBranchNameTemplate(
             SettingsContainer settings)
         {
             var settingsFromFile = FileSettingsCache.GetSettings();
-            var value = Concat.FirstValue(BranchNamePrefix, settingsFromFile.BranchNamePrefix);
+            var value = Concat.FirstValue(BranchNameTemplate, settingsFromFile.BranchNameTemplate);
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                settings.BranchSettings.BranchNamePrefix = null;
+                settings.BranchSettings.BranchNameTemplate = null;
                 return ValidationResult.Success;
             }
 
             // Validating git branch names: https://stackoverflow.com/a/12093994/1661209
             // We validate the user defined branch name prefix in combination with a actual branch name that NuKeeper could create.
             // We want to validate the combination since the prefix doesn't need to fully comply with the rules (E.G. 'nukeeper/' is not allowed soley as a branch name).
-            var validationValue = $"{value}nukeeper-update-FakeItEasy-to-4.9.2";
+
+            var tokenErrors = new StringBuilder();
+            var tokenSet = Regex.Matches(value, @"{(\w+)}").Select(match => match.Groups[1].Value);
+            foreach (var token in tokenSet)
+            {
+                if (!BranchNamer.IsValidTemplateToken(token))
+                {
+                    tokenErrors.Append($",{token}");
+                }
+            }
+
+            // Check for valid placeholders
+            if (tokenErrors.Length > 0)
+            {
+                return ValidationResult.Failure(
+                    $"Provided branch template has unknown tokens: '{tokenErrors.ToString().Trim(',')}'.");
+            }
+
+            // Test if the generated branchname would be ok.
+            // We assume tokens will be generated in valid values, so we use dummy values here
+            var tokenValues = new Dictionary<string, string>();
+            foreach (var token in BranchNamer.TemplateTokens)
+            {
+                tokenValues.Add(token, "dummy");
+            }
+
+            var validationValue = BranchNamer.MakeName(tokenValues, value);
             if (!Regex.IsMatch(validationValue, @"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\000-\037\177 ~^:?*[]+/[^\000-\037\177 ~^:?*[]+(?<!\.lock|[/.])$"))
             {
                 return ValidationResult.Failure(
-                    $"Provided branch name prefix '{value}' does not comply with branch naming rules.");
+                    $"Provided branch template '{value}' does not comply with branch naming rules.");
             }
 
-            settings.BranchSettings.BranchNamePrefix = value;
+            settings.BranchSettings.BranchNameTemplate = value;
             return ValidationResult.Success;
         }
 

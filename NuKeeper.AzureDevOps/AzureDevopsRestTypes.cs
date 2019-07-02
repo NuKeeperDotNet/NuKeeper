@@ -52,6 +52,13 @@ namespace NuKeeper.AzureDevOps
         public int errorCode { get; set; }
         public int eventId { get; set; }
     }
+
+    public class PullRequestResource
+    {
+        public int Count { get; set; }
+        public IEnumerable<PullRequest> value { get; set; }
+    }
+
     public class PullRequest
     {
         public AzureRepository AzureRepository { get; set; }
