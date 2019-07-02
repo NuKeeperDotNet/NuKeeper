@@ -46,6 +46,6 @@ namespace NuKeeper.Abstractions.Git
         /// <param name="baseBranchName"></param>
         /// <param name="headBranchName"></param>
         /// <returns></returns>
-        Task<IEnumerable<string>> GetNewCommitMessages(string baseBranchName, string headBranchName);
+        Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName);
     }
 }

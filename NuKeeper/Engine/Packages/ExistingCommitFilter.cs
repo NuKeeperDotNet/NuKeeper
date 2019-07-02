@@ -5,6 +5,7 @@ using NuKeeper.Abstractions.RepositoryInspection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine.Packages
 {
@@ -19,13 +20,13 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public IReadOnlyCollection<PackageUpdateSet> Filter(IGitDriver git, IReadOnlyCollection<PackageUpdateSet> updates, string baseBranch, string headBranch)
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(IGitDriver git, IReadOnlyCollection<PackageUpdateSet> updates, string baseBranch, string headBranch)
         {
             try
             {
                 var filtered = new List<PackageUpdateSet>();
                 // commit messages are compared without whitespace because the system tends to add ws.
-                var commitMessages = git.GetNewCommitMessages(baseBranch, headBranch);
+                var commitMessages = await git.GetNewCommitMessages(baseBranch, headBranch);
                 var compactCommitMessages = commitMessages.Select(m => new string(m.Where(c => !char.IsWhiteSpace(c)).ToArray()));
 
                 foreach (var update in updates)

@@ -83,7 +83,7 @@ namespace NuKeeper.Engine.Packages
                 await git.CheckoutRemoteToLocal(branchWithChanges);
             }
 
-            var filteredUpdates = _existingCommitFilter.Filter(git, updates, repository.DefaultBranch, branchWithChanges);
+            var filteredUpdates = await _existingCommitFilter.Filter(git, updates, repository.DefaultBranch, branchWithChanges);
 
             foreach (var filtered in updates.Where(u => !filteredUpdates.Contains(u)))
             {
@@ -91,48 +91,46 @@ namespace NuKeeper.Engine.Packages
                 _logger.Normal($"Commit '{commitMessage}' already in branch '{branchWithChanges}'");
             }
 
-            var haveUpdates = false;
+            var haveUpdates = filteredUpdates.Any();
             foreach (var updateSet in filteredUpdates)
             {
                 var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
 
                 await _updateRunner.Update(updateSet, sources);
 
-                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
                 await git.Commit(commitMessage);
             }
 
             if (haveUpdates)
             {
                 await git.Push(repository.Remote, branchWithChanges);
+
+                string qualifiedBranch;
+                if (!repository.IsFork) //check if we are on a fork, if so qualify the branch name
+                {
+                    qualifiedBranch = branchWithChanges;
+                }
+                else
+                {
+                    qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
+                }
+
+                bool pullRequestExists = await _collaborationFactory.CollaborationPlatform.PullRequestExists(repository.Pull, qualifiedBranch, repository.DefaultBranch);
+
+                if (!pullRequestExists)
+                {
+                    var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
+                    var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
+
+                    var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge) { Body = body };
+
+                    await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
+                }
+                else
+                {
+                    _logger.Normal($"A pull request already exists for {repository.DefaultBranch} <= {qualifiedBranch}");
+                }
             }
-
-            string qualifiedBranch;
-            if (!repository.IsFork) //check if we are on a fork, if so qualify the branch name
-            {
-                qualifiedBranch = branchWithChanges;
-            }
-            else
-            {
-                qualifiedBranch = repository.Push.Owner + ":" + branchWithChanges;
-            }
-
-            bool pullRequestExists = await _collaborationFactory.CollaborationPlatform.PullRequestExists(repository.Pull, qualifiedBranch, repository.DefaultBranch);
-
-            if (!pullRequestExists)
-            {
-                var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
-                var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
-
-                var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge) { Body = body };
-
-                await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
-            }
-            else
-            {
-                _logger.Normal($"A pull request already exists for {repository.DefaultBranch} <= {qualifiedBranch}");
-            }
-
             await git.Checkout(repository.DefaultBranch);
             return filteredUpdates.Count;
         }

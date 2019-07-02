@@ -12,6 +12,7 @@ using NuKeeper.Engine.Packages;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.Engine
 {
@@ -19,7 +20,7 @@ namespace NuKeeper.Integration.Tests.Engine
     public class ExistingCommitFilterTest
     {
         [Test]
-        public void DoFilter()
+        public async Task DoFilter()
         {
             var nugetsToUpdate = new[]
             {
@@ -38,14 +39,14 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var subject = MakeExistingCommitFilter();
 
-            var result = subject.Filter(git, updates.AsReadOnly(), "base", "head");
+            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
 
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual("First.Nuget", result.FirstOrDefault()?.SelectedId);
         }
 
         [Test]
-        public void DoNotFilter()
+        public async Task DoNotFilter()
         {
             var nugetsToUpdate = new[]
             {
@@ -64,7 +65,7 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var subject = MakeExistingCommitFilter();
 
-            var result = subject.Filter(git, updates.AsReadOnly(), "base", "head");
+            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
 
             Assert.AreEqual(2, result.Count());
         }
@@ -85,13 +86,21 @@ namespace NuKeeper.Integration.Tests.Engine
             return new ExistingCommitFilter(collaborationFactory, logger);
         }
 
+        private static Task<IReadOnlyCollection<string>> FixedReturnVal(string[] ids)
+        {
+            return Task.Run(() =>
+            {
+                return (IReadOnlyCollection<string>)ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToList().AsReadOnly();
+            });
+        }
+
         private static IGitDriver MakeGitDriver(string[] ids)
         {
             var l = ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToArray();
 
             var git = Substitute.For<IGitDriver>();
             git.GetNewCommitMessages(Arg.Any<string>(), Arg.Any<string>())
-                .Returns<string[]>(ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToArray());
+                .Returns(FixedReturnVal(ids));
 
             return git;
         }

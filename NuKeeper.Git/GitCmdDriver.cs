@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -11,7 +12,6 @@ namespace NuKeeper.Git
 {
     public class GitCmdDriver : IGitDriver
     {
-
         private GitUsernamePasswordCredentials _gitCredentials;
         private string _pathGit;
         private INuKeeperLogger _logger;
@@ -44,12 +44,24 @@ namespace NuKeeper.Git
 
         public async Task Checkout(string branchName)
         {
+            await StartGitProzess($"checkout {branchName}", false);
+        }
+
+        public async Task CheckoutRemoteToLocal(string branchName)
+        {
             await StartGitProzess($"checkout -b {branchName} origin/{branchName}", false);
         }
 
-        public async Task CheckoutNewBranch(string branchName)
+        public async Task<bool> CheckoutNewBranch(string branchName)
         {
-            await StartGitProzess($"checkout -b {branchName}", true);
+            try
+            {
+                await StartGitProzess($"checkout -b {branchName}", true);
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
 
         public async Task Clone(Uri pullEndpoint)
@@ -85,7 +97,6 @@ namespace NuKeeper.Git
             await StartGitProzess($"push {remoteName} {branchName}", true);
         }
 
-
         private  async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
         {
             var process = new ExternalProcess(_logger);
@@ -101,6 +112,12 @@ namespace NuKeeper.Git
             }
 
             return new UriBuilder(pullEndpoint) { UserName = gitCredentials.Username, Password = gitCredentials.Password }.Uri;
+        }
+
+        public Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)
+        {
+            // cmd should be something like: $"log Branch-Name-Template..master --decorate=short";
+            throw new NotImplementedException();
         }
     }
 }

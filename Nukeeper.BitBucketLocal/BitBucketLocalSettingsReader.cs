@@ -32,7 +32,7 @@ namespace NuKeeper.BitBucketLocal
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -44,7 +44,7 @@ namespace NuKeeper.BitBucketLocal
 
             if (pathParts.Count < 2)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var repoName = pathParts[pathParts.Count - 1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);
