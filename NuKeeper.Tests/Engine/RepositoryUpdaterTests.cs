@@ -131,7 +131,7 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<PullRequestRequest>(),
                     Arg.Any<IEnumerable<string>>());
 
-            gitDriver.Received(expectedUpdates).Commit(Arg.Any<string>());
+            await gitDriver.Received(expectedUpdates).Commit(Arg.Any<string>());
         }
 #pragma warning restore CA1801
 

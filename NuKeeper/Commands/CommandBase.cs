@@ -81,6 +81,10 @@ namespace NuKeeper.Commands
             Description = "Template used for creating the branch name.")]
         public string BranchNameTemplate { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
+            Description = "Path to git to use instead of lib2gitsharp implementation")]
+        public string GitCliPath { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
@@ -93,7 +97,7 @@ namespace NuKeeper.Commands
 
             var settings = MakeSettings();
 
-            var validationResult = PopulateSettings(settings);
+            var validationResult = await PopulateSettings(settings);
             if (!validationResult.IsSuccess)
             {
                 var logger = _configureLogger as INuKeeperLogger;
@@ -125,9 +129,9 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.GetSettings();
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
-            var usePrerelease =
-                Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
+            var usePrerelease = Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchNameTemplate = Concat.FirstValue(BranchNameTemplate, fileSettings.BranchNameTemplate);
+            var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
             {
@@ -137,7 +141,8 @@ namespace NuKeeper.Commands
                 {
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
-                    NuGetSources = NuGetSources
+                    NuGetSources = NuGetSources,
+                    GitPath = gitpath
                 },
                 BranchSettings = new BranchSettings
                 {
@@ -148,12 +153,12 @@ namespace NuKeeper.Commands
             return settings;
         }
 
-        protected virtual ValidationResult PopulateSettings(SettingsContainer settings)
+        protected virtual async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
             var minPackageAge = ReadMinPackageAge();
             if (!minPackageAge.HasValue)
             {
-                return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
+                return await Task.FromResult(ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed"));
             }
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
@@ -194,7 +199,7 @@ namespace NuKeeper.Commands
                 return branchNameTemplateValid;
             }
 
-            return ValidationResult.Success;
+            return await Task.FromResult(ValidationResult.Success);
         }
 
         private TimeSpan? ReadMinPackageAge()

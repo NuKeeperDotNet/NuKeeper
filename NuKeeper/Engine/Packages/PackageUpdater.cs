@@ -71,15 +71,16 @@ namespace NuKeeper.Engine.Packages
         {
             _logger.Normal(UpdatesLogger.OldVersionsToBeUpdated(updates));
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
 
             // branch
             var branchWithChanges = BranchNamer.MakeName(updates, settings.BranchSettings.BranchNameTemplate);
             _logger.Detailed($"Using branch name: '{branchWithChanges}'");
 
-            if (!git.CheckoutNewBranch(branchWithChanges))
+            var ditCheckOut = await git.CheckoutNewBranch(branchWithChanges);
+            if (!ditCheckOut)
             {
-                git.CheckoutRemoteToLocal(branchWithChanges);
+                await git.CheckoutRemoteToLocal(branchWithChanges);
             }
 
             var filteredUpdates = _existingCommitFilter.Filter(git, updates, repository.DefaultBranch, branchWithChanges);
@@ -97,15 +98,15 @@ namespace NuKeeper.Engine.Packages
 
                 await _updateRunner.Update(updateSet, sources);
 
-                git.Commit(commitMessage);
-
-                haveUpdates = true;
+                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
+                await git.Commit(commitMessage);
             }
 
             if (haveUpdates)
             {
-                git.Push(repository.Remote, branchWithChanges);
+                await git.Push(repository.Remote, branchWithChanges);
             }
+
             string qualifiedBranch;
             if (!repository.IsFork) //check if we are on a fork, if so qualify the branch name
             {
@@ -132,7 +133,7 @@ namespace NuKeeper.Engine.Packages
                 _logger.Normal($"A pull request already exists for {repository.DefaultBranch} <= {qualifiedBranch}");
             }
 
-            git.Checkout(repository.DefaultBranch);
+            await git.Checkout(repository.DefaultBranch);
 
             return filteredUpdates.Count;
         }

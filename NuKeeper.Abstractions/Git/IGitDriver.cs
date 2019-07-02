@@ -1,5 +1,7 @@
-using NuKeeper.Abstractions.Inspections.Files;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using NuKeeper.Abstractions.Inspections.Files;
 
 namespace NuKeeper.Abstractions.Git
 {
@@ -7,36 +9,36 @@ namespace NuKeeper.Abstractions.Git
     {
         IFolder WorkingFolder { get; }
 
-        void Clone(Uri pullEndpoint);
+        Task Clone(Uri pullEndpoint);
 
-        void Clone(Uri pullEndpoint, string branchName);
+        Task Clone(Uri pullEndpoint, string branchName);
 
-        void AddRemote(string name, Uri endpoint);
+        Task AddRemote(string name, Uri endpoint);
 
         /// <summary>
         /// Checks out a local branch
         /// </summary>
         /// <param name="branchName"></param>
-        void Checkout(string branchName);
+        Task Checkout(string branchName);
 
         /// <summary>
         /// does a checkout of a remote branch
         /// </summary>
         /// <param name="branchName"></param>
-        void CheckoutRemoteToLocal(string branchName);
+        Task CheckoutRemoteToLocal(string branchName);
 
         /// <summary>
         /// Creates a new branch
         /// </summary>
         /// <param name="branchName"></param>
         /// <returns></returns>
-        bool CheckoutNewBranch(string branchName);
+        Task<bool> CheckoutNewBranch(string branchName);
 
-        void Commit(string message);
+        Task Commit(string message);
 
-        void Push(string remoteName, string branchName);
+        Task Push(string remoteName, string branchName);
 
-        string GetCurrentHead();
+        Task<string> GetCurrentHead();
 
         /// <summary>
         /// Gets the commit messages that are in branch <paramref name="headBranchName"/> but not in branch <paramref name="baseBranchName"/>
@@ -44,6 +46,6 @@ namespace NuKeeper.Abstractions.Git
         /// <param name="baseBranchName"></param>
         /// <param name="headBranchName"></param>
         /// <returns></returns>
-        string[] GetNewCommitMessages(string baseBranchName, string headBranchName);
+        Task<IEnumerable<string>> GetNewCommitMessages(string baseBranchName, string headBranchName);
     }
 }
