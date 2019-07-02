@@ -98,10 +98,7 @@ namespace NuKeeper.Git
                     if (BranchExists(branchName))
                     {
                         _logger.Normal($"Git checkout local branch '{branchName}'");
-                        // Some files are automatically generated in /obj folder.
-                        // If there is no .gitignore there will be conflicts because of this and you cannot change branches
-                        // CheckoutModifiers.Force makes that all changes are ignored.
-                        GitCommands.Checkout(repo, repo.Branches[branchName], new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
+                        GitCommands.Checkout(repo, repo.Branches[branchName]);
                     }
                     else
                     {
