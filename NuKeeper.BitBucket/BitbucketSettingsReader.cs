@@ -38,7 +38,7 @@ namespace NuKeeper.BitBucket
         {
             if (repositoryUri == null)
             {
-                Task.FromResult<RepositorySettings>(null);
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;
