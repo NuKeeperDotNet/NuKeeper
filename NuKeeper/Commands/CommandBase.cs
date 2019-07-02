@@ -85,6 +85,10 @@ namespace NuKeeper.Commands
             Description = "Path to git to use instead of lib2gitsharp implementation")]
         public string GitCliPath { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
+            Description = "Path to git to use instead of lib2gitsharp implementation")]
+        public string GitCliPath { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;

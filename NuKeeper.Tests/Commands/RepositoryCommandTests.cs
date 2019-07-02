@@ -100,7 +100,7 @@ namespace NuKeeper.Tests.Commands
 
             await command.OnExecute();
 
-            collaborationFactory
+            await collaborationFactory
                 .Received(1)
                 .Initialise(
                     Arg.Is(new Uri("https://api.github.com")),
@@ -135,7 +135,7 @@ namespace NuKeeper.Tests.Commands
 
             await command.OnExecute();
 
-            collaborationFactory
+            await collaborationFactory
                 .Received(1)
                 .Initialise(
                     Arg.Is(new Uri("https://api.github.com")),
@@ -170,7 +170,7 @@ namespace NuKeeper.Tests.Commands
 
             await command.OnExecute();
 
-            collaborationFactory
+            await collaborationFactory
                 .Received(1)
                 .Initialise(
                     Arg.Is(new Uri("https://api.github.com")),

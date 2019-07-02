@@ -14,15 +14,18 @@ namespace NuKeeper.Update.Process
     {
         private readonly INuKeeperLogger _logger;
         private readonly INuGetPath _nuGetPath;
+        private readonly IMonoExecutor _monoExecutor;
         private readonly IExternalProcess _externalProcess;
 
         public NuGetFileRestoreCommand(
             INuKeeperLogger logger,
             INuGetPath nuGetPath,
+            IMonoExecutor monoExecutor,
             IExternalProcess externalProcess)
         {
             _logger = logger;
             _nuGetPath = nuGetPath;
+            _monoExecutor = monoExecutor;
             _externalProcess = externalProcess;
         }
 
@@ -30,17 +33,11 @@ namespace NuKeeper.Update.Process
         {
             _logger.Normal($"Nuget restore on {file.DirectoryName} {file.Name}");
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _logger.Normal("Cannot run NuGet.exe file restore as OS Platform is not Windows");
-                return;
-            }
-
             var nuget = _nuGetPath.Executable;
 
             if (string.IsNullOrWhiteSpace(nuget))
             {
-                _logger.Normal("Cannot find NuGet exe for solution restore");
+                _logger.Normal("Cannot find NuGet.exe for solution restore");
                 return;
             }
 
@@ -48,8 +45,29 @@ namespace NuKeeper.Update.Process
 
             var restoreCommand = $"restore {file.Name} {sourcesCommandLine}  -NonInteractive";
 
-            var processOutput = await _externalProcess.Run(file.DirectoryName, nuget,
-                restoreCommand, ensureSuccess: false);
+            ProcessOutput processOutput;
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (await _monoExecutor.CanRun())
+                {
+                    processOutput = await _monoExecutor.Run(file.DirectoryName,
+                        nuget,
+                        restoreCommand,
+                        ensureSuccess: false);
+                }
+                else
+                {
+                    _logger.Error("Cannot run NuGet.exe. It requires either Windows OS Platform or Mono installation");
+                    return;
+                }
+            }
+            else
+            {
+                processOutput = await _externalProcess.Run(file.DirectoryName,
+                    nuget,
+                    restoreCommand,
+                    ensureSuccess: false);
+            }
 
             if (processOutput.Success)
             {
@@ -57,7 +75,8 @@ namespace NuKeeper.Update.Process
             }
             else
             {
-                _logger.Detailed($"Nuget restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
+                _logger.Detailed(
+                    $"Nuget restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
             }
         }
 

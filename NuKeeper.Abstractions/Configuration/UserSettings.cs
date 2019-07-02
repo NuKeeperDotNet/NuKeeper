@@ -21,5 +21,7 @@ namespace NuKeeper.Abstractions.Configuration
         public string OutputFileName { get; set; }
 
         public string Directory { get; set; }
+
+        public string GitPath { get; set; }
     }
 }

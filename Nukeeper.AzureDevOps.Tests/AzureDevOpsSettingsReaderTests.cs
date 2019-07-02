@@ -114,7 +114,6 @@ namespace Nukeeper.AzureDevOps.Tests
         public void RepositorySettings_PathTooLong()
         {
             Assert.ThrowsAsync<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
-
         }
 
         [Test]

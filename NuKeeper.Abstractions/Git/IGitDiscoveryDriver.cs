@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Abstractions.Git
 {
@@ -10,18 +11,18 @@ namespace NuKeeper.Abstractions.Git
         /// </summary>
         /// <param name="repositoryUri"></param>
         /// <returns></returns>
-        bool IsGitRepo(Uri repositoryUri);
+        Task<bool> IsGitRepo(Uri repositoryUri);
 
         /// <summary>
         /// Get all the configured remotes
         /// </summary>
         /// <param name="repositoryUri"></param>
-        IEnumerable<GitRemote> GetRemotes(Uri repositoryUri);
+        Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri);
 
-        Uri DiscoverRepo(Uri repositoryUri);
+        Task<Uri> DiscoverRepo(Uri repositoryUri);
 
-        string GetCurrentHead(Uri repositoryUri);
+        Task<string> GetCurrentHead(Uri repositoryUri);
 
-        GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost);
+        Task<GitRemote> GetRemoteForPlatform(Uri repositoryUri, string platformHost);
     }
 }

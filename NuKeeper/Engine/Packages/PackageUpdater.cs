@@ -134,7 +134,6 @@ namespace NuKeeper.Engine.Packages
             }
 
             await git.Checkout(repository.DefaultBranch);
-
             return filteredUpdates.Count;
         }
     }

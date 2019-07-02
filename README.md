@@ -24,6 +24,8 @@ Installation is very easy. Just run this command and the tool will be installed.
 
 Install: `dotnet tool install nukeeper --global`
 
+> Note: NuKeeper has experimental support for running package updates on Linux/macOS. This functionality relies on Mono installation on local system. Please refer to https://www.mono-project.com/ for more information about how to install mono.
+
 ### Platform support
 
 NuKeeper works for .NET Framework and for .NET Core projects. It also has the ability to target private NuGet feeds.
@@ -66,6 +68,10 @@ dotnet tool uninstall nukeeper --global
 ```
 
 ### How To Build and Run From Source
+
+You can install the nukeeper dotnet tool of current build using the `InstallNuKeeperDotNetTool` (.bat for Windows, .sh for macOS and Linux) found in the root of the repository.
+
+>Note: this overrides your existing global installation of the NuKeeper dotnet tool.
 
 You can build and package the tool using the following commands. The instructions assume that you are in the root of the repository.
 

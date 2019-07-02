@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -62,18 +63,18 @@ namespace NuKeeper.GitHub.Tests
 
         [TestCase(null)]
         [TestCase("htps://missingt.com")]
-        public void InvalidUrlReturnsNull(string value)
+        public async Task InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            var canRead = _gitHubSettingsReader.CanRead(testUri);
+            var canRead = await _gitHubSettingsReader.CanRead(testUri);
 
             Assert.IsFalse(canRead);
         }
 
         [Test]
-        public void RepositorySettings_GetsCorrectSettings()
+        public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
+            var settings = await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
@@ -82,10 +83,10 @@ namespace NuKeeper.GitHub.Tests
         }
 
         [Test]
-        public void RepositorySettings_GetsCorrectSettingsWithTargetBranch()
+        public async Task RepositorySettings_GetsCorrectSettingsWithTargetBranch()
         {
             var settings =
-                _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), "Feature1");
+                await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), "Feature1");
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
@@ -100,7 +101,7 @@ namespace NuKeeper.GitHub.Tests
         public void RepositorySettings_InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            Assert.Throws<NuKeeperException>(() => _gitHubSettingsReader.RepositorySettings(testUri));
+            Assert.ThrowsAsync<NuKeeperException>(() => _gitHubSettingsReader.RepositorySettings(testUri));
         }
     }
 }

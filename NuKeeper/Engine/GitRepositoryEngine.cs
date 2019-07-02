@@ -82,7 +82,10 @@ namespace NuKeeper.Engine
                     repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
                 }
 
-                var git = new LibGit2SharpDriver(_logger, folder, credentials, user);
+                repositoryData.IsLocalRepo = repository.IsLocalRepo;
+                IGitDriver git = string.IsNullOrWhiteSpace(settings?.UserSettings?.GitPath) ?
+                    new LibGit2SharpDriver(_logger, folder, credentials, user) as IGitDriver :
+                    new GitCmdDriver(settings.UserSettings.GitPath, _logger, folder, credentials) as IGitDriver;
 
                 var updatesDone = await _repositoryUpdater.Run(git, repositoryData, settings);
 

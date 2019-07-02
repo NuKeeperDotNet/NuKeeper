@@ -1,39 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Tests
 {
     public class MockedGitDiscoveryDriver : IGitDiscoveryDriver
     {
-        public bool IsGitRepo(Uri repositoryUri)
+        public Task<bool> IsGitRepo(Uri repositoryUri)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        public IEnumerable<GitRemote> GetRemotes(Uri repositoryUri)
+        public Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
-            return new List<GitRemote>(){ new GitRemote
+            return Task.FromResult<IEnumerable<GitRemote>>(new List<GitRemote>(){ new GitRemote
             {
                 Name="origin",
                 Url = repositoryUri
-            }};
+            }});
         }
 
-        public Uri DiscoverRepo(Uri repositoryUri)
+        public Task<Uri> DiscoverRepo(Uri repositoryUri)
         {
-            return repositoryUri;
+            return Task.FromResult(repositoryUri);
         }
 
-        public string GetCurrentHead(Uri repositoryUri)
+        public Task<string> GetCurrentHead(Uri repositoryUri)
         {
-            return "master";
+            return Task.FromResult("master");
         }
 
-        public GitRemote GetRemoteForPlatform(Uri repositoryUri, string platformHost)
+        public async Task<GitRemote> GetRemoteForPlatform(Uri repositoryUri, string platformHost)
         {
-            return GetRemotes(repositoryUri).First();
+            return (await GetRemotes(repositoryUri)).First();
         }
     }
 }

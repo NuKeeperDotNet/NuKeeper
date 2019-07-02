@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -34,7 +35,7 @@ namespace NuKeeper.Gitea.Tests
         [Test]
         public void CanRead_NoException_OnBadUri()
         {
-            Assert.DoesNotThrow(() => _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/")));
+            Assert.DoesNotThrowAsync(() => _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/")));
         }
 
         [Test]
@@ -53,10 +54,9 @@ namespace NuKeeper.Gitea.Tests
         }
 
         [Test]
-        public void AssumesItCanReadGiteaUrls()
+        public async Task AssumesItCanReadGiteaUrls()
         {
-            var canRead = _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/SharpSteff/NuKeeper-TestFork"));
-
+            var canRead = await _giteaSettingsReader.CanRead(new Uri("https://try.gitea.io/SharpSteff/NuKeeper-TestFork"));
             Assert.AreEqual(true, canRead);
         }
 
@@ -70,10 +70,10 @@ namespace NuKeeper.Gitea.Tests
 
         [TestCase(null)]
         [TestCase("master")]
-        public void GetsCorrectSettingsFromTheUrl(string targetBranch)
+        public async Task GetsCorrectSettingsFromTheUrl(string targetBranch)
         {
             var repositoryUri = new Uri("https://try.gitea.io/SharpSteff/NuKeeper-TestFork");
-            var repositorySettings = _giteaSettingsReader.RepositorySettings(repositoryUri, targetBranch);
+            var repositorySettings = await _giteaSettingsReader.RepositorySettings(repositoryUri, targetBranch);
 
             Assert.IsNotNull(repositorySettings);
             Assert.AreEqual(new Uri("https://try.gitea.io/api/v1/"), repositorySettings.ApiUri);
