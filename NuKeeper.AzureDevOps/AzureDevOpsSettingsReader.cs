@@ -38,7 +38,7 @@ namespace NuKeeper.AzureDevOps
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {

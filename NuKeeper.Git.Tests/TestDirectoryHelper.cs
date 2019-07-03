@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,19 +42,15 @@ namespace NuKeeper.Git.Tests
             return null;
         }
 
-        public static DirectoryInfo GenerateRandomSubFolder(string folder)
+        public static DirectoryInfo UniqueTemporaryFolder()
         {
-            var random = new Random(21838);
-            var directoryInfo = new DirectoryInfo(folder);
+            var uniqueName = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
+            var folder = Path.Combine(Path.GetTempPath(), "NuKeeper", uniqueName);
 
-            var directory = "Random" + random.Next();
-            while (directoryInfo.GetDirectories().Any(x => x.Name == directory))
-            {
-                directory = "Random" + random.Next();
-            }
+            var tempDir = new DirectoryInfo(folder);
+            tempDir.Create();
 
-            var info = directoryInfo.CreateSubdirectory(directory);
-            return info;
+            return tempDir;
         }
 
         public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
@@ -75,44 +72,45 @@ namespace NuKeeper.Git.Tests
             return toRename.ContainsKey(name) ? toRename[name] : name;
         }
 
-        public static void DeleteDirectory(string directoryPath)
+
+        public static void DeleteDirectory(DirectoryInfo toDelete)
         {
             // http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true/329502#329502
-            if (!Directory.Exists(directoryPath))
+            if (!toDelete.Exists)
             {
-                Console.WriteLine($"Directory '{directoryPath}' is missing and can't be removed.");
+                Console.WriteLine($"Directory '{toDelete.FullName}' is missing and can't be removed.");
                 return;
             }
 
-            NormalizeAttributes(directoryPath);
-            DeleteDirectory(directoryPath, maxAttempts: 5, initialTimeout: 16, timeoutFactor: 2);
+            NormalizeAttributes(toDelete);
+            DeleteDirectory(toDelete, maxAttempts: 5, initialTimeout: 16, timeoutFactor: 2);
         }
 
-        private static void NormalizeAttributes(string directoryPath)
+        private static void NormalizeAttributes(DirectoryInfo toNormalize)
         {
-            string[] filePaths = Directory.GetFiles(directoryPath);
-            string[] subdirectoryPaths = Directory.GetDirectories(directoryPath);
+            FileInfo[] files = toNormalize.GetFiles();
+            DirectoryInfo[] subdirectories = toNormalize.GetDirectories();
 
-            foreach (string filePath in filePaths)
+            foreach (var file in files)
             {
-                File.SetAttributes(filePath, FileAttributes.Normal);
+                File.SetAttributes(file.FullName, FileAttributes.Normal);
             }
 
-            foreach (string subdirectoryPath in subdirectoryPaths)
+            foreach (var subdirectory in subdirectories)
             {
-                NormalizeAttributes(subdirectoryPath);
+                NormalizeAttributes(subdirectory);
             }
 
-            File.SetAttributes(directoryPath, FileAttributes.Normal);
+            File.SetAttributes(toNormalize.FullName, FileAttributes.Normal);
         }
 
-        private static void DeleteDirectory(string directoryPath, int maxAttempts, int initialTimeout, int timeoutFactor)
+        private static void DeleteDirectory(DirectoryInfo toDelete, int maxAttempts, int initialTimeout, int timeoutFactor)
         {
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 try
                 {
-                    Directory.Delete(directoryPath, true);
+                    toDelete.Delete(true);
                     return;
                 }
                 catch (Exception ex)
@@ -136,7 +134,7 @@ namespace NuKeeper.Git.Tests
                                                   "{0}- Windows Search Indexer (go to the Indexing Options, in the Windows Control Panel, and exclude the bin folder of LibGit2Sharp.Tests)" +
                                                   "{0}- Antivirus (exclude the bin folder of LibGit2Sharp.Tests from the paths scanned by your real-time antivirus)" +
                                                   "{0}- TortoiseGit (change the 'Icon Overlays' settings, e.g., adding the bin folder of LibGit2Sharp.Tests to 'Exclude paths' and appending an '*' to exclude all subfolders as well)",
-                        Environment.NewLine, Path.GetFullPath(directoryPath), maxAttempts, caughtExceptionType, ex.Message);
+                        Environment.NewLine, toDelete.FullName, maxAttempts, caughtExceptionType, ex.Message);
                 }
             }
         }

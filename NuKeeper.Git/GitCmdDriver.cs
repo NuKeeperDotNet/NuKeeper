@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Git;
@@ -39,24 +40,24 @@ namespace NuKeeper.Git
 
         public async Task AddRemote(string name, Uri endpoint)
         {
-            await StartGitProzess($"remote add {name} {CreateCredentialsUri(endpoint, _gitCredentials)}", true);
+            await StartGitProcess($"remote add {name} {CreateCredentialsUri(endpoint, _gitCredentials)}", true);
         }
 
         public async Task Checkout(string branchName)
         {
-            await StartGitProzess($"checkout {branchName}", false);
+            await StartGitProcess($"checkout {branchName}", false);
         }
 
         public async Task CheckoutRemoteToLocal(string branchName)
         {
-            await StartGitProzess($"checkout -b {branchName} origin/{branchName}", false);
+            await StartGitProcess($"checkout -b {branchName} origin/{branchName}", false);
         }
 
         public async Task<bool> CheckoutNewBranch(string branchName)
         {
             try
             {
-                await StartGitProzess($"checkout -b {branchName}", true);
+                await StartGitProcess($"checkout -b {branchName}", true);
                 return true;
             } catch
             {
@@ -73,31 +74,31 @@ namespace NuKeeper.Git
         {
             _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
             var branchparam = branchName == null ? "" : $" -b {branchName}";
-            await StartGitProzess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} .", true); // Clone into current folder
+            await StartGitProcess($"clone{branchparam} {CreateCredentialsUri(pullEndpoint, _gitCredentials)} .", true); // Clone into current folder
             _logger.Detailed("Git clone complete");
         }
 
         public async Task Commit(string message)
         {
             _logger.Detailed($"Git commit with message '{message}'");
-            await StartGitProzess($"commit -a -m \"{message}\"", true);
+            await StartGitProcess($"commit -a -m \"{message}\"", true);
         }
 
         public async Task<string> GetCurrentHead()
         {
-            var getBranchHead = await StartGitProzess($"symbolic-ref -q --short HEAD", true);
+            var getBranchHead = await StartGitProcess($"symbolic-ref -q --short HEAD", true);
             return string.IsNullOrEmpty(getBranchHead) ?
-                await StartGitProzess($"rev-parse HEAD", true) :
+                await StartGitProcess($"rev-parse HEAD", true) :
                 getBranchHead;
         }
 
         public async Task Push(string remoteName, string branchName)
         {
             _logger.Detailed($"Git push to {remoteName}/{branchName}");
-            await StartGitProzess($"push {remoteName} {branchName}", true);
+            await StartGitProcess($"push {remoteName} {branchName}", true);
         }
 
-        private  async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
+        private  async Task<string> StartGitProcess(string arguments, bool ensureSuccess)
         {
             var process = new ExternalProcess(_logger);
             var output = await process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess);
@@ -114,10 +115,19 @@ namespace NuKeeper.Git
             return new UriBuilder(pullEndpoint) { UserName = gitCredentials.Username, Password = gitCredentials.Password }.Uri;
         }
 
-        public Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)
+        public async Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)
         {
-            // cmd should be something like: $"log Branch-Name-Template..master --decorate=short";
-            throw new NotImplementedException();
+            var commitlog = await StartGitProcess($"log --oneline --no-decorate --right-only {baseBranchName}...{headBranchName}", true);
+            var commitMsgWithId = commitlog
+                .Split(Environment.NewLine.ToCharArray())
+                .Select(m=>m.Trim())
+                .Where(m => !String.IsNullOrWhiteSpace(m));
+            var commitMessages = commitMsgWithId
+                .Select(m => string.Join(" ", m.Split(' ').Skip(1)))
+                .Select(m => m.Trim())
+                .Where(m => !String.IsNullOrWhiteSpace(m)).ToList();
+
+            return commitMessages.AsReadOnly();
         }
     }
 }

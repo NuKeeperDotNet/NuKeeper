@@ -299,7 +299,7 @@ namespace NuKeeper.Git
                         ExcludeReachableFrom = baseBranch,
                         IncludeReachableFrom = headBranch
                     };
-                    return (IReadOnlyCollection<string>)repo.Commits.QueryBy(filter).Select(c => c.MessageShort).ToList().AsReadOnly();
+                    return (IReadOnlyCollection<string>)repo.Commits.QueryBy(filter).Select(c => c.MessageShort.TrimEnd(new[] { '\r', '\n' })).ToList().AsReadOnly();
                 }
             });
         }
