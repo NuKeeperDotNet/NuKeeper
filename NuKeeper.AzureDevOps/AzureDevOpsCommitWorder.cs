@@ -35,7 +35,7 @@ namespace NuKeeper.AzureDevOps
 
         public string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $"{CommitEmoji} {PackageTitle(updates)}";
+            return $"{PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
