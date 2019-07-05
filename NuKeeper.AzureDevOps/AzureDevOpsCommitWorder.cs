@@ -25,17 +25,17 @@ namespace NuKeeper.AzureDevOps
                 return PackageTitle(updates.First());
             }
 
-            return $"Automatic update of {updates.Count} packages";
+            return $"{CommitEmoji} Automatic update of {updates.Count} packages";
         }
 
         private static string PackageTitle(PackageUpdateSet updates)
         {
-            return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
+            return $"{CommitEmoji} Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
         public string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $"{CommitEmoji} {PackageTitle(updates)}";
+            return $"{PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)

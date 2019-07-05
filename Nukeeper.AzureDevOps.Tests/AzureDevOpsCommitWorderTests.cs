@@ -37,7 +37,7 @@ namespace NuKeeper.AzureDevOps.Tests
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo("Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo($"{CommitEmoji} Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
