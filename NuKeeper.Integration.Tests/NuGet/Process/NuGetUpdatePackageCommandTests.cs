@@ -1,17 +1,15 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Inspections.Files;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NUnit.Framework;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.ProcessRunner;
-using NuKeeper.Abstractions.RepositoryInspection;
+using NUnit.Framework;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {

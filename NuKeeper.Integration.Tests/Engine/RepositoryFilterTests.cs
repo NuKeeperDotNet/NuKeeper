@@ -3,9 +3,7 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
-using NuKeeper.Integration.Tests.LogHelpers;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 using System;
 using System.Threading.Tasks;
 

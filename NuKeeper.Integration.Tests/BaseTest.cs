@@ -3,9 +3,6 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.Integration.Tests.LogHelpers;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NuKeeper.Integration.Tests
 {

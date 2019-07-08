@@ -1,16 +1,11 @@
-using System;
-using System.Threading.Tasks;
-using NSubstitute;
-using NuGet.Common;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
-using NuKeeper.Integration.Tests.LogHelpers;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
@@ -106,25 +101,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(package.Minor.Identity.Version.Major, Is.EqualTo(8));
             Assert.That(package.Major.Identity.Version.Major, Is.GreaterThan(8));
         }
-
-        //        [Test]
-        //        public async Task BetaVersion_ShouldReturnBetas()
-        //        {
-        //            var lookup = BuildPackageLookup();
-        //
-        //            // libgit2sharp is known for staying in preview for ages
-        //            var package = await lookup.FindVersionUpdate(
-        //                new PackageIdentity("libgit2sharp", new NuGetVersion(0, 26, 0, "preview-0017")),
-        //                NuGetSources.GlobalFeed,
-        //                VersionChange.Minor,
-        //                UsePrerelease.FromPrerelease);
-        //
-        //            Assert.That(package, Is.Not.Null);
-        //            Assert.That(package.Selected(), Is.Not.Null);
-        //
-        //            var isBeta = package.Patch.Identity.Version.IsPrerelease;
-        //            Assert.That(isBeta, Is.True);
-        //        }
 
         private IApiPackageLookup BuildPackageLookup()
         {
