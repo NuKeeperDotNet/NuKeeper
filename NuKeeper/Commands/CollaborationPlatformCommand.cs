@@ -50,12 +50,17 @@ namespace NuKeeper.Commands
             Description = "Deletes branch created by NuKeeper after merge. Defaults to true.")]
         public bool? DeleteBranchAfterMerge { get; set; }
 
+        private HashSet<Platform> _platformsSupportingDeleteBranchAfterMerge = new HashSet<Platform>();
+
         protected CollaborationPlatformCommand(ICollaborationEngine engine, IConfigureLogger logger,
             IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory) :
             base(logger, fileSettingsCache)
         {
             _engine = engine;
             CollaborationFactory = collaborationFactory;
+            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.AzureDevOps);
+            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.Bitbucket);
+            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.GitHub);
         }
 
         protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
@@ -132,21 +137,29 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.GetSettings();
 
-            if (!Platform.HasValue)
+
+            bool defaultValue;
+
+            // The default value is true, if it is supported for the corresponding platform.
+            if (Platform.HasValue && !_platformsSupportingDeleteBranchAfterMerge.Contains(Platform.Value))
             {
-                settings.BranchSettings.DeleteBranchAfterMerge = true;
-                return ValidationResult.Success;
+                defaultValue = false;
+            }
+            else
+            {
+                defaultValue = true;
             }
 
-            if (Platform != Abstractions.CollaborationPlatform.Platform.AzureDevOps
-                && Platform != Abstractions.CollaborationPlatform.Platform.GitLab
-                && Platform != Abstractions.CollaborationPlatform.Platform.Bitbucket)
+            settings.BranchSettings.DeleteBranchAfterMerge = Concat.FirstValue(DeleteBranchAfterMerge, fileSettings.DeleteBranchAfterMerge, defaultValue);
+
+            // Ensure that the resulting DeleteBranchAfterMerge value is supported.
+            if (settings.BranchSettings.DeleteBranchAfterMerge &&
+                Platform.HasValue &&
+                !_platformsSupportingDeleteBranchAfterMerge.Contains(Platform.Value))
             {
-                return ValidationResult.Failure(
-                        $"Deletion of source branch after merge is currently only available for Azure DevOps, Gitlab and Bitbucket.");
+                return ValidationResult.Failure("Deletion of source branch after merge is currently only available for Azure DevOps, Gitlab and Bitbucket.");
             }
 
-            settings.BranchSettings.DeleteBranchAfterMerge = Concat.FirstValue(DeleteBranchAfterMerge, fileSettings.DeleteBranchAfterMerge, true);
             return ValidationResult.Success;
         }
     }
