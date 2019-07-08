@@ -1,6 +1,7 @@
 using NuKeeper.Abstractions.Logging;
 using NUnit.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace NuKeeper.Integration.Tests.LogHelpers
@@ -9,7 +10,7 @@ namespace NuKeeper.Integration.Tests.LogHelpers
     {
         private readonly LogLevel _logLevel;
 
-        private readonly List<string> _buffer = new List<string>();
+        private readonly ConcurrentQueue<string> _buffer = new ConcurrentQueue<string>();
 
         public NuKeeperTestLogger(LogLevel logLevel = LogLevel.Detailed)
         {
@@ -28,12 +29,11 @@ namespace NuKeeper.Integration.Tests.LogHelpers
             if (_buffer.Count > 0)
             {
                 TestContext.Error.WriteLine($"{test}: NuKeeper Log:");
+                while (_buffer.TryDequeue(out var line))
+                {
+                    TestContext.Error.WriteLine(line);
+                }
             }
-            foreach (var line in _buffer)
-            {
-                TestContext.Error.WriteLine(line);
-            }
-            _buffer.Clear();
         }
 
         public void Error(string message, Exception ex = null)
@@ -64,16 +64,16 @@ namespace NuKeeper.Integration.Tests.LogHelpers
             {
                 var levelString = level?.ToString() ?? "Error";
 
-                _buffer.Add($"{test}: {levelString} - {message}");
+                _buffer.Enqueue($"{test}: {levelString} - {message}");
 
                 if (ex != null)
                 {
-                    _buffer.Add($"{test}:   {ex.GetType().Name} : {ex.Message}");
+                    _buffer.Enqueue($"{test}:   {ex.GetType().Name} : {ex.Message}");
                     foreach (var line in ex.StackTrace.Split(Environment.NewLine.ToCharArray()))
                     {
                         if (!string.IsNullOrEmpty(line))
                         {
-                            _buffer.Add($"{test}:     {line}");
+                            _buffer.Enqueue($"{test}:     {line}");
                         }
                     }
                 }
