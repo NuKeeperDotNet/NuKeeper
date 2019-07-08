@@ -1,17 +1,18 @@
-using System;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Engine;
 using NuKeeper.GitHub;
+using NuKeeper.Integration.Tests.LogHelpers;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.Engine
 {
     [TestFixture]
-    public class RepositoryFilterTests
+    public class RepositoryFilterTests : BaseTest
     {
         [Test]
         public async Task ShouldFilterOutNonDotnetRepository()
@@ -37,17 +38,16 @@ namespace NuKeeper.Integration.Tests.Engine
             Assert.True(result);
         }
 
-        private static RepositoryFilter MakeRepositoryFilter()
+        private RepositoryFilter MakeRepositoryFilter()
         {
             const string testKeyWithOnlyPublicAccess = "c13d2ce7774d39ae99ddaad46bd69c3d459b9992";
-            var logger = Substitute.For<INuKeeperLogger>();
 
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
-            var gitHubClient = new OctokitClient(logger);
+            var gitHubClient = new OctokitClient(NukeeperLogger);
             gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
             collaborationFactory.CollaborationPlatform.Returns(gitHubClient);
 
-            return new RepositoryFilter(collaborationFactory, logger);
+            return new RepositoryFilter(collaborationFactory, NukeeperLogger);
         }
     }
 }

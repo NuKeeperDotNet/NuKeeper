@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class UpdateDirectoryBuildTargetsCommandTests
+    public class UpdateDirectoryBuildTargetsCommandTests : BaseTest
     {
         private readonly string _testFileWithUpdate =
 @"<Project><ItemGroup><PackageReference Update=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";
@@ -33,7 +33,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testFileWithInclude, "<PackageReference Include=\"foo\" Version=\"{packageVersion}\" />");
         }
 
-        private static async Task ExecuteValidUpdateTest(string testProjectContents, string expectedPackageString, [CallerMemberName] string memberName = "")
+        private async Task ExecuteValidUpdateTest(string testProjectContents, string expectedPackageString, [CallerMemberName] string memberName = "")
         {
             const string oldPackageVersion = "5.2.31";
             const string newPackageVersion = "5.3.4";
@@ -46,7 +46,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var projectPath = Path.Combine(workDirectory, testFile);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var command = new UpdateDirectoryBuildTargetsCommand(Substitute.For<INuKeeperLogger>());
+            var command = new UpdateDirectoryBuildTargetsCommand(NukeeperLogger);
 
             var package = new PackageInProject("foo", oldPackageVersion,
                 new PackagePath(workDirectory, testFile, PackageReferenceType.DirectoryBuildTargets));

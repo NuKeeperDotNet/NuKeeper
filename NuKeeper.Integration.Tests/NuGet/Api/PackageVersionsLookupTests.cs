@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
     [TestFixture]
-    public class PackageVersionsLookupTests
+    public class PackageVersionsLookupTests : BaseTest
     {
         [Test]
         public async Task WellKnownPackageName_ShouldReturnResultsList()
@@ -130,10 +130,9 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             }
         }
 
-        private static IPackageVersionsLookup BuildPackageLookup()
+        private IPackageVersionsLookup BuildPackageLookup()
         {
-            return new PackageVersionsLookup(
-                Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>());
+            return new PackageVersionsLookup(NugetLogger, NukeeperLogger);
         }
     }
 }

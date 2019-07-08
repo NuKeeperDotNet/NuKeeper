@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.RepositoryInspection
 {
     [TestFixture]
-    public class RepositoryScannerTests
+    public class RepositoryScannerTests : BaseTest
     {
         const string SinglePackageInFile =
             @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -230,7 +230,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         public void SelfTest()
         {
             var scanner = MakeScanner();
-            var baseFolder = new Folder(Substitute.For<INuKeeperLogger>(), GetOwnRootDir());
+            var baseFolder = new Folder(NukeeperLogger, GetOwnRootDir());
 
             var results = scanner.FindAllNuGetPackages(baseFolder);
 
@@ -253,15 +253,15 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
             return projectRootDir;
         }
 
-        private static IFolder UniqueTemporaryFolder()
+        private IFolder UniqueTemporaryFolder()
         {
-            var folderFactory = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            var folderFactory = new FolderFactory(NukeeperLogger);
             return folderFactory.UniqueTemporaryFolder();
         }
 
-        private static IRepositoryScanner MakeScanner()
+        private IRepositoryScanner MakeScanner()
         {
-            var logger = Substitute.For<INuKeeperLogger>();
+            var logger = NukeeperLogger;
             return new RepositoryScanner(
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),

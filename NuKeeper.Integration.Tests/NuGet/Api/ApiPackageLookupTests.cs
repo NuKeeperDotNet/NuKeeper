@@ -8,12 +8,14 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
+using NuKeeper.Integration.Tests.LogHelpers;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
-    public class ApiPackageLookupTests
+    public class ApiPackageLookupTests : BaseTest
     {
         [Test]
         public async Task AmbiguousPackageName_ShouldReturnCorrectResult()
@@ -124,10 +126,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         //            Assert.That(isBeta, Is.True);
         //        }
 
-        private static IApiPackageLookup BuildPackageLookup()
+        private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
-                new PackageVersionsLookup(Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>()));
+                new PackageVersionsLookup(NugetLogger, NukeeperLogger));
         }
 
         private static PackageIdentity Current(string packageId)

@@ -17,7 +17,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class DotNetUpdatePackageCommandTests
+    public class DotNetUpdatePackageCommandTests : BaseTest
     {
         private readonly string _testWebApiProject =
 @"<Project ToolsVersion=""15.0"" DefaultTargets=""Build"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
@@ -131,7 +131,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             var projectPath = Path.Combine(workDirectory, testProject);
             await File.WriteAllTextAsync(projectPath, projectContents);
 
-            var command = new DotNetUpdatePackageCommand(new ExternalProcess(Substitute.For<INuKeeperLogger>()));
+            var command = new DotNetUpdatePackageCommand(new ExternalProcess(NukeeperLogger));
 
             var packageToUpdate = new PackageInProject("Microsoft.AspNet.WebApi.Client", oldPackageVersion,
                 new PackagePath(workDirectory, testProject, packageReferenceType));
@@ -145,9 +145,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                 Does.Not.Contain(expectedPackageString.Replace("{packageVersion}", oldPackageVersion, StringComparison.OrdinalIgnoreCase)));
         }
 
-        private static IFolder UniqueTemporaryFolder()
+        private IFolder UniqueTemporaryFolder()
         {
-            var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            var factory = new FolderFactory(NukeeperLogger);
             return factory.UniqueTemporaryFolder();
         }
     }

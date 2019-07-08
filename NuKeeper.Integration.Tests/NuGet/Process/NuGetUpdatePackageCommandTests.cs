@@ -16,7 +16,7 @@ using NuKeeper.Abstractions.RepositoryInspection;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class NuGetUpdatePackageCommandTests
+    public class NuGetUpdatePackageCommandTests : BaseTest
     {
         private readonly string _testDotNetClassicProject =
             @"<Project ToolsVersion=""15.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
@@ -75,7 +75,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
-            var logger = Substitute.For<INuKeeperLogger>();
+            var logger = NukeeperLogger;
             var externalProcess = new ExternalProcess(logger);
 
             var monoExecutor = new MonoExecutor(logger, externalProcess);
@@ -103,9 +103,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                     StringComparison.OrdinalIgnoreCase)));
         }
 
-        private static IFolder UniqueTemporaryFolder()
+        private IFolder UniqueTemporaryFolder()
         {
-            var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            var factory = new FolderFactory(NukeeperLogger);
             return factory.UniqueTemporaryFolder();
         }
     }
