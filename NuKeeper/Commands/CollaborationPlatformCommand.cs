@@ -60,7 +60,7 @@ namespace NuKeeper.Commands
             CollaborationFactory = collaborationFactory;
             _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.AzureDevOps);
             _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.Bitbucket);
-            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.GitHub);
+            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.GitLab);
         }
 
         protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
