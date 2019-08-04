@@ -137,7 +137,6 @@ namespace NuKeeper.Commands
         {
             var fileSettings = FileSettingsCache.GetSettings();
 
-
             bool defaultValue;
 
             // The default value is true, if it is supported for the corresponding platform.
