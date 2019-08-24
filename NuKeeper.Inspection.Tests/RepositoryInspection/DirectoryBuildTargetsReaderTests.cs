@@ -16,6 +16,8 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
     {
         const string PackagesFileWithSinglePackage =
             @"<Project><ItemGroup><PackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
+        const string GlobalPackageReferenceFileWithSinglePackage =
+            @"<Project><ItemGroup><GlobalPackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
 
         private const string PackagesFileWithTwoPackages = @"<Project><ItemGroup>
 <PackageReference Include=""foo"" Version=""1.2.3.4"" />
@@ -69,6 +71,40 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
+        public void SingleGlobalPackageReferenceShouldBeRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(GlobalPackageReferenceFileWithSinglePackage), TempPath());
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Not.Empty);
+        }
+
+        [Test]
+        public void SingleGlobalPackageReferenceShouldBePopulated()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(GlobalPackageReferenceFileWithSinglePackage), TempPath());
+
+            var package = packages.FirstOrDefault();
+            PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
+        public void SingleGlobalPackageReferenceShouldBeCorrect()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(GlobalPackageReferenceFileWithSinglePackage), TempPath());
+
+            var package = packages.FirstOrDefault();
+
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Id, Is.EqualTo("foo"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
         public void TwoPackagesShouldBePopulated()
         {
             var reader = MakeReader();
@@ -112,6 +148,68 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             }
 
             Assert.That(packages.Select(p => p.Path), Is.All.EqualTo(path));
+        }
+
+        [Test]
+        public void ThreePackagesShouldBePopulatedByImport()
+        {
+            var temp = Path.GetTempFileName();
+            File.WriteAllText(temp, PackagesFileWithTwoPackages);
+            var PackagesFileWithImport = $@"<Project>
+<Import Project=""{temp}"" />
+<ItemGroup>
+<PackageReference Update=""file1"" Version=""2.3.4"" />
+</ItemGroup></Project>";
+            try
+            {
+                var reader = MakeReader();
+                var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
+                    .ToList();
+
+                Assert.That(packages, Is.Not.Null);
+                Assert.That(packages.Count, Is.EqualTo(3));
+
+                PackageAssert.IsPopulated(packages[0]);
+                PackageAssert.IsPopulated(packages[1]);
+                PackageAssert.IsPopulated(packages[2]);
+            }
+            finally
+            {
+                File.Delete(temp);
+            }
+        }
+
+        [Test]
+        public void ThreePackagesShouldBeReadByImportBeRead()
+        {
+            var temp = Path.GetTempFileName();
+            File.WriteAllText(temp, PackagesFileWithTwoPackages);
+            var PackagesFileWithImport = $@"<Project>
+<Import Project=""{temp}"" />
+<ItemGroup>
+<PackageReference Update=""file1"" Version=""2.3.4"" />
+</ItemGroup></Project>";
+            try
+            {
+                var reader = MakeReader();
+                var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
+                    .ToList();
+
+                Assert.That(packages.Count, Is.EqualTo(3));
+
+                Assert.That(packages[0].Id, Is.EqualTo("foo"));
+                Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+
+                Assert.That(packages[1].Id, Is.EqualTo("bar"));
+                Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+
+                Assert.That(packages[2].Id, Is.EqualTo("file1"));
+                Assert.That(packages[2].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
+            }
+            finally
+            {
+                File.Delete(temp);
+            }
         }
 
         [Test]

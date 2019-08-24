@@ -43,20 +43,40 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, PackagePath path)
         {
+            var results = new List<PackageInProject>();
             var xml = XDocument.Load(fileContents);
 
-            var packagesNode = xml.Element("Project")?.Elements("ItemGroup");
-            if (packagesNode == null)
+            var project = xml.Element("Project");
+            if (project == null)
             {
                 return Array.Empty<PackageInProject>();
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference");
+            var importNodes = project.Elements("Import");
+            foreach (var import in importNodes)
+            {
+                var projectAttribute = import.Attribute("Project");
+                if (projectAttribute == null) continue;
+                var importPath = projectAttribute.Value.Replace("$(MSBuildThisFileDirectory)", "").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                try
+                {
+                    results.AddRange(ReadFile(path.BaseDirectory, importPath));
+                }
+                catch (NuKeeperException)
+                {
+                    _logger.Detailed($"Unable to handle path for importPath {importPath}");
+                }
+            }
 
-            return packageNodeList
+            var itemGroupNodes = project.Elements("ItemGroup");
+            var packageNodeList = itemGroupNodes.Elements("PackageReference")
+                .Concat(itemGroupNodes.Elements("GlobalPackageReference"));
+
+            results.AddRange(packageNodeList
                 .Select(el => XmlToPackage(el, path))
-                .Where(el => el != null)
-                .ToList();
+                .Where(el => el != null));
+
+            return results;
         }
 
         private PackageInProject XmlToPackage(XElement el, PackagePath path)

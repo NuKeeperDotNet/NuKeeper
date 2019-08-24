@@ -268,6 +268,60 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
+        public void WhenTwoPackagesAreRead_ValuesAreCorrect_WithGlobalPackageReference()
+        {
+            const string packagesText =
+                @"<GlobalPackageReference Include=""foo"" Version=""1.2.3""></GlobalPackageReference>
+                  <PackageReference Include=""bar"" Version=""2.3.4""></PackageReference>";
+
+            var projectFile = Vs2017ProjectFileTemplateWithPackages.Replace("{{Packages}}", packagesText, StringComparison.OrdinalIgnoreCase);
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages[0].Id, Is.EqualTo("bar"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
+
+            Assert.That(packages[1].Id, Is.EqualTo("foo"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("1.2.3")));
+        }
+
+        [Test]
+        public void WhenThreePackagesAreRead_ValuesAreCorrect_WithGlobalPackageReference()
+        {
+            var temp = Path.GetTempFileName();
+            var projectFile = $@"<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <Import Project=""{temp}"" />
+</Project>";
+
+            File.WriteAllText(temp, @"<Project><ItemGroup>
+<PackageReference Include=""foo"" Version=""1.2.3.4"" />
+<PackageReference Update=""bar"" Version=""2.3.4.5"" /></ItemGroup></Project>");
+            try
+            {
+                var reader = MakeReader();
+                var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                    .ToList();
+
+                Assert.That(packages[0].Id, Is.EqualTo("foo"));
+                Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+                Assert.That(packages[0].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+
+                Assert.That(packages[1].Id, Is.EqualTo("bar"));
+                Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+                Assert.That(packages[1].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+            }
+            finally
+            {
+                File.Delete(temp);
+            }
+        }
+
+        [Test]
         public void ResultIsReiterable()
         {
             var reader = MakeReader();

@@ -6,6 +6,7 @@ namespace NuKeeper.Abstractions.RepositoryInspection
         ProjectFile,
         ProjectFileOldStyle,
         Nuspec,
-        DirectoryBuildTargets
+        DirectoryBuildTargets,
+        ProjectImport
     }
 }

@@ -47,6 +47,7 @@ namespace NuKeeper.Update.Process
             }
 
             var packageNodeList = packagesNode.Elements("PackageReference")
+                .Concat(packagesNode.Elements("GlobalPackageReference"))
                 .Where(x =>
                     (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
                   || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id,StringComparison.InvariantCultureIgnoreCase))));

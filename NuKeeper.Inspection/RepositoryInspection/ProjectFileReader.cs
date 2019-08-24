@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.RepositoryInspection;
 
@@ -13,11 +14,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
         private const string VisualStudioLegacyProjectNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private readonly INuKeeperLogger _logger;
         private readonly PackageInProjectReader _packageInProjectReader;
+        private readonly DirectoryBuildTargetsReader _directoryBuildTargetsReader;
 
         public ProjectFileReader(INuKeeperLogger logger)
         {
             _logger = logger;
             _packageInProjectReader = new PackageInProjectReader(logger);
+            _directoryBuildTargetsReader = new DirectoryBuildTargetsReader(logger);
         }
 
         public IReadOnlyCollection<PackageInProject> ReadFile(string baseDirectory, string relativePath)
@@ -43,6 +46,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, string baseDirectory, string relativePath)
         {
+            var results = new List<PackageInProject>();
             var xml = XDocument.Load(fileContents);
             var ns = xml.Root.GetDefaultNamespace();
 
@@ -55,6 +59,22 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Array.Empty<PackageInProject>();
             }
 
+            var importNodes = project.Elements("Import");
+            foreach (var import in importNodes)
+            {
+                var projectAttribute = import.Attribute("Project");
+                if (projectAttribute == null) continue;
+                var importPath = projectAttribute.Value.Replace("$(MSBuildThisFileDirectory)", "").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                try
+                {
+                    results.AddRange(_directoryBuildTargetsReader.ReadFile(path.BaseDirectory, importPath));
+                }
+                catch (NuKeeperException)
+                {
+                    _logger.Detailed($"Unable to handle path for importPath {importPath}");
+                }
+            }
+
             var itemGroups = project
                 .Elements(ns + "ItemGroup")
                 .ToList();
@@ -65,11 +85,19 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .ToList();
 
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
+            var globalPackageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "GlobalPackageReference"));
 
-            return packageRefs
+            results.AddRange(packageRefs
                 .Select(el => XmlToPackage(ns, el, path, projectRefs))
-                .Where(el => el != null)
-                .ToList();
+                .Where(el => el != null));
+
+            foreach (var globalPackageref in globalPackageRefs)
+            {
+                var refPath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets);
+                results.Add(XmlToPackage(ns, globalPackageref, refPath, projectRefs));
+            }
+
+            return results;
         }
 
         private static string MakeProjectPath(XElement el, string currentPath)
