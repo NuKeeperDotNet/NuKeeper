@@ -288,7 +288,7 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void WhenThreePackagesAreRead_ValuesAreCorrect_WithGlobalPackageReference()
+        public void WhenThreePackagesAreRead_ValuesAreCorrect_WithImport()
         {
             var temp = Path.GetTempFileName();
             var projectFile = $@"<Project Sdk=""Microsoft.NET.Sdk"">
@@ -319,6 +319,42 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             {
                 File.Delete(temp);
             }
+        }
+
+        [Test]
+        public void WhenOnePackagesAreRead_ValuesAreCorrect_WithSdk()
+        {
+            var projectFile = @"<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <Sdk Name=""foo"" Version=""4.3.2"" />
+</Project>";
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("4.3.2")));
+            Assert.That(packages[0].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
+        public void WhenZeroPackagesAreRead_NoVersion_WithSdk()
+        {
+            var projectFile = @"<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <Sdk Name=""foo"" />
+</Project>";
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
+
+            Assert.That(packages, Is.Empty);
         }
 
         [Test]

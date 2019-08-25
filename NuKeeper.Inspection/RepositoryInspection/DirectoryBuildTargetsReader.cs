@@ -57,7 +57,9 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 var projectAttribute = import.Attribute("Project");
                 if (projectAttribute == null) continue;
-                var importPath = projectAttribute.Value.Replace("$(MSBuildThisFileDirectory)", "").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                var importPath = projectAttribute.Value
+                    .Replace("$(MSBuildThisFileDirectory)", "")
+                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
                 try
                 {
                     results.AddRange(ReadFile(path.BaseDirectory, importPath));
@@ -66,6 +68,17 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 {
                     _logger.Detailed($"Unable to handle path for importPath {importPath}");
                 }
+            }
+
+            var sdkNodes = project.Elements("Sdk");
+            foreach (var import in sdkNodes)
+            {
+                var nameAttribute = import.Attribute("Name");
+                if (nameAttribute == null) continue;
+                var versionAttribute = import.Attribute("Version");
+                if (versionAttribute == null) continue;
+
+                results.Add(XmlToSdk(import, path));
             }
 
             var itemGroupNodes = project.Elements("ItemGroup");
@@ -86,7 +99,15 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 id = el.Attribute("Update")?.Value;
             }
-            var version = el.Attribute("Version")?.Value;
+            var version = el.Attribute("Version")?.Value ?? el.Element("Version")?.Value;
+
+            return _packageInProjectReader.Read(id, version, path, null);
+        }
+
+        private PackageInProject XmlToSdk(XElement el, PackagePath path)
+        {
+            var id = el.Attribute("Name")?.Value;
+            var version = el.Attribute("Version")?.Value ?? el.Element("Version")?.Value;
 
             return _packageInProjectReader.Read(id, version, path, null);
         }

@@ -18,6 +18,8 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             @"<Project><ItemGroup><PackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
         const string GlobalPackageReferenceFileWithSinglePackage =
             @"<Project><ItemGroup><GlobalPackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
+        const string SdkFileWithSinglePackage =
+            @"<Project><Sdk Name=""foo"" Version=""1.2.3.4"" /></Project>";
 
         private const string PackagesFileWithTwoPackages = @"<Project><ItemGroup>
 <PackageReference Include=""foo"" Version=""1.2.3.4"" />
@@ -95,6 +97,40 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(GlobalPackageReferenceFileWithSinglePackage), TempPath());
+
+            var package = packages.FirstOrDefault();
+
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Id, Is.EqualTo("foo"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
+        public void SingleSdkShouldBeRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(SdkFileWithSinglePackage), TempPath());
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Not.Empty);
+        }
+
+        [Test]
+        public void SingleSdkShouldBePopulated()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(SdkFileWithSinglePackage), TempPath());
+
+            var package = packages.FirstOrDefault();
+            PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
+        public void SingleSdkShouldBeCorrect()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(SdkFileWithSinglePackage), TempPath());
 
             var package = packages.FirstOrDefault();
 

@@ -64,7 +64,9 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 var projectAttribute = import.Attribute("Project");
                 if (projectAttribute == null) continue;
-                var importPath = projectAttribute.Value.Replace("$(MSBuildThisFileDirectory)", "").Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                var importPath = projectAttribute.Value
+                    .Replace("$(MSBuildThisFileDirectory)", "")
+                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
                 try
                 {
                     results.AddRange(_directoryBuildTargetsReader.ReadFile(path.BaseDirectory, importPath));
@@ -94,7 +96,19 @@ namespace NuKeeper.Inspection.RepositoryInspection
             foreach (var globalPackageref in globalPackageRefs)
             {
                 var refPath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets);
-                results.Add(XmlToPackage(ns, globalPackageref, refPath, projectRefs));
+                results.Add(XmlToPackage(ns, globalPackageref, refPath, null));
+            }
+
+            var sdkNodes = project.Elements("Sdk");
+            foreach (var import in sdkNodes)
+            {
+                var nameAttribute = import.Attribute("Name");
+                if (nameAttribute == null) continue;
+                var versionAttribute = import.Attribute("Version");
+                if (versionAttribute == null) continue;
+
+                var refPath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets);
+                results.Add(XmlToSdk(ns, import, refPath));
             }
 
             return results;
@@ -125,6 +139,14 @@ namespace NuKeeper.Inspection.RepositoryInspection
             var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
 
             return _packageInProjectReader.Read(id, version, path, projectReferences);
+        }
+
+        private PackageInProject XmlToSdk(XNamespace ns, XElement el, PackagePath path)
+        {
+            var id = el.Attribute("Name")?.Value;
+            var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
+
+            return _packageInProjectReader.Read(id, version, path, null);
         }
     }
 }
