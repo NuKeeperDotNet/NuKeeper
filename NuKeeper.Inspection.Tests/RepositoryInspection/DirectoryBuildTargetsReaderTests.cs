@@ -1,11 +1,14 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using NSubstitute;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
@@ -24,6 +27,19 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         private const string PackagesFileWithTwoPackages = @"<Project><ItemGroup>
 <PackageReference Include=""foo"" Version=""1.2.3.4"" />
 <PackageReference Update=""bar"" Version=""2.3.4.5"" /></ItemGroup></Project>";
+        private IFolder _uniqueTemporaryFolder = null;
+
+        [SetUp]
+        public void Setup()
+        {
+            _uniqueTemporaryFolder = TemporaryFolder();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _uniqueTemporaryFolder.TryDelete();
+        }
 
         [Test]
         public void EmptyPackagesListShouldBeParsed()
@@ -189,63 +205,49 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [Test]
         public void ThreePackagesShouldBePopulatedByImport()
         {
-            var temp = Path.GetTempFileName();
+            var temp = Path.Combine(_uniqueTemporaryFolder.FullPath, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".props");
             File.WriteAllText(temp, PackagesFileWithTwoPackages);
             var PackagesFileWithImport = $@"<Project>
-<Import Project=""{temp}"" />
+<Import Project=""{Path.GetRelativePath(_uniqueTemporaryFolder.FullPath, temp)}"" />
 <ItemGroup>
 <PackageReference Update=""file1"" Version=""2.3.4"" />
 </ItemGroup></Project>";
-            try
-            {
-                var reader = MakeReader();
-                var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
-                    .ToList();
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
+                .ToList();
 
-                Assert.That(packages, Is.Not.Null);
-                Assert.That(packages.Count, Is.EqualTo(3));
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages.Count, Is.EqualTo(3));
 
-                PackageAssert.IsPopulated(packages[0]);
-                PackageAssert.IsPopulated(packages[1]);
-                PackageAssert.IsPopulated(packages[2]);
-            }
-            finally
-            {
-                File.Delete(temp);
-            }
+            PackageAssert.IsPopulated(packages[0]);
+            PackageAssert.IsPopulated(packages[1]);
+            PackageAssert.IsPopulated(packages[2]);
         }
 
         [Test]
         public void ThreePackagesShouldBeReadByImportBeRead()
         {
-            var temp = Path.GetTempFileName();
+            var temp = Path.Combine(_uniqueTemporaryFolder.FullPath, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".props");
             File.WriteAllText(temp, PackagesFileWithTwoPackages);
             var PackagesFileWithImport = $@"<Project>
-<Import Project=""{temp}"" />
+<Import Project=""{Path.GetRelativePath(_uniqueTemporaryFolder.FullPath, temp)}"" />
 <ItemGroup>
 <PackageReference Update=""file1"" Version=""2.3.4"" />
 </ItemGroup></Project>";
-            try
-            {
-                var reader = MakeReader();
-                var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
-                    .ToList();
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
+                .ToList();
 
-                Assert.That(packages.Count, Is.EqualTo(3));
+            Assert.That(packages.Count, Is.EqualTo(3));
 
-                Assert.That(packages[0].Id, Is.EqualTo("foo"));
-                Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+            Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
 
-                Assert.That(packages[1].Id, Is.EqualTo("bar"));
-                Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+            Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
 
-                Assert.That(packages[2].Id, Is.EqualTo("file1"));
-                Assert.That(packages[2].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
-            }
-            finally
-            {
-                File.Delete(temp);
-            }
+            Assert.That(packages[2].Id, Is.EqualTo("file1"));
+            Assert.That(packages[2].Version, Is.EqualTo(new NuGetVersion("2.3.4")));
         }
 
         [Test]
@@ -261,10 +263,10 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
             PackageAssert.IsPopulated(packages[0]);
         }
 
-        private static PackagePath TempPath()
+        private PackagePath TempPath()
         {
             return new PackagePath(
-                OsSpecifics.GenerateBaseDirectory(),
+                _uniqueTemporaryFolder.FullPath,
                 Path.Combine("src", "Directory.Build.Props"),
                 PackageReferenceType.DirectoryBuildTargets);
         }
@@ -277,6 +279,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
+        }
+
+        private static IFolder TemporaryFolder()
+        {
+            var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            return ff.UniqueTemporaryFolder();
         }
     }
 }

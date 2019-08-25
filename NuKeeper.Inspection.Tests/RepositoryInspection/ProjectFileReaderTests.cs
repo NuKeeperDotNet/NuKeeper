@@ -1,11 +1,14 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using NSubstitute;
 using NuGet.Versioning;
+using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
@@ -50,12 +53,20 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
 
         private string _sampleDirectory;
         private string _sampleFile;
+        private IFolder _uniqueTemporaryFolder = null;
+
+        [TearDown]
+        public void TearDown()
+        {
+            _uniqueTemporaryFolder.TryDelete();
+        }
 
         [SetUp]
         public void SetUp()
         {
+            _uniqueTemporaryFolder = TemporaryFolder();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            _sampleDirectory = OsSpecifics.GenerateBaseDirectory();
+            _sampleDirectory = _uniqueTemporaryFolder.FullPath;
             _sampleFile = Path.Combine("src", "packages.config");
         }
 
@@ -290,35 +301,28 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         [Test]
         public void WhenThreePackagesAreRead_ValuesAreCorrect_WithImport()
         {
-            var temp = Path.GetTempFileName();
+            var temp = Path.Combine(_uniqueTemporaryFolder.FullPath, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".props");
+            File.WriteAllText(temp, @"<Project><ItemGroup>
+<PackageReference Include=""foo"" Version=""1.2.3.4"" />
+<PackageReference Update=""bar"" Version=""2.3.4.5"" /></ItemGroup></Project>");
+
             var projectFile = $@"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
-  <Import Project=""{temp}"" />
+  <Import Project=""{Path.GetRelativePath(_uniqueTemporaryFolder.FullPath, temp)}"" />
 </Project>";
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
+                .ToList();
 
-            File.WriteAllText(temp, @"<Project><ItemGroup>
-<PackageReference Include=""foo"" Version=""1.2.3.4"" />
-<PackageReference Update=""bar"" Version=""2.3.4.5"" /></ItemGroup></Project>");
-            try
-            {
-                var reader = MakeReader();
-                var packages = reader.Read(StreamFromString(projectFile), _sampleDirectory, _sampleFile)
-                    .ToList();
+            Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+            Assert.That(packages[0].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
 
-                Assert.That(packages[0].Id, Is.EqualTo("foo"));
-                Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
-                Assert.That(packages[0].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
-
-                Assert.That(packages[1].Id, Is.EqualTo("bar"));
-                Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
-                Assert.That(packages[1].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
-            }
-            finally
-            {
-                File.Delete(temp);
-            }
+            Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+            Assert.That(packages[1].Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
         }
 
         [Test]
@@ -480,6 +484,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         private static Stream StreamFromString(string contents)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(contents));
+        }
+
+        private static IFolder TemporaryFolder()
+        {
+            var ff = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            return ff.UniqueTemporaryFolder();
         }
     }
 }

@@ -40,19 +40,30 @@ namespace NuKeeper.Update.Process
         private void UpdateFile(Stream fileContents, NuGetVersion newVersion,
             PackageInProject currentPackage, XDocument xml)
         {
-            var packagesNode = xml.Element("Project")?.Elements("ItemGroup");
-            if (packagesNode == null)
+            var project = xml.Element("Project");
+            if (project == null)
             {
                 return;
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference")
-                .Concat(packagesNode.Elements("GlobalPackageReference"))
+            var packagesNodes = project.Elements("ItemGroup");
+            var sdkNodes = project.Elements("Sdk");
+            var packageNodeList = packagesNodes.Elements("PackageReference")
+                .Concat(packagesNodes.Elements("GlobalPackageReference"))
                 .Where(x =>
                     (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
-                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id,StringComparison.InvariantCultureIgnoreCase))));
+                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))));
+            var sdkNodeList = sdkNodes
+                .Where(x => x.Attributes("Name").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase)));
 
             foreach (var dependencyToUpdate in packageNodeList)
+            {
+                _logger.Detailed(
+                    $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
+                dependencyToUpdate.Attribute("Version").Value = newVersion.ToString();
+            }
+
+            foreach (var dependencyToUpdate in sdkNodeList)
             {
                 _logger.Detailed(
                     $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
