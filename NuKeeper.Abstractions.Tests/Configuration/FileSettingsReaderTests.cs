@@ -30,7 +30,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                 Directory.Delete(_uniqueTemporaryFolder, true);
             }
         }
-        
+
 
 
         [Test]
@@ -188,7 +188,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         }
 
         [Test]
-            public void ConfigKeysAreCaseInsensitive()
+        public void ConfigKeysAreCaseInsensitive()
         {
             const string configData = @"{
                ""Age"":""3d"",

@@ -3,7 +3,7 @@ using NuKeeper.Update.ProcessRunner;
 
 namespace NuKeeper.Update.Process
 {
-    public interface IMonoExecutor: IExternalProcess
+    public interface IMonoExecutor : IExternalProcess
     {
         Task<bool> CanRun();
     }

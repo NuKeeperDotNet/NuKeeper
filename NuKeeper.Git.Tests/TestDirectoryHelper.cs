@@ -33,7 +33,7 @@ namespace NuKeeper.Git.Tests
                         return files.FirstOrDefault();
                     }
                 }
-                catch(DirectoryNotFoundException)
+                catch (DirectoryNotFoundException)
                 {
                 }
             }

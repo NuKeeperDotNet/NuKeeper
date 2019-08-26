@@ -55,7 +55,7 @@ namespace NuKeeper.GitHub
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
-            var settings = repositoryUri.IsFile ?  await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri, targetBranch);
+            var settings = repositoryUri.IsFile ? await CreateSettingsFromLocal(repositoryUri, targetBranch) : CreateSettingsFromRemote(repositoryUri, targetBranch);
             if (settings == null)
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");

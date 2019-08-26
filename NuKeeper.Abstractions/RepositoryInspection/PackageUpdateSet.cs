@@ -59,12 +59,12 @@ namespace NuKeeper.Abstractions.RepositoryInspection
 
         private void CheckIdConsistency()
         {
-            if (CurrentPackages.Any(p => !p.Id.Equals(SelectedId,StringComparison.InvariantCultureIgnoreCase)))
+            if (CurrentPackages.Any(p => !p.Id.Equals(SelectedId, StringComparison.InvariantCultureIgnoreCase)))
             {
                 var errorIds = CurrentPackages
                     .Select(p => p.Id)
                     .Distinct()
-                    .Where(id => !id.Equals(SelectedId,StringComparison.InvariantCultureIgnoreCase));
+                    .Where(id => !id.Equals(SelectedId, StringComparison.InvariantCultureIgnoreCase));
 
                 throw new ArgumentException($"Updates must all be for package '{SelectedId}', got '{errorIds.JoinWithCommas()}'");
             }

@@ -18,8 +18,8 @@ namespace NuKeeper.Update.Tests.Process
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
 
-            externalProcess.Run("","mono","--version",false).
-                Returns(new ProcessOutput("","",exitCode));
+            externalProcess.Run("", "mono", "--version", false).
+                Returns(new ProcessOutput("", "", exitCode));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -34,8 +34,8 @@ namespace NuKeeper.Update.Tests.Process
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
 
-            externalProcess.Run("","mono","--version",false).
-                Returns(new ProcessOutput("","",0));
+            externalProcess.Run("", "mono", "--version", false).
+                Returns(new ProcessOutput("", "", 0));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -56,8 +56,8 @@ namespace NuKeeper.Update.Tests.Process
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
 
-            externalProcess.Run("","mono","--version",false).
-                Returns(new ProcessOutput("","",1));
+            externalProcess.Run("", "mono", "--version", false).
+                Returns(new ProcessOutput("", "", 1));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
 
@@ -71,8 +71,8 @@ namespace NuKeeper.Update.Tests.Process
             var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
             var externalProcess = Substitute.For<IExternalProcess>();
 
-            externalProcess.Run("","mono","--version",false).
-                Returns(new ProcessOutput("","",0));
+            externalProcess.Run("", "mono", "--version", false).
+                Returns(new ProcessOutput("", "", 0));
 
             var monoExecutor = new MonoExecutor(nuKeeperLogger, externalProcess);
             await monoExecutor.Run("wd", "command", "args", true);

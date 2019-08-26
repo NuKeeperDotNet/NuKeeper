@@ -55,7 +55,7 @@ namespace NuKeeper.Git
 
         public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
-             if (!await IsGitRepo(repositoryUri))
+            if (!await IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();
             }
@@ -109,7 +109,7 @@ namespace NuKeeper.Git
             {
                 if (Uri.TryCreate(match.Value, UriKind.Absolute, out Uri repositoryUri))
                 {
-                    var remoteName = remote.Split(new [] { "\t"}, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    var remoteName = remote.Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                     if (!string.IsNullOrWhiteSpace(remoteName))
                     {
                         return new GitRemote

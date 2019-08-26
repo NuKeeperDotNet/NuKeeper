@@ -13,7 +13,7 @@ namespace NuKeeper.AzureDevOps
     public class AzureDevOpsCommitWorder : ICommitWorder
     {
         private const string CommitEmoji = "📦";
-    
+
         // Azure DevOps allows a maximum of 4000 characters to be used in a pull request description:
         // https://visualstudio.uservoice.com/forums/330519-azure-devops-formerly-visual-studio-team-services/suggestions/20217283-raise-the-character-limit-for-pull-request-descrip
         private const int MaxCharacterCount = 4000;

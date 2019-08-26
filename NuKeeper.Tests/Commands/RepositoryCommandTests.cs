@@ -190,7 +190,7 @@ namespace NuKeeper.Tests.Commands
             fileSettings.GetSettings().Returns(new FileSettings());
 
             var gitHubSettingReader = new GitHubSettingsReader(new MockedGitDiscoveryDriver(), _environmentVariablesProvider);
-            var bitbucketLocalSettingReader = new BitBucketLocalSettingsReader( _environmentVariablesProvider);
+            var bitbucketLocalSettingReader = new BitBucketLocalSettingsReader(_environmentVariablesProvider);
             var settingsReaders = new List<ISettingsReader> { gitHubSettingReader, bitbucketLocalSettingReader };
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             collaborationFactory.Settings.Returns(new CollaborationPlatformSettings());

@@ -86,7 +86,7 @@ namespace NuKeeper.Git
         }
 
 
-        private  async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
+        private async Task<string> StartGitProzess(string arguments, bool ensureSuccess)
         {
             var process = new ExternalProcess(_logger);
             var output = await process.Run(WorkingFolder.FullPath, _pathGit, arguments, ensureSuccess);

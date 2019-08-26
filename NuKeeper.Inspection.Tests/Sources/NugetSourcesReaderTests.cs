@@ -17,7 +17,7 @@ namespace NuKeeper.Inspection.Tests.Sources
     {
         private IFolder _uniqueTemporaryFolder = null;
 
-        [SetUp] 
+        [SetUp]
         public void Setup()
         {
             _uniqueTemporaryFolder = TemporaryFolder();
