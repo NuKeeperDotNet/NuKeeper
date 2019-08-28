@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NuGet.Credentials;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
@@ -43,6 +44,8 @@ namespace NuKeeper.Local
 
         public async Task Run(SettingsContainer settings, bool write)
         {
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(new NuGet.Common.NullLogger(), true);
+
             var folder = TargetFolder(settings.UserSettings);
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
