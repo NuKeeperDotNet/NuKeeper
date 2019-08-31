@@ -251,6 +251,29 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
+        public void ThreePackagesShouldBeReadByCentralPackagesFileBeRead()
+        {
+            var temp = Path.Combine(_uniqueTemporaryFolder.FullPath, Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".props");
+            File.WriteAllText(temp, PackagesFileWithTwoPackages);
+            var PackagesFileWithImport = $@"<Project>
+<PropertyGroup>
+<CentralPackagesFile>{Path.GetRelativePath(_uniqueTemporaryFolder.FullPath, temp)}</CentralPackagesFile>
+</PropertyGroup>
+</Project>";
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(PackagesFileWithImport), TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(2));
+
+            Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+
+            Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+        }
+
+        [Test]
         public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
         {
             var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);

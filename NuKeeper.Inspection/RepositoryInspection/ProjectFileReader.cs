@@ -59,21 +59,16 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Array.Empty<PackageInProject>();
             }
 
-            var importNodes = project.Elements("Import");
-            foreach (var import in importNodes)
+            var imports = MsBuildExtensions.ExtractImports(project, Path.GetDirectoryName(path.RelativePath));
+            foreach (var importPath in imports)
             {
-                var projectAttribute = import.Attribute("Project");
-                if (projectAttribute == null) continue;
-                var importPath = projectAttribute.Value
-                    .Replace("$(MSBuildThisFileDirectory)", "")
-                    .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
                 try
                 {
                     results.AddRange(_directoryBuildTargetsReader.ReadFile(path.BaseDirectory, importPath));
                 }
                 catch (NuKeeperException)
                 {
-                    _logger.Detailed($"Unable to handle path for importPath {importPath}");
+                    _logger.Detailed($"Unable to handle path for importPath {importPath} with base directory {baseDirectory} {relativePath}");
                 }
             }
 
