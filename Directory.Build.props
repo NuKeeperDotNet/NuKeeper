@@ -17,6 +17,6 @@
     <RepositoryUrl>https://github.com/NuKeeperDotNet/NuKeeper.git</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6" PrivateAssets="All" />
   </ItemGroup>
 </Project>
