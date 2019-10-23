@@ -55,7 +55,8 @@ namespace NuKeeper.BitBucketLocal
                 ApiUri = new Uri($"{repositoryUri.Scheme}://{repositoryUri.Authority}"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = project
+                RepositoryOwner = project,
+                RemoteInfo = targetBranch != null ? new RemoteInfo { BranchName = targetBranch } : null
             });
         }
 
