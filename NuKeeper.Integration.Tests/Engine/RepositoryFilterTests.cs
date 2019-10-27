@@ -33,7 +33,7 @@ namespace NuKeeper.Integration.Tests.Engine
             IRepositoryFilter subject = MakeRepositoryFilter();
 
             var result =
-                await subject.ContainsDotNetProjects(new RepositorySettings { RepositoryName = "cli", RepositoryOwner = "dotnet" });
+                await subject.ContainsDotNetProjects(new RepositorySettings { RepositoryName = "sdk", RepositoryOwner = "dotnet" });
             Assert.True(result);
         }
 
