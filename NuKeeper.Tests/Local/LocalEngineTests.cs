@@ -90,10 +90,12 @@ namespace NuKeeper.Tests.Local
 
             var logger = Substitute.For<INuKeeperLogger>();
 
-            var reporter = Substitute.For<IReporter>();
+            var nugetLogger = Substitute.For<NuGet.Common.ILogger>();
 
+            var reporter = Substitute.For<IReporter>();
+            
             var engine = new LocalEngine(reader, finder, sorter, updater,
-                reporter, logger);
+                reporter, logger, nugetLogger);
             Assert.That(engine, Is.Not.Null);
             return engine;
         }

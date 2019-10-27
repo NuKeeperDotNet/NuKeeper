@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NuGet.Common;
 using NuGet.Credentials;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
@@ -25,6 +26,7 @@ namespace NuKeeper.Local
         private readonly ILocalUpdater _updater;
         private readonly IReporter _reporter;
         private readonly INuKeeperLogger _logger;
+        private readonly ILogger _nugetLogger;
 
         public LocalEngine(
             INuGetSourcesReader nuGetSourcesReader,
@@ -32,7 +34,8 @@ namespace NuKeeper.Local
             IPackageUpdateSetSort sorter,
             ILocalUpdater updater,
             IReporter reporter,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            ILogger nugetLogger)
         {
             _nuGetSourcesReader = nuGetSourcesReader;
             _updateFinder = updateFinder;
@@ -40,11 +43,12 @@ namespace NuKeeper.Local
             _updater = updater;
             _reporter = reporter;
             _logger = logger;
+            _nugetLogger = nugetLogger;
         }
 
         public async Task Run(SettingsContainer settings, bool write)
         {
-            DefaultCredentialServiceUtility.SetupDefaultCredentialService(new NuGet.Common.NullLogger(), true);
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
 
             var folder = TargetFolder(settings.UserSettings);
 
