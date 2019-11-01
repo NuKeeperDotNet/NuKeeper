@@ -51,7 +51,8 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Array.Empty<PackageInProject>();
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference");
+            var packageNodeList = packagesNode.Elements("PackageReference")
+                .Concat(packagesNode.Elements("PackageDownload"));
 
             return packageNodeList
                 .Select(el => XmlToPackage(el, path))
@@ -66,7 +67,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 id = el.Attribute("Update")?.Value;
             }
-            var version = el.Attribute("Version")?.Value;
+            var version = (el.Attribute("Version")?.Value ?? el.Element("Version")?.Value)?.Trim('[', ']');
 
             return _packageInProjectReader.Read(id, version, path, null);
         }

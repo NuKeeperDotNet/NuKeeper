@@ -64,12 +64,24 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .Select(el => MakeProjectPath(el, path.FullName))
                 .ToList();
 
-            var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
+            var results = new List<PackageInProject>();
 
-            return packageRefs
+            var packageRefs = itemGroups
+                .SelectMany(ig => ig.Elements(ns + "PackageReference"));
+
+            var packageDownloads = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageDownload"));
+
+            results.AddRange(packageRefs
                 .Select(el => XmlToPackage(ns, el, path, projectRefs))
-                .Where(el => el != null)
-                .ToList();
+                .Where(el => el != null));
+
+            foreach (var packageDownload in packageDownloads)
+            {
+                var refPath = new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets);
+                results.Add(XmlToPackage(ns, packageDownload, refPath, null));
+            }
+
+            return results;
         }
 
         private static string MakeProjectPath(XElement el, string currentPath)
@@ -94,7 +106,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             PackagePath path, IEnumerable<string> projectReferences)
         {
             var id = el.Attribute("Include")?.Value;
-            var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
+            var version = (el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value)?.Trim('[', ']');
 
             return _packageInProjectReader.Read(id, version, path, projectReferences);
         }

@@ -46,16 +46,28 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference")
+            var packageReferenceList = packagesNode.Elements("PackageReference")
                 .Where(x =>
                     (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
-                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id,StringComparison.InvariantCultureIgnoreCase))));
+                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))));
 
-            foreach (var dependencyToUpdate in packageNodeList)
+            foreach (var dependencyToUpdate in packageReferenceList)
             {
                 _logger.Detailed(
                     $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
                 dependencyToUpdate.Attribute("Version").Value = newVersion.ToString();
+            }
+
+            var packageDownloadList = packagesNode.Elements("PackageDownload")
+                .Where(x =>
+                    (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
+                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))));
+
+            foreach (var dependencyToUpdate in packageDownloadList)
+            {
+                _logger.Detailed(
+                    $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
+                dependencyToUpdate.Attribute("Version").Value = $"[{newVersion}]";
             }
 
             xml.Save(fileContents);

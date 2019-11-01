@@ -14,12 +14,19 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
     [TestFixture]
     public class DirectoryBuildTargetsReaderTests
     {
-        const string PackagesFileWithSinglePackage =
+        const string DirectoryBuildTargetsWithSinglePackageReference =
             @"<Project><ItemGroup><PackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
 
-        private const string PackagesFileWithTwoPackages = @"<Project><ItemGroup>
+        private const string DirectoryBuildTargetsWithTwoPackageReferences = @"<Project><ItemGroup>
 <PackageReference Include=""foo"" Version=""1.2.3.4"" />
 <PackageReference Update=""bar"" Version=""2.3.4.5"" /></ItemGroup></Project>";
+
+        const string DirectoryBuildTargetsWithSinglePackageDownload =
+            @"<Project><ItemGroup><PackageDownload Include=""foo"" Version=""[1.2.3.4]"" /></ItemGroup></Project>";
+
+        private const string DirectoryBuildTargetsWithTwoPackageDownloads = @"<Project><ItemGroup>
+<PackageDownload Include=""foo"" Version=""[1.2.3.4]"" />
+<PackageDownload Update=""bar"" Version=""[2.3.4.5]"" /></ItemGroup></Project>";
 
         [Test]
         public void EmptyPackagesListShouldBeParsed()
@@ -35,30 +42,30 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void SinglePackageShouldBeRead()
+        public void SinglePackageReferenceShouldBeRead()
         {
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageReference), TempPath());
 
             Assert.That(packages, Is.Not.Null);
             Assert.That(packages, Is.Not.Empty);
         }
 
         [Test]
-        public void SinglePackageShouldBePopulated()
+        public void SinglePackageReferenceShouldBePopulated()
         {
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageReference), TempPath());
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);
         }
 
         [Test]
-        public void SinglePackageShouldBeCorrect()
+        public void SinglePackageReferenceShouldBeCorrect()
         {
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageReference), TempPath());
 
             var package = packages.FirstOrDefault();
 
@@ -69,10 +76,10 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void TwoPackagesShouldBePopulated()
+        public void TwoPackageReferencesShouldBePopulated()
         {
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), TempPath())
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageReferences), TempPath())
                 .ToList();
 
             Assert.That(packages, Is.Not.Null);
@@ -83,10 +90,10 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void TwoPackagesShouldBeRead()
+        public void TwoPackageReferencesShouldBeRead()
         {
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), TempPath())
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageReferences), TempPath())
                 .ToList();
 
             Assert.That(packages.Count, Is.EqualTo(2));
@@ -99,12 +106,12 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void ResultIsReiterable()
+        public void PackageReferenceResultShouldBeReiterable()
         {
             var path = TempPath();
 
             var reader = MakeReader();
-            var packages = reader.Read(StreamFromString(PackagesFileWithTwoPackages), path);
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageReferences), path);
 
             foreach (var package in packages)
             {
@@ -115,9 +122,102 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         }
 
         [Test]
-        public void WhenOnePackageCannotBeRead_TheOthersAreStillRead()
+        public void WhenOnePackageCannotBeRead_TheOthersAreStillRead_WithPackageReference()
         {
-            var badVersion = PackagesFileWithTwoPackages.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);
+            var badVersion = DirectoryBuildTargetsWithTwoPackageReferences.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(badVersion), TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(1));
+            PackageAssert.IsPopulated(packages[0]);
+        }
+
+        [Test]
+        public void SinglePackageDownloadShouldBeRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageDownload), TempPath());
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages, Is.Not.Empty);
+        }
+
+        [Test]
+        public void SinglePackageDownloadShouldBePopulated()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageDownload), TempPath());
+
+            var package = packages.FirstOrDefault();
+            PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
+        public void SinglePackageDownloadShouldBeCorrect()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithSinglePackageDownload), TempPath());
+
+            var package = packages.FirstOrDefault();
+
+            Assert.That(package, Is.Not.Null);
+            Assert.That(package.Id, Is.EqualTo("foo"));
+            Assert.That(package.Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+            Assert.That(package.Path.PackageReferenceType, Is.EqualTo(PackageReferenceType.DirectoryBuildTargets));
+        }
+
+        [Test]
+        public void TwoPackageDownloadsShouldBePopulated()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageDownloads), TempPath())
+                .ToList();
+
+            Assert.That(packages, Is.Not.Null);
+            Assert.That(packages.Count, Is.EqualTo(2));
+
+            PackageAssert.IsPopulated(packages[0]);
+            PackageAssert.IsPopulated(packages[1]);
+        }
+
+        [Test]
+        public void TwoPackageDownloadsShouldBeRead()
+        {
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageDownloads), TempPath())
+                .ToList();
+
+            Assert.That(packages.Count, Is.EqualTo(2));
+
+            Assert.That(packages[0].Id, Is.EqualTo("foo"));
+            Assert.That(packages[0].Version, Is.EqualTo(new NuGetVersion("1.2.3.4")));
+
+            Assert.That(packages[1].Id, Is.EqualTo("bar"));
+            Assert.That(packages[1].Version, Is.EqualTo(new NuGetVersion("2.3.4.5")));
+        }
+
+        [Test]
+        public void PackageDownloadResultShouldBeReiterable()
+        {
+            var path = TempPath();
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(DirectoryBuildTargetsWithTwoPackageDownloads), path);
+
+            foreach (var package in packages)
+            {
+                PackageAssert.IsPopulated(package);
+            }
+
+            Assert.That(packages.Select(p => p.Path), Is.All.EqualTo(path));
+        }
+
+        [Test]
+        public void WhenOnePackageCannotBeRead_TheOthersAreStillRead_WithPackageDownload()
+        {
+            var badVersion = DirectoryBuildTargetsWithTwoPackageDownloads.Replace("1.2.3.4", "notaversion", StringComparison.OrdinalIgnoreCase);
 
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(badVersion), TempPath())
