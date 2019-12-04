@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace NuKeeper.Gitlab.Model
@@ -23,6 +24,6 @@ namespace NuKeeper.Gitlab.Model
         public bool RemoveSourceBranch { get; set; }
 
         [JsonProperty("labels")]
-        public string Labels { get; set; }
+        public IList<string> Labels { get; set; }
     }
 }
