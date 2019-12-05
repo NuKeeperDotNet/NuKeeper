@@ -34,11 +34,11 @@ namespace NuKeeper.BitBucket
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -72,7 +72,8 @@ namespace NuKeeper.BitBucket
                 ApiUri = new Uri("https://api.bitbucket.org/2.0/"),
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
-                RepositoryOwner = owner
+                RepositoryOwner = owner,
+                RemoteInfo = targetBranch != null ? new RemoteInfo { BranchName = targetBranch } : null
             });
         }
     }

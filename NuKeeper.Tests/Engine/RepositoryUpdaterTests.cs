@@ -79,11 +79,11 @@ namespace NuKeeper.Tests.Engine
         [TestCase(1, 0, true, false, 1, 1)]
         [TestCase(2, 0, true, false, 2, 1)]
         [TestCase(3, 0, true, false, 3, 1)]
-        [TestCase(1, 1, true, false, 0, 1)]
+        [TestCase(1, 1, true, false, 0, 0)]
         [TestCase(2, 1, true, false, 1, 1)]
         [TestCase(3, 1, true, false, 2, 1)]
         [TestCase(1, 0, false, false, 1, 1)]
-        [TestCase(1, 1, false, false, 0, 1)]
+        [TestCase(1, 1, false, false, 0, 0)]
 
         public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, int existingCommitsPerBranch, bool consolidateUpdates, bool pullRequestExists, int expectedUpdates, int expectedPrs)
         {

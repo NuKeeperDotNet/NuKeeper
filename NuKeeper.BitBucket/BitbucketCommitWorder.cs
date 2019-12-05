@@ -8,15 +8,11 @@ using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.RepositoryInspection;
 
-namespace NuKeeper.AzureDevOps
+namespace NuKeeper.BitBucket
 {
-    public class AzureDevOpsCommitWorder : ICommitWorder
+    public class BitbucketCommitWorder : ICommitWorder
     {
         private const string CommitEmoji = "📦";
-    
-        // Azure DevOps allows a maximum of 4000 characters to be used in a pull request description:
-        // https://visualstudio.uservoice.com/forums/330519-azure-devops-formerly-visual-studio-team-services/suggestions/20217283-raise-the-character-limit-for-pull-request-descrip
-        private const int MaxCharacterCount = 4000;
 
         public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
@@ -25,17 +21,17 @@ namespace NuKeeper.AzureDevOps
                 return PackageTitle(updates.First());
             }
 
-            return $"{CommitEmoji} Automatic update of {updates.Count} packages";
+            return $"Automatic update of {updates.Count} packages";
         }
 
         private static string PackageTitle(PackageUpdateSet updates)
         {
-            return $"{CommitEmoji} Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
+            return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
         public string MakeCommitMessage(PackageUpdateSet updates)
         {
-            return $"{PackageTitle(updates)}";
+            return $":{CommitEmoji}: {PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
@@ -44,7 +40,7 @@ namespace NuKeeper.AzureDevOps
 
             if (updates.Count > 1)
             {
-                MultiPackage(updates, builder);
+                MultiPackagePrefix(updates, builder);
             }
 
             foreach (var update in updates)
@@ -54,19 +50,14 @@ namespace NuKeeper.AzureDevOps
 
             AddCommitFooter(builder);
 
-            if (builder.Length > MaxCharacterCount)
-            {
-                // Strip end of commit details since Azure DevOps can't handle a bigger pull request description.
-                return $"{builder.ToString(0, MaxCharacterCount - 3)}...";
-            }
-
             return builder.ToString();
         }
 
-        private static void MultiPackage(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
+        private static void MultiPackagePrefix(IReadOnlyCollection<PackageUpdateSet> updates, StringBuilder builder)
         {
             var packageNames = updates
-                .Select(p => p.SelectedId);
+                .Select(p => CodeQuote(p.SelectedId))
+                .JoinWithCommas();
 
             var projects = updates.SelectMany(
                     u => u.CurrentPackages)
@@ -77,15 +68,9 @@ namespace NuKeeper.AzureDevOps
             var projectOptS = (projects.Count > 1) ? "s" : string.Empty;
 
             builder.AppendLine($"{updates.Count} packages were updated in {projects.Count} project{projectOptS}:");
-            string updatedPackageNames = "|";
-            foreach (var packageName in packageNames)
-            {
-                updatedPackageNames += $" {packageName} |";
-            }
-
-            builder.AppendLine(updatedPackageNames);
+            builder.AppendLine(packageNames);
             builder.AppendLine("");
-            builder.AppendLine("## Details of updated packages");
+            builder.AppendLine("**Details of updated packages**");
             builder.AppendLine("");
         }
 
@@ -137,25 +122,24 @@ namespace NuKeeper.AzureDevOps
 
             builder.AppendLine();
 
-            var updateOptS = (updates.CurrentPackages.Count > 1) ? "s" : string.Empty;
-            builder.AppendLine($"### {updates.CurrentPackages.Count} project update{updateOptS}:");
-
-            builder.AppendLine("| Project   | Package   | From   | To   |");
-            builder.AppendLine("|:----------|:----------|-------:|-----:|");
+            if (updates.CurrentPackages.Count == 1)
+            {
+                builder.AppendLine("1 project update:");
+            }
+            else
+            {
+                builder.AppendLine($"{updates.CurrentPackages.Count} project updates:");
+            }
 
             foreach (var current in updates.CurrentPackages)
             {
-                string line;
-                if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
-                {
-                    line = $"| {CodeQuote(current.Path.RelativePath)} | {CodeQuote(updates.SelectedId)} | {NuGetVersionPackageLink(current.Identity)} | {NuGetVersionPackageLink(updates.Selected.Identity)} |";
-                    builder.AppendLine(line);
-
-                    continue;
-                }
-
-                line = $"| {CodeQuote(current.Path.RelativePath)} | {CodeQuote(updates.SelectedId)} | {current.Version.ToString()} | {updates.SelectedVersion.ToString()} |";
+                var line = $"Updated {CodeQuote(current.Path.RelativePath)} to {packageId} {CodeQuote(updates.SelectedVersion.ToString())} from {CodeQuote(current.Version.ToString())}";
                 builder.AppendLine(line);
+            }
+
+            if (SourceIsPublicNuget(updates.Selected.Source.SourceUri))
+            {
+                builder.AppendLine(NugetPackageLink(updates.Selected.Identity));
             }
 
             return builder.ToString();
@@ -163,6 +147,7 @@ namespace NuKeeper.AzureDevOps
 
         private static void AddCommitFooter(StringBuilder builder)
         {
+            builder.AppendLine();
             builder.AppendLine("This is an automated update. Merge only if it passes tests");
             builder.AppendLine("**NuKeeper**: https://github.com/NuKeeperDotNet/NuKeeper");
         }
@@ -196,6 +181,7 @@ namespace NuKeeper.AzureDevOps
         {
             var allowedChange = CodeQuote(updates.AllowedChange.ToString());
             var highest = CodeQuote(updates.SelectedId + " " + highestVersion);
+
             var highestPublishedAt = HighestPublishedAt(updates.Packages.Major.Published);
 
             builder.AppendLine(
@@ -229,10 +215,10 @@ namespace NuKeeper.AzureDevOps
                 sourceUrl.ToString().StartsWith("https://api.nuget.org/", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static string NuGetVersionPackageLink(PackageIdentity package)
+        private static string NugetPackageLink(PackageIdentity package)
         {
             var url = $"https://www.nuget.org/packages/{package.Id}/{package.Version}";
-            return $"[{package.Version}]({url})";
+            return $"[{package.Id} {package.Version} on NuGet.org]({url})";
         }
     }
 }

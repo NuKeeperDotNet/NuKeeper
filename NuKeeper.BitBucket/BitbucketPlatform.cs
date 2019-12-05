@@ -36,7 +36,7 @@ namespace NuKeeper.BitBucket
 
         public Task<User> GetCurrentUser()
         {
-            return Task.FromResult(new User(_settings.Username, "", ""));
+            return Task.FromResult(new User(_settings.Username, _settings.Username, _settings.Username));
         }
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)

@@ -28,11 +28,11 @@ namespace NuKeeper.BitBucketLocal
                    repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -44,7 +44,7 @@ namespace NuKeeper.BitBucketLocal
 
             if (pathParts.Count < 2)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var repoName = pathParts[pathParts.Count - 1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);

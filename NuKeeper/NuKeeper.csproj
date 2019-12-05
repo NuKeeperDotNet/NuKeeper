@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -11,11 +11,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.0.2">
+    <PackageReference Include="NuGet.CommandLine" Version="5.2.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="SimpleInjector" Version="4.6.0" />
+    <PackageReference Include="SimpleInjector" Version="4.7.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
@@ -35,7 +35,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\nuget.commandline\5.0.2\tools\NuGet.exe">
+    <Content Include="$(NuGetPackageRoot)\nuget.commandline\5.2.0\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\netcoreapp2.1\any\NuGet.exe</PackagePath>
     </Content>

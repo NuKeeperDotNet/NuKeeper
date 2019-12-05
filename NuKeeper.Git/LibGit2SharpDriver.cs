@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using LibGit2Sharp;
@@ -97,10 +98,7 @@ namespace NuKeeper.Git
                     if (BranchExists(branchName))
                     {
                         _logger.Normal($"Git checkout local branch '{branchName}'");
-                        // Some files are automatically generated in /obj folder.
-                        // If there is no .gitignore there will be conflicts because of this and you cannot change branches
-                        // CheckoutModifiers.Force makes that all changes are ignored.
-                        GitCommands.Checkout(repo, repo.Branches[branchName], new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
+                        GitCommands.Checkout(repo, repo.Branches[branchName]);
                     }
                     else
                     {
@@ -275,7 +273,7 @@ namespace NuKeeper.Git
             return new Identity(user.Name, user.Email);
         }
 
-        public Task<IEnumerable<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)
+        public Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)
         {
             return Task.Run(() =>
             {
@@ -301,8 +299,7 @@ namespace NuKeeper.Git
                         ExcludeReachableFrom = baseBranch,
                         IncludeReachableFrom = headBranch
                     };
-
-                    return repo.Commits.QueryBy(filter).Select(c => c.MessageShort);
+                    return (IReadOnlyCollection<string>)repo.Commits.QueryBy(filter).Select(c => c.MessageShort.TrimEnd(new[] { '\r', '\n' })).ToList().AsReadOnly();
                 }
             });
         }

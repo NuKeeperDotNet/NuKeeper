@@ -4,6 +4,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Inspection.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Collaboration;
 using System.Threading.Tasks;
@@ -46,23 +47,14 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Bad repository URI: '{RepositoryUri}'");
             }
 
-            var didRead = false;
-            foreach (var reader in _settingsReaders)
-            {
-                if (didRead) continue;
+            ISettingsReader reader = await TryGetSettingsReader(repoUri, Platform);
 
-                if (await reader.CanRead(repoUri))
-                {
-                    didRead = true;
-                    settings.SourceControlServerSettings.Repository =
-                        await reader.RepositorySettings(repoUri, TargetBranch);
-                }
-            }
-
-            if (!didRead)
+            if (reader == null)
             {
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
+
+            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, TargetBranch);
 
             var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)
@@ -78,6 +70,26 @@ namespace NuKeeper.Commands
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             settings.UserSettings.MaxRepositoriesChanged = 1;
             return ValidationResult.Success;
+        }
+
+        private async Task<ISettingsReader> TryGetSettingsReader(Uri repoUri, Platform? platform)
+        {
+            // If the platform was specified explicitly, get the reader by platform.
+            if (platform.HasValue)
+            {
+                return _settingsReaders.Single(s => s.Platform == Platform);
+            }
+
+            // Otherwise, use the Uri to guess which platform to use.
+            foreach (var reader in _settingsReaders)
+            {
+                if (await reader.CanRead(repoUri))
+                {
+                    return reader;
+                }
+            }
+
+            return null;
         }
     }
 }
