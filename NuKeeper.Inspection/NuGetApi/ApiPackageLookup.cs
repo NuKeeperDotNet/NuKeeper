@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuKeeper.Abstractions;
@@ -31,6 +32,10 @@ namespace NuKeeper.Inspection.NuGetApi
             var includePrerelease = ShouldAllowPrerelease(package, usePrerelease);
 
             var foundVersions = await _packageVersionsLookup.Lookup(package.Id, includePrerelease, sources);
+
+            if (!foundVersions.Any())
+                throw new NuKeeperException($"Could not find package {package} in these sources: {sources}");
+
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
 

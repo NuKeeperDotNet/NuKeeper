@@ -1,4 +1,5 @@
 using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Abstractions;
 using NuKeeper.Commands;
 using System;
 using System.Reflection;
@@ -38,6 +39,11 @@ namespace NuKeeper
             {
                 Console.WriteLine(cpe.Message);
                 return (int)ExitCodes.InvalidArguments;
+            }
+            catch (NuKeeperException nke)
+            {
+                 Console.WriteLine(nke.Message);
+                 return (int)ExitCodes.OtherError;
             }
             catch (Exception ex)
             {
