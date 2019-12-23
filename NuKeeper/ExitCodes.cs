@@ -6,7 +6,7 @@ namespace NuKeeper
     enum ExitCodes
     {
         Success = 0,
-        UnknownError = 1 << 1,
-        InvalidArguments = 1 << 2,
+        UnknownError = 1 << 0,
+        InvalidArguments = 1 << 1,
     }
 }
