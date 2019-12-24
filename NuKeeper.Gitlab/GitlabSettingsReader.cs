@@ -57,7 +57,7 @@ namespace NuKeeper.Gitlab
             }
 
             var repoOwner = pathParts[0];
-            var repoName = pathParts[pathParts.Count].Replace(".git", string.Empty);
+            var repoName = pathParts[pathParts.Count - 1].Replace(".git", string.Empty);
 
             var uriBuilder = new UriBuilder(repositoryUri) { Path = "/api/v4/" };
 
