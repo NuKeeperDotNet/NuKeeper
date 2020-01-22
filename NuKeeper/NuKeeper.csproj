@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <PackageId>nukeeper</PackageId>
@@ -35,9 +36,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(NuGetPackageRoot)\nuget.commandline\5.2.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.2.0\tools\NuGet.exe">
       <Pack>true</Pack>
-      <PackagePath>tools\netcoreapp2.1\any\NuGet.exe</PackagePath>
-    </Content>
+      <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
+    </TfmSpecificPackageFile>
   </ItemGroup>
 </Project>
