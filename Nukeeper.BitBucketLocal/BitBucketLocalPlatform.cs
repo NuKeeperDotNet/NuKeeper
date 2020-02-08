@@ -88,7 +88,8 @@ namespace NuKeeper.BitBucketLocal
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
+            var fullName = repositoryName.Replace("-", " ");
+            return repos.Single(x => x.Name.Equals(fullName, StringComparison.OrdinalIgnoreCase));
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
