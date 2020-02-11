@@ -16,6 +16,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="NuGet.Credentials" Version="5.2.0" />
     <PackageReference Include="SimpleInjector" Version="4.7.1" />
   </ItemGroup>
   <ItemGroup>
