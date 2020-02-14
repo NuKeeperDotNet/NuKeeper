@@ -100,7 +100,7 @@ namespace NuKeeper.Git
                 return pullEndpoint;
             }
 
-            return new UriBuilder(pullEndpoint) { UserName = gitCredentials.Username, Password = gitCredentials.Password }.Uri;
+            return new UriBuilder(pullEndpoint) { UserName = Uri.EscapeDataString(gitCredentials.Username), Password = gitCredentials.Password }.Uri;
         }
     }
 }
