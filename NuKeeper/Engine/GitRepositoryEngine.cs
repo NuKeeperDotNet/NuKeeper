@@ -74,7 +74,7 @@ namespace NuKeeper.Engine
                 }
                 else
                 {
-                    folder = !string.IsNullOrWhiteSpace(settings.UserSettings.Directory)
+                    folder = !string.IsNullOrWhiteSpace(settings?.UserSettings?.Directory)
                         ? _folderFactory.FolderFromPath(settings.UserSettings.Directory)
                         : _folderFactory.UniqueTemporaryFolder();
                     settings.WorkingFolder = folder;
