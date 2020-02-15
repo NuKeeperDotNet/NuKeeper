@@ -95,7 +95,7 @@ namespace NuKeeper.Git
 
         private Uri CreateCredentialsUri(Uri pullEndpoint, GitUsernamePasswordCredentials gitCredentials)
         {
-            if (_gitCredentials == null)
+            if (_gitCredentials?.Username == null)
             {
                 return pullEndpoint;
             }
