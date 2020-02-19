@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Gitea;
 using NUnit.Framework;
 
@@ -13,12 +14,14 @@ namespace NuKeeper.Gitea.Tests
     {
         private GiteaSettingsReader _giteaSettingsReader;
         private IEnvironmentVariablesProvider _environmentVariablesProvider;
+        private IGitDiscoveryDriver _gitDiscovery;
 
         [SetUp]
         public void Setup()
         {
             _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
-            _giteaSettingsReader = new GiteaSettingsReader(_environmentVariablesProvider);
+            _gitDiscovery = Substitute.For<IGitDiscoveryDriver>();
+            _giteaSettingsReader = new GiteaSettingsReader(_gitDiscovery, _environmentVariablesProvider);
         }
 
         [Test]
