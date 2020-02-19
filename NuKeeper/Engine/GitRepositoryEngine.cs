@@ -62,8 +62,8 @@ namespace NuKeeper.Engine
                 IFolder folder;
                 if (repository.IsLocalRepo)
                 {
-                    folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
-                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
+                    folder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath)));
+                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.WorkingFolder.AbsolutePath)));
                     repositoryData.IsLocalRepo = repository.IsLocalRepo;
 
                     if (!repositoryData.IsFork) //check if we are on a fork. If not on a fork we set the remote to the locally found remote
