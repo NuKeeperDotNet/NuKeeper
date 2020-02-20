@@ -7,6 +7,7 @@ using NuKeeper.Commands;
 [assembly: InternalsVisibleTo("NuKeeper.Tests")]
 
 #pragma warning disable CA1822
+#pragma warning disable CA1031
 
 namespace NuKeeper
 {
@@ -31,12 +32,16 @@ namespace NuKeeper
             try
             {
                 return app.Execute(args);
-
             }
             catch (CommandParsingException cpe)
             {
                 Console.WriteLine(cpe.Message);
-                return -1;
+                return (int)ExitCodes.InvalidArguments;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (int)ExitCodes.UnknownError;
             }
         }
 

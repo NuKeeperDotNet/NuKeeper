@@ -29,7 +29,9 @@ Integration with the following platforms is supported.
 
 NuKeeper has different commands and options which can be utilized. Below you'll find a summary of all the commands and what they do.
 
-```bash
+```
+$ nukeeper -h
+
 Options:
   --version     Show version information
   -?|-h|--help  Show help information

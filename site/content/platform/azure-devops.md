@@ -17,28 +17,36 @@ Azure Devops gives us the option to do it either in editor mode, or in yaml.
 
 #### Yaml
 1. Add a new build pipeline and select yaml.
-1. Add the following **yml** file and adjust where necessary:
+1. Add the following **yaml** file and adjust where necessary:
+    ```yml
+    trigger: none # don't run as CI build
 
-    <pre>
-        <code class="language-yml">resources:
-           - repo: self #point to its own repo, change it if you don't want that
-        pool:
-            name: Hosted VS2017 # can be anything you want
-        steps:
-          - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
-            displayName: NuKeeper</code><span class="copy-to-clipboard" title="Copy to clipboard"></span>
-    </pre>
-    
-1. Optionally add extra arguments, The extension just call the **repo** command, so any arguments extra for your repo command can be added here.
-    <pre>
-    <code class="language-yml">resources:
-        steps:
-        - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
+    schedules:
+    - cron: "0 0 * * *" # run daily at UTC midnight
+      displayName: Check for updated dependencies
+      branches:
+        include:
+        - master
+      always: true # regardless of changes
+
+    resources:
+       - repo: self # point to its own repo, change it if you don't want that
+
+    pool:
+        name: Hosted VS2017 # can be anything you want
+
+    steps:
+      - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
         displayName: NuKeeper
-        inputs:
-            arguments: '-m 3 -v d'</code><span class="copy-to-clipboard" title="Copy to clipboard"></span>
-    </pre>
-1. Go to triggers and click the <i class="fas fa-plus"></i> Add button to add your schedule. [This cannot be done in yml yet.](https://github.com/Microsoft/azure-pipelines-yaml/issues/39)
+    ```    
+1. Optionally add extra arguments, The extension just calls the **repo** command, so any arguments extra for your repo command can be added here.
+    ```yml
+    steps:
+    - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
+    displayName: NuKeeper
+    inputs:
+        arguments: '-m 3 -v d'
+    ```
 1. Finally give the **build service user** the required *[Permissions](#permissions)* and take it for a spin by qeueing a new build!
 
 #### Editor mode
