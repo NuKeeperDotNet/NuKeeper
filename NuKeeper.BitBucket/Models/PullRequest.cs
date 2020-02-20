@@ -1,4 +1,6 @@
-﻿namespace NuKeeper.BitBucket.Models
+using System.Collections.Generic;
+
+namespace NuKeeper.BitBucket.Models
 {
     public class PullRequest
     {
@@ -16,5 +18,6 @@
         public string updated_on { get; set; }
         public object merge_commit { get; set; }
         public int? id { get; set; }
+        public List<PullRequestReviewer> reviewers { get; set; }
     }
 }

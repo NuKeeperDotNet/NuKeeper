@@ -34,9 +34,10 @@ namespace NuKeeper.BitBucket
             _client = new BitbucketRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
-        public Task<User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
-            return Task.FromResult(new User(_settings.Username, _settings.Username, _settings.Username));
+            var user = await _client.GetCurrentUser();
+            return new User(user.username,user.display_name,user.username);
         }
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)

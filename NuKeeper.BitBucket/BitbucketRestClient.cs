@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucket.Models;
+using System.Linq;
 
 namespace NuKeeper.BitBucket
 {
@@ -29,6 +30,11 @@ namespace NuKeeper.BitBucket
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        public async Task<User> GetCurrentUser()
+        {
+            return await GetResourceOrEmpty<User>("user");
         }
 
         private async Task<T> GetResourceOrEmpty<T>(string url)
@@ -73,6 +79,18 @@ namespace NuKeeper.BitBucket
 
         public async Task<PullRequest> CreatePullRequest(PullRequest request, string account, string reponame)
         {
+            //get the default reviewers defined in project to notify about new pull requests
+            var reviewers = await GetResourceOrEmpty<IteratorBasedPage<User>>($"repositories/{account}/{reponame}/default-reviewers");
+
+            if (reviewers.values.Any())
+            {
+                //Bitbucket API doesn't allow to set user as reviewer if this same user
+                //is submiting a pull request
+                var currentUserUUID = (await GetCurrentUser()).uuid;
+                request.reviewers = reviewers.values.Where(r => r.uuid != currentUserUUID)
+                                                    .Select(r => new PullRequestReviewer { uuid = r.uuid }).ToList();
+            }
+
             var response = await _client.PostAsync(($"repositories/{account}/{reponame}/pullrequests"),
                  new StringContent(JsonConvert.SerializeObject(request, Formatting.None, JsonSerializerSettings), Encoding.UTF8, "application/json"));
 
