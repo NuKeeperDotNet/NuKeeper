@@ -145,4 +145,15 @@ namespace NuKeeper.AzureDevOps
         public int count { get; set; }
         public IEnumerable<Label> value { get; set; }
     }
+
+    public class GitItemResource
+    {
+        public int count { get; set; }
+        public IEnumerable<GitItem> value { get; set; }
+    }
+
+    public class GitItem
+    {
+        public string path { get; set; }
+    }
 }
