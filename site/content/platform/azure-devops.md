@@ -6,7 +6,7 @@ title: "Azure Devops"
 NuKeeper supports Azure Devops, VSTS and TFS on premise. The same instruction apply for all these platforms!
 {{% /notice %}}
 
-NuKeeper supports integration with Azure Devops in two ways. One of them is to use the **repo** command and the other one is through the **extension**. The benefit of the extension is that you can make a build pipeline with the extension and schedule your pipeline. This way you can automate your updating flow.
+NuKeeper supports integration with Azure Devops in two ways. One of them is to use the **repo**, **org** or **global** commands and the other one is through the **extension**. The benefit of the extension is that you can make a build pipeline with the extension and schedule your pipeline. This way you can automate your updating flow.
 
 ## Extension
 
@@ -80,6 +80,22 @@ The repo command works for azure-devops & vsts they same as for the other platfo
 
 ```sh
 nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}/" <PAT>
+```
+
+## Organisation command
+
+Use the organisation command to raise multiple pull requests against multiple git repositories within the same Azure DevOps project.
+
+```sh
+nukeeper org project <PAT> --api https://dev.azure.com/myAzureDevOpsorganization
+```
+
+## Global command
+
+Use the global command to update a particular package across your entire Azure DevOps organization.
+
+```sh
+nukeeper global <PAT> --api https://dev.azure.com/myAzureDevOpsorganization --include PackageToUpdate
 ```
 
 ### Additional arguments

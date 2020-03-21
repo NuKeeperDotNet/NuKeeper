@@ -39,7 +39,7 @@ Options:
 Commands:
   global        Performs version checks and generates pull requests for all repositories the provided token can access.
   inspect       Checks projects existing locally for possible updates.
-  org           Performs version checks and generates pull requests for all repositories in a github organisation.
+  org           Performs version checks and generates pull requests for all repositories in a github organisation or an Azure DevOps project.
   repo          Performs version checks and generates pull requests for a single repository.
   update        Applies relevant updates to a local project.
 ```
