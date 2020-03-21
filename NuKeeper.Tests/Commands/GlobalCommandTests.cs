@@ -11,18 +11,20 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NuKeeper.Abstractions.Git;
+using NuKeeper.AzureDevOps;
 
 namespace NuKeeper.Tests.Commands
 {
     [TestFixture]
     public class GlobalCommandTests
     {
-        private static CollaborationFactory GetCollaborationFactory()
+        private static CollaborationFactory GetCollaborationFactory(Func<IGitDiscoveryDriver, IEnvironmentVariablesProvider, ISettingsReader> createSettingsReader)
         {
             var environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
 
             return new CollaborationFactory(
-                new ISettingsReader[] { new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
+                new ISettingsReader[] { createSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>()
             );
         }
@@ -35,7 +37,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = GetCollaborationFactory();
+            var collaborationFactory = GetCollaborationFactory((d, e) => new GitHubSettingsReader(d, e));
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
 
@@ -55,7 +57,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(FileSettings.Empty());
 
-            var collaborationFactory = GetCollaborationFactory();
+            var collaborationFactory = GetCollaborationFactory((d, e) => new GitHubSettingsReader(d, e));
 
             var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
             command.PersonalAccessToken = "testToken";
@@ -71,7 +73,30 @@ namespace NuKeeper.Tests.Commands
         }
 
         [Test]
-        public async Task ShouldPopulateGithubSettings()
+        public async Task ShouldCallEngineAndSucceedWithRequiredAzureDevOpsParams()
+        {
+            var engine = Substitute.For<ICollaborationEngine>();
+            var logger = Substitute.For<IConfigureLogger>();
+            var fileSettings = Substitute.For<IFileSettingsCache>();
+            fileSettings.GetSettings().Returns(FileSettings.Empty());
+
+            var collaborationFactory = GetCollaborationFactory((d, e) => new AzureDevOpsSettingsReader(d, e));
+
+            var command = new GlobalCommand(engine, logger, fileSettings, collaborationFactory);
+            command.PersonalAccessToken = "testToken";
+            command.Include = "testRepos";
+            command.ApiEndpoint = "https://dev.azure.com/org";
+
+            var status = await command.OnExecute();
+
+            Assert.That(status, Is.EqualTo(0));
+            await engine
+                .Received(1)
+                .Run(Arg.Any<SettingsContainer>());
+        }
+
+        [Test]
+        public async Task ShouldPopulateSettings()
         {
             var fileSettings = FileSettings.Empty();
 
@@ -241,7 +266,7 @@ namespace NuKeeper.Tests.Commands
             var fileSettings = Substitute.For<IFileSettingsCache>();
             fileSettings.GetSettings().Returns(settingsIn);
 
-            var collaborationFactory = GetCollaborationFactory();
+            var collaborationFactory = GetCollaborationFactory((d, e) => new GitHubSettingsReader(d, e));
 
             SettingsContainer settingsOut = null;
             var engine = Substitute.For<ICollaborationEngine>();

@@ -134,7 +134,7 @@ namespace NuKeeper.Collaboration
             {
                 case Platform.AzureDevOps:
                     CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
-                    RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger, Settings.Token);
+                    RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings.Token);
                     ForkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
 
                     // We go for the specific platform version of ICommitWorder
