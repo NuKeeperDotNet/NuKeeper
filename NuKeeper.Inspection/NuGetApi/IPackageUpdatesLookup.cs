@@ -13,5 +13,13 @@ namespace NuKeeper.Inspection.NuGetApi
             NuGetSources sources,
             VersionChange allowedChange,
             UsePrerelease usePrerelease);
+
+        Task<IReadOnlyCollection<PackageUpdateSet>> FindDowngradeForPackages(
+            IReadOnlyCollection<PackageInProject> packages,
+            NuGetSources sources,
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease); 
+
     }
+
 }

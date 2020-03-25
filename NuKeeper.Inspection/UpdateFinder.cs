@@ -63,6 +63,30 @@ namespace NuKeeper.Inspection
             return updates;
         }
 
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageDowngradeSets(
+            IFolder workingFolder,
+            NuGetSources sources,
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease,
+            Regex includes = null,
+            Regex excludes = null)
+        {
+            var packages = FindPackages(workingFolder);
+
+            _logger.Normal($"Found {packages.Count} packages");
+
+            var filtered = FilteredByIncludeExclude(packages, includes, excludes);
+
+            _logger.Log(PackagesFoundLogger.Log(filtered));
+
+            // look for updates to these packages
+            var updates = await _packageUpdatesLookup.FindDowngradeForPackages(
+                filtered, sources, allowedChange, usePrerelease);
+
+            _logger.Log(UpdatesLogger.Log(updates));
+            return updates;
+        }
+
 
         private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
         {

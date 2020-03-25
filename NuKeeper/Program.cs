@@ -20,6 +20,7 @@ namespace NuKeeper
     [Subcommand(typeof(RepositoryCommand))]
     [Subcommand(typeof(OrganisationCommand))]
     [Subcommand(typeof(GlobalCommand))]
+    [Subcommand(typeof(DowngradeCommand))]
     public class Program
     {
         public static int Main(string[] args)

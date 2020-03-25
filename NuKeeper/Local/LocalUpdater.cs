@@ -99,7 +99,7 @@ namespace NuKeeper.Local
 
             foreach (var update in updates)
             {
-                _logger.Minimal("Downgrading " + Description.ForUpdateSet(update));
+                _logger.Minimal("Downgrading " + Description.ForDowngradeSet(update));
 
                 await _updateRunner.Downgrade(update, sources);
             }

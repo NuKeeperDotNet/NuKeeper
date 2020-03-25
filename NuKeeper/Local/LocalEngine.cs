@@ -78,7 +78,7 @@ namespace NuKeeper.Local
 
             var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
 
-            var sortedUpdates = await GetSortedUpdates(
+            var sortedUpdates = await GetSortedDowngrades(
                 folder,
                 sources,
                 settings.UserSettings.AllowedChange,
@@ -103,6 +103,21 @@ namespace NuKeeper.Local
             Regex excludes)
         {
             var updates = await _updateFinder.FindPackageUpdateSets(
+                folder, sources, allowedChange, usePrerelease, includes, excludes);
+
+            return _sorter.Sort(updates)
+                .ToList();
+        }
+
+        private async Task<IReadOnlyCollection<PackageUpdateSet>> GetSortedDowngrades(
+            IFolder folder,
+            NuGetSources sources,
+            VersionChange allowedChange,
+            UsePrerelease usePrerelease,
+            Regex includes,
+            Regex excludes)
+        {
+            var updates = await _updateFinder.FindPackageDowngradeSets(
                 folder, sources, allowedChange, usePrerelease, includes, excludes);
 
             return _sorter.Sort(updates)
