@@ -7,5 +7,7 @@ namespace NuKeeper.Update
     public interface IUpdateRunner
     {
         Task Update(PackageUpdateSet updateSet, NuGetSources sources);
+
+        Task Downgrade(PackageUpdateSet updateSet, NuGetSources sources);
     }
 }

@@ -56,6 +56,31 @@ namespace NuKeeper.Local
             await ApplyUpdates(filtered, workingFolder, sources);
         }
 
+
+        public async Task ApplyDowngrades(
+            IReadOnlyCollection<PackageUpdateSet> updates,
+            IFolder workingFolder,
+            NuGetSources sources,
+
+            SettingsContainer settings)
+        {
+            if (!updates.Any())
+            {
+                return;
+            }
+
+            var filtered = await _selection
+                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
+
+            if (!filtered.Any())
+            {
+                _logger.Detailed("All updates were filtered out");
+                return;
+            }
+
+            await ApplyDowngrades(filtered, workingFolder, sources);
+        }
+
         private async Task ApplyUpdates(IReadOnlyCollection<PackageUpdateSet> updates, IFolder workingFolder, NuGetSources sources)
         {
             await _solutionsRestore.CheckRestore(updates, workingFolder, sources);
@@ -65,6 +90,18 @@ namespace NuKeeper.Local
                 _logger.Minimal("Updating " + Description.ForUpdateSet(update));
 
                 await _updateRunner.Update(update, sources);
+            }
+        }
+
+        private async Task ApplyDowngrades(IReadOnlyCollection<PackageUpdateSet> updates, IFolder workingFolder, NuGetSources sources)
+        {
+            await _solutionsRestore.CheckRestore(updates, workingFolder, sources);
+
+            foreach (var update in updates)
+            {
+                _logger.Minimal("Downgrading " + Description.ForUpdateSet(update));
+
+                await _updateRunner.Downgrade(update, sources);
             }
         }
     }

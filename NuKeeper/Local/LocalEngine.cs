@@ -70,6 +70,30 @@ namespace NuKeeper.Local
             }
         }
 
+        public async Task RunDowngrade(SettingsContainer settings, bool write)
+        {
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
+
+            var folder = TargetFolder(settings.UserSettings);
+
+            var sources = _nuGetSourcesReader.Read(folder, settings.UserSettings.NuGetSources);
+
+            var sortedUpdates = await GetSortedUpdates(
+                folder,
+                sources,
+                settings.UserSettings.AllowedChange,
+                settings.UserSettings.UsePrerelease,
+                settings.PackageFilters?.Includes,
+                settings.PackageFilters?.Excludes);
+
+            Report(settings.UserSettings, sortedUpdates);
+
+            if (write)
+            {
+                await _updater.ApplyDowngrades(sortedUpdates, folder, sources, settings);
+            }
+        }
+
         private async Task<IReadOnlyCollection<PackageUpdateSet>> GetSortedUpdates(
             IFolder folder,
             NuGetSources sources,

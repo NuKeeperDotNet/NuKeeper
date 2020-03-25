@@ -56,6 +56,24 @@ namespace NuKeeper.Update
             }
         }
 
+        public async Task Downgrade(PackageUpdateSet updateSet, NuGetSources sources)
+        {
+            var sortedUpdates = Sort(updateSet.CurrentPackages);
+
+            _logger.Detailed($"Downgrading '{updateSet.SelectedVersion}' to {updateSet.SelectedId} in {sortedUpdates.Count} projects");
+
+            foreach (var current in sortedUpdates)
+            {
+                var updateCommands = GetUpdateCommands(current.Path.PackageReferenceType);
+                foreach (var updateCommand in updateCommands)
+                {
+                    await updateCommand.Invoke(current,
+                        updateSet.SelectedVersion, updateSet.Selected.Source,
+                        sources);
+                }
+            }
+        }
+
         private IReadOnlyCollection<PackageInProject> Sort(IReadOnlyCollection<PackageInProject> packages)
         {
             var sorter = new PackageInProjectTopologicalSort(_logger);

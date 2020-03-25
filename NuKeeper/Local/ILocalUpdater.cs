@@ -14,5 +14,11 @@ namespace NuKeeper.Local
             IFolder workingFolder,
             NuGetSources sources,
             SettingsContainer settings);
+
+        Task ApplyDowngrades(
+            IReadOnlyCollection<PackageUpdateSet> updates,
+            IFolder workingFolder,
+            NuGetSources sources,
+            SettingsContainer settings);
     }
 }
