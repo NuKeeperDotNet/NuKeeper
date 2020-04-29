@@ -49,7 +49,7 @@ namespace NuKeeper.Update.Process
 
             if (result.IndexOf(" ", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return Uri.EscapeUriString(result);
+                return "\"" + result + "\"";
             }
 
             return result;
