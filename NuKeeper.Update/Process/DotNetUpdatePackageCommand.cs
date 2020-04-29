@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Versioning;
@@ -21,7 +22,7 @@ namespace NuKeeper.Update.Process
         {
             var projectPath = currentPackage.Path.Info.DirectoryName;
             var projectFileName = currentPackage.Path.Info.Name;
-            var sourceUrl = packageSource.SourceUri.ToString();
+            var sourceUrl = EscapedUri(packageSource.SourceUri);
             var sources = allSources.CommandLine("-s");
 
             var restoreCommand = $"restore {projectFileName} {sources}";
@@ -35,6 +36,23 @@ namespace NuKeeper.Update.Process
 
             var addCommand = $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
             await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
+        }
+
+        private static string EscapedUri(Uri uri)
+        {
+            if (uri == null)
+            {
+                return string.Empty;
+            }
+
+            var result = uri.ToString();
+
+            if (result.IndexOf(" ", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return Uri.EscapeUriString(result);
+            }
+
+            return result;
         }
     }
 }
