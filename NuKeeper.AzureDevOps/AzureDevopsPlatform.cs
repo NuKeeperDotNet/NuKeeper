@@ -48,7 +48,8 @@ namespace NuKeeper.AzureDevOps
                 completionOptions = new GitPullRequestCompletionOptions
                 {
                     deleteSourceBranch = request.DeleteBranchAfterMerge
-                }
+                },
+                autoCompleteSetBy = request.SetAutoComplete ? await GetCurrentUserForAutoComplete(target.Owner) : null
             };
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
@@ -108,6 +109,15 @@ namespace NuKeeper.AzureDevOps
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<Creator> GetCurrentUserForAutoComplete(string projectName)
+        {
+            var profile = await _client.GetCurrentUserProfile(projectName);
+            return new Creator
+            {
+                id = profile.id
+            };
         }
     }
 }

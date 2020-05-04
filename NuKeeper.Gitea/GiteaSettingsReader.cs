@@ -60,7 +60,7 @@ namespace NuKeeper.Gitea
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null, bool setAutoComplete = false)
         {
             if (repositoryUri == null)
             {

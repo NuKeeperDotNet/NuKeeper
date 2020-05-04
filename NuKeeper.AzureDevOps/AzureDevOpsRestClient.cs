@@ -122,5 +122,7 @@ namespace NuKeeper.AzureDevOps
             var labelContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PostResource<LabelResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}/labels", labelContent, true);
         }
+
+        public async Task<UserProfile> GetCurrentUserProfile(string projectName) => await GetResource<UserProfile>($"{projectName}/_apis/profile/profiles/me");
     }
 }

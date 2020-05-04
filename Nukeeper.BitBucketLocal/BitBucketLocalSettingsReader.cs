@@ -28,7 +28,7 @@ namespace NuKeeper.BitBucketLocal
                    repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
         {
             if (repositoryUri == null)
             {

@@ -21,6 +21,10 @@ namespace NuKeeper.Commands
             Description = "If the target branch is another branch than that you are currently on, set this to the target")]
         public string TargetBranch { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "setAutoComplete",
+            Description = "Set automatically auto complete for created pull request. Works only for Azure Devops. Defaults to false.")]
+        public bool? SetAutoComplete { get; set; }
+
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -54,7 +58,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
-            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, TargetBranch);
+            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, TargetBranch, SetAutoComplete ?? false);
 
             var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)

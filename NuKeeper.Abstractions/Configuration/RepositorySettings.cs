@@ -27,5 +27,7 @@ namespace NuKeeper.Abstractions.Configuration
         public bool IsLocalRepo => RemoteInfo?.LocalRepositoryUri != null;
 
         public RemoteInfo RemoteInfo { get; set; }
+
+        public bool SetAutoComplete { get; set; }
     }
 }

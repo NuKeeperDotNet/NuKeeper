@@ -27,6 +27,6 @@ namespace NuKeeper.AzureDevOps
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch);
+        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete);
     }
 }

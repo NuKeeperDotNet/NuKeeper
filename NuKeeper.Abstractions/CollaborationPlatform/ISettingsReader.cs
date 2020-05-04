@@ -10,7 +10,7 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
 
         Task<bool> CanRead(Uri repositoryUri);
 
-        Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null);
+        Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null, bool setAutoComplete = false);
 
         void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings);
     }

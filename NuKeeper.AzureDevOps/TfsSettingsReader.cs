@@ -44,7 +44,7 @@ namespace NuKeeper.AzureDevOps
             return tfsInPath || tfsInHost;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
         {
             if (repositoryUri == null)
             {

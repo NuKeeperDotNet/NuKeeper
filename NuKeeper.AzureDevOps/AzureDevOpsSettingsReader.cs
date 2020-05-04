@@ -38,7 +38,7 @@ namespace NuKeeper.AzureDevOps
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
         {
             if (repositoryUri == null)
             {
@@ -53,6 +53,8 @@ namespace NuKeeper.AzureDevOps
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
+
+            settings.SetAutoComplete = setAutoComplete;
 
             return settings;
         }

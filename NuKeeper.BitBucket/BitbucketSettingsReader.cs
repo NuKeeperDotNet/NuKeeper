@@ -34,7 +34,7 @@ namespace NuKeeper.BitBucket
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
         {
             if (repositoryUri == null)
             {
