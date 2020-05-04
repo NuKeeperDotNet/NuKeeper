@@ -21,7 +21,7 @@ namespace NuKeeper.Commands
             Description = "If the target branch is another branch than that you are currently on, set this to the target")]
         public string TargetBranch { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "setAutoComplete",
+        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "setAutoComplete",
             Description = "Set automatically auto complete for created pull request. Works only for Azure Devops. Defaults to false.")]
         public bool? SetAutoComplete { get; set; }
 
