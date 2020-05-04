@@ -52,6 +52,8 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
             }
 
+            settings.SetAutoComplete = setAutoComplete;
+
             return settings;
         }
 

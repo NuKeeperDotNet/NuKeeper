@@ -36,6 +36,18 @@ namespace NuKeeper.AzureDevOps
             return await HandleResponse<T>(response, caller);
         }
 
+        private async Task<T> PatchResource<T>(string url, HttpContent content, bool previewApi = false, [CallerMemberName] string caller = null)
+        {
+            var fullUrl = BuildAzureDevOpsUri(url, previewApi);
+            _logger.Detailed($"{caller}: Requesting {fullUrl}");
+
+            var response = await _client.SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), fullUrl)
+            {
+                Content = content
+            });
+            return await HandleResponse<T>(response, caller);
+        }
+
         private async Task<T> GetResource<T>(string url, bool previewApi = false, [CallerMemberName] string caller = null)
         {
             var fullUrl = BuildAzureDevOpsUri(url, previewApi);
@@ -123,6 +135,10 @@ namespace NuKeeper.AzureDevOps
             return await PostResource<LabelResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}/labels", labelContent, true);
         }
 
-        public async Task<UserProfile> GetCurrentUserProfile(string projectName) => await GetResource<UserProfile>($"{projectName}/_apis/profile/profiles/me");
+        public async Task<PullRequest> SetAutoComplete(PRRequest request, string projectName, string azureRepositoryId, int pullRequestId)
+        {
+            var autoCompleteContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            return await PatchResource<PullRequest>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}", autoCompleteContent);
+        }
     }
 }

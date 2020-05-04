@@ -49,10 +49,22 @@ namespace NuKeeper.AzureDevOps
                 {
                     deleteSourceBranch = request.DeleteBranchAfterMerge
                 },
-                autoCompleteSetBy = request.SetAutoComplete ? await GetCurrentUserForAutoComplete(target.Owner) : null
             };
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
+
+            if (request.SetAutoComplete)
+            {
+                await _client.SetAutoComplete(new PRRequest()
+                    {
+                        autoCompleteSetBy = new Creator()
+                        {
+                            id = pullRequest.CreatedBy.id
+                        }
+                    }, target.Owner,
+                    repo.id,
+                    pullRequest.PullRequestId);
+            }
 
             foreach (var label in labels)
             {
@@ -109,15 +121,6 @@ namespace NuKeeper.AzureDevOps
         public Task<SearchCodeResult> Search(SearchCodeRequest search)
         {
             throw new NotImplementedException();
-        }
-
-        private async Task<Creator> GetCurrentUserForAutoComplete(string projectName)
-        {
-            var profile = await _client.GetCurrentUserProfile(projectName);
-            return new Creator
-            {
-                id = profile.id
-            };
         }
     }
 }

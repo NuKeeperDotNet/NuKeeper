@@ -67,6 +67,7 @@ namespace NuKeeper.AzureDevOps
         public string MergeId { get; set; }
         public string Url { get; set; }
         public bool SupportsIterations { get; set; }
+        public Creator CreatedBy { get; set; }
 
         // public CreatedBy CreatedBy { get; set; }
         // public Lastmergesourcecommit LastMergeSourceCommit { get; set; }
@@ -138,10 +139,5 @@ namespace NuKeeper.AzureDevOps
     {
         public int count { get; set; }
         public IEnumerable<Label> value { get; set; }
-    }
-
-    public class UserProfile
-    {
-        public string id { get; set; }
     }
 }
