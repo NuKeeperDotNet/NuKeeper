@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <VersionPrefix>$(NugetVersion)</VersionPrefix>
@@ -18,7 +17,5 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.9.2" PrivateAssets="All" />
   </ItemGroup>
 </Project>

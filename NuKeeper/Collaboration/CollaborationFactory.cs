@@ -153,7 +153,7 @@ namespace NuKeeper.Collaboration
                     CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new DefaultCommitWorder();
+                    CommitWorder = new BitbucketCommitWorder();
                     break;
 
                 case Platform.BitbucketLocal:
