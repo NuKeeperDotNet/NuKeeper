@@ -107,12 +107,12 @@ namespace NuKeeper.Git
 
         private Uri CreateCredentialsUri(Uri pullEndpoint, GitUsernamePasswordCredentials gitCredentials)
         {
-            if (_gitCredentials == null)
+            if (_gitCredentials?.Username == null)
             {
                 return pullEndpoint;
             }
 
-            return new UriBuilder(pullEndpoint) { UserName = gitCredentials.Username, Password = gitCredentials.Password }.Uri;
+            return new UriBuilder(pullEndpoint) { UserName = Uri.EscapeDataString(gitCredentials.Username), Password = gitCredentials.Password }.Uri;
         }
 
         public async Task<IReadOnlyCollection<string>> GetNewCommitMessages(string baseBranchName, string headBranchName)

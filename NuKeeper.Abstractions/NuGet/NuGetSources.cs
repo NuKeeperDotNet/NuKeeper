@@ -32,7 +32,7 @@ namespace NuKeeper.Abstractions.NuGet
 
             if (!items.Any())
             {
-                throw new ArgumentException(nameof(items));
+                throw new ArgumentException("No package sources defined", nameof(sources));
             }
 
             Items = items;
