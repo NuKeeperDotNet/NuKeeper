@@ -26,7 +26,7 @@ namespace NuKeeper
         {
             var container = ContainerRegistration.Init();
 
-            var app = new CommandLineApplication<Program> { ThrowOnUnexpectedArgument = false };
+            var app = new CommandLineApplication<Program> { UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.StopParsingAndCollect };
             app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
 
             try
