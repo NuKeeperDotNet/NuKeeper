@@ -15,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="SimpleInjector" Version="4.7.1" />
+    <PackageReference Include="SimpleInjector" Version="4.10.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
