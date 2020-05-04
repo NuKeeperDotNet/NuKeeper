@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NuGet.CommandLine" Version="5.5.1">
+      <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -37,7 +38,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.2.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.5.1\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
     </TfmSpecificPackageFile>
