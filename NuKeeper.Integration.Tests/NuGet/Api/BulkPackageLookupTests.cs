@@ -1,21 +1,18 @@
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
+using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Inspection.NuGetApi;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NSubstitute;
-using NuGet.Common;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.Abstractions.NuGet;
-using NuKeeper.Inspection.NuGetApi;
-using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
-    public class BulkPackageLookupTests
+    public class BulkPackageLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task CanFindUpdateForOneWellKnownPackage()
@@ -129,12 +126,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(results, Does.ContainKey("Newtonsoft.Json"));
         }
 
-        private static BulkPackageLookup BuildBulkPackageLookup()
+        private BulkPackageLookup BuildBulkPackageLookup()
         {
-            var nuKeeperLogger = Substitute.For<INuKeeperLogger>();
-            var lookup = new ApiPackageLookup(new PackageVersionsLookup(
-                Substitute.For<ILogger>(), nuKeeperLogger));
-            return new BulkPackageLookup(lookup, new PackageLookupResultReporter(nuKeeperLogger));
+            var lookup = new ApiPackageLookup(new PackageVersionsLookup(NugetLogger, NukeeperLogger));
+            return new BulkPackageLookup(lookup, new PackageLookupResultReporter(NukeeperLogger));
         }
 
         private static PackageIdentity Current(string packageId)
