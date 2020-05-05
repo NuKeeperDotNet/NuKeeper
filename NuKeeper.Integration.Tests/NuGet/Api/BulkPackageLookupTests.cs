@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
-    public class BulkPackageLookupTests : BaseTest
+    public class BulkPackageLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task CanFindUpdateForOneWellKnownPackage()

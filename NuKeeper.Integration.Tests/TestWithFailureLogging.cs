@@ -6,7 +6,7 @@ using NUnit.Framework.Interfaces;
 
 namespace NuKeeper.Integration.Tests
 {
-    public class BaseTest
+    public abstract class TestWithFailureLogging
     {
         private NuKeeperTestLogger _nkLogger = new NuKeeperTestLogger();
         private NugetTestLogger _ngLogger = new NugetTestLogger();

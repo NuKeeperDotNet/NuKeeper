@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class NuGetPathTests : BaseTest
+    public class NuGetPathTests : TestWithFailureLogging
     {
         [Test]
         public void HasNugetPath()

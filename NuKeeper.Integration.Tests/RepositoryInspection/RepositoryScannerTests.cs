@@ -12,7 +12,7 @@ using System.Reflection;
 namespace NuKeeper.Integration.Tests.RepositoryInspection
 {
     [TestFixture]
-    public class RepositoryScannerTests : BaseTest
+    public class RepositoryScannerTests : TestWithFailureLogging
     {
         const string SinglePackageInFile =
             @"<?xml version=""1.0"" encoding=""utf-8""?>

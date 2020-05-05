@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class DotNetUpdatePackageCommandTests : BaseTest
+    public class DotNetUpdatePackageCommandTests : TestWithFailureLogging
     {
         private readonly string _testWebApiProject =
 @"<Project ToolsVersion=""15.0"" DefaultTargets=""Build"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">

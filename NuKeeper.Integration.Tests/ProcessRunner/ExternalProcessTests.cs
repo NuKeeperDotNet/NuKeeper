@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.ProcessRunner
 {
     [TestFixture]
-    public class ExternalProcessTests : BaseTest
+    public class ExternalProcessTests : TestWithFailureLogging
     {
         [Test]
         public async Task ValidCommandShouldSucceed()

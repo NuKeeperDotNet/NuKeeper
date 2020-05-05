@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class NuGetUpdatePackageCommandTests : BaseTest
+    public class NuGetUpdatePackageCommandTests : TestWithFailureLogging
     {
         private readonly string _testDotNetClassicProject =
             @"<Project ToolsVersion=""15.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">

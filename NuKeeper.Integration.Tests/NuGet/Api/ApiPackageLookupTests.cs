@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
-    public class ApiPackageLookupTests : BaseTest
+    public class ApiPackageLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task AmbiguousPackageName_ShouldReturnCorrectResult()

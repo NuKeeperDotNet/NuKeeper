@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class UpdateDirectoryBuildTargetsCommandTests : BaseTest
+    public class UpdateDirectoryBuildTargetsCommandTests : TestWithFailureLogging
     {
         private readonly string _testFileWithUpdate =
 @"<Project><ItemGroup><PackageReference Update=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";

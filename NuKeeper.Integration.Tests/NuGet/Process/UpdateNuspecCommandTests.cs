@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class UpdateNuspecCommandTests : BaseTest
+    public class UpdateNuspecCommandTests : TestWithFailureLogging
     {
         private readonly string _testNuspec =
 @"<package><metadata><dependencies>

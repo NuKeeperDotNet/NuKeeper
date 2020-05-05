@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.Engine
 {
     [TestFixture]
-    public class RepositoryFilterTests : BaseTest
+    public class RepositoryFilterTests : TestWithFailureLogging
     {
         [Test]
         public async Task ShouldFilterOutNonDotnetRepository()

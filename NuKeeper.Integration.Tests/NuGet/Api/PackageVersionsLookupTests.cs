@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
     [TestFixture]
-    public class PackageVersionsLookupTests : BaseTest
+    public class PackageVersionsLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task WellKnownPackageName_ShouldReturnResultsList()
