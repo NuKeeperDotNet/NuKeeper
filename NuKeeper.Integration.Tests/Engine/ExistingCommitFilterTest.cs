@@ -5,7 +5,6 @@ using NuGet.Versioning;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine.Packages;
@@ -17,7 +16,7 @@ using System.Threading.Tasks;
 namespace NuKeeper.Integration.Tests.Engine
 {
     [TestFixture]
-    public class ExistingCommitFilterTest
+    public class ExistingCommitFilterTest : TestWithFailureLogging
     {
         [Test]
         public async Task DoFilter()
@@ -70,10 +69,8 @@ namespace NuKeeper.Integration.Tests.Engine
             Assert.AreEqual(2, result.Count());
         }
 
-        private static IExistingCommitFilter MakeExistingCommitFilter()
+        private IExistingCommitFilter MakeExistingCommitFilter()
         {
-            var logger = Substitute.For<INuKeeperLogger>();
-
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
 
             var gitClient = Substitute.For<ICollaborationPlatform>();
@@ -83,7 +80,7 @@ namespace NuKeeper.Integration.Tests.Engine
             commitWorder.MakeCommitMessage(Arg.Any<PackageUpdateSet>()).Returns(p => $"Automatic update of {((PackageUpdateSet)p[0]).SelectedId} to {((PackageUpdateSet)p[0]).SelectedVersion}");
             collaborationFactory.CommitWorder.Returns(commitWorder);
 
-            return new ExistingCommitFilter(collaborationFactory, logger);
+            return new ExistingCommitFilter(collaborationFactory, NukeeperLogger);
         }
 
         private static Task<IReadOnlyCollection<string>> FixedReturnVal(string[] ids)
