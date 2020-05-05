@@ -36,7 +36,6 @@ namespace NuKeeper.Local
             IReadOnlyCollection<PackageUpdateSet> updates,
             IFolder workingFolder,
             NuGetSources sources,
-
             SettingsContainer settings)
         {
             if (!updates.Any())
@@ -44,8 +43,8 @@ namespace NuKeeper.Local
                 return;
             }
 
-            var filtered = await _selection
-                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
+            var filtered = _selection
+                .Filter(updates, settings.PackageFilters);
 
             if (!filtered.Any())
             {

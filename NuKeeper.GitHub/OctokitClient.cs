@@ -1,4 +1,5 @@
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
 using Organization = NuKeeper.Abstractions.CollaborationModels.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.CollaborationModels.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
@@ -144,6 +144,28 @@ namespace NuKeeper.GitHub
                     _logger.Detailed($"No branch found for {userName} / {repositoryName} / {branchName}");
                     return false;
                 }
+            });
+        }
+
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            CheckInitialised();
+
+            return await ExceptionHandler(async () =>
+            {
+                _logger.Normal($"Checking if PR exists onto '{_apiBase} {target.Owner}/{target.Name}: {baseBranch} <= {headBranch}");
+
+                var prRequest = new Octokit.PullRequestRequest
+                {
+                    State = ItemStateFilter.Open,
+                    SortDirection = SortDirection.Descending,
+                    SortProperty = PullRequestSort.Created,
+                    Head = $"{target.Owner}:{headBranch}",
+                };
+
+                var pullReqList = await _client.PullRequest.GetAllForRepository(target.Owner, target.Name, prRequest).ConfigureAwait(false);
+
+                return pullReqList.Any(pr => pr.Base.Ref.EndsWith(baseBranch, StringComparison.InvariantCultureIgnoreCase));
             });
         }
 

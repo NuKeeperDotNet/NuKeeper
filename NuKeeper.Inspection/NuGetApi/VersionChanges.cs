@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGetApi;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
@@ -49,9 +49,8 @@ namespace NuKeeper.Inspection.NuGetApi
                     return (v1 == v2);
 
                 default:
-                    throw new Exception($"Unknown version change {allowedChange}");
+                    throw new NuKeeperException($"Unknown version change {allowedChange}");
             }
         }
-
     }
 }

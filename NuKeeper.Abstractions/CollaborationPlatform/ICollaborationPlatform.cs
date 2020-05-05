@@ -1,7 +1,7 @@
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.Abstractions.CollaborationPlatform
 {
@@ -10,6 +10,8 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         void Initialise(AuthSettings settings);
 
         Task<User> GetCurrentUser();
+
+        Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch);
 
         Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels);
 

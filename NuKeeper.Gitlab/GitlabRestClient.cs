@@ -1,4 +1,8 @@
+using Newtonsoft.Json;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -6,9 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Newtonsoft.Json;
-using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Gitlab
 {
@@ -54,6 +55,25 @@ namespace NuKeeper.Gitlab
                 statusCode => statusCode == HttpStatusCode.NotFound
                     ? Result<Model.Branch>.Success(null)
                     : Result<Model.Branch>.Failure());
+        }
+
+        // https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests
+        // GET GET /projects/:id/merge_requests?state=opened&target_branch=<head>&source_branch=<base>
+        public async Task<IEnumerable<Model.MergeInfo>> GetMergeRequests(
+            string projectName,
+            string repositoryName,
+            string headBranch,
+            string baseBranch)
+        {
+            var encodedProjectName = HttpUtility.UrlEncode($"{projectName}/{repositoryName}");
+            var encodedBaseBranch = HttpUtility.UrlEncode(baseBranch);
+            var encodedHeadBranch = HttpUtility.UrlEncode(headBranch);
+
+            return await GetResource(
+                $"projects/{encodedProjectName}/merge_requests?state=opened&view=simple&source_branch={encodedHeadBranch}&target_branch={encodedBaseBranch}",
+                statusCode => statusCode == HttpStatusCode.NotFound
+                    ? Result<IEnumerable<Model.MergeInfo>>.Success(null)
+                    : Result<IEnumerable<Model.MergeInfo>>.Failure());
         }
 
         // https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
@@ -116,8 +136,8 @@ namespace NuKeeper.Gitlab
                         _logger.Error(msg);
                         throw new NuKeeperException(msg);
                     default:
-                        msg = $"{caller}: Error {response.StatusCode}";
-                        _logger.Error($"{caller}: Error {response.StatusCode}");
+                        msg = $"{caller}: Error {response.StatusCode}, {responseBody}";
+                        _logger.Error(msg);
                         throw new NuKeeperException(msg);
                 }
             }

@@ -34,11 +34,11 @@ namespace NuKeeper.BitBucket
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;

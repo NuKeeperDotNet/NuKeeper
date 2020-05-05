@@ -39,6 +39,13 @@ namespace NuKeeper.BitBucket
             return Task.FromResult(new User(_settings.Username, _settings.Username, _settings.Username));
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            var result = await _client.GetPullRequests(target.Owner, target.Name, headBranch, baseBranch);
+
+            return result.values.Any();
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
             var repo = await _client.GetGitRepository(target.Owner, target.Name);
@@ -63,7 +70,7 @@ namespace NuKeeper.BitBucket
                 close_source_branch = request.DeleteBranchAfterMerge
             };
 
-            await _client.CreatePullRequest(req, target.Owner, repo.name);
+            await _client.CreatePullRequest(target.Owner, repo.name, req);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()

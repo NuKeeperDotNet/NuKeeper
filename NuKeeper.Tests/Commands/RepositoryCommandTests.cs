@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -17,6 +13,10 @@ using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Commands
 {
@@ -254,7 +254,7 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.ConsolidateUpdatesInSinglePullRequest, Is.False);
 
             Assert.That(settings.BranchSettings, Is.Not.Null);
-            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.Null);
+            Assert.That(settings.BranchSettings.BranchNameTemplate, Is.Null);
             Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
 
             Assert.That(settings.SourceControlServerSettings.IncludeRepos, Is.Null);
@@ -325,16 +325,18 @@ namespace NuKeeper.Tests.Commands
         [Test]
         public async Task WillReadBranchNamePrefixFromFile()
         {
+            var testTemplate = "nukeeper/MyBranch";
+
             var fileSettings = new FileSettings
             {
-                BranchNamePrefix = "nukeeper/"
+                BranchNameTemplate = testTemplate
             };
 
             var (settings, _) = await CaptureSettings(fileSettings);
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.BranchSettings, Is.Not.Null);
-            Assert.That(settings.BranchSettings.BranchNamePrefix, Is.EqualTo("nukeeper/"));
+            Assert.That(settings.BranchSettings.BranchNameTemplate, Is.EqualTo(testTemplate));
         }
 
         [Test]
