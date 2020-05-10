@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace NuKeeper.Commands
 {
-    [Command("org", "o", "organization", "organisation", Description = "Performs version checks and generates pull requests for all repositories in a github organisation.")]
+    [Command("org", "o", "organization", "organisation", Description = "Performs version checks and generates pull requests for all repositories in a github organisation or an Azure DevOps project.")]
     internal class OrganisationCommand : MultipleRepositoryCommand
     {
-        [Argument(0, Name = "GitHub organisation name", Description = "The organisation to scan.")]
-        public string GithubOrganisationName { get; set; }
+        [Argument(0, Name = "Organisation name", Description = "The organisation to scan.")]
+        public string OrganisationName { get; set; }
 
         public OrganisationCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory)
             : base(engine, logger, fileSettingsCache, collaborationFactory)
@@ -31,7 +31,7 @@ namespace NuKeeper.Commands
             }
 
             settings.SourceControlServerSettings.Scope = ServerScope.Organisation;
-            settings.SourceControlServerSettings.OrganisationName = GithubOrganisationName;
+            settings.SourceControlServerSettings.OrganisationName = OrganisationName;
             return ValidationResult.Success;
         }
     }

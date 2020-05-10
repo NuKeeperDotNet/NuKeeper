@@ -339,6 +339,27 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
+        public async Task RetrievesFileNames()
+        {
+            var gitItemResource = new GitItemResource()
+            {
+                value = new List<GitItem>
+                {
+                    new GitItem { path = "/src/file.cs"},
+                    new GitItem { path = "/src/project.csproj"},
+                    new GitItem { path = "/README.md"},
+                    
+                },
+                count = 3
+            };
+
+            var restClient = GetFakeClient(gitItemResource);
+            var request = new LabelRequest { name = "nukeeper" };
+            var fileNames = await restClient.GetGitRepositoryFileNames("ProjectName", "RepoId");
+            Assert.IsNotNull(fileNames);
+            Assert.That(fileNames, Is.EquivalentTo(new [] { "/src/file.cs", "/src/project.csproj", "/README.md"}));
+        }
+        
         [TestCase("proj/_apis/git/repositories/Id/pullrequests", false, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1")]
         [TestCase("proj/_apis/git/repositories/Id/pullrequests", true, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1-preview.1")]
         [TestCase("proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head", false, "proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head&api-version=4.1")]
