@@ -26,6 +26,11 @@ namespace NuKeeper.Abstractions.Formats
 
         public static async Task<Uri> GetRemoteUriFromLocalRepo(this Uri repositoryUri, IGitDiscoveryDriver discoveryDriver, string shouldMatchTo)
         {
+            if (discoveryDriver == null)
+            {
+                throw new ArgumentNullException(nameof(discoveryDriver));
+            }
+
             if (await discoveryDriver.IsGitRepo(repositoryUri))
             {
                 // Check the origin remotes
