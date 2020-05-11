@@ -87,18 +87,13 @@ namespace NuKeeper.Tests.Engine
             return new PackageUpdateSelection(MakeSort(), updateSelection, logger);
         }
 
-        private FilterSettings NoFilter()
+        private static FilterSettings NoFilter()
         {
             return new FilterSettings
             {
-                MaxPackageUpdates = Int32.MaxValue,
+                MaxPackageUpdates = int.MaxValue,
                 MinimumAge = TimeSpan.Zero
             };
-        }
-
-        private BranchSettings DefaultBranchSettings()
-        {
-            return new BranchSettings();
         }
 
         private static ForkData PushFork()

@@ -57,7 +57,7 @@ namespace NuKeeper.AzureDevOps
             return settings;
         }
 
-        private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
         {
             // URL pattern is 
             // https://dev.azure.com/{org}/{project}/_git/{repo}/

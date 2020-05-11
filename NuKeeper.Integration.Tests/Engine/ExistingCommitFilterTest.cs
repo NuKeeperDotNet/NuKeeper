@@ -40,7 +40,7 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
 
-            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(1, result.Count);
             Assert.AreEqual("First.Nuget", result.FirstOrDefault()?.SelectedId);
         }
 
@@ -66,7 +66,7 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
 
-            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual(2, result.Count);
         }
 
         private IExistingCommitFilter MakeExistingCommitFilter()
@@ -87,13 +87,13 @@ namespace NuKeeper.Integration.Tests.Engine
         {
             return Task.Run(() =>
             {
-                return (IReadOnlyCollection<string>)ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToList().AsReadOnly();
+                return (IReadOnlyCollection<string>)ids.Select(id => CreateCommitMessage(id, new NuGetVersion("3.0.0"))).ToList().AsReadOnly();
             });
         }
 
         private static IGitDriver MakeGitDriver(string[] ids)
         {
-            var l = ids.Select(id => createCommitMessage(id, new NuGetVersion("3.0.0"))).ToArray();
+            var l = ids.Select(id => CreateCommitMessage(id, new NuGetVersion("3.0.0"))).ToArray();
 
             var git = Substitute.For<IGitDriver>();
             git.GetNewCommitMessages(Arg.Any<string>(), Arg.Any<string>())
@@ -102,7 +102,7 @@ namespace NuKeeper.Integration.Tests.Engine
             return git;
         }
 
-        private static string createCommitMessage(string id, NuGetVersion version)
+        private static string CreateCommitMessage(string id, NuGetVersion version)
         {
             return $"Automatic update of {id} to {version}";
         }

@@ -63,9 +63,9 @@ namespace NuKeeper.Git.Tests
             Assert.IsNotNull(remotesArray, "GitCmdDiscoveryDriver returned null for GetRemotes");
             Assert.IsNotNull(classicRemotesArray, "LibGit2SharpDiscoveryDriver returned null for GetRemotes");
 
-            Assert.AreEqual(remotesArray?.Count(), classicRemotesArray?.Count(), "Lib2Sharp and GitCmd should have the same number of results");
+            Assert.AreEqual(remotesArray?.Length, classicRemotesArray?.Length, "Lib2Sharp and GitCmd should have the same number of results");
 
-            for(var count=0; count< classicRemotesArray.Count(); count++)
+            for(var count=0; count< classicRemotesArray.Length; count++)
             {
                 var classicRemote = classicRemotesArray[count];
                 var remote = remotesArray.Where(r => r.Name.Equals(classicRemote.Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();

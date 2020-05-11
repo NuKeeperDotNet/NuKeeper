@@ -99,11 +99,13 @@ namespace NuKeeper.Gitea
             });
         }
 
-        private Uri GetBaseAddress(Uri repoUri)
+        private static Uri GetBaseAddress(Uri repoUri)
         {
             var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
-            var ub = new UriBuilder(repoUri);
-            ub.Path = string.Concat(newSegments);
+            var ub = new UriBuilder(repoUri)
+            {
+                Path = string.Concat(newSegments)
+            };
 
             return ub.Uri;
         }

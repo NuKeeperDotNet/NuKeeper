@@ -115,7 +115,7 @@ namespace NuKeeper.Gitea
             throw new NotImplementedException();
         }
 
-        private Organization MapOrganization(Gitea.Model.Organization x)
+        private static Organization MapOrganization(Gitea.Model.Organization x)
         {
             return new Organization(x.FullName);
         }

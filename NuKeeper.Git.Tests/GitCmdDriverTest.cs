@@ -79,7 +79,7 @@ namespace NuKeeper.Git.Tests
                     .Select(b=>b.Trim()).ToArray();
 
                 var master = branchNames.Where(b => b.EndsWith("/master", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-                if(master != null && branchNames.Count() > 1)
+                if(master != null && branchNames.Length > 1)
                 {
                     var headBranch = branchNames.First(b => !b.Equals(master,StringComparison.InvariantCultureIgnoreCase));
                     var localHeadBranch = Regex.Replace(headBranch, "^origin/", "");

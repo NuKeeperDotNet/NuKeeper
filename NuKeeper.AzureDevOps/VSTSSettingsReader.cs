@@ -49,13 +49,13 @@ namespace NuKeeper.AzureDevOps
                 : CreateSettingsFromRemote(repositoryUri);
             if (settings == null)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             return settings;
         }
 
-        private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
         {
             // URL pattern is
             // https://{org}.visualstudio.com/{project}/_git/{repo} or
