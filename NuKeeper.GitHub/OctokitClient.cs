@@ -234,7 +234,7 @@ namespace NuKeeper.GitHub
             }
         }
 
-        private async Task<T> ExceptionHandler<T>(Func<Task<T>> funcToCheck)
+        private static async Task<T> ExceptionHandler<T>(Func<Task<T>> funcToCheck)
         {
             try
             {

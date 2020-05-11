@@ -203,7 +203,7 @@ namespace NuKeeper.Tests.Engine
                 .Returns(new List<PackageUpdateSet>());
         }
 
-        private SettingsContainer MakeSettings(bool consolidateUpdates = false)
+        private static SettingsContainer MakeSettings(bool consolidateUpdates = false)
         {
             return new SettingsContainer
             {

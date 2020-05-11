@@ -45,7 +45,7 @@ namespace NuKeeper.GitHub
         {
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_github_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
-            settings.ForkMode = settings.ForkMode ?? ForkMode.PreferFork;
+            settings.ForkMode ??= ForkMode.PreferFork;
         }
 
         public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
@@ -108,7 +108,7 @@ namespace NuKeeper.GitHub
             };
         }
 
-        private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
         {
             if (repositoryUri == null)
             {
