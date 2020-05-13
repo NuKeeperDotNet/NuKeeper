@@ -78,15 +78,6 @@ namespace NuKeeper.Gitea
             return settings;
         }
 
-        private static Uri GetBaseAddress(Uri repoUri)
-        {
-            var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
-            var ub = new UriBuilder(repoUri);
-            ub.Path = string.Concat(newSegments);
-
-            return ub.Uri;
-        }
-
         private static Task<RepositorySettings> CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
         {
             // Assumption - url should look like https://yourgiteaUrl/{username}/{projectname}.git";
@@ -163,6 +154,17 @@ namespace NuKeeper.Gitea
                 RepositoryOwner = repoOwner,
                 RemoteInfo = remoteInfo
             });
+        }
+
+        private static Uri GetBaseAddress(Uri repoUri)
+        {
+            var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
+            var ub = new UriBuilder(repoUri)
+            {
+                Path = string.Concat(newSegments)
+            };
+
+            return ub.Uri;
         }
     }
 }
