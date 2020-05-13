@@ -15,7 +15,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
         public void Report(PackageLookupResult lookupResult)
         {
-            var highestVersion = lookupResult.Major?.Identity?.Version;
+            var highestVersion = lookupResult?.Major?.Identity?.Version;
             if (highestVersion == null)
             {
                 return;
