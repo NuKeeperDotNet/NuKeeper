@@ -28,7 +28,7 @@ namespace NuKeeper.Git
                 return false;
             }
 
-            return Repository.IsValid(discovered.AbsolutePath);
+            return Repository.IsValid(Uri.UnescapeDataString(discovered.AbsolutePath));
         }
 
         public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
@@ -38,7 +38,7 @@ namespace NuKeeper.Git
                 return Enumerable.Empty<GitRemote>();
             }
 
-            var discover = Repository.Discover(repositoryUri.AbsolutePath);
+            var discover = Repository.Discover(Uri.UnescapeDataString(repositoryUri.AbsolutePath));
 
             var gitRemotes = new List<GitRemote>();
             using (var repo = new Repository(discover))
@@ -70,7 +70,7 @@ namespace NuKeeper.Git
         {
             return Task.Run(() =>
             {
-                var discovery = Repository.Discover(repositoryUri.AbsolutePath);
+                var discovery = Repository.Discover(Uri.UnescapeDataString(repositoryUri.AbsolutePath));
 
                 if (string.IsNullOrEmpty(discovery))
                 {
