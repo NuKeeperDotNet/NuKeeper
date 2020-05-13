@@ -6,7 +6,7 @@ namespace NuKeeper.Abstractions.NuGet
     {
         public static NuGetVersion SingleVersion(VersionRange range)
         {
-            if (range == null || range.IsFloating || range.HasLowerAndUpperBounds)
+            if (range == null || range.IsFloating || range.HasLowerAndUpperBounds && range.MinVersion != range.MaxVersion)
             {
                 return null;
             }
