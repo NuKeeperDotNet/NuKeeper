@@ -55,7 +55,15 @@ namespace NuKeeper.Update.Process
             {
                 _logger.Detailed(
                     $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
-                dependencyToUpdate.Attribute("Version").Value = newVersion.ToString();
+                var attribute = dependencyToUpdate.Attribute("Version");
+                if (attribute != null)
+                {
+                    attribute.Value = newVersion.ToString();
+                }
+                else
+                {
+                    dependencyToUpdate.Element("Version").Value = newVersion.ToString();
+                }
             }
 
             xml.Save(fileContents);
