@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -14,11 +15,11 @@ namespace NuKeeper.Engine
 {
     public class GitRepositoryEngine : IGitRepositoryEngine
     {
-        private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly ICollaborationFactory _collaborationFactory;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
+        private readonly IRepositoryUpdater _repositoryUpdater;
 
         public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
@@ -73,7 +74,9 @@ namespace NuKeeper.Engine
                 }
                 else
                 {
-                    folder = _folderFactory.UniqueTemporaryFolder();
+                    folder = !string.IsNullOrWhiteSpace(settings?.UserSettings?.Directory)
+                        ? _folderFactory.FolderFromPath(settings.UserSettings.Directory)
+                        : _folderFactory.UniqueTemporaryFolder();
                     settings.WorkingFolder = folder;
                 }
 
