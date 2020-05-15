@@ -66,7 +66,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 id = el.Attribute("Update")?.Value;
             }
-            var version = el.Attribute("Version")?.Value;
+            var version = el.Attribute("Version")?.Value ?? el.Element("Version")?.Value;
 
             return _packageInProjectReader.Read(id, version, path, null);
         }

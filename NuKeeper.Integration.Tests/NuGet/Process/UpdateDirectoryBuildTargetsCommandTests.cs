@@ -31,6 +31,14 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testFileWithInclude, "<PackageReference Include=\"foo\" Version=\"{packageVersion}\" />");
         }
 
+        [Test]
+        public async Task ShouldUpdateValidFileWithIncludeAndVerboseVersion()
+        {
+            await ExecuteValidUpdateTest(
+                @"<Project><ItemGroup><PackageReference Include=""foo""><Version>{packageVersion}</Version></PackageReference></ItemGroup></Project>",
+                @"<Version>{packageVersion}</Version>");
+        }
+
         private async Task ExecuteValidUpdateTest(string testProjectContents, string expectedPackageString, [CallerMemberName] string memberName = "")
         {
             const string oldPackageVersion = "5.2.31";

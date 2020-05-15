@@ -3,6 +3,7 @@ using NuKeeper.Commands;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("NuKeeper.Tests")]
 
@@ -22,7 +23,7 @@ namespace NuKeeper
     [Subcommand(typeof(GlobalCommand))]
     public class Program
     {
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             var container = ContainerRegistration.Init();
 
@@ -31,7 +32,7 @@ namespace NuKeeper
 
             try
             {
-                return app.Execute(args);
+                return await app.ExecuteAsync(args);
             }
             catch (CommandParsingException cpe)
             {
