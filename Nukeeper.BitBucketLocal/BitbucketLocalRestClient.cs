@@ -86,12 +86,18 @@ namespace NuKeeper.BitBucketLocal
             }
         }
 
+        public async Task<User> GetCurrentUser(string username, [CallerMemberName] string caller = null)
+        {
+            var users = await GetResourceOrEmpty<IteratorBasedPage<User>>($@"{ApiPath}/users?filter={username}", caller);
+            var user = users.Values.FirstOrDefault(x => x.Name.Equals(username, StringComparison.InvariantCultureIgnoreCase));
+            return user;
+        }
+
         public async Task<IEnumerable<Repository>> GetProjects([CallerMemberName] string caller = null)
         {
             var response = await GetResourceOrEmpty<IteratorBasedPage<Repository>>($@"{ApiPath}/projects?limit=999", caller);
             return response.Values;
         }
-
 
         public async Task<IEnumerable<Repository>> GetGitRepositories(string projectName, [CallerMemberName] string caller = null)
         {

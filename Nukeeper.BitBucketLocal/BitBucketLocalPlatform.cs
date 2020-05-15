@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
-
+using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 namespace NuKeeper.BitBucketLocal
 {
@@ -35,9 +35,10 @@ namespace NuKeeper.BitBucketLocal
             _client = new BitbucketLocalRestClient(httpClient, _logger, settings.Username, settings.Token);
         }
 
-        public Task<User> GetCurrentUser()
+        public async Task<User> GetCurrentUser()
         {
-            return Task.FromResult(new User(_settings.Username, "", ""));
+            var bitBucketUser = await _client.GetCurrentUser(_settings.Username);
+            return bitBucketUser != null ? new User(_settings.Username, bitBucketUser.DisplayName, bitBucketUser.EmailAddress) : new User(_settings.Username, "", "");
         }
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
