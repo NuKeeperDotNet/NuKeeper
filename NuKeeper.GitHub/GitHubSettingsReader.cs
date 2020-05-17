@@ -43,6 +43,11 @@ namespace NuKeeper.GitHub
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_github_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
             settings.ForkMode ??= ForkMode.PreferFork;

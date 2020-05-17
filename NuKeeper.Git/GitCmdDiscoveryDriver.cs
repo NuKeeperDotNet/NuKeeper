@@ -35,12 +35,22 @@ namespace NuKeeper.Git
 
         public async Task<Uri> DiscoverRepo(Uri repositoryUri)
         {
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
             var result = await StartGitProcess("config --get remote.origin.url", true, repositoryUri.LocalPath);
             return new Uri(result);
         }
 
         public async Task<string> GetCurrentHead(Uri repositoryUri)
         {
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
             var getBranchHead = await StartGitProcess($"symbolic-ref -q --short HEAD", true, repositoryUri.LocalPath);
             return string.IsNullOrEmpty(getBranchHead) ?
                 await StartGitProcess($"rev-parse HEAD", true, repositoryUri.LocalPath) :
@@ -55,6 +65,11 @@ namespace NuKeeper.Git
 
         public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
             if (!await IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();

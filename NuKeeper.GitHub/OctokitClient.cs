@@ -34,6 +34,11 @@ namespace NuKeeper.GitHub
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             _apiBase = settings.ApiBase;
 
             _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), _apiBase)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,11 @@ namespace NuKeeper.GitHub
 
         public async Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             switch (settings.Scope)
             {
                 case ServerScope.Global:
