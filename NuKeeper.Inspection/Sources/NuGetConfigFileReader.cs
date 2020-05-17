@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Configuration;
@@ -18,6 +19,11 @@ namespace NuKeeper.Inspection.Sources
 
         public NuGetSources ReadNugetSources(IFolder workingFolder)
         {
+            if (workingFolder == null)
+            {
+                throw new ArgumentNullException(nameof(workingFolder));
+            }
+
             var settings = Settings.LoadDefaultSettings(workingFolder.FullPath);
 
             foreach (var file in settings.GetConfigFilePaths())

@@ -26,6 +26,11 @@ namespace NuKeeper.Inspection.Sort
         public IEnumerable<T> Sort(
             IReadOnlyCollection<SortItemData<T>> inputMap)
         {
+            if (inputMap == null)
+            {
+                throw new ArgumentNullException(nameof(inputMap));
+            }
+
             var inputItems = inputMap
                 .Select(i => i.Item)
                 .ToList();

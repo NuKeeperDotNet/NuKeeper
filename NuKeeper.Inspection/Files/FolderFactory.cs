@@ -26,6 +26,11 @@ namespace NuKeeper.Inspection.Files
         /// <returns></returns>
         public static IEnumerable<DirectoryInfo> GetTempDirsToCleanup(DirectoryInfo nukeeperTemp)
         {
+            if (nukeeperTemp == null)
+            {
+                throw new ArgumentNullException(nameof(nukeeperTemp));
+            }
+
             var dirs = nukeeperTemp.Exists ? nukeeperTemp.EnumerateDirectories() : Enumerable.Empty<DirectoryInfo>();
             var filterDatetime = DateTime.Now.AddHours(-1);
             return dirs.Where(d =>
