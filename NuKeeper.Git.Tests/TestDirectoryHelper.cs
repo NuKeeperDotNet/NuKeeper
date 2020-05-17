@@ -1,22 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace NuKeeper.Git.Tests
 {
     public static class TestDirectoryHelper
     {
-        private static readonly Dictionary<string, string> toRename = new Dictionary<string, string>
-        {
-            { "dot_git", ".git" },
-            { "gitmodules", ".gitmodules" },
-        };
-
         private static readonly Type[] whitelist = { typeof(IOException), typeof(UnauthorizedAccessException) };
 
         public static string DiscoverPathToGit()
@@ -53,28 +44,13 @@ namespace NuKeeper.Git.Tests
             return tempDir;
         }
 
-        public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
-        {
-            // From http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c/58779#58779
-
-            foreach (DirectoryInfo dir in source.GetDirectories())
-            {
-                CopyFilesRecursively(dir, target.CreateSubdirectory(Rename(dir.Name)));
-            }
-            foreach (FileInfo file in source.GetFiles())
-            {
-                file.CopyTo(Path.Combine(target.FullName, Rename(file.Name)));
-            }
-        }
-
-        private static string Rename(string name)
-        {
-            return toRename.ContainsKey(name) ? toRename[name] : name;
-        }
-
-
         public static void DeleteDirectory(DirectoryInfo toDelete)
         {
+            if (toDelete == null)
+            {
+                throw new ArgumentNullException(nameof(toDelete));
+            }
+
             // http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true/329502#329502
             if (!toDelete.Exists)
             {

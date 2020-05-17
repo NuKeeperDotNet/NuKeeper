@@ -2,7 +2,7 @@ using NuKeeper.Abstractions.CollaborationModels;
 
 namespace NuKeeper.GitHub
 {
-    public class GitHubRepository : Repository
+    internal class GitHubRepository : Repository
     {
         public GitHubRepository(Octokit.Repository repository)
         : base(

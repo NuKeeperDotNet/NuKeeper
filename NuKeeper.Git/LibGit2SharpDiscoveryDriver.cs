@@ -33,6 +33,11 @@ namespace NuKeeper.Git
 
         public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
             if (!await IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();
