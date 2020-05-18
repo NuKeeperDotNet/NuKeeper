@@ -21,6 +21,11 @@ namespace NuKeeper.Engine
 
         public async Task<bool> ContainsDotNetProjects(RepositorySettings repository)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
             const string dotNetCodeFiles = "\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"";
 
             var repos = new List<SearchRepo>

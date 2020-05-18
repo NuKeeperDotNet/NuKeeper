@@ -49,6 +49,11 @@ namespace NuKeeper
         // ReSharper disable once UnusedMember.Global
         protected int OnExecute(CommandLineApplication app)
         {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
             // this shows help even if the --help option isn't specified
             app.ShowHelp();
             return 1;

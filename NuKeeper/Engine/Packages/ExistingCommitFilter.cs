@@ -22,6 +22,16 @@ namespace NuKeeper.Engine.Packages
 
         public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(IGitDriver git, IReadOnlyCollection<PackageUpdateSet> updates, string baseBranch, string headBranch)
         {
+            if (git == null)
+            {
+                throw new ArgumentNullException(nameof(git));
+            }
+
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             try
             {
                 var filtered = new List<PackageUpdateSet>();
