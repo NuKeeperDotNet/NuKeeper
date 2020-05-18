@@ -22,6 +22,11 @@ namespace NuKeeper.AzureDevOps
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -36,6 +41,11 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var repos = await _client.GetGitRepositories(target.Owner);
             var repo = repos.Single(x => x.name == target.Name);
 
@@ -50,6 +60,21 @@ namespace NuKeeper.AzureDevOps
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (labels == null)
+            {
+                throw new ArgumentNullException(nameof(labels));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var repos = await _client.GetGitRepositories(target.Owner);
             var repo = repos.Single(x => x.name == target.Name);
 
@@ -121,6 +146,11 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest searchRequest)
         {
+            if (searchRequest == null)
+            {
+                throw new ArgumentNullException(nameof(searchRequest));
+            }
+
             var totalCount = 0;
             var repositoryFileNames = new List<string>();
             foreach (var repo in searchRequest.Repos)

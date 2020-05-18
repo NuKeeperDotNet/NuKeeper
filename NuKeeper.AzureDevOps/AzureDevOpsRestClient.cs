@@ -21,7 +21,7 @@ namespace NuKeeper.AzureDevOps
 
         public AzureDevOpsRestClient(HttpClient client, INuKeeperLogger logger, string personalAccessToken)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Authorization =
@@ -89,6 +89,11 @@ namespace NuKeeper.AzureDevOps
 
         public static Uri BuildAzureDevOpsUri(string relativePath, bool previewApi = false)
         {
+            if (relativePath == null)
+            {
+                throw new ArgumentNullException(nameof(relativePath));
+            }
+
             var separator = relativePath.Contains("?") ? "&" : "?";
             return previewApi
                 ? new Uri($"{relativePath}{separator}api-version=4.1-preview.1", UriKind.Relative)
