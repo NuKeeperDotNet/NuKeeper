@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using McMaster.Extensions.CommandLineUtils;
 using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
@@ -42,7 +43,8 @@ namespace NuKeeper.Update.Process
                 throw new ArgumentNullException(nameof(sources));
             }
 
-            _logger.Normal($"Nuget restore on {file.DirectoryName} {file.Name}");
+            var fileNameArg = ArgumentEscaper.EscapeAndConcatenate(new[] { file.Name });
+            _logger.Normal($"Nuget restore on {file.DirectoryName} {fileNameArg}");
 
             var nuget = _nuGetPath.Executable;
 
@@ -54,7 +56,7 @@ namespace NuKeeper.Update.Process
 
             var sourcesCommandLine = sources.CommandLine("-Source");
 
-            var restoreCommand = $"restore {file.Name} {sourcesCommandLine}  -NonInteractive";
+            var restoreCommand = $"restore {fileNameArg} {sourcesCommandLine}  -NonInteractive";
 
             ProcessOutput processOutput;
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -82,12 +84,12 @@ namespace NuKeeper.Update.Process
 
             if (processOutput.Success)
             {
-                _logger.Detailed($"Nuget restore on {file.Name} complete");
+                _logger.Detailed($"Nuget restore on {fileNameArg} complete");
             }
             else
             {
                 _logger.Detailed(
-                    $"Nuget restore failed on {file.DirectoryName} {file.Name}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
+                    $"Nuget restore failed on {file.DirectoryName} {fileNameArg}:\n{processOutput.Output}\n{processOutput.ErrorOutput}");
             }
         }
 
