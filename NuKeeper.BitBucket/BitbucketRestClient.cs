@@ -23,7 +23,7 @@ namespace NuKeeper.BitBucket
 
         public BitbucketRestClient(HttpClient client, INuKeeperLogger logger, string username, string appPassword)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
             var byteArray = Encoding.ASCII.GetBytes($"{username}:{appPassword}");

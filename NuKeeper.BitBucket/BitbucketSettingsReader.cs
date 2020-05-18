@@ -28,6 +28,11 @@ namespace NuKeeper.BitBucket
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             settings.Username = Username;
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucket_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
