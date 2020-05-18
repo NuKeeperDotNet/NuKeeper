@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using McMaster.Extensions.CommandLineUtils;
 using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
@@ -52,9 +53,10 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
+            var fileNameCommandLine = ArgumentEscaper.EscapeAndConcatenate(new[] { file.Name });
             var sourcesCommandLine = sources.CommandLine("-Source");
 
-            var restoreCommand = $"restore {file.Name} {sourcesCommandLine}  -NonInteractive";
+            var restoreCommand = $"restore {fileNameCommandLine} {sourcesCommandLine}  -NonInteractive";
 
             ProcessOutput processOutput;
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
