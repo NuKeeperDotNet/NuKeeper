@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,11 @@ namespace NuKeeper.Update.Process
 
         public async Task CheckRestore(IEnumerable<PackageUpdateSet> targetUpdates, IFolder workingFolder, NuGetSources sources)
         {
+            if (workingFolder == null)
+            {
+                throw new ArgumentNullException(nameof(workingFolder));
+            }
+
             if (AnyProjectRequiresNuGetRestore(targetUpdates))
             {
                 await Restore(workingFolder, sources);

@@ -23,7 +23,13 @@ namespace NuKeeper.Update.Selection
             IReadOnlyCollection<PackageUpdateSet> candidates,
             FilterSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
+            if (candidates == null)
+            {
+                throw new ArgumentNullException(nameof(candidates));
+            }
+
             if (settings.MinimumAge != TimeSpan.Zero)
             {
                 _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);

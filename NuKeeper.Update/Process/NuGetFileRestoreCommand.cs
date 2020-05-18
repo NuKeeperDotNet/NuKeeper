@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -31,6 +32,16 @@ namespace NuKeeper.Update.Process
 
         public async Task Invoke(FileInfo file, NuGetSources sources)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
+            if (sources == null)
+            {
+                throw new ArgumentNullException(nameof(sources));
+            }
+
             _logger.Normal($"Nuget restore on {file.DirectoryName} {file.Name}");
 
             var nuget = _nuGetPath.Executable;
@@ -83,6 +94,11 @@ namespace NuKeeper.Update.Process
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
             await Invoke(currentPackage.Path.Info, allSources);
         }
     }

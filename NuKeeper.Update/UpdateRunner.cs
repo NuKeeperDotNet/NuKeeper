@@ -40,6 +40,11 @@ namespace NuKeeper.Update
 
         public async Task Update(PackageUpdateSet updateSet, NuGetSources sources)
         {
+            if (updateSet == null)
+            {
+                throw new ArgumentNullException(nameof(updateSet));
+            }
+
             var sortedUpdates = Sort(updateSet.CurrentPackages);
 
             _logger.Detailed($"Updating '{updateSet.SelectedId}' to {updateSet.SelectedVersion} in {sortedUpdates.Count} projects");

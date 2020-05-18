@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NuGet.Configuration;
@@ -31,6 +32,16 @@ namespace NuKeeper.Update.Process
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
+            if (allSources == null)
+            {
+                throw new ArgumentNullException(nameof(allSources));
+            }
+
             var projectPath = currentPackage.Path.Info.DirectoryName;
 
             var nuget = _nuGetPath.Executable;

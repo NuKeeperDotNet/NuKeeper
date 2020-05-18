@@ -17,6 +17,11 @@ namespace NuKeeper.Update.Process
         public Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
             var projectsToUpdate = new Stack<string>();
             projectsToUpdate.Push(currentPackage.Path.FullName);
 
