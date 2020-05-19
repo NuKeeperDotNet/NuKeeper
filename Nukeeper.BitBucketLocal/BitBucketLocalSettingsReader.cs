@@ -61,6 +61,11 @@ namespace NuKeeper.BitBucketLocal
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             settings.Username = Concat.FirstValue(Username, _environmentVariablesProvider.GetUserName());
 
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");

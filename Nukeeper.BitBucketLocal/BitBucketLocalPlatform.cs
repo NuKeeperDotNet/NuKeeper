@@ -26,7 +26,7 @@ namespace NuKeeper.BitBucketLocal
 
         public void Initialise(AuthSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri($"{settings.ApiBase.Scheme}://{settings.ApiBase.Authority}")
@@ -42,6 +42,11 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
@@ -52,6 +57,16 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
@@ -122,6 +137,11 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest searchRequest)
         {
+            if (searchRequest == null)
+            {
+                throw new ArgumentNullException(nameof(searchRequest));
+            }
+
             var totalCount = 0;
             var repositoryFileNames = new List<string>();
             foreach (var repo in searchRequest.Repos)
