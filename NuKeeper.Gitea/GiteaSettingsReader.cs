@@ -58,6 +58,11 @@ namespace NuKeeper.Gitea
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable(GiteaTokenEnvironmentVariableName);
 
             settings.Token = Concat.FirstValue(envToken, settings.Token);
