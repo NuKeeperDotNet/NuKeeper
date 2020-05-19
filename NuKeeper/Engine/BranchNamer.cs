@@ -26,6 +26,11 @@ namespace NuKeeper.Engine
         /// <returns></returns>
         public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates, string branchTemplate = null)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             var tokenValues = new Dictionary<string, string>();
 
             foreach (var token in TemplateTokens)
@@ -63,7 +68,7 @@ namespace NuKeeper.Engine
         /// <param name="tokenValuePairs"></param>
         /// <param name="branchTemplate"></param>
         /// <returns></returns>
-        public static string MakeName(Dictionary<string, string> tokenValuePairs, string branchTemplate)
+        internal static string MakeName(Dictionary<string, string> tokenValuePairs, string branchTemplate)
         {
             var branchName = branchTemplate ?? "{default}";
 

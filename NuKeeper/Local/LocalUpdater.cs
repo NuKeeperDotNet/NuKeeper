@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,11 @@ namespace NuKeeper.Local
             NuGetSources sources,
             SettingsContainer settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             if (!updates.Any())
             {
                 return;

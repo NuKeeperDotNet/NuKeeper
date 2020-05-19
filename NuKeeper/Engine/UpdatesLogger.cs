@@ -10,6 +10,11 @@ namespace NuKeeper.Engine
     {
         public static string OldVersionsToBeUpdated(IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             if (updates.Count == 1)
             {
                 return $"Updating {DescribeOldVersions(updates.First())}";

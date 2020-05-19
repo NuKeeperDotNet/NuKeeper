@@ -39,6 +39,21 @@ namespace NuKeeper.Engine
             GitUsernamePasswordCredentials credentials,
             SettingsContainer settings, User user)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
+            if (credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             try
             {
                 var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);

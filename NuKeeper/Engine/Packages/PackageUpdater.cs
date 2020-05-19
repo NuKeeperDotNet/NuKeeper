@@ -39,6 +39,21 @@ namespace NuKeeper.Engine.Packages
             NuGetSources sources,
             SettingsContainer settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            if (git == null)
+            {
+                throw new ArgumentNullException(nameof(git));
+            }
+
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
             int totalCount = 0;
             try
             {

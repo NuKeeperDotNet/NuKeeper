@@ -5,9 +5,9 @@ using SimpleInjector;
 
 namespace NuKeeper
 {
-    public static class ContainerUpdateRegistration
+    internal static class ContainerUpdateRegistration
     {
-        public static void Register(Container container)
+        internal static void Register(Container container)
         {
             container.Register<IFileRestoreCommand, NuGetFileRestoreCommand>();
             container.Register<INuGetUpdatePackageCommand, NuGetUpdatePackageCommand>();
