@@ -20,7 +20,7 @@ namespace NuKeeper.Gitlab
 
         public GitlabRestClient(HttpClient client, string token, INuKeeperLogger logger)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

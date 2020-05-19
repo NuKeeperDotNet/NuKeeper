@@ -25,6 +25,11 @@ namespace NuKeeper.Gitlab
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -41,6 +46,11 @@ namespace NuKeeper.Gitlab
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var projectName = target.Owner;
             var repositoryName = target.Name;
 
@@ -51,6 +61,16 @@ namespace NuKeeper.Gitlab
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var projectName = target.Owner;
             var repositoryName = target.Name;
 
