@@ -38,7 +38,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
         public IReadOnlyCollection<string> GetFilePatterns()
         {
-            return new[] { "Directory.Build.props", "Directory.Build.targets", "Packages.props" };
+            return new[] { "Directory.Build.props", "Directory.Packages.props", "Directory.Build.targets", "Packages.props" };
         }
 
         public IReadOnlyCollection<PackageInProject> Read(Stream fileContents, PackagePath path)
@@ -51,9 +51,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Array.Empty<PackageInProject>();
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference");
+            var packageRefs = packagesNode.Elements("PackageReference");
+            var packageDownloads = packagesNode.Elements("PackageDownload");
+            var packageVersions = packagesNode.Elements("PackageVersion");
 
-            return packageNodeList
+            return packageRefs
+                .Concat(packageDownloads)
+                .Concat(packageVersions)
                 .Select(el => XmlToPackage(el, path))
                 .Where(el => el != null)
                 .ToList();
@@ -66,9 +70,18 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 id = el.Attribute("Update")?.Value;
             }
-            var version = el.Attribute("Version")?.Value ?? el.Element("Version")?.Value;
+            var version = el.Name == "PackageDownload"
+                ? GetVersion(el)?.Trim('[', ']')
+                : GetVersion(el);
 
             return _packageInProjectReader.Read(id, version, path, null);
+        }
+
+        private static string GetVersion(XElement el, XNamespace ns = null)
+        {
+            return ns == null
+                ? el.Attribute("Version")?.Value ?? el.Element("Version")?.Value
+                : el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
         }
     }
 }
