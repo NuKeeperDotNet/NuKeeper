@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
 
-
 namespace NuKeeper.BitBucketLocal
 {
     public class BitBucketLocalPlatform : ICollaborationPlatform
@@ -112,8 +111,19 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
+            var sanitisedRepositoryName = SanitizeRepositoryName(repositoryName);
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
+            return repos.Single(x => string.Equals(SanitizeRepositoryName(x.Name), sanitisedRepositoryName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static string SanitizeRepositoryName(string repositoryName)
+        {
+            if (string.IsNullOrWhiteSpace(repositoryName))
+            {
+                return string.Empty;
+            }
+
+            return repositoryName.Replace("-", " ");
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
