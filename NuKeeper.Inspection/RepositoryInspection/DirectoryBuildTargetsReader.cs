@@ -70,18 +70,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
             {
                 id = el.Attribute("Update")?.Value;
             }
-            var version = el.Name == "PackageDownload"
-                ? GetVersion(el)?.Trim('[', ']')
-                : GetVersion(el);
-
+            var version = GetVersion(el);
             return _packageInProjectReader.Read(id, version, path, null);
         }
 
-        private static string GetVersion(XElement el, XNamespace ns = null)
+        private static string GetVersion(XElement el)
         {
-            return ns == null
-                ? el.Attribute("Version")?.Value ?? el.Element("Version")?.Value
-                : el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
+            return el.Attribute("Version")?.Value ?? el.Element("Version")?.Value;
         }
     }
 }

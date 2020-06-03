@@ -75,7 +75,7 @@ namespace NuKeeper.Inspection.RepositoryInspection
 
             projectFileResults.AddRange(
                 itemGroups
-                    .SelectMany(ig => ig.Elements(ns + "PackageDownloads"))
+                    .SelectMany(ig => ig.Elements(ns + "PackageDownload"))
                     .Select(el => XmlToPackage(ns, el, new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets), null))
                     .Where(el => el != null)
             );
@@ -112,18 +112,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
             PackagePath path, IEnumerable<string> projectReferences)
         {
             var id = el.Attribute("Include")?.Value;
-            var version = el.Name == "PackageDownload"
-                ? GetVersion(el, ns)?.Trim('[', ']')
-                : GetVersion(el, ns);
-
+            var version = GetVersion(el, ns);
             return _packageInProjectReader.Read(id, version, path, projectReferences);
         }
 
-        private static string GetVersion(XElement el, XNamespace ns = null)
+        private static string GetVersion(XElement el, XNamespace ns)
         {
-            return ns == null
-                ? el.Attribute("Version")?.Value ?? el.Element("Version")?.Value
-                : el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
+            return el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
         }
     }
 }
