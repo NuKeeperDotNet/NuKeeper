@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Inspection.Tests.RepositoryInspection
 {
     [TestFixture]
-    public class DirectoryBuildTargetsReaderTests
+    public class DirectoryBuildTargetsReaderPackageReferenceTests
     {
         const string PackagesFileWithSinglePackage =
             @"<Project><ItemGroup><PackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";

@@ -55,6 +55,8 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 return Array.Empty<PackageInProject>();
             }
 
+            var projectFileResults = new List<PackageInProject>();
+
             var itemGroups = project
                 .Elements(ns + "ItemGroup")
                 .ToList();
@@ -65,11 +67,27 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .ToList();
 
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
-
-            return packageRefs
+            projectFileResults.AddRange(
+                packageRefs
                 .Select(el => XmlToPackage(ns, el, path, projectRefs))
                 .Where(el => el != null)
-                .ToList();
+            );
+
+            projectFileResults.AddRange(
+                itemGroups
+                    .SelectMany(ig => ig.Elements(ns + "PackageDownload"))
+                    .Select(el => XmlToPackage(ns, el, new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets), null))
+                    .Where(el => el != null)
+            );
+
+            projectFileResults.AddRange(
+                itemGroups
+                    .SelectMany(ig => ig.Elements(ns + "PackageVersion"))
+                    .Select(el => XmlToPackage(ns, el, new PackagePath(baseDirectory, relativePath, PackageReferenceType.DirectoryBuildTargets), null))
+                    .Where(el => el != null)
+            );
+
+            return projectFileResults;
         }
 
         private static string MakeProjectPath(XElement el, string currentPath)
@@ -94,9 +112,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
             PackagePath path, IEnumerable<string> projectReferences)
         {
             var id = el.Attribute("Include")?.Value;
-            var version = el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
-
+            var version = GetVersion(el, ns);
             return _packageInProjectReader.Read(id, version, path, projectReferences);
+        }
+
+        private static string GetVersion(XElement el, XNamespace ns)
+        {
+            return el.Attribute("Version")?.Value ?? el.Element(ns + "Version")?.Value;
         }
     }
 }
