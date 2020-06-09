@@ -58,7 +58,7 @@ namespace NuKeeper.Engine
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            SetupDefaultCredentialService(_nugetLogger, true);
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
 
             try
             {
