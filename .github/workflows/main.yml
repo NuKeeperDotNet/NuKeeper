@@ -1,0 +1,17 @@
+name: Update packages
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * 0'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    name: Update dependencies
+    steps:
+      - name: Nukeeper
+        id: nukeeper
+        uses: nukeeperdotnet/nukeeper-action@0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
