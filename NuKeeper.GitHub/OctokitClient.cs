@@ -22,7 +22,7 @@ namespace NuKeeper.GitHub
     public class OctokitClient : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
-        private bool _initialised = false;
+        private bool _initialised;
 
         private IGitHubClient _client;
         private Uri _apiBase;
@@ -247,8 +247,7 @@ namespace NuKeeper.GitHub
         {
             try
             {
-                T retval = await funcToCheck();
-                return retval;
+                return await funcToCheck();
             }
             catch (ApiException ex)
             {
@@ -260,6 +259,7 @@ namespace NuKeeper.GitHub
                         throw new NuKeeperException(response.errors.First.message.ToString(), ex);
                     }
                 }
+
                 throw new NuKeeperException(ex.Message, ex);
             }
         }
