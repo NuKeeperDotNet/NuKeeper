@@ -64,8 +64,12 @@ namespace NuKeeper.GitHub
             return await ExceptionHandler(async () =>
             {
                 var user = await _client.User.Current();
+
+                var emails = await _client.User.Email.GetAll();
+                var primaryEmail = emails.FirstOrDefault(e => e.Primary);
+
                 _logger.Detailed($"Read github user '{user?.Login}'");
-                return new User(user?.Login, user?.Name, user?.Email);
+                return new User(user?.Login, user?.Name, primaryEmail?.Email ?? user?.Email);
             });
         }
 
