@@ -57,7 +57,7 @@ namespace NuKeeper.Gitlab.Tests
         public async Task GetsCorrectSettingsFromTheUrl(string targetBranch)
         {
             var repositoryUri = new Uri("https://gitlab.com/user/projectname.git");
-            var repositorySettings = await _gitlabSettingsReader.RepositorySettings(repositoryUri, targetBranch);
+            var repositorySettings = await _gitlabSettingsReader.RepositorySettings(repositoryUri, true, targetBranch);
 
             Assert.IsNotNull(repositorySettings);
             Assert.AreEqual(new Uri("https://gitlab.com/api/v4/"), repositorySettings.ApiUri);
@@ -65,6 +65,7 @@ namespace NuKeeper.Gitlab.Tests
             Assert.AreEqual("user", repositorySettings.RepositoryOwner);
             Assert.AreEqual("projectname", repositorySettings.RepositoryName);
             Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
+            Assert.AreEqual(false, repositorySettings.SetAutoComplete);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
-            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, TargetBranch, SetAutoComplete ?? false);
+            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, SetAutoComplete ?? false, TargetBranch);
 
             var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)

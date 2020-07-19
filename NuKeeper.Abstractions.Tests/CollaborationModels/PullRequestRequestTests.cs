@@ -9,8 +9,8 @@ namespace NuKeeper.Abstractions.Tests.CollaborationModels
         [Test]
         public void ReplacesRemotesWhenCreatingPullRequestRequestObject()
         {
-            var pr = new PullRequestRequest("head", "title", "origin/master", true);
-            var pr2 = new PullRequestRequest("head", "title", "master", true);
+            var pr = new PullRequestRequest("head", "title", "origin/master", true, true);
+            var pr2 = new PullRequestRequest("head", "title", "master", true, true);
 
             Assert.That(pr.BaseRef, Is.EqualTo("master"));
             Assert.That(pr2.BaseRef, Is.EqualTo("master"));

@@ -53,7 +53,7 @@ namespace NuKeeper.GitHub
             settings.ForkMode ??= ForkMode.PreferFork;
         }
 
-        public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null, bool setAutoComplete = false)
+        public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoComplete, string targetBranch = null)
         {
             if (repositoryUri == null)
             {

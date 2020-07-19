@@ -41,7 +41,7 @@ namespace NuKeeper.Gitlab
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null, bool setAutoComplete = false)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoComplete, string targetBranch = null)
         {
             if (repositoryUri == null)
             {

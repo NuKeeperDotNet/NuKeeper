@@ -74,19 +74,20 @@ namespace NuKeeper.GitHub.Tests
         [Test]
         public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"));
+            var settings = await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
             Assert.AreEqual("reponame", settings.RepositoryName);
             Assert.AreEqual("owner", settings.RepositoryOwner);
+            Assert.AreEqual(false, settings.SetAutoComplete);
         }
 
         [Test]
         public async Task RepositorySettings_GetsCorrectSettingsWithTargetBranch()
         {
             var settings =
-                await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), "Feature1");
+                await _gitHubSettingsReader.RepositorySettings(new Uri("https://github.com/owner/reponame.git"), true,"Feature1");
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
@@ -94,6 +95,7 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual("owner", settings.RepositoryOwner);
             Assert.NotNull(settings.RemoteInfo);
             Assert.AreEqual("Feature1", settings.RemoteInfo.BranchName);
+            Assert.AreEqual(false, settings.SetAutoComplete);
         }
 
         [TestCase(null)]
@@ -101,7 +103,7 @@ namespace NuKeeper.GitHub.Tests
         public void RepositorySettings_InvalidUrlReturnsNull(string value)
         {
             var testUri = value == null ? null : new Uri(value);
-            Assert.ThrowsAsync<NuKeeperException>(() => _gitHubSettingsReader.RepositorySettings(testUri));
+            Assert.ThrowsAsync<NuKeeperException>(() => _gitHubSettingsReader.RepositorySettings(testUri, true));
         }
     }
 }

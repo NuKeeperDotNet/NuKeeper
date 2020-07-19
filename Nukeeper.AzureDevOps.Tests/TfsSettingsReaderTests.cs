@@ -83,19 +83,20 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project/_git/reponame"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://internalserver/tfs", settings.ApiUri.ToString());
             Assert.AreEqual("https://user:--PasswordToReplace--@internalserver/tfs/project/_git/reponame/", settings.RepositoryUri.ToString());
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
+            Assert.AreEqual(settings.SetAutoComplete, true);
         }
 
         [Test]
         public async Task RepositorySettings_ReturnsNull()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(null);
+            var settings = await _azureSettingsReader.RepositorySettings(null, true);
             Assert.IsNull(settings);
         }
 
@@ -104,13 +105,13 @@ namespace Nukeeper.AzureDevOps.Tests
         {
             Assert.ThrowsAsync<NuKeeperException>(() =>
                 _azureSettingsReader.RepositorySettings(
-                    new Uri("https://org.visualstudio.com/project/isnot_git/reponame/")));
+                    new Uri("https://org.visualstudio.com/project/isnot_git/reponame/"), true));
         }
 
         [Test]
         public async Task RepositorySettings_HandlesSpaces()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project%20name/_git/repo%20name"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://internalserver/tfs/project%20name/_git/repo%20name"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://internalserver/tfs", settings.ApiUri.ToString());

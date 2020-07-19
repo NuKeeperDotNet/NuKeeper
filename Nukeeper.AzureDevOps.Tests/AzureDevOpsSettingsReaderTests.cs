@@ -82,44 +82,46 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task RepositorySettings_GetsCorrectSettingsOrganisation()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/org/");
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
+            Assert.AreEqual(settings.SetAutoComplete, true);
         }
 
         [Test]
         public async Task RepositorySettings_GetsCorrectSettingsPrivate()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/");
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/owner/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "owner");
+            Assert.AreEqual(settings.SetAutoComplete, true);
         }
 
         [Test]
         public async Task RepositorySettings_ReturnsNull()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(null);
+            var settings = await _azureSettingsReader.RepositorySettings(null, true);
             Assert.IsNull(settings);
         }
 
         [Test]
         public void RepositorySettings_PathTooLong()
         {
-            Assert.ThrowsAsync<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
+            Assert.ThrowsAsync<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/"), true));
         }
 
         [Test]
         public async Task RepositorySettings_HandlesSpacesInRepo()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project%20name/_git/repo%20name"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project%20name/_git/repo%20name"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://dev.azure.com/org/", settings.ApiUri.ToString());
