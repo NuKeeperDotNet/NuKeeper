@@ -37,6 +37,7 @@ title: "Configuration"
 |                  |           |                           |                         |
 | branchnametemplate |           | `repo`, `org`, `global`, `update`| _null_           |
 | deletebranchaftermerge | d   | _all_                     | true                    |
+| setautocomplete |    | `repo`                     | false                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
@@ -98,3 +99,4 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
   Note: The old and replaced option `branchnameprefix` can be simulated with `--branchnametemplate "YourBranchPrefix/{Default}"`
   
 * *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.
+* *setautocomplete* Specifies whether a pull request should be marked as auto complated. Currently only works with `Platform` equal to `AzureDevOps`.
