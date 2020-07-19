@@ -26,7 +26,7 @@ namespace NuKeeper.BitBucket
 
         public void Initialise(AuthSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -39,8 +39,30 @@ namespace NuKeeper.BitBucket
             return Task.FromResult(new User(_settings.Username, _settings.Username, _settings.Username));
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var result = await _client.GetPullRequests(target.Owner, target.Name, headBranch, baseBranch);
+
+            return result.values.Any();
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var repo = await _client.GetGitRepository(target.Owner, target.Name);
             var req = new PullRequest
             {
@@ -63,7 +85,7 @@ namespace NuKeeper.BitBucket
                 close_source_branch = request.DeleteBranchAfterMerge
             };
 
-            await _client.CreatePullRequest(req, target.Owner, repo.name);
+            await _client.CreatePullRequest(target.Owner, repo.name, req);
         }
 
         public async Task<IReadOnlyList<Organization>> GetOrganizations()

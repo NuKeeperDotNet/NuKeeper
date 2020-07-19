@@ -1,3 +1,4 @@
+using System;
 using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Inspection.Logging
@@ -12,6 +13,16 @@ namespace NuKeeper.Inspection.Logging
     {
         public static void Log(this INuKeeperLogger logger, LogData data)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
             if (!string.IsNullOrWhiteSpace(data.Terse))
             {
                 logger.Minimal(data.Terse);

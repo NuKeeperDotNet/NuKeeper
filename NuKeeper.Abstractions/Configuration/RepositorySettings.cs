@@ -11,6 +11,11 @@ namespace NuKeeper.Abstractions.Configuration
 
         public RepositorySettings(Repository repository)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
             RepositoryUri = repository.CloneUrl;
             RepositoryOwner = repository.Owner.Login;
             RepositoryName = repository.Name;

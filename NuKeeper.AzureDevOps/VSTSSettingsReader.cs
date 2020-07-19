@@ -37,7 +37,7 @@ namespace NuKeeper.AzureDevOps
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoComplete, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
@@ -49,7 +49,7 @@ namespace NuKeeper.AzureDevOps
                 : CreateSettingsFromRemote(repositoryUri);
             if (settings == null)
             {
-                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
+                throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
             settings.SetAutoComplete = setAutoComplete;
@@ -57,7 +57,7 @@ namespace NuKeeper.AzureDevOps
             return settings;
         }
 
-        private RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
         {
             // URL pattern is
             // https://{org}.visualstudio.com/{project}/_git/{repo} or

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
@@ -13,6 +10,8 @@ using NuKeeper.Update;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Local
 {
@@ -93,8 +92,7 @@ namespace NuKeeper.Tests.Local
             selection
                 .Filter(
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
-                    Arg.Any<FilterSettings>(),
-                    Arg.Any<Func<PackageUpdateSet, Task<bool>>>())
+                    Arg.Any<FilterSettings>())
                 .Returns(x => x.ArgAt<IReadOnlyCollection<PackageUpdateSet>>(0));
         }
 

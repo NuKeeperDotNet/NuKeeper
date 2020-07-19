@@ -31,6 +31,11 @@ namespace NuKeeper.Collaboration
 
         public async Task<int> Run(SettingsContainer settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             _logger.Detailed($"{Now()}: Started");
             _folderFactory.DeleteExistingTempDirs();
 

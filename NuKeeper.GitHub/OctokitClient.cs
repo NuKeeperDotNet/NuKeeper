@@ -1,4 +1,5 @@
 using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.CollaborationModels;
 using Organization = NuKeeper.Abstractions.CollaborationModels.Organization;
 using PullRequestRequest = NuKeeper.Abstractions.CollaborationModels.PullRequestRequest;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
@@ -22,7 +22,7 @@ namespace NuKeeper.GitHub
     public class OctokitClient : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
-        private bool _initialised = false;
+        private bool _initialised;
 
         private IGitHubClient _client;
         private Uri _apiBase;
@@ -34,6 +34,11 @@ namespace NuKeeper.GitHub
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             _apiBase = settings.ApiBase;
 
             _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), _apiBase)
@@ -59,8 +64,12 @@ namespace NuKeeper.GitHub
             return await ExceptionHandler(async () =>
             {
                 var user = await _client.User.Current();
+
+                var emails = await _client.User.Email.GetAll();
+                var primaryEmail = emails.FirstOrDefault(e => e.Primary);
+
                 _logger.Detailed($"Read github user '{user?.Login}'");
-                return new User(user?.Login, user?.Name, user?.Email);
+                return new User(user?.Login, user?.Name, primaryEmail?.Email ?? user?.Email);
             });
         }
 
@@ -147,6 +156,28 @@ namespace NuKeeper.GitHub
             });
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            CheckInitialised();
+
+            return await ExceptionHandler(async () =>
+            {
+                _logger.Normal($"Checking if PR exists onto '{_apiBase} {target.Owner}/{target.Name}: {baseBranch} <= {headBranch}");
+
+                var prRequest = new Octokit.PullRequestRequest
+                {
+                    State = ItemStateFilter.Open,
+                    SortDirection = SortDirection.Descending,
+                    SortProperty = PullRequestSort.Created,
+                    Head = $"{target.Owner}:{headBranch}",
+                };
+
+                var pullReqList = await _client.PullRequest.GetAllForRepository(target.Owner, target.Name, prRequest).ConfigureAwait(false);
+
+                return pullReqList.Any(pr => pr.Base.Ref.EndsWith(baseBranch, StringComparison.InvariantCultureIgnoreCase));
+            });
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
             CheckInitialised();
@@ -212,12 +243,11 @@ namespace NuKeeper.GitHub
             }
         }
 
-        private async Task<T> ExceptionHandler<T>(Func<Task<T>> funcToCheck)
+        private static async Task<T> ExceptionHandler<T>(Func<Task<T>> funcToCheck)
         {
             try
             {
-                T retval = await funcToCheck();
-                return retval;
+                return await funcToCheck();
             }
             catch (ApiException ex)
             {
@@ -229,6 +259,7 @@ namespace NuKeeper.GitHub
                         throw new NuKeeperException(response.errors.First.message.ToString(), ex);
                     }
                 }
+
                 throw new NuKeeperException(ex.Message, ex);
             }
         }

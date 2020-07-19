@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 
 namespace NuKeeper.Gitea
 {
@@ -15,10 +16,12 @@ namespace NuKeeper.Gitea
         private const string GiteaTokenEnvironmentVariableName = "NuKeeper_gitea_token";
         private const string UrlPattern = "https://yourgiteaserver/{owner}/{repo}.git";
         private const string ApiBaseAdress = "api/v1/";
+        private readonly IGitDiscoveryDriver _gitDriver;
 
-        public GiteaSettingsReader(IEnvironmentVariablesProvider environmentVariablesProvider)
+        public GiteaSettingsReader(IGitDiscoveryDriver gitDiscoveryDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
         {
             _environmentVariablesProvider = environmentVariablesProvider;
+            _gitDriver = gitDiscoveryDriver;
         }
 
         public Platform Platform => Platform.Gitea;
@@ -55,6 +58,11 @@ namespace NuKeeper.Gitea
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable(GiteaTokenEnvironmentVariableName);
 
             settings.Token = Concat.FirstValue(envToken, settings.Token);
@@ -68,6 +76,15 @@ namespace NuKeeper.Gitea
                     $"The provided uri was is not in the correct format. Provided null and format should be {UrlPattern}");
             }
 
+            var settings = repositoryUri.IsFile
+                ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
+                : await CreateSettingsFromRemote(repositoryUri, targetBranch);
+
+            return settings;
+        }
+
+        private static Task<RepositorySettings> CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
+        {
             // Assumption - url should look like https://yourgiteaUrl/{username}/{projectname}.git";
             var path = repositoryUri.AbsolutePath;
             var pathParts = path.Split('/')
@@ -87,23 +104,70 @@ namespace NuKeeper.Gitea
             var baseAddress = GetBaseAddress(repositoryUri);
             var apiUri = new Uri(baseAddress, ApiBaseAdress);
 
+            return InternalCreateRepositorySettings(apiUri, repositoryUri, repoName, repoOwner, targetBranch == null ? null : new RemoteInfo { BranchName = targetBranch });
+        }
+
+        private async Task<RepositorySettings> CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
+        {
+            var remoteInfo = new RemoteInfo();
+
+            var localFolder = repositoryUri;
+            if (await _gitDriver.IsGitRepo(repositoryUri))
+            {
+                // Check the origin remotes
+                var origin = (await _gitDriver.GetRemotes(repositoryUri)).FirstOrDefault();
+
+                if (origin != null)
+                {
+                    var repo = await _gitDriver.DiscoverRepo(repositoryUri); // Set to the folder, because we found a remote git repository
+                    if (repo != null && (repo.Segments.Last() == @".git/"))
+                    {
+                        var newSegments = repo.Segments.Take(repo.Segments.Length - 1).ToArray();
+                        newSegments[newSegments.Length - 1] =
+                            newSegments[newSegments.Length - 1].TrimEnd('/');
+                        var ub = new UriBuilder(repo);
+                        ub.Path = string.Concat(newSegments);
+                        //ub.Query=string.Empty;  //maybe?
+                        repo = ub.Uri;
+                    }
+
+                    remoteInfo.LocalRepositoryUri = repo;
+                    repositoryUri = origin.Url;
+                    remoteInfo.BranchName = targetBranch ?? await _gitDriver.GetCurrentHead(remoteInfo.LocalRepositoryUri);
+                    remoteInfo.RemoteName = origin.Name;
+                    remoteInfo.WorkingFolder = localFolder;
+                }
+            }
+            else
+            {
+                throw new NuKeeperException("No git repository found");
+            }
+
+            var remoteSettings = await CreateSettingsFromRemote(repositoryUri, targetBranch);
+
+
+            return await InternalCreateRepositorySettings(remoteSettings.ApiUri, remoteSettings.RepositoryUri, remoteSettings.RepositoryName, remoteSettings.RepositoryOwner, remoteInfo);
+        }
+
+        private static Task<RepositorySettings> InternalCreateRepositorySettings(Uri apiUri, Uri repositoryUri, string repoName, string repoOwner, RemoteInfo remoteInfo = null)
+        {
             return Task.FromResult(new RepositorySettings
             {
                 ApiUri = apiUri,
                 RepositoryUri = repositoryUri,
                 RepositoryName = repoName,
                 RepositoryOwner = repoOwner,
-                RemoteInfo = targetBranch == null
-                    ? null
-                    : new RemoteInfo { BranchName = targetBranch }
+                RemoteInfo = remoteInfo
             });
         }
 
-        private Uri GetBaseAddress(Uri repoUri)
+        private static Uri GetBaseAddress(Uri repoUri)
         {
             var newSegments = repoUri.Segments.Take(repoUri.Segments.Length - 2).ToArray();
-            var ub = new UriBuilder(repoUri);
-            ub.Path = string.Concat(newSegments);
+            var ub = new UriBuilder(repoUri)
+            {
+                Path = string.Concat(newSegments)
+            };
 
             return ub.Uri;
         }

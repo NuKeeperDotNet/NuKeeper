@@ -29,6 +29,11 @@ namespace NuKeeper.Inspection.NuGetApi
             string packageName, bool includePrerelease,
             NuGetSources sources)
         {
+            if (sources == null)
+            {
+                throw new ArgumentNullException(nameof(sources));
+            }
+
             var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
 
             var results = await Task.WhenAll(tasks);

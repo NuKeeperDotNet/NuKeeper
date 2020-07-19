@@ -28,17 +28,22 @@ namespace NuKeeper.BitBucket
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             settings.Username = Username;
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucket_token");
             settings.Token = Concat.FirstValue(envToken, settings.Token);
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoComplete, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;

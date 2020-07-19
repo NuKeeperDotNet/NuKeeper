@@ -28,11 +28,11 @@ namespace NuKeeper.BitBucketLocal
                    repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch, bool setAutoComplete)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoComplete, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var path = repositoryUri.AbsolutePath;
@@ -44,7 +44,7 @@ namespace NuKeeper.BitBucketLocal
 
             if (pathParts.Count < 2)
             {
-                return null;
+                return Task.FromResult<RepositorySettings>(null);
             }
 
             var repoName = pathParts[pathParts.Count - 1].ToLower(CultureInfo.CurrentCulture).Replace(".git", string.Empty);
@@ -61,6 +61,11 @@ namespace NuKeeper.BitBucketLocal
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             settings.Username = Concat.FirstValue(Username, _environmentVariablesProvider.GetUserName());
 
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_bitbucketlocal_token");

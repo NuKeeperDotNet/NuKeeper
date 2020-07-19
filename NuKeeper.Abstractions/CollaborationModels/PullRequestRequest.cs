@@ -10,7 +10,7 @@ namespace NuKeeper.Abstractions.CollaborationModels
             SetAutoComplete = setAutoComplete;
 
             //This can be a remote that has been passed in, this happens when run locally against a targetbranch that is remote
-            BaseRef = baseRef.Replace("origin/", string.Empty);
+            BaseRef = baseRef?.Replace("origin/", string.Empty);
         }
 
         public string Head { get; }

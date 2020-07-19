@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +25,16 @@ namespace NuKeeper.Update.Process
         public Task Invoke(PackageInProject currentPackage, NuGetVersion newVersion, PackageSource packageSource,
             NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
+            if (newVersion == null)
+            {
+                throw new ArgumentNullException(nameof(newVersion));
+            }
+
             XDocument xml;
             using (var xmlInput = File.OpenRead(currentPackage.Path.FullName))
             {
@@ -46,19 +58,40 @@ namespace NuKeeper.Update.Process
                 return;
             }
 
-            var packageNodeList = packagesNode.Elements("PackageReference")
-                .Where(x =>
-                    (x.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
-                  || x.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id,StringComparison.InvariantCultureIgnoreCase))));
+            var packageRefs = IncludesOrUpdates(currentPackage, packagesNode.Elements("PackageReference"));
+            UpdateVersionTo(currentPackage, packageRefs, newVersion.ToString());
+            var packageVersions = IncludesOrUpdates(currentPackage, packagesNode.Elements("PackageVersion"));
+            UpdateVersionTo(currentPackage, packageVersions, newVersion.ToString());
+            var packageDownloads = IncludesOrUpdates(currentPackage, packagesNode.Elements("PackageDownload"));
+            UpdateVersionTo(currentPackage, packageDownloads, $"[{newVersion}]");
 
-            foreach (var dependencyToUpdate in packageNodeList)
+            xml.Save(fileContents);
+        }
+
+        private void UpdateVersionTo(PackageInProject currentPackage, IEnumerable<XElement> elements, string newVersion)
+        {
+            foreach (var dependencyToUpdate in elements)
             {
                 _logger.Detailed(
                     $"Updating directory-level dependencies: {currentPackage.Id} in path {currentPackage.Path.FullName}");
-                dependencyToUpdate.Attribute("Version").Value = newVersion.ToString();
+                var attribute = dependencyToUpdate.Attribute("Version");
+                if (attribute != null)
+                {
+                    attribute.Value = newVersion;
+                }
+                else
+                {
+                    dependencyToUpdate.Element("Version").Value = newVersion;
+                }
             }
+        }
 
-            xml.Save(fileContents);
+        private static IEnumerable<XElement> IncludesOrUpdates(PackageInProject currentPackage, IEnumerable<XElement> elements)
+        {
+            return elements.Where(el =>
+                el.Attributes("Include").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
+                || el.Attributes("Update").Any(a => a.Value.Equals(currentPackage.Id, StringComparison.InvariantCultureIgnoreCase))
+            );
         }
     }
 }

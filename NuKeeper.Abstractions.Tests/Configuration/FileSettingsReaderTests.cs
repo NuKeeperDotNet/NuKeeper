@@ -1,13 +1,12 @@
-using System;
-using System.Globalization;
-using System.IO;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
 using NUnit.Framework;
+using System;
+using System.Globalization;
+using System.IO;
 
 namespace NuKeeper.Abstractions.Tests.Configuration
 {
@@ -30,7 +29,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                 Directory.Delete(_uniqueTemporaryFolder, true);
             }
         }
-        
+
 
 
         [Test]
@@ -58,7 +57,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
-            Assert.That(data.BranchNamePrefix, Is.Null);
+            Assert.That(data.BranchNameTemplate, Is.Null);
             Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
@@ -89,7 +88,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.OutputFileName, Is.Null);
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
-            Assert.That(data.BranchNamePrefix, Is.Null);
+            Assert.That(data.BranchNameTemplate, Is.Null);
             Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
@@ -102,7 +101,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""excludeRepos"":""repoOut"",
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
-               ""branchNamePrefix"": ""nukeeper"",
+               ""branchNameTemplate"": ""nukeeper/MyBranch"",
                ""maxPackageUpdates"": 42,
                ""maxRepo"": 12,
                ""verbosity"": ""Detailed"",
@@ -135,7 +134,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.ExcludeRepos, Is.EqualTo("repoOut"));
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
-            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
+            Assert.That(data.BranchNameTemplate, Is.EqualTo("nukeeper/MyBranch"));
             Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
@@ -188,7 +187,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
         }
 
         [Test]
-            public void ConfigKeysAreCaseInsensitive()
+        public void ConfigKeysAreCaseInsensitive()
         {
             const string configData = @"{
                ""Age"":""3d"",
@@ -201,7 +200,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""MAXrepo"":3,
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH"",
-               ""bRanCHNamEPREfiX"": ""nukeeper"",
+               ""bRanCHNamETempLATe"": ""nukeeper/MyBranch"",
                ""deLeTEBranCHafTERMerge"": ""true""
             }";
 
@@ -223,7 +222,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
-            Assert.That(data.BranchNamePrefix, Is.EqualTo("nukeeper"));
+            Assert.That(data.BranchNameTemplate, Is.EqualTo("nukeeper/MyBranch"));
             Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 

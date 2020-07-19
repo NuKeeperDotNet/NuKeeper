@@ -21,6 +21,21 @@ namespace NuKeeper.Update.Process
         public async Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
+            if (packageSource == null)
+            {
+                throw new ArgumentNullException(nameof(packageSource));
+            }
+
+            if (allSources == null)
+            {
+                throw new ArgumentNullException(nameof(allSources));
+            }
+
             var projectPath = currentPackage.Path.Info.DirectoryName;
             var projectFileName = currentPackage.Path.Info.Name;
             var sourceUrl = UriEscapedForArgument(packageSource.SourceUri);
