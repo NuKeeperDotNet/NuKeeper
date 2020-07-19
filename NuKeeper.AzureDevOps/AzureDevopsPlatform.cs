@@ -87,7 +87,7 @@ namespace NuKeeper.AzureDevOps
                 completionOptions = new GitPullRequestCompletionOptions
                 {
                     deleteSourceBranch = request.DeleteBranchAfterMerge
-                },
+                }
             };
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);

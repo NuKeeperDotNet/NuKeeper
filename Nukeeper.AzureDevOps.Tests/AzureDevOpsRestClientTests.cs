@@ -339,6 +339,54 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
+        public async Task SetAutoComplete()
+        {
+            var pullRequest = new PullRequest
+            {
+                AzureRepository = new AzureRepository
+                {
+                    id = "3411ebc1-d5aa-464f-9615-0b527bc66719",
+                    name = "2016_10_31",
+                    url = "https://dev.azure.com/fabrikam/_apis/git/repositories/3411ebc1-d5aa-464f-9615-0b527bc66719",
+                    project = new Project
+                    {
+                        id = "a7573007-bbb3-4341-b726-0c4148a07853",
+                        name = "2016_10_31",
+                        description = "test project created on Halloween 2016",
+                        url = "https://dev.azure.com/fabrikam/_apis/projects/a7573007-bbb3-4341-b726-0c4148a07853",
+                        state = "wellFormed",
+                        revision = 7
+                    },
+                    remoteUrl = "https://dev.azure.com/fabrikam/_git/2016_10_31"
+                },
+                PullRequestId = 22,
+                CodeReviewId = 22,
+                Status = "active",
+                CreationDate = new DateTime(2016, 11, 01, 16, 30, 31),
+                Title = "A new feature",
+                Description = "Adding a new feature",
+                SourceRefName = "refs/heads/npaulk/my_work",
+                TargetRefName = "refs/heads/new_feature",
+                MergeStatus = "queued",
+                MergeId = "f5fc8381-3fb2-49fe-8a0d-27dcc2d6ef82",
+                Url = "https: //dev.azure.com/fabrikam/_apis/git/repositories/3411ebc1-d5aa-464f-9615-0b527bc66719/commits/b60280bc6e62e2f880f1b63c1e24987664d3bda3",
+                SupportsIterations = true,
+            };
+
+            var restClient = GetFakeClient(pullRequest);
+            var prRequest = new PRRequest()
+            {
+                autoCompleteSetBy = new Creator()
+                {
+                    id = "3"
+                }
+            };
+
+            var pullRequestResponse = await restClient.SetAutoComplete(prRequest, "ProjectName", "RepoId", 100);
+            Assert.IsNotNull(pullRequestResponse);
+        }
+
+        [Test]
         public async Task RetrievesFileNames()
         {
             var gitItemResource = new GitItemResource()
@@ -348,7 +396,7 @@ namespace Nukeeper.AzureDevOps.Tests
                     new GitItem { path = "/src/file.cs"},
                     new GitItem { path = "/src/project.csproj"},
                     new GitItem { path = "/README.md"},
-                    
+
                 },
                 count = 3
             };
@@ -359,7 +407,7 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.IsNotNull(fileNames);
             Assert.That(fileNames, Is.EquivalentTo(new [] { "/src/file.cs", "/src/project.csproj", "/README.md"}));
         }
-        
+
         [TestCase("proj/_apis/git/repositories/Id/pullrequests", false, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1")]
         [TestCase("proj/_apis/git/repositories/Id/pullrequests", true, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1-preview.1")]
         [TestCase("proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head", false, "proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head&api-version=4.1")]
