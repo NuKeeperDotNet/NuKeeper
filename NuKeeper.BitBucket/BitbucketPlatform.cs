@@ -52,18 +52,6 @@ namespace NuKeeper.BitBucket
             return result.values.Any();
         }
 
-        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            var result = await _client.GetPullRequests(target.Owner, target.Name, headBranch, baseBranch);
-
-            return result.values.Any();
-        }
-
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
             if (target == null)

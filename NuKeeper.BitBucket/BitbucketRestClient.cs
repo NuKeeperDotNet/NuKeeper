@@ -94,7 +94,7 @@ namespace NuKeeper.BitBucket
 
         public async Task<PullRequest> CreatePullRequest(string account, string repositoryName, PullRequest request)
         {
-            if (request == null) throw new ArgumentException("Request can't be null.");
+            if (request == null) throw new ArgumentException("Request cannot be null", nameof(request));
 
             //get the default reviewers defined in project to notify about new pull requests
             var reviewers = await GetResourceOrEmpty<IteratorBasedPage<User>>($"repositories/{account}/{repositoryName}/default-reviewers");
