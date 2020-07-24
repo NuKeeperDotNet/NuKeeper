@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NuKeeper.Abstractions.RepositoryInspection;
 
@@ -14,6 +15,11 @@ namespace NuKeeper.Inspection.Report.Formats
 
         public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             _writer.WriteLine(MessageForCount(updates.Count));
 
             foreach (var update in updates)

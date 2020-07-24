@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace NuKeeper.Inspection.Tests.RepositoryInspection
 {
     [TestFixture]
-    public class DirectoryBuildTargetsReaderTests
+    public class DirectoryBuildTargetsReaderPackageReferenceTests
     {
         const string PackagesFileWithSinglePackage =
             @"<Project><ItemGroup><PackageReference Include=""foo"" Version=""1.2.3.4"" /></ItemGroup></Project>";
@@ -49,6 +49,19 @@ namespace NuKeeper.Inspection.Tests.RepositoryInspection
         {
             var reader = MakeReader();
             var packages = reader.Read(StreamFromString(PackagesFileWithSinglePackage), TempPath());
+
+            var package = packages.FirstOrDefault();
+            PackageAssert.IsPopulated(package);
+        }
+
+        [Test]
+        public void SinglePackageFromVerboseFormatShouldBePopulated()
+        {
+            const string verboseFormatVersion =
+                @"<Project><ItemGroup><PackageReference Include=""foo""><PrivateAssets>all</PrivateAssets><Version>1.2.3.4</Version></PackageReference></ItemGroup></Project>";
+
+            var reader = MakeReader();
+            var packages = reader.Read(StreamFromString(verboseFormatVersion), TempPath());
 
             var package = packages.FirstOrDefault();
             PackageAssert.IsPopulated(package);

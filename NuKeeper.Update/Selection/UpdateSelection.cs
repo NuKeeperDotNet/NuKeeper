@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.RepositoryInspection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NuKeeper.Update.Selection
 {
@@ -21,18 +19,23 @@ namespace NuKeeper.Update.Selection
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(
+        public IReadOnlyCollection<PackageUpdateSet> Filter(
             IReadOnlyCollection<PackageUpdateSet> candidates,
-            FilterSettings settings,
-            Func<PackageUpdateSet, Task<bool>> remoteCheck)
+            FilterSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+
+            if (candidates == null)
+            {
+                throw new ArgumentNullException(nameof(candidates));
+            }
+
             if (settings.MinimumAge != TimeSpan.Zero)
             {
                 _maxPublishedDate = DateTime.UtcNow.Subtract(settings.MinimumAge);
             }
 
-            var filtered = await ApplyFilters(candidates, remoteCheck);
+            var filtered = ApplyFilters(candidates);
 
             var capped = filtered
                 .Take(settings.MaxPackageUpdates)
@@ -43,38 +46,20 @@ namespace NuKeeper.Update.Selection
             return capped;
         }
 
-        private async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyFilters(
-            IReadOnlyCollection<PackageUpdateSet> all,
-            Func<PackageUpdateSet, Task<bool>> remoteCheck)
+        private IReadOnlyCollection<PackageUpdateSet> ApplyFilters(
+            IReadOnlyCollection<PackageUpdateSet> all)
         {
-            var filteredLocally = all
+            var filtered = all
                 .Where(MatchesMinAge)
                 .ToList();
 
-            if (filteredLocally.Count < all.Count)
+            if (filtered.Count < all.Count)
             {
                 var agoFormat = TimeSpanFormat.Ago(_settings.MinimumAge);
-                _logger.Normal($"Filtered by minimum package age '{agoFormat}' from {all.Count} to {filteredLocally.Count}");
+                _logger.Normal($"Filtered by minimum package age '{agoFormat}' from {all.Count} to {filtered.Count}");
             }
 
-            var remoteFiltered = await ApplyRemoteFilter(filteredLocally, remoteCheck);
-
-            if (remoteFiltered.Count < filteredLocally.Count)
-            {
-                _logger.Normal($"Filtered by remote branch check branch from {filteredLocally.Count} to {remoteFiltered.Count}");
-            }
-
-            return remoteFiltered;
-        }
-
-        public static async Task<IReadOnlyCollection<PackageUpdateSet>> ApplyRemoteFilter(
-            IEnumerable<PackageUpdateSet> packageUpdateSets,
-            Func<PackageUpdateSet, Task<bool>> remoteCheck)
-        {
-            var results = await packageUpdateSets
-                .WhereAsync(async p => await remoteCheck(p));
-
-            return results.ToList();
+            return filtered;
         }
 
         private void LogPackageCounts(int candidates, int filtered, int capped)

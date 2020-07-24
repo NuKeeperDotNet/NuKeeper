@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +10,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.Logging;
+using System.Web;
 
 namespace NuKeeper.AzureDevOps
 {
@@ -20,7 +21,7 @@ namespace NuKeeper.AzureDevOps
 
         public AzureDevOpsRestClient(HttpClient client, INuKeeperLogger logger, string personalAccessToken)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Authorization =
@@ -86,11 +87,17 @@ namespace NuKeeper.AzureDevOps
             }
         }
 
-        private static Uri BuildAzureDevOpsUri(string relativePath, bool previewApi = false)
+        public static Uri BuildAzureDevOpsUri(string relativePath, bool previewApi = false)
         {
+            if (relativePath == null)
+            {
+                throw new ArgumentNullException(nameof(relativePath));
+            }
+
+            var separator = relativePath.Contains("?") ? "&" : "?";
             return previewApi
-                ? new Uri($"{relativePath}?api-version=4.1-preview.1", UriKind.Relative)
-                : new Uri($"{relativePath}?api-version=4.1", UriKind.Relative);
+                ? new Uri($"{relativePath}{separator}api-version=4.1-preview.1", UriKind.Relative)
+                : new Uri($"{relativePath}{separator}api-version=4.1", UriKind.Relative);
         }
 
         public async Task<IEnumerable<Project>> GetProjects()
@@ -111,6 +118,21 @@ namespace NuKeeper.AzureDevOps
             return response?.value.AsEnumerable();
         }
 
+        //https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20requests?view=azure-devops-rest-5.0
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(
+             string projectName,
+             string azureRepositoryId,
+             string headBranch,
+             string baseBranch)
+        {
+            var encodedBaseBranch = HttpUtility.UrlEncode(baseBranch);
+            var encodedHeadBranch = HttpUtility.UrlEncode(headBranch);
+
+            var response = await GetResource<PullRequestResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests?searchCriteria.sourceRefName={encodedHeadBranch}&searchCriteria.targetRefName={encodedBaseBranch}");
+
+            return response?.value.AsEnumerable();
+        }
+
         public async Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
         {
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -121,6 +143,12 @@ namespace NuKeeper.AzureDevOps
         {
             var labelContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PostResource<LabelResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}/labels", labelContent, true);
+        }
+
+        public async Task<IEnumerable<string>> GetGitRepositoryFileNames(string projectName, string azureRepositoryId)
+        {
+            var response = await GetResource<GitItemResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/items?recursionLevel=Full");
+            return response?.value.Select(v => v.path).AsEnumerable();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using Newtonsoft.Json.Serialization;
 
@@ -9,6 +10,11 @@ namespace NuKeeper
     {
         protected override string ResolvePropertyName(string propertyName)
         {
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
             return propertyName.ToLower(CultureInfo.InvariantCulture);
         }
     }

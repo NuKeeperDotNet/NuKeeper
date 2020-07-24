@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
@@ -19,6 +20,11 @@ namespace NuKeeper.Inspection.RepositoryInspection
             PackagePath path,
             IEnumerable<string> projectReferences)
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
             if (string.IsNullOrWhiteSpace(id))
             {
                 _logger.Normal($"Skipping package with no id specified in file '{path.FullName}'.");

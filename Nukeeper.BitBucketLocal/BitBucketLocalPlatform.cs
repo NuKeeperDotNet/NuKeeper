@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.BitBucketLocal.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Repository = NuKeeper.Abstractions.CollaborationModels.Repository;
-
 
 namespace NuKeeper.BitBucketLocal
 {
@@ -26,7 +25,7 @@ namespace NuKeeper.BitBucketLocal
 
         public void Initialise(AuthSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri($"{settings.ApiBase.Scheme}://{settings.ApiBase.Authority}")
@@ -40,8 +39,33 @@ namespace NuKeeper.BitBucketLocal
             return Task.FromResult(new User(_settings.Username, "", ""));
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var repositories = await _client.GetGitRepositories(target.Owner);
+            var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
+
+            var pullRequests = await _client.GetPullRequests(target.Owner, targetRepository.Name, headBranch, baseBranch);
+
+            return pullRequests.Any();
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
@@ -87,8 +111,19 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
+            var sanitisedRepositoryName = SanitizeRepositoryName(repositoryName);
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
+            return repos.Single(x => string.Equals(SanitizeRepositoryName(x.Name), sanitisedRepositoryName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static string SanitizeRepositoryName(string repositoryName)
+        {
+            if (string.IsNullOrWhiteSpace(repositoryName))
+            {
+                return string.Empty;
+            }
+
+            return repositoryName.Replace("-", " ");
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
@@ -112,6 +147,11 @@ namespace NuKeeper.BitBucketLocal
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest searchRequest)
         {
+            if (searchRequest == null)
+            {
+                throw new ArgumentNullException(nameof(searchRequest));
+            }
+
             var totalCount = 0;
             var repositoryFileNames = new List<string>();
             foreach (var repo in searchRequest.Repos)

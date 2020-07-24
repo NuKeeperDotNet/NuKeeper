@@ -9,6 +9,11 @@ namespace NuKeeper.Inspection.Report.Formats
     {
         public static string ForUpdateSet(PackageUpdateSet update)
         {
+            if (update == null)
+            {
+                throw new ArgumentNullException(nameof(update));
+            }
+
             var occurrences = update.CurrentPackages.Count;
             var versionsInUse = update.CurrentPackages
                 .Select(p => p.Version)

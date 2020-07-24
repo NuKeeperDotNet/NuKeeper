@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Gitea
 {
@@ -23,6 +23,11 @@ namespace NuKeeper.Gitea
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -37,8 +42,30 @@ namespace NuKeeper.Gitea
             return new User(user.Login, user.FullName, user.Email);
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var result = await _client.GetPullRequests(target.Owner, target.Name, headBranch, baseBranch);
+
+            return result.Any();
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var projectName = target.Owner;
             var repositoryName = target.Name;
 
@@ -108,7 +135,7 @@ namespace NuKeeper.Gitea
             throw new NotImplementedException();
         }
 
-        private Organization MapOrganization(Gitea.Model.Organization x)
+        private static Organization MapOrganization(Gitea.Model.Organization x)
         {
             return new Organization(x.FullName);
         }

@@ -14,9 +14,9 @@ using NuKeeper.Inspection.Sources;
 
 namespace NuKeeper
 {
-    public static class ContainerInspectionRegistration
+    internal static class ContainerInspectionRegistration
     {
-        public static void Register(Container container)
+        internal static void Register(Container container)
         {
             var logger = new ConfigurableLogger();
             container.RegisterInstance<INuKeeperLogger>(logger);

@@ -52,6 +52,13 @@ namespace NuKeeper.AzureDevOps
         public int errorCode { get; set; }
         public int eventId { get; set; }
     }
+
+    public class PullRequestResource
+    {
+        public int Count { get; set; }
+        public IEnumerable<PullRequest> value { get; set; }
+    }
+
     public class PullRequest
     {
         public AzureRepository AzureRepository { get; set; }
@@ -137,5 +144,16 @@ namespace NuKeeper.AzureDevOps
     {
         public int count { get; set; }
         public IEnumerable<Label> value { get; set; }
+    }
+
+    public class GitItemResource
+    {
+        public int count { get; set; }
+        public IEnumerable<GitItem> value { get; set; }
+    }
+
+    public class GitItem
+    {
+        public string path { get; set; }
     }
 }

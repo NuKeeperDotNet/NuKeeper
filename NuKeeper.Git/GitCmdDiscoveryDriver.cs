@@ -35,15 +35,25 @@ namespace NuKeeper.Git
 
         public async Task<Uri> DiscoverRepo(Uri repositoryUri)
         {
-            var result = await StartGitProzess("config --get remote.origin.url", true, repositoryUri.LocalPath);
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
+            var result = await StartGitProcess("config --get remote.origin.url", true, repositoryUri.LocalPath);
             return new Uri(result);
         }
 
         public async Task<string> GetCurrentHead(Uri repositoryUri)
         {
-            var getBranchHead = await StartGitProzess($"symbolic-ref -q --short HEAD", true, repositoryUri.LocalPath);
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
+            var getBranchHead = await StartGitProcess($"symbolic-ref -q --short HEAD", true, repositoryUri.LocalPath);
             return string.IsNullOrEmpty(getBranchHead) ?
-                await StartGitProzess($"rev-parse HEAD", true, repositoryUri.LocalPath) :
+                await StartGitProcess($"rev-parse HEAD", true, repositoryUri.LocalPath) :
                 getBranchHead;
         }
 
@@ -55,12 +65,17 @@ namespace NuKeeper.Git
 
         public async Task<IEnumerable<GitRemote>> GetRemotes(Uri repositoryUri)
         {
-             if (!await IsGitRepo(repositoryUri))
+            if (repositoryUri == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryUri));
+            }
+
+            if (!await IsGitRepo(repositoryUri))
             {
                 return Enumerable.Empty<GitRemote>();
             }
 
-            var result = await StartGitProzess("remote -v", true);
+            var result = await StartGitProcess("remote -v", true, repositoryUri.LocalPath);
 
             // result should look like "origin\thttps://github.com/nukeeper/NuKeeper.git (fetch)\norigin\thttps://github.com/nukeeper/NuKeeper.git (push)"
             if (!string.IsNullOrWhiteSpace(result))
@@ -94,7 +109,7 @@ namespace NuKeeper.Git
             return true;
         }
 
-        internal async Task<string> StartGitProzess(string arguments, bool ensureSuccess, string workingFolder = "")
+        internal async Task<string> StartGitProcess(string arguments, bool ensureSuccess, string workingFolder)
         {
             var process = new ExternalProcess(_logger);
             var output = await process.Run(workingFolder, _pathGit, arguments, ensureSuccess);

@@ -3,7 +3,7 @@ strategy:
     Linux:
       imageName: 'ubuntu-16.04'
     Windows:
-      imageName: 'vs2017-win2016'
+      imageName: 'windows-2019'
     Mac:
       imageName: 'macOS-10.14'
 

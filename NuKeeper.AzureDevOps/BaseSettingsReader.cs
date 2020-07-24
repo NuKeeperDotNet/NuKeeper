@@ -21,12 +21,17 @@ namespace NuKeeper.AzureDevOps
 
         public void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var envToken = _environmentVariablesProvider.GetEnvironmentVariable("NuKeeper_azure_devops_token");
 
             settings.Token = Concat.FirstValue(envToken, settings.Token);
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch);
+        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null);
     }
 }

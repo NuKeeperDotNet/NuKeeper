@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,16 +37,20 @@ namespace NuKeeper.Local
             IReadOnlyCollection<PackageUpdateSet> updates,
             IFolder workingFolder,
             NuGetSources sources,
-
             SettingsContainer settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             if (!updates.Any())
             {
                 return;
             }
 
-            var filtered = await _selection
-                .Filter(updates, settings.PackageFilters, p => Task.FromResult(true));
+            var filtered = _selection
+                .Filter(updates, settings.PackageFilters);
 
             if (!filtered.Any())
             {

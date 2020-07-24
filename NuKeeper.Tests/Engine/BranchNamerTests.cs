@@ -1,15 +1,15 @@
-using System.Collections.Generic;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
     public class BranchNamerTests
     {
-        private const string BranchNamePrefix = "nukeeper/";
+        private const string BranchNameTemplate = "nukeeper/{default}";
 
         [Test]
         public void TestWithSinglePackage()
@@ -28,7 +28,7 @@ namespace NuKeeper.Tests.Engine
             var packages = PackageUpdates.MakeUpdateSet("SomePackage")
                 .InList();
 
-            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
 
             Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-SomePackage-to-1.2.3"));
         }
@@ -56,7 +56,7 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage")
             };
 
-            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
 
             Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
         }
@@ -86,7 +86,7 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("SomethingElse"),
             };
 
-            var branchName = BranchNamer.MakeName(packages, BranchNamePrefix);
+            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
 
             Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
         }
@@ -127,8 +127,8 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
 
             Assert.That(branchName1, Is.EqualTo(branchName2));
         }
@@ -169,8 +169,8 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.5")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
 
             Assert.That(branchName1, Is.Not.EqualTo(branchName2));
         }
@@ -211,8 +211,8 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNamePrefix);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNamePrefix);
+            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
+            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
 
             Assert.That(branchName1, Is.Not.EqualTo(branchName2));
         }

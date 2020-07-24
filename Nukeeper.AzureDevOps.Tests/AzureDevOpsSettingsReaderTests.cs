@@ -80,7 +80,7 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
-        public async Task RepositorySettings_GetsCorrectSettings()
+        public async Task RepositorySettings_GetsCorrectSettingsOrganisation()
         {
             var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"));
 
@@ -89,6 +89,18 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
+        }
+
+        [Test]
+        public async Task RepositorySettings_GetsCorrectSettingsPrivate()
+        {
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"));
+
+            Assert.IsNotNull(settings);
+            Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/");
+            Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/owner/_git/reponame");
+            Assert.AreEqual(settings.RepositoryName, "reponame");
+            Assert.AreEqual(settings.RepositoryOwner, "owner");
         }
 
         [Test]
@@ -102,7 +114,6 @@ namespace Nukeeper.AzureDevOps.Tests
         public void RepositorySettings_PathTooLong()
         {
             Assert.ThrowsAsync<NuKeeperException>(() => _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame/thisShouldNotBeHere/")));
-
         }
 
         [Test]

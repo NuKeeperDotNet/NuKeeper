@@ -1,5 +1,10 @@
+using Newtonsoft.Json;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.Gitea.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -7,10 +12,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Newtonsoft.Json;
-using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.Gitea.Model;
 
 namespace NuKeeper.Gitea
 {
@@ -21,7 +22,7 @@ namespace NuKeeper.Gitea
 
         public GiteaRestClient(HttpClient client, string token, INuKeeperLogger logger)
         {
-            _client = client;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -102,6 +103,37 @@ namespace NuKeeper.Gitea
             return PostResource<Repository>($"repos/{encodedProjectName}/forks", content);
         }
 
+
+        /// <summary>
+        /// /POST /repos/{owner}/{repo}/pulls Create a pull request
+        /// </summary>
+        /// <param name="owner">owner of the repo</param>
+        /// <param name="repositoryName">name of the repository</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(
+            string owner,
+            string repositoryName,
+            string headBranch,
+            string baseBranch)
+        {
+            // we cannot filter on branch so we have to get them all and find the branches
+            var encodedProjectName = $"{owner}/{repositoryName}";
+            var response = new List<PullRequest>();
+            var prReceived = 0;
+            var page = 1;
+            do
+            {
+                var result = await GetResource<List<PullRequest>>($"repos/{encodedProjectName}/pulls?state=open&page={page}");
+                response.AddRange(result);
+                prReceived = result.Count;
+                page++;
+            } while (prReceived > 0);
+
+            return response.Where(pr =>
+                pr.Base.Ref.Equals(baseBranch, StringComparison.InvariantCultureIgnoreCase)
+                && pr.Head.Ref.Equals(headBranch, StringComparison.InvariantCultureIgnoreCase));
+        }
+
         /// <summary>
         /// /POST /repos/{owner}/{repo}/pulls Create a pull request
         /// </summary>
@@ -109,13 +141,13 @@ namespace NuKeeper.Gitea
         /// <param name="repositoryName">name of the repository</param>
         /// <param name="pullRequest">pull request information</param>
         /// <returns></returns>
-        public Task<PullRequest> OpenPullRequest(string owner, string repositoryName, CreatePullRequestOption pullRequest)
+        public async Task<PullRequest> OpenPullRequest(string owner, string repositoryName, CreatePullRequestOption pullRequest)
         {
             var encodedProjectName = $"{owner}/{repositoryName}";
 
             var content = new StringContent(JsonConvert.SerializeObject(pullRequest), Encoding.UTF8,
                 "application/json");
-            return PostResource<PullRequest>($"repos/{encodedProjectName}/pulls", content);
+            return await PostResource<PullRequest>($"repos/{encodedProjectName}/pulls", content);
         }
 
         private async Task<T> GetResource<T>(string url, Func<HttpStatusCode, Result<T>> customErrorHandling = null, [CallerMemberName] string caller = null)

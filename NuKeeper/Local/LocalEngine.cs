@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,6 +49,11 @@ namespace NuKeeper.Local
 
         public async Task Run(SettingsContainer settings, bool write)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
 
             var folder = TargetFolder(settings.UserSettings);

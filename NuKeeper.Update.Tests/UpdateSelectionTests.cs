@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -12,6 +8,9 @@ using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Update.Selection;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NuKeeper.Update.Tests
 {
@@ -19,33 +18,34 @@ namespace NuKeeper.Update.Tests
     public class UpdateSelectionTests
     {
         [Test]
-        public async Task WhenThereAreNoInputs_NoTargetsOut()
+        public void WhenThereAreNoInputs_NoTargetsOut()
         {
             var updateSets = new List<PackageUpdateSet>();
 
             var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
+            var results = target.Filter(updateSets, OneTargetSelection());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
         }
 
         [Test]
-        public async Task WhenThereIsOneInput_ItIsTheTarget()
+        public void WhenThereIsOneInput_ItIsTheTarget()
         {
             var updateSets = new List<PackageUpdateSet> { UpdateFooFromOneVersion() };
 
             var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
+            var results = target.Filter(updateSets, OneTargetSelection());
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
+
         [Test]
-        public async Task WhenThereAreTwoInputs_FirstIsTheTarget()
+        public void WhenThereAreTwoInputs_FirstIsTheTarget()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -55,47 +55,14 @@ namespace NuKeeper.Update.Tests
 
             var target = CreateUpdateSelection();
 
-            var results = await target.Filter(updateSets, OneTargetSelection(), Pass);
+            var results = target.Filter(updateSets, OneTargetSelection());
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("foo"));
         }
 
         [Test]
-        public async Task WhenExistingBranchesAreFilteredOut()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var target = CreateUpdateSelection();
-
-            var results = await target.Filter(updateSets, OneTargetSelection(), Fail);
-
-            Assert.That(results.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public async Task WhenFirstPackageIsFilteredOutByBranch()
-        {
-            var updateSets = new List<PackageUpdateSet>
-            {
-                UpdateFooFromOneVersion(),
-                UpdateBarFromTwoVersions()
-            };
-
-            var target = CreateUpdateSelection();
-
-            var results = await target.Filter(updateSets, OneTargetSelection(), FilterToId("bar"));
-
-            Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
-        }
-
-        [Test]
-        public async Task WhenThePackageIsNotOldEnough()
+        public void WhenThePackageIsNotOldEnough()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -105,13 +72,13 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public async Task WhenTheFirstPackageIsNotOldEnough()
+        public void WhenTheFirstPackageIsNotOldEnough()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -122,14 +89,14 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results.First().SelectedId, Is.EqualTo("bar"));
         }
 
         [Test]
-        public async Task WhenMinAgeIsLowBothPackagesAreIncluded()
+        public void WhenMinAgeIsLowBothPackagesAreIncluded()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -140,13 +107,13 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromHours(12));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(2));
         }
 
         [Test]
-        public async Task WhenMinAgeIsHighNeitherPackagesAreIncluded()
+        public void WhenMinAgeIsHighNeitherPackagesAreIncluded()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -157,13 +124,13 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromDays(10));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public async Task WhenThePackageIsFromTheFuture()
+        public void WhenThePackageIsFromTheFuture()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -173,13 +140,13 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromDays(7));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public async Task WhenMinAgeIsZeroAndThePackageIsFromTheFuture()
+        public void WhenMinAgeIsZeroAndThePackageIsFromTheFuture()
         {
             var updateSets = new List<PackageUpdateSet>
             {
@@ -189,7 +156,7 @@ namespace NuKeeper.Update.Tests
             var target = CreateUpdateSelection();
             var settings = MinAgeTargetSelection(TimeSpan.FromDays(0));
 
-            var results = await target.Filter(updateSets, settings, Pass);
+            var results = target.Filter(updateSets, settings);
 
             Assert.That(results.Count, Is.EqualTo(1));
         }
@@ -285,14 +252,6 @@ namespace NuKeeper.Update.Tests
                 MaxPackageUpdates = maxPullRequests,
                 MinimumAge = minAge
             };
-        }
-
-        private static Task<bool> Pass(PackageUpdateSet s) => Task.FromResult(true);
-        private static Task<bool> Fail(PackageUpdateSet s) => Task.FromResult(false);
-
-        private static Func<PackageUpdateSet, Task<bool>> FilterToId(string id)
-        {
-            return p => Task.FromResult(p.SelectedId == id);
         }
     }
 }

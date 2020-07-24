@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
@@ -10,6 +9,8 @@ using NuKeeper.Inspection;
 using NuKeeper.Inspection.Report;
 using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {
@@ -46,6 +47,21 @@ namespace NuKeeper.Engine
             RepositoryData repository,
             SettingsContainer settings)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
+            if (git == null)
+            {
+                throw new ArgumentNullException(nameof(git));
+            }
+
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             if (!repository.IsLocalRepo)
             {
                 await GitInit(git, repository);
@@ -56,7 +72,12 @@ namespace NuKeeper.Engine
             var sources = _nugetSourcesReader.Read(settings.WorkingFolder ?? git.WorkingFolder, userSettings.NuGetSources);
 
             var updates = await _updateFinder.FindPackageUpdateSets(
-                settings.WorkingFolder ?? git.WorkingFolder, sources, userSettings.AllowedChange, userSettings.UsePrerelease, settings.PackageFilters?.Includes, settings.PackageFilters?.Excludes);
+                settings.WorkingFolder ?? git.WorkingFolder,
+                sources,
+                userSettings.AllowedChange,
+                userSettings.UsePrerelease,
+                settings.PackageFilters?.Includes,
+                settings.PackageFilters?.Excludes);
 
             _reporter.Report(
                 userSettings.OutputDestination,
@@ -71,8 +92,10 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            var targetUpdates = await _updateSelection.SelectTargets(
-                repository.Push, updates, settings.PackageFilters, settings.BranchSettings);
+            var targetUpdates = _updateSelection.SelectTargets(
+                           repository.Push,
+                           updates,
+                           settings.PackageFilters);
 
             return await DoTargetUpdates(git, repository, targetUpdates,
                 sources, settings);

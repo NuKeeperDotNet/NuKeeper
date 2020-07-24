@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Formats;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Gitlab.Model;
+
 using User = NuKeeper.Abstractions.CollaborationModels.User;
 
 namespace NuKeeper.Gitlab
@@ -25,6 +25,11 @@ namespace NuKeeper.Gitlab
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -39,8 +44,33 @@ namespace NuKeeper.Gitlab
             return new User(user.UserName, user.Name, user.Email);
         }
 
+        public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            var projectName = target.Owner;
+            var repositoryName = target.Name;
+
+            var result = await _client.GetMergeRequests(projectName, repositoryName, headBranch, baseBranch);
+
+            return result.Any();
+        }
+
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var projectName = target.Owner;
             var repositoryName = target.Name;
 

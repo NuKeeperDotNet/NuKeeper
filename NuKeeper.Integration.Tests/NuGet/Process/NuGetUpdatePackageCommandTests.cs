@@ -1,22 +1,20 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using NSubstitute;
 using NuGet.Configuration;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Inspections.Files;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
-using NUnit.Framework;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Update.Process;
 using NuKeeper.Update.ProcessRunner;
-using NuKeeper.Abstractions.RepositoryInspection;
+using NUnit.Framework;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class NuGetUpdatePackageCommandTests
+    public class NuGetUpdatePackageCommandTests : TestWithFailureLogging
     {
         private readonly string _testDotNetClassicProject =
             @"<Project ToolsVersion=""15.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
@@ -75,7 +73,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
 
             await File.WriteAllTextAsync(Path.Combine(workDirectory, "nuget.config"), _nugetConfig);
 
-            var logger = Substitute.For<INuKeeperLogger>();
+            var logger = NukeeperLogger;
             var externalProcess = new ExternalProcess(logger);
 
             var monoExecutor = new MonoExecutor(logger, externalProcess);
@@ -103,9 +101,9 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
                     StringComparison.OrdinalIgnoreCase)));
         }
 
-        private static IFolder UniqueTemporaryFolder()
+        private IFolder UniqueTemporaryFolder()
         {
-            var factory = new FolderFactory(Substitute.For<INuKeeperLogger>());
+            var factory = new FolderFactory(NukeeperLogger);
             return factory.UniqueTemporaryFolder();
         }
     }

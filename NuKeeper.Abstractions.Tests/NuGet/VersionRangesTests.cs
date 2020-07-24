@@ -8,6 +8,7 @@ namespace NuKeeper.Abstractions.Tests.NuGet
     {
         [TestCase("1.2.3")]
         [TestCase("1.2.3.4")]
+        [TestCase("[1.2.3.4]")]
         [TestCase("1.2.3-beta04")]
         [TestCase("1.2.3.4-beta05")]
         public void ParseableToSingleVersion(string rangeString)
@@ -38,6 +39,7 @@ namespace NuKeeper.Abstractions.Tests.NuGet
 
         [TestCase("1.2.3")]
         [TestCase("1.2.3.4")]
+        [TestCase("[1.2.3.4]")]
         [TestCase("1.2.3-beta04")]
         [TestCase("1.2.3.4-beta05")]
         public void ParseableToPackageIdentity(string rangeString)

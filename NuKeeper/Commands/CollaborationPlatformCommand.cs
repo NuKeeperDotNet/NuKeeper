@@ -61,6 +61,7 @@ namespace NuKeeper.Commands
             _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.AzureDevOps);
             _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.Bitbucket);
             _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.GitLab);
+            _platformsSupportingDeleteBranchAfterMerge.Add(Abstractions.CollaborationPlatform.Platform.Gitea);
         }
 
         protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)

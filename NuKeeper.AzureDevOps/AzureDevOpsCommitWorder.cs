@@ -20,6 +20,11 @@ namespace NuKeeper.AzureDevOps
 
         public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             if (updates.Count == 1)
             {
                 return PackageTitle(updates.First());
@@ -35,11 +40,21 @@ namespace NuKeeper.AzureDevOps
 
         public string MakeCommitMessage(PackageUpdateSet updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             return $"{PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             var builder = new StringBuilder();
 
             if (updates.Count > 1)
