@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="CodeProjects" Description="Code analysis rules for NuKeeper Code." ToolsVersion="15.0">
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1303" Action="None" />
+    <Rule Id="CA2000" Action="None" />
     <Rule Id="CA2007" Action="None" />
   </Rules>
 </RuleSet>

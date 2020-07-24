@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using NuKeeper.Abstractions.RepositoryInspection;
@@ -9,6 +10,11 @@ namespace NuKeeper.Inspection
     {
         public static LogData Log(IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             var headline = $"Found {updates.Count} possible updates";
             var details = new StringBuilder();
 

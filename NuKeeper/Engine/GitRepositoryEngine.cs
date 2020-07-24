@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using NuGet.Common;
+using NuGet.Credentials;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -14,30 +16,50 @@ namespace NuKeeper.Engine
 {
     public class GitRepositoryEngine : IGitRepositoryEngine
     {
-        private readonly IRepositoryUpdater _repositoryUpdater;
         private readonly ICollaborationFactory _collaborationFactory;
         private readonly IFolderFactory _folderFactory;
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
+        private readonly IRepositoryUpdater _repositoryUpdater;
+        private readonly ILogger _nugetLogger;
 
         public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
             ICollaborationFactory collaborationFactory,
             IFolderFactory folderFactory,
             INuKeeperLogger logger,
-            IRepositoryFilter repositoryFilter)
+            IRepositoryFilter repositoryFilter,
+            ILogger nugetLogger)
         {
             _repositoryUpdater = repositoryUpdater;
             _collaborationFactory = collaborationFactory;
             _folderFactory = folderFactory;
             _logger = logger;
             _repositoryFilter = repositoryFilter;
+            _nugetLogger = nugetLogger;
         }
 
         public async Task<int> Run(RepositorySettings repository,
             GitUsernamePasswordCredentials credentials,
             SettingsContainer settings, User user)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
+            if (credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
+
             try
             {
                 var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);
@@ -62,8 +84,8 @@ namespace NuKeeper.Engine
                 IFolder folder;
                 if (repository.IsLocalRepo)
                 {
-                    folder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath));
-                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(repository.RemoteInfo.WorkingFolder.AbsolutePath));
+                    folder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath)));
+                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.WorkingFolder.AbsolutePath)));
                     repositoryData.IsLocalRepo = repository.IsLocalRepo;
 
                     if (!repositoryData.IsFork) //check if we are on a fork. If not on a fork we set the remote to the locally found remote
@@ -73,7 +95,9 @@ namespace NuKeeper.Engine
                 }
                 else
                 {
-                    folder = _folderFactory.UniqueTemporaryFolder();
+                    folder = !string.IsNullOrWhiteSpace(settings?.UserSettings?.Directory)
+                        ? _folderFactory.FolderFromPath(settings.UserSettings.Directory)
+                        : _folderFactory.UniqueTemporaryFolder();
                     settings.WorkingFolder = folder;
                 }
 

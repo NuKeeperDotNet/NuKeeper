@@ -23,6 +23,11 @@ namespace NuKeeper.Inspection.Report
             string fileName,
             IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             var destinationDesc = destination == OutputDestination.File ?
                 $" File '{fileName}'" :
                 destination.ToString();

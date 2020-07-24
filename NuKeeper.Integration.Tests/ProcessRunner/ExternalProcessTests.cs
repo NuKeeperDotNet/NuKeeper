@@ -1,15 +1,13 @@
+using NuKeeper.Update.ProcessRunner;
+using NUnit.Framework;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using NSubstitute;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.Update.ProcessRunner;
-using NUnit.Framework;
 
 namespace NuKeeper.Integration.Tests.ProcessRunner
 {
     [TestFixture]
-    public class ExternalProcessTests
+    public class ExternalProcessTests : TestWithFailureLogging
     {
         [Test]
         public async Task ValidCommandShouldSucceed()
@@ -44,14 +42,14 @@ namespace NuKeeper.Integration.Tests.ProcessRunner
                 () => RunExternalProcess(Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture), true));
         }
 
-        private static async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
+        private async Task<ProcessOutput> RunExternalProcess(string command, bool ensureSuccess)
         {
             return await RunExternalProcess(command, "", ensureSuccess);
         }
 
-        private static async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
+        private async Task<ProcessOutput> RunExternalProcess(string command, string args, bool ensureSuccess)
         {
-            IExternalProcess process = new ExternalProcess(Substitute.For<INuKeeperLogger>());
+            IExternalProcess process = new ExternalProcess(NukeeperLogger);
             return await process.Run(".", command, args, ensureSuccess);
         }
 

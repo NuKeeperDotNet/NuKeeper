@@ -32,7 +32,7 @@ namespace NuKeeper.Abstractions.NuGet
 
             if (!items.Any())
             {
-                throw new ArgumentException(nameof(items));
+                throw new ArgumentException("No package sources defined", nameof(sources));
             }
 
             Items = items;
@@ -45,7 +45,7 @@ namespace NuKeeper.Abstractions.NuGet
         public string CommandLine(string prefix)
         {
             return Items
-                .Select(s => $"{prefix} {EscapePathIfLocal(s)}")
+                .Select(s => $"{prefix} {EscapeSource(s)}")
                 .JoinWithSeparator(" ");
         }
 
@@ -54,9 +54,9 @@ namespace NuKeeper.Abstractions.NuGet
             return Items.Select(s => s.SourceUri.ToString()).JoinWithCommas();
         }
 
-        private static string EscapePathIfLocal(PackageSource source)
+        private static string EscapeSource(PackageSource source)
         {
-            return source.IsLocal ? ArgumentEscaper.EscapeAndConcatenate(new[] { source.Source }) : source.Source;
+            return ArgumentEscaper.EscapeAndConcatenate(new[] { source.Source });
         }
     }
 }

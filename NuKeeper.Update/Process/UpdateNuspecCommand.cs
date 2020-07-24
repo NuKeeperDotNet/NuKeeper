@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,6 @@ using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.RepositoryInspection;
-using NuKeeper.Inspection.RepositoryInspection;
 
 namespace NuKeeper.Update.Process
 {
@@ -23,6 +23,16 @@ namespace NuKeeper.Update.Process
         public Task Invoke(PackageInProject currentPackage,
             NuGetVersion newVersion, PackageSource packageSource, NuGetSources allSources)
         {
+            if (currentPackage == null)
+            {
+                throw new ArgumentNullException(nameof(currentPackage));
+            }
+
+            if (newVersion == null)
+            {
+                throw new ArgumentNullException(nameof(newVersion));
+            }
+
             XDocument xml;
             using (var xmlInput = File.OpenRead(currentPackage.Path.FullName))
             {

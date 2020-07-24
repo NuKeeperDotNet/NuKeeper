@@ -1,8 +1,9 @@
+using McMaster.Extensions.CommandLineUtils;
+using NuKeeper.Commands;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Commands;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("NuKeeper.Tests")]
 
@@ -22,16 +23,16 @@ namespace NuKeeper
     [Subcommand(typeof(GlobalCommand))]
     public class Program
     {
-        public static int Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             var container = ContainerRegistration.Init();
 
-            var app = new CommandLineApplication<Program> { ThrowOnUnexpectedArgument = false };
+            var app = new CommandLineApplication<Program> { UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.StopParsingAndCollect };
             app.Conventions.UseDefaultConventions().UseConstructorInjection(container);
 
             try
             {
-                return app.Execute(args);
+                return await app.ExecuteAsync(args);
             }
             catch (CommandParsingException cpe)
             {
@@ -48,6 +49,11 @@ namespace NuKeeper
         // ReSharper disable once UnusedMember.Global
         protected int OnExecute(CommandLineApplication app)
         {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
             // this shows help even if the --help option isn't specified
             app.ShowHelp();
             return 1;

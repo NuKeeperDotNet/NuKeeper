@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using NuGet.Packaging.Core;
 using NuKeeper.Abstractions;
@@ -22,6 +23,11 @@ namespace NuKeeper.Inspection.NuGetApi
             VersionChange allowedChange,
             UsePrerelease usePrerelease)
         {
+            if (package == null)
+            {
+                throw new ArgumentNullException(nameof(package));
+            }
+
             var includePrerelease = ShouldAllowPrerelease(package, usePrerelease);
 
             var foundVersions = await _packageVersionsLookup.Lookup(package.Id, includePrerelease, sources);

@@ -1,4 +1,6 @@
+using Newtonsoft.Json;
 using NSubstitute;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.AzureDevOps;
 using NUnit.Framework;
@@ -10,8 +12,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using NuKeeper.Abstractions;
 
 namespace Nukeeper.AzureDevOps.Tests
 {
@@ -228,6 +228,54 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
+        public async Task GetPullRequests()
+        {
+            var pullRequestResource = new PullRequestResource
+            {
+                Count = 1,
+                value = new[]
+                {
+                    new PullRequest
+                    {
+                        AzureRepository = new AzureRepository
+                        {
+                            id = "3411ebc1-d5aa-464f-9615-0b527bc66719",
+                            name = "2016_10_31",
+                            url = "https://dev.azure.com/fabrikam/_apis/git/repositories/3411ebc1-d5aa-464f-9615-0b527bc66719",
+                            project = new Project
+                            {
+                                id = "a7573007-bbb3-4341-b726-0c4148a07853",
+                                name = "2016_10_31",
+                                description = "test project created on Halloween 2016",
+                                url = "https://dev.azure.com/fabrikam/_apis/projects/a7573007-bbb3-4341-b726-0c4148a07853",
+                                state = "wellFormed",
+                                revision = 7
+                            },
+                            remoteUrl = "https://dev.azure.com/fabrikam/_git/2016_10_31"
+                        },
+                        PullRequestId = 22,
+                        CodeReviewId = 22,
+                        Status = "active",
+                        CreationDate = new DateTime(2016, 11, 01, 16, 30, 31),
+                        Title = "A new feature",
+                        Description = "Adding a new feature",
+                        SourceRefName = "refs/heads/npaulk/my_work",
+                        TargetRefName = "refs/heads/new_feature",
+                        MergeStatus = "queued",
+                        MergeId = "f5fc8381-3fb2-49fe-8a0d-27dcc2d6ef82",
+                        Url = "https: //dev.azure.com/fabrikam/_apis/git/repositories/3411ebc1-d5aa-464f-9615-0b527bc66719/commits/b60280bc6e62e2f880f1b63c1e24987664d3bda3",
+                        SupportsIterations = true,
+                    }
+                }
+            };
+
+            var restClient = GetFakeClient(pullRequestResource);
+            var foundPullRequests = await restClient.GetPullRequests("ProjectName", "RepoId", "head", "base");
+            Assert.IsNotNull(foundPullRequests);
+            Assert.AreEqual(1, foundPullRequests.Count());
+        }
+
+        [Test]
         public async Task CreatesPullRequest()
         {
             var pullRequest = new PullRequest
@@ -290,8 +338,42 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.IsNotNull(pullRequestLabel);
         }
 
+        [Test]
+        public async Task RetrievesFileNames()
+        {
+            var gitItemResource = new GitItemResource()
+            {
+                value = new List<GitItem>
+                {
+                    new GitItem { path = "/src/file.cs"},
+                    new GitItem { path = "/src/project.csproj"},
+                    new GitItem { path = "/README.md"},
+                    
+                },
+                count = 3
+            };
+
+            var restClient = GetFakeClient(gitItemResource);
+            var request = new LabelRequest { name = "nukeeper" };
+            var fileNames = await restClient.GetGitRepositoryFileNames("ProjectName", "RepoId");
+            Assert.IsNotNull(fileNames);
+            Assert.That(fileNames, Is.EquivalentTo(new [] { "/src/file.cs", "/src/project.csproj", "/README.md"}));
+        }
+        
+        [TestCase("proj/_apis/git/repositories/Id/pullrequests", false, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1")]
+        [TestCase("proj/_apis/git/repositories/Id/pullrequests", true, "proj/_apis/git/repositories/Id/pullrequests?api-version=4.1-preview.1")]
+        [TestCase("proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head", false, "proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head&api-version=4.1")]
+        [TestCase("proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head", true, "proj/_apis/git/repositories/Id/pullrequests?searchCriteria.sourceRefName=head&api-version=4.1-preview.1")]
+        public void BuildAzureDevOpsUri(string relativePath, bool previewApi, Uri expectedUri)
+        {
+            var uri = AzureDevOpsRestClient.BuildAzureDevOpsUri(relativePath, previewApi);
+
+            Assert.AreEqual(expectedUri, uri);
+        }
+
         private static AzureDevOpsRestClient GetFakeClient(object returnObject)
         {
+            var a = JsonConvert.SerializeObject(returnObject);
             var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,

@@ -6,6 +6,11 @@ namespace NuKeeper.GitHub
     {
         public static Uri Normalise(Uri value)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             return Normalise(value.ToString());
         }
 

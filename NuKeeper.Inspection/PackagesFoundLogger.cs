@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuKeeper.Abstractions.Formats;
@@ -10,6 +11,11 @@ namespace NuKeeper.Inspection
     {
         public static LogData Log(IReadOnlyCollection<PackageInProject> packages)
         {
+            if (packages == null)
+            {
+                throw new ArgumentNullException(nameof(packages));
+            }
+
             var projectPathCount = packages
                 .Select(p => p.Path)
                 .Distinct()

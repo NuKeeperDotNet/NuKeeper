@@ -1,19 +1,16 @@
-using System;
-using System.Threading.Tasks;
-using NSubstitute;
-using NuGet.Common;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.NuGet.Api
 {
     [TestFixture]
-    public class ApiPackageLookupTests
+    public class ApiPackageLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task AmbiguousPackageName_ShouldReturnCorrectResult()
@@ -105,29 +102,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             Assert.That(package.Major.Identity.Version.Major, Is.GreaterThan(8));
         }
 
-        //        [Test]
-        //        public async Task BetaVersion_ShouldReturnBetas()
-        //        {
-        //            var lookup = BuildPackageLookup();
-        //
-        //            // libgit2sharp is known for staying in preview for ages
-        //            var package = await lookup.FindVersionUpdate(
-        //                new PackageIdentity("libgit2sharp", new NuGetVersion(0, 26, 0, "preview-0017")),
-        //                NuGetSources.GlobalFeed,
-        //                VersionChange.Minor,
-        //                UsePrerelease.FromPrerelease);
-        //
-        //            Assert.That(package, Is.Not.Null);
-        //            Assert.That(package.Selected(), Is.Not.Null);
-        //
-        //            var isBeta = package.Patch.Identity.Version.IsPrerelease;
-        //            Assert.That(isBeta, Is.True);
-        //        }
-
-        private static IApiPackageLookup BuildPackageLookup()
+        private IApiPackageLookup BuildPackageLookup()
         {
             return new ApiPackageLookup(
-                new PackageVersionsLookup(Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>()));
+                new PackageVersionsLookup(NugetLogger, NukeeperLogger));
         }
 
         private static PackageIdentity Current(string packageId)

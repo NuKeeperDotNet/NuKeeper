@@ -1,26 +1,21 @@
-using McMaster.Extensions.CommandLineUtils;
-using NuKeeper.Abstractions.CollaborationPlatform;
-using NuKeeper.Abstractions.Configuration;
-using NuKeeper.Inspection.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
+using McMaster.Extensions.CommandLineUtils;
+
+using NuKeeper.Abstractions.CollaborationPlatform;
+using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Formats;
 using NuKeeper.Collaboration;
-using System.Threading.Tasks;
+using NuKeeper.Inspection.Logging;
 
 namespace NuKeeper.Commands
 {
     [Command("repo", "r", "repository", Description = "Performs version checks and generates pull requests for a single repository.")]
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
-        [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
-        public string RepositoryUri { get; set; }
-
-        [Option(CommandOptionType.SingleValue, LongName = "targetBranch",
-            Description = "If the target branch is another branch than that you are currently on, set this to the target")]
-        public string TargetBranch { get; set; }
-
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -28,6 +23,16 @@ namespace NuKeeper.Commands
         {
             _settingsReaders = settingsReaders;
         }
+
+        [Argument(0, Name = "Repository URI", Description = "The URI of the repository to scan.")]
+        public string RepositoryUri { get; set; }
+
+        [Option(CommandOptionType.SingleValue, LongName = "targetBranch",
+            Description = "If the target branch is another branch than that you are currently on, set this to the target")]
+        public string TargetBranch { get; set; }
+
+        [Option(CommandOptionType.SingleValue, ShortName = "cdir", Description = "If you want NuKeeper to check out the repository to an alternate path, set it here (by default, a temporary directory is used).")]
+        protected string CheckoutDirectory { get; set; }
 
         protected override async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
         {
@@ -69,6 +74,8 @@ namespace NuKeeper.Commands
 
             settings.SourceControlServerSettings.Scope = ServerScope.Repository;
             settings.UserSettings.MaxRepositoriesChanged = 1;
+            settings.UserSettings.Directory = CheckoutDirectory;
+
             return ValidationResult.Success;
         }
 

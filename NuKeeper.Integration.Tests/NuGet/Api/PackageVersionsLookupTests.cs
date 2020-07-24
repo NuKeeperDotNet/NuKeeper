@@ -1,18 +1,15 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NSubstitute;
-using NuGet.Common;
-using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Inspection.NuGetApi;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.Nuget.Api
 {
     [TestFixture]
-    public class PackageVersionsLookupTests
+    public class PackageVersionsLookupTests : TestWithFailureLogging
     {
         [Test]
         public async Task WellKnownPackageName_ShouldReturnResultsList()
@@ -130,10 +127,9 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
             }
         }
 
-        private static IPackageVersionsLookup BuildPackageLookup()
+        private IPackageVersionsLookup BuildPackageLookup()
         {
-            return new PackageVersionsLookup(
-                Substitute.For<ILogger>(), Substitute.For<INuKeeperLogger>());
+            return new PackageVersionsLookup(NugetLogger, NukeeperLogger);
         }
     }
 }
