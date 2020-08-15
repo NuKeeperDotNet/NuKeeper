@@ -119,5 +119,15 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual("project name", settings.RepositoryOwner);
         }
 
+        [Test]
+        public async Task RepositorySettings_WithRemoteUrlAndTargetBranch_ReturnsRemoteInfoWithSpecifiedBranchName()
+        {
+            var uri = new Uri("https://internalserver/tfs/project%20name/_git/repo%20name");
+            var targetBranch = "myTargetBranch";
+
+            var settings = await _azureSettingsReader.RepositorySettings(uri, targetBranch);
+
+            Assert.AreEqual("myTargetBranch", settings.RemoteInfo.BranchName);
+        }
     }
 }
