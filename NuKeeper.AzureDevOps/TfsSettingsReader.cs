@@ -53,7 +53,7 @@ namespace NuKeeper.AzureDevOps
 
             var settings = repositoryUri.IsFile
                 ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
-                : CreateSettingsFromRemote(repositoryUri);
+                : CreateSettingsFromRemote(repositoryUri, targetBranch);
             if (settings == null)
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
@@ -64,9 +64,9 @@ namespace NuKeeper.AzureDevOps
             return settings;
         }
 
-        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
         {
-            return RepositorySettings(repositoryUri);
+            return RepositorySettings(repositoryUri, new RemoteInfo { BranchName = targetBranch });
         }
 
         private async Task<RepositorySettings> CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
