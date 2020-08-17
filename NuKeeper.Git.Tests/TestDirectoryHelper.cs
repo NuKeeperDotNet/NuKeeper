@@ -74,7 +74,16 @@ namespace NuKeeper.Git.Tests
 
             foreach (var subdirectory in subdirectories)
             {
-                NormalizeAttributes(subdirectory);
+                // This checks the directory exists and is valid.
+                // This is to workaround it failing to normalise some subdirectories on Azure DevOps
+                if (Directory.Exists(subdirectory.FullName))
+                {
+                    NormalizeAttributes(subdirectory);
+                }
+                else
+                {
+                    Console.WriteLine("Cannot normalize attributes for directory '{0}' since does not exist or is not valid", subdirectory.FullName);
+                }
             }
 
             File.SetAttributes(toNormalize.FullName, FileAttributes.Normal);
