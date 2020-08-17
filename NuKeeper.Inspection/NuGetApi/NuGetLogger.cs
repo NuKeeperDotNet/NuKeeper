@@ -17,6 +17,11 @@ namespace NuKeeper.Inspection.NuGetApi
 
         public override void Log(ILogMessage message)
         {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             switch (message.Level)
             {
                 case LogLevel.Verbose:

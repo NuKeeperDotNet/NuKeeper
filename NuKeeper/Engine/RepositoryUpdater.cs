@@ -1,3 +1,4 @@
+using System;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
@@ -46,6 +47,21 @@ namespace NuKeeper.Engine
             RepositoryData repository,
             SettingsContainer settings)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
+            if (git == null)
+            {
+                throw new ArgumentNullException(nameof(git));
+            }
+
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             if (!repository.IsLocalRepo)
             {
                 await GitInit(git, repository);

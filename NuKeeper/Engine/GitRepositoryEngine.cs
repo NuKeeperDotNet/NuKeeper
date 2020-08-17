@@ -1,7 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-
+using NuGet.Common;
+using NuGet.Credentials;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -20,25 +21,45 @@ namespace NuKeeper.Engine
         private readonly INuKeeperLogger _logger;
         private readonly IRepositoryFilter _repositoryFilter;
         private readonly IRepositoryUpdater _repositoryUpdater;
+        private readonly ILogger _nugetLogger;
 
         public GitRepositoryEngine(
             IRepositoryUpdater repositoryUpdater,
             ICollaborationFactory collaborationFactory,
             IFolderFactory folderFactory,
             INuKeeperLogger logger,
-            IRepositoryFilter repositoryFilter)
+            IRepositoryFilter repositoryFilter,
+            ILogger nugetLogger)
         {
             _repositoryUpdater = repositoryUpdater;
             _collaborationFactory = collaborationFactory;
             _folderFactory = folderFactory;
             _logger = logger;
             _repositoryFilter = repositoryFilter;
+            _nugetLogger = nugetLogger;
         }
 
         public async Task<int> Run(RepositorySettings repository,
             GitUsernamePasswordCredentials credentials,
             SettingsContainer settings, User user)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
+            if (credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
+
             try
             {
                 var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);

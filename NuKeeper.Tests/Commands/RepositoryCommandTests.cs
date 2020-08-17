@@ -345,7 +345,7 @@ namespace NuKeeper.Tests.Commands
 
             var updater = Substitute.For<IRepositoryUpdater>();
             var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, folderFactorySubstitute,
-                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>());
+                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>(), Substitute.For<NuGet.Common.ILogger>());
 
             await gitEngine.Run(new RepositorySettings
             {
@@ -383,7 +383,7 @@ namespace NuKeeper.Tests.Commands
 
             var updater = Substitute.For<IRepositoryUpdater>();
             var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, Substitute.For<IFolderFactory>(),
-                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>());
+                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>(), Substitute.For<NuGet.Common.ILogger>());
 
             await gitEngine.Run(new RepositorySettings
             {
@@ -420,7 +420,7 @@ namespace NuKeeper.Tests.Commands
 
             var updater = Substitute.For<IRepositoryUpdater>();
             var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, Substitute.For<IFolderFactory>(),
-                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>());
+                Substitute.For<INuKeeperLogger>(), Substitute.For<IRepositoryFilter>(), Substitute.For<NuGet.Common.ILogger>());
 
             await gitEngine.Run(new RepositorySettings
             {

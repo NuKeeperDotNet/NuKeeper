@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
-RUN dotnet tool install --global NuKeeper --version 0.28.0
+ARG NUKEEPER_VERSION=0.33.0
+RUN dotnet tool install --global NuKeeper --version $NUKEEPER_VERSION
 ENV PATH="${PATH}:/root/.dotnet/tools"
 ENTRYPOINT ["nukeeper"]

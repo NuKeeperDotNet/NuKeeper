@@ -1,34 +1,42 @@
+﻿using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Update.Process;
 using NUnit.Framework;
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.NuGet.Process
 {
     [TestFixture]
-    public class UpdateDirectoryBuildTargetsCommandTests : TestWithFailureLogging
+    public class UpdateDirectoryBuildTargetsCommandPackageVersionTests : TestWithFailureLogging
     {
         private readonly string _testFileWithUpdate =
-@"<Project><ItemGroup><PackageReference Update=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";
+            @"<Project><ItemGroup><PackageVersion Update=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";
 
         private readonly string _testFileWithInclude =
-@"<Project><ItemGroup><PackageReference Include=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";
+            @"<Project><ItemGroup><PackageVersion Include=""foo"" Version=""{packageVersion}"" /></ItemGroup></Project>";
 
         [Test]
         public async Task ShouldUpdateValidFileWithUpdateAttribute()
         {
-            await ExecuteValidUpdateTest(_testFileWithUpdate, "<PackageReference Update=\"foo\" Version=\"{packageVersion}\" />");
+            await ExecuteValidUpdateTest(_testFileWithUpdate, "<PackageVersion Update=\"foo\" Version=\"{packageVersion}\" />");
         }
 
         [Test]
         public async Task ShouldUpdateValidFileWithIncludeAttribute()
         {
-            await ExecuteValidUpdateTest(_testFileWithInclude, "<PackageReference Include=\"foo\" Version=\"{packageVersion}\" />");
+            await ExecuteValidUpdateTest(_testFileWithInclude, "<PackageVersion Include=\"foo\" Version=\"{packageVersion}\" />");
+        }
+
+        [Test]
+        public async Task ShouldUpdateValidFileWithIncludeAndVerboseVersion()
+        {
+            await ExecuteValidUpdateTest(
+                @"<Project><ItemGroup><PackageVersion Include=""foo""><Version>{packageVersion}</Version></PackageVersion></ItemGroup></Project>",
+                @"<Version>{packageVersion}</Version>");
         }
 
         private async Task ExecuteValidUpdateTest(string testProjectContents, string expectedPackageString, [CallerMemberName] string memberName = "")

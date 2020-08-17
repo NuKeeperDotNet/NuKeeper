@@ -21,6 +21,11 @@ namespace NuKeeper.Gitlab
 
         public Task<IEnumerable<RepositorySettings>> GetRepositories(SourceControlServerSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             switch (settings.Scope)
             {
                 case ServerScope.Global:

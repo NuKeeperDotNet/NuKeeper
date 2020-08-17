@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Versioning;
@@ -17,6 +18,11 @@ namespace NuKeeper.Inspection.Report.Formats
 
         public void Write(string name, IReadOnlyCollection<PackageUpdateSet> updates)
         {
+            if (updates == null)
+            {
+                throw new ArgumentNullException(nameof(updates));
+            }
+
             _writer.WriteLine($"Packages with updates: {updates.Count}");
             WriteMajorMinorPatchCount(updates);
             WriteProjectCount(updates);

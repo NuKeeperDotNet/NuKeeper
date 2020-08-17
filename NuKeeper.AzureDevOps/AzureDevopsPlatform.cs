@@ -22,6 +22,11 @@ namespace NuKeeper.AzureDevOps
 
         public void Initialise(AuthSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             var httpClient = new HttpClient
             {
                 BaseAddress = settings.ApiBase
@@ -36,8 +41,13 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<bool> PullRequestExists(ForkData target, string headBranch, string baseBranch)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var repos = await _client.GetGitRepositories(target.Owner);
-            var repo = repos.Single(x => x.name == target.Name);
+            var repo = repos.Single(x => x.name.Equals(target.Name, StringComparison.OrdinalIgnoreCase));
 
             var result = await _client.GetPullRequests(
                 target.Owner,
@@ -50,8 +60,23 @@ namespace NuKeeper.AzureDevOps
 
         public async Task OpenPullRequest(ForkData target, PullRequestRequest request, IEnumerable<string> labels)
         {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (labels == null)
+            {
+                throw new ArgumentNullException(nameof(labels));
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var repos = await _client.GetGitRepositories(target.Owner);
-            var repo = repos.Single(x => x.name == target.Name);
+            var repo = repos.Single(x => x.name.Equals(target.Name, StringComparison.OrdinalIgnoreCase));
 
             var req = new PRRequest
             {
@@ -95,7 +120,7 @@ namespace NuKeeper.AzureDevOps
         public async Task<Repository> GetUserRepository(string projectName, string repositoryName)
         {
             var repos = await GetRepositoriesForOrganisation(projectName);
-            return repos.Single(x => x.Name == repositoryName);
+            return repos.Single(x => x.Name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
         }
 
         public Task<Repository> MakeUserFork(string owner, string repositoryName)
@@ -106,7 +131,7 @@ namespace NuKeeper.AzureDevOps
         public async Task<bool> RepositoryBranchExists(string projectName, string repositoryName, string branchName)
         {
             var repos = await _client.GetGitRepositories(projectName);
-            var repo = repos.Single(x => x.name == repositoryName);
+            var repo = repos.Single(x => x.name.Equals(repositoryName, StringComparison.OrdinalIgnoreCase));
             var refs = await _client.GetRepositoryRefs(projectName, repo.id);
             var count = refs.Count(x => x.name.EndsWith(branchName, StringComparison.OrdinalIgnoreCase));
             if (count > 0)
@@ -121,6 +146,11 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<SearchCodeResult> Search(SearchCodeRequest searchRequest)
         {
+            if (searchRequest == null)
+            {
+                throw new ArgumentNullException(nameof(searchRequest));
+            }
+
             var totalCount = 0;
             var repositoryFileNames = new List<string>();
             foreach (var repo in searchRequest.Repos)

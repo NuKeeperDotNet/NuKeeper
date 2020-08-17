@@ -21,7 +21,7 @@ namespace NuKeeper.AzureDevOps
             }
 
             _collaborationPlatform = collaborationPlatform;
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _forkMode = forkMode;
 
             _logger.Detailed($"FindPushFork. Fork Mode is {_forkMode}");
@@ -29,6 +29,11 @@ namespace NuKeeper.AzureDevOps
 
         public async Task<ForkData> FindPushFork(string userName, ForkData fallbackFork)
         {
+            if (fallbackFork == null)
+            {
+                throw new ArgumentNullException(nameof(fallbackFork));
+            }
+
             return await FindUpstreamRepoOnly(fallbackFork);
         }
 
