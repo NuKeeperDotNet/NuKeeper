@@ -64,6 +64,16 @@ namespace NuKeeper.Git.Tests
 
         private static void NormalizeAttributes(DirectoryInfo toNormalize)
         {
+            // Workaround for https://github.com/libgit2/libgit2sharp/issues/1726
+            // where libgit2sharp creates symlink directories
+            // Note, if symlinks = false in your gitconfig then this won't happen
+            var fileAttributes = File.GetAttributes(toNormalize.FullName);
+            if ((fileAttributes & FileAttributes.ReparsePoint) != 0)
+            {
+                Console.WriteLine($"Detected symbolic link in checkout directory '{toNormalize.FullName}'.  Will ignore and not normalize attributes");
+                return;
+            }
+
             FileInfo[] files = toNormalize.GetFiles();
             DirectoryInfo[] subdirectories = toNormalize.GetDirectories();
 
@@ -74,8 +84,6 @@ namespace NuKeeper.Git.Tests
 
             foreach (var subdirectory in subdirectories)
             {
-                // This checks the directory exists and is valid.
-                // This is to workaround it failing to normalise some subdirectories on Azure DevOps
                 if (Directory.Exists(subdirectory.FullName))
                 {
                     NormalizeAttributes(subdirectory);
