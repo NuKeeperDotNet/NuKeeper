@@ -16,6 +16,7 @@ using NuKeeper.Update;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Engine.Packages
@@ -26,6 +27,7 @@ namespace NuKeeper.Tests.Engine.Packages
         private ICollaborationFactory _collaborationFactory;
         private IExistingCommitFilter _existingCommitFilter;
         private IUpdateRunner _updateRunner;
+        private IGitDriver _gitDriver;
 
         [SetUp]
         public void Initialize()
@@ -33,6 +35,7 @@ namespace NuKeeper.Tests.Engine.Packages
             _collaborationFactory = Substitute.For<ICollaborationFactory>();
             _existingCommitFilter = Substitute.For<IExistingCommitFilter>();
             _updateRunner = Substitute.For<IUpdateRunner>();
+            _gitDriver = Substitute.For<IGitDriver>();
 
             _existingCommitFilter
                 .Filter(
@@ -41,7 +44,10 @@ namespace NuKeeper.Tests.Engine.Packages
                     Arg.Any<string>(),
                     Arg.Any<string>()
                 )
-                .Returns(ci => ((IReadOnlyCollection<PackageUpdateSet>)ci[1]));
+                .Returns(ci => (IReadOnlyCollection<PackageUpdateSet>)ci[1]);
+            _collaborationFactory.CollaborationPlatform
+                .PullRequestExists(Arg.Any<ForkData>(), Arg.Any<string>(), Arg.Any<string>())
+                .Returns(false);
         }
 
         [Test]
@@ -193,6 +199,47 @@ namespace NuKeeper.Tests.Engine.Packages
             Assert.That(thresholdReached, Is.False);
         }
 
+        [Test]
+        public async Task MakeUpdatePullRequests_WithReviewers_CreatesPullRequestWithReviewers()
+        {
+            var packageUpdater = MakePackageUpdater();
+            var expectedReviewers =
+                new List<string> { "nukeeper@nukeeper.nukeeper", "nukeeper2@nukeeper.nukeeper" };
+            var repositoryData = MakeRepositoryData();
+            var nugetSources = MakeNugetSources();
+            var packageUpdateSet = MakePackageUpdateSet();
+            var settings = MakeSettings();
+            settings.SourceControlServerSettings.Reviewers =
+                new List<string> { "nukeeper@nukeeper.nukeeper", "nukeeper2@nukeeper.nukeeper" };
+
+            await packageUpdater.MakeUpdatePullRequests(
+                _gitDriver,
+                repositoryData,
+                packageUpdateSet,
+                nugetSources,
+                settings
+            );
+
+            await _collaborationFactory
+                .CollaborationPlatform
+                .Received()
+                .OpenPullRequest(
+                    Arg.Any<ForkData>(),
+                    Arg.Is<PullRequestRequest>(
+                        pr => pr.Reviewers
+                            .Select(r => r.Name)
+                            .All(
+                                r => expectedReviewers
+                                    .Contains(
+                                        r,
+                                        StringComparer.InvariantCultureIgnoreCase
+                                    )
+                            )
+                    ),
+                    Arg.Any<IEnumerable<string>>()
+                );
+        }
+
         private PackageUpdater MakePackageUpdater()
         {
             return new PackageUpdater(
@@ -203,11 +250,46 @@ namespace NuKeeper.Tests.Engine.Packages
             );
         }
 
+        private static SettingsContainer MakeSettings()
+        {
+            return new SettingsContainer
+            {
+                UserSettings = new UserSettings
+                {
+                    MaxOpenPullRequests = 1
+                },
+                BranchSettings = new BranchSettings(),
+                SourceControlServerSettings = new SourceControlServerSettings
+                {
+                    Repository = new RepositorySettings()
+                }
+            };
+        }
+
+        private static IReadOnlyCollection<PackageUpdateSet> MakePackageUpdateSet()
+        {
+            return new List<PackageUpdateSet> { PackageUpdates.MakeUpdateSet("foo.bar") };
+        }
+
+        private static NuGetSources MakeNugetSources()
+        {
+            return new NuGetSources("");
+        }
+
         private static RepositoryData MakeRepositoryData()
         {
             return new RepositoryData(
-                new ForkData(new Uri("http://foo.com"), "me", "test"),
-                new ForkData(new Uri("http://foo.com"), "me", "test"));
+                new ForkData(
+                    new Uri("http://tfs.mycompany.com/tfs/DefaultCollection/MyProject/_git/MyRepository"),
+                    "MyProject",
+                    "MyRepository"
+                ),
+                new ForkData(
+                    new Uri("http://tfs.mycompany.com/tfs/DefaultCollection/MyProject/_git/MyRepository"),
+                    "MyProject",
+                    "MyRepository"
+                )
+            );
         }
 
         private static PackageUpdateSet MakePackageUpdateSet(string packageName, string version)
@@ -224,29 +306,6 @@ namespace NuKeeper.Tests.Engine.Packages
                     MakePackageInProject(packageName, version)
                 }
             );
-        }
-
-        private static SettingsContainer MakeSettings(
-            bool consolidateUpdates = false
-        )
-        {
-            return new SettingsContainer
-            {
-                SourceControlServerSettings = new SourceControlServerSettings
-                {
-                    Repository = new RepositorySettings()
-                },
-                UserSettings = new UserSettings
-                {
-                    ConsolidateUpdatesInSinglePullRequest = consolidateUpdates
-                },
-                BranchSettings = new BranchSettings(),
-                PackageFilters = new FilterSettings
-                {
-                    MaxPackageUpdates = 3,
-                    MinimumAge = new TimeSpan(7, 0, 0, 0),
-                }
-            };
         }
 
         private static PackageInProject MakePackageInProject(string packageName, string version)

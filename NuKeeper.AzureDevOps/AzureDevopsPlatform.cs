@@ -23,14 +23,19 @@ namespace NuKeeper.AzureDevOps
             _clientFactory = clientFactory;
         }
 
-        public void Initialise(AuthSettings settings)
+        protected virtual AzureDevOpsRestClient GetClient(AuthSettings settings)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            _client = new AzureDevOpsRestClient(_clientFactory, _logger, settings.Token, settings.ApiBase);
+            return new AzureDevOpsRestClient(_clientFactory, _logger, settings.Token, settings.ApiBase);
+        }
+
+        public void Initialise(AuthSettings settings)
+        {
+            _client = GetClient(settings);
         }
 
         public async Task<User> GetCurrentUser()
@@ -121,6 +126,41 @@ namespace NuKeeper.AzureDevOps
                     deleteSourceBranch = request.DeleteBranchAfterMerge
                 }
             };
+
+            if (request.Reviewers.Any())
+            {
+                try
+                {
+                    var teams = await _client.GetTeamsAsync(target.Owner);
+                    var teamMembersPerTeam = await Task.WhenAll(
+                        teams.Select(t => _client.GetTeamMembersAsync(target.Owner, t.id))
+                    );
+                    var teamMemberIds = teamMembersPerTeam
+                        .SelectMany(x => x)
+                        .Select(t => t.identity);
+
+                    var identities = await Task.WhenAll(
+                        teamMemberIds.Select(t => _client.GetUserAsync(t.id))
+                    );
+
+                    var reviewers = identities.Join(
+                        request.Reviewers,
+                        id => id.Mail,
+                        r => r.Name,
+                        (identity, r) => new { Id = identity.id, IsRequired = r.IsRequired },
+                        StringComparer.InvariantCultureIgnoreCase
+                    );
+
+                    req.reviewers = reviewers
+                        .Select(r => new IdentityRefWithVote { id = r.Id, isRequired = r.IsRequired })
+                        .ToArray();
+                }
+                catch (NuKeeperException ex)
+                {
+                    _logger.Error("Failed to add reviewers to pull request", ex);
+                    _logger.Normal("Continuing and creating pull request without reviewers");
+                }
+            }
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
 

@@ -117,37 +117,54 @@ namespace NuKeeper.AzureDevOps
 
         // documentation is confusing, I think this won't work without memberId or ownerId
         // https://docs.microsoft.com/en-us/rest/api/azure/devops/account/accounts/list?view=azure-devops-rest-6.0
-        public Task<Resource<Account>> GetCurrentUser()
+        public virtual Task<Resource<Account>> GetCurrentUser()
         {
             return GetResource<Resource<Account>>("/_apis/accounts");
         }
 
-        public Task<Resource<Account>> GetUserByMail(string email)
+        public virtual Task<Resource<Account>> GetUserByMail(string email)
         {
             var encodedEmail = HttpUtility.UrlEncode(email);
             return GetResource<Resource<Account>>($"/_apis/identities?searchFilter=MailAddress&filterValue={encodedEmail}");
         }
 
-        public async Task<IEnumerable<Project>> GetProjects()
+        public async virtual Task<IEnumerable<Project>> GetProjects()
         {
             var response = await GetResource<ProjectResource>("/_apis/projects");
             return response?.value.AsEnumerable();
         }
 
-        public async Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
+        public async virtual Task<IEnumerable<WebApiTeam>> GetTeamsAsync(string projectName)
+        {
+            var response = await GetResource<Resource<WebApiTeam>>($"_apis/projects/{projectName}/teams");
+            return response?.value.AsEnumerable();
+        }
+
+        public async virtual Task<IEnumerable<TeamMember>> GetTeamMembersAsync(string projectName, string teamName)
+        {
+            var response = await GetResource<Resource<TeamMember>>($"_apis/projects/{projectName}/teams/{teamName}/members");
+            return response?.value.AsEnumerable();
+        }
+
+        public async virtual Task<Identity> GetUserAsync(string id)
+        {
+            return await GetResource<Identity>($"_apis/identities/{id}");
+        }
+
+        public async virtual Task<IEnumerable<AzureRepository>> GetGitRepositories(string projectName)
         {
             var response = await GetResource<GitRepositories>($"{projectName}/_apis/git/repositories");
             return response?.value.AsEnumerable();
         }
 
-        public async Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName, string repositoryId)
+        public async virtual Task<IEnumerable<GitRefs>> GetRepositoryRefs(string projectName, string repositoryId)
         {
             var response = await GetResource<GitRefsResource>($"{projectName}/_apis/git/repositories/{repositoryId}/refs");
             return response?.value.AsEnumerable();
         }
 
         //https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pull%20requests/get%20pull%20requests?view=azure-devops-rest-5.0
-        public async Task<IEnumerable<PullRequest>> GetPullRequests(
+        public async virtual Task<IEnumerable<PullRequest>> GetPullRequests(
              string projectName,
              string azureRepositoryId,
              string headBranch,
@@ -170,25 +187,25 @@ namespace NuKeeper.AzureDevOps
             return response?.value.AsEnumerable();
         }
 
-        public async Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
+        public async virtual Task<PullRequest> CreatePullRequest(PRRequest request, string projectName, string azureRepositoryId)
         {
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PostResource<PullRequest>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests", content);
         }
 
-        public async Task<LabelResource> CreatePullRequestLabel(LabelRequest request, string projectName, string azureRepositoryId, int pullRequestId)
+        public async virtual Task<LabelResource> CreatePullRequestLabel(LabelRequest request, string projectName, string azureRepositoryId, int pullRequestId)
         {
             var labelContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PostResource<LabelResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}/labels", labelContent, true);
         }
 
-        public async Task<PullRequest> SetAutoComplete(PRRequest request, string projectName, string azureRepositoryId, int pullRequestId)
+        public async virtual Task<PullRequest> SetAutoComplete(PRRequest request, string projectName, string azureRepositoryId, int pullRequestId)
         {
             var autoCompleteContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PatchResource<PullRequest>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}", autoCompleteContent);
         }
-        
-        public async Task<IEnumerable<string>> GetGitRepositoryFileNames(string projectName, string azureRepositoryId)
+
+        public async virtual Task<IEnumerable<string>> GetGitRepositoryFileNames(string projectName, string azureRepositoryId)
         {
             var response = await GetResource<GitItemResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/items?recursionLevel=Full");
             return response?.value.Select(v => v.path).AsEnumerable();

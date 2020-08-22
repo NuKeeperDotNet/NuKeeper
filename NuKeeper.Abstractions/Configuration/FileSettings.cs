@@ -24,6 +24,7 @@ namespace NuKeeper.Abstractions.Configuration
         public string ExcludeRepos { get; set; }
 
         public List<string> Label { get; set; }
+        public List<string> Reviewers { get; set; }
 
         public string LogFile { get; set; }
 

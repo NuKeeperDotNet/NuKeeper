@@ -26,6 +26,7 @@ title: "Configuration"
 | fork             | f         | `repo`, `org`, `global`   | PreferFork (Github) <br/> SingleRepository (AzureDevOps) |
 | fork             | f         | `repo`, `org`, `global`   | PreferFork              |
 | label            | l         | `repo`, `org`, `global`   | 'nukeeper'              |
+| reviewer         | r         | `repo`, `org`, `global`   |                         |
 | maxpackageupdates| m         | `repo`, `org`, `global`, `update`| 3, or when the command is `update`, 1 |
 | maxopenpullrequests |           | `repo`, `org`, `global`| 1 if `consolidate`, else `maxpackageupdates` |
 | consolidate      | n         | `repo`, `org`, `global`   | false                   |
@@ -70,6 +71,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *api* This is the api endpoint for the instance you're targeting. If you are using an internal server and not a public one, you must set it to the api url for your server. The value will be e.g. `https://github.mycompany.com/api/v3`.
 * *fork* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below.
 * *label* Label to apply to GitHub pull requests. Can be specified multiple times.
+* *reviewer* Email address of the reviewer to add to the pull request. Can be specified multiple times. Currently only works for AzureDevops/TFS.
 * *maxpackageupdates* The maximum number of package updates to apply. In `repo`,`org` and `global` commands, this limits the number of updates per repository. If the `--consolidate` flag is used, these wll be consolidated into one Pull Request. If not, then there will be one Pull Request per update applied. In the `update` command, The default value is 1. When changed, multiple updates can be applied in a single `update` run, up to this number.
 * *maxopenpullrequests* The maximum number of pull requests that can be active in one repository at a time. If the `--consolidate` flag is used, the default value is 1. If not, then the default will be `maxpackageupdates`. This currently only works for AzureDevops/TFS.
 

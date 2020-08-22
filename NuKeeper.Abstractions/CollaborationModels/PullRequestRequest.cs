@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace NuKeeper.Abstractions.CollaborationModels
 {
     public class PullRequestRequest
@@ -19,5 +21,6 @@ namespace NuKeeper.Abstractions.CollaborationModels
         public string Body { get; set; }
         public bool DeleteBranchAfterMerge { get; set; }
         public bool SetAutoMerge { get; }
+        public List<Reviewer> Reviewers { get; } = new List<Reviewer>();
     }
 }

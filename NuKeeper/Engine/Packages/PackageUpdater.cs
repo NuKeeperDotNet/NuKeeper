@@ -24,7 +24,8 @@ namespace NuKeeper.Engine.Packages
             ICollaborationFactory collaborationFactory,
             IExistingCommitFilter existingCommitFilter,
             IUpdateRunner localUpdater,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger
+        )
         {
             _collaborationFactory = collaborationFactory;
             _existingCommitFilter = existingCommitFilter;
@@ -155,6 +156,14 @@ namespace NuKeeper.Engine.Packages
                     var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
                     var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge, settings.SourceControlServerSettings.Repository.SetAutoMerge) { Body = body };
+
+                    foreach (var reviewer in settings.SourceControlServerSettings?.Reviewers ?? Enumerable.Empty<string>())
+                    {
+                        pullRequestRequest.Reviewers.Add(new Reviewer
+                        {
+                            Name = reviewer
+                        });
+                    }
 
                     await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
 

@@ -41,6 +41,11 @@ namespace NuKeeper.Commands
                 "Label to apply to GitHub pull requests. Defaults to 'nukeeper'. Multiple labels can be provided by specifying this option multiple times.")]
         public List<string> Label { get; set; }
 
+        [Option(CommandOptionType.MultipleValue, ShortName = "r", LongName = "reviewer",
+            Description =
+                "Email address of reviewer to add to pull requests. Multiple reviewers can be provided by specifying this option multiple times.")]
+        public List<string> Reviewers { get; set; }
+
         [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "api",
             Description =
                 "Api Base Url. If you are using an internal server and not a public one, you must set it to the api url of your server.")]
@@ -140,6 +145,10 @@ namespace NuKeeper.Commands
             {
                 return deleteBranchAfterMergeValid;
             }
+
+            settings.SourceControlServerSettings.Reviewers = Concat.FirstPopulatedList(
+                Reviewers, fileSettings.Reviewers
+            );
 
             return ValidationResult.Success;
         }

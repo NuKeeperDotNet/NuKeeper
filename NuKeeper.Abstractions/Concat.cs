@@ -15,24 +15,9 @@ namespace NuKeeper.Abstractions
             return values.FirstOrDefault(i => i.HasValue) ?? default;
         }
 
-        public static IReadOnlyCollection<string> FirstPopulatedList(List<string> list1, List<string> list2, List<string> list3)
+        public static IReadOnlyCollection<string> FirstPopulatedList(params List<string>[] lists)
         {
-            if (HasElements(list1))
-            {
-                return list1;
-            }
-
-            if (HasElements(list2))
-            {
-                return list2;
-            }
-
-            if (HasElements(list3))
-            {
-                return list3;
-            }
-
-            return null;
+            return lists.FirstOrDefault(HasElements);
         }
 
         private static bool HasElements(List<string> strings)

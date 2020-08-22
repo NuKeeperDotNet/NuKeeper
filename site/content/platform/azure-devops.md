@@ -114,3 +114,15 @@ You can instruct nukeeper to not create more pull requests than allowed by speci
 nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}" <PAT> --maxopenpullrequests 10
 ```
 
+#### Adding reviewers to a pull request
+
+You can add reviewers to your pull request by specifying the `--reviewer` or `-r` option as many times as you like. It expects an email address. The user should be part of any of the teams that belong to the target project.
+
+```sh
+nukeeper repo "https://dev.azure.com/{org}/{project}/_git/{repo}" <PAT> -r nukeeper@company.com
+```
+
+The implementation currently depends on the [Teams](https://docs.microsoft.com/en-us/rest/api/azure/devops/core/teams?view=azure-devops-rest-6.0) and [Identities](https://docs.microsoft.com/en-us/rest/api/azure/devops/ims/?view=azure-devops-rest-6.0) APIs, and requires the following additional scopes:
+
++ `Team and Project`
++ `Profile`
