@@ -1,7 +1,5 @@
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using NSubstitute;
 using NuGet.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;

@@ -4,7 +4,6 @@ using System.Linq;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Inspection.Report.Formats;
-using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 
 namespace NuKeeper.Inspection.Tests.Report.Formats
