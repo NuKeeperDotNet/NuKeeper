@@ -18,7 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NuGet.Credentials" Version="5.6.0" />
-    <PackageReference Include="SimpleInjector" Version="4.10.2" />
+    <PackageReference Include="SimpleInjector" Version="5.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
