@@ -1,7 +1,6 @@
 using NuGet.Common;
 using NUnit.Framework;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.LogHelpers

@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using NuGet.Configuration;
-using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
 namespace NuKeeper.Inspection.NuGetApi

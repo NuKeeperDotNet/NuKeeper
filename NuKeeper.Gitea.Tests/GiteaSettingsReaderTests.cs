@@ -4,7 +4,6 @@ using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
-using NuKeeper.Gitea;
 using NUnit.Framework;
 
 namespace NuKeeper.Gitea.Tests
