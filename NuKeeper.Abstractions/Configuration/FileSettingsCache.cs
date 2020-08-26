@@ -4,10 +4,10 @@ namespace NuKeeper.Abstractions.Configuration
 {
     public class FileSettingsCache : IFileSettingsCache
     {
-        private readonly FileSettingsReader _reader;
+        private readonly IFileSettingsReader _reader;
         private FileSettings _settings;
 
-        public FileSettingsCache(FileSettingsReader reader)
+        public FileSettingsCache(IFileSettingsReader reader)
         {
             _reader = reader;
         }

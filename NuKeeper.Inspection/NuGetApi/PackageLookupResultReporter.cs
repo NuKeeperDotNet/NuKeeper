@@ -4,7 +4,7 @@ using NuKeeper.Abstractions.NuGetApi;
 
 namespace NuKeeper.Inspection.NuGetApi
 {
-    public class PackageLookupResultReporter
+    public class PackageLookupResultReporter : IPackageLookupResultReporter
     {
         private readonly INuKeeperLogger _logger;
 

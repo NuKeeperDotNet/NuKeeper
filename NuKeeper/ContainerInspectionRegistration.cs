@@ -24,17 +24,23 @@ namespace NuKeeper
             container.Register<ILogger, NuGetLogger>();
 
             container.Register<IDirectoryExclusions, DirectoryExclusions>();
-            container.Register<IFolder, Folder>();
             container.Register<IFolderFactory, FolderFactory>();
 
             container.Register<IPackageUpdatesLookup, PackageUpdatesLookup>();
             container.Register<IBulkPackageLookup, BulkPackageLookup>();
+            container.Register<IPackageLookupResultReporter, PackageLookupResultReporter>();
             container.Register<IPackageVersionsLookup, PackageVersionsLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
             container.Register<IRepositoryScanner, RepositoryScanner>();
 
+            container.Register<ProjectFileReader>();
+            container.Register<PackagesFileReader>();
+            container.Register<NuspecFileReader>();
+            container.Register<DirectoryBuildTargetsReader>();
+
             container.Register<IUpdateFinder, UpdateFinder>();
             container.Register<INuGetSourcesReader, NuGetSourcesReader>();
+            container.Register<INuGetConfigFileReader, NuGetConfigFileReader>();
 
             container.Register<IReporter, Reporter>();
             container.Register<IPackageUpdateSetSort, PackageUpdateSetSort>();
