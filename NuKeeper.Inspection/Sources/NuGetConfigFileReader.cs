@@ -8,7 +8,7 @@ using NuKeeper.Abstractions.NuGet;
 
 namespace NuKeeper.Inspection.Sources
 {
-    public class NuGetConfigFileReader
+    public class NuGetConfigFileReader : INuGetConfigFileReader
     {
         private readonly INuKeeperLogger _logger;
 
