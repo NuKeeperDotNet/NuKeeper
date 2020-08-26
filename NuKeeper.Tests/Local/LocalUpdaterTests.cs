@@ -25,7 +25,7 @@ namespace NuKeeper.Tests.Local
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
             var folder = Substitute.For<IFolder>();
-            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
+            var restorer = new SolutionRestore(Substitute.For<IFileRestoreCommand>());
 
             var updater = new LocalUpdater(selection, runner, restorer, logger);
 
@@ -50,7 +50,7 @@ namespace NuKeeper.Tests.Local
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
             var folder = Substitute.For<IFolder>();
-            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
+            var restorer = new SolutionRestore(Substitute.For<IFileRestoreCommand>());
 
             var updater = new LocalUpdater(selection, runner, restorer, logger);
 
@@ -76,7 +76,7 @@ namespace NuKeeper.Tests.Local
             var runner = Substitute.For<IUpdateRunner>();
             var logger = Substitute.For<INuKeeperLogger>();
             var folder = Substitute.For<IFolder>();
-            var restorer = new SolutionsRestore(Substitute.For<IFileRestoreCommand>());
+            var restorer = new SolutionRestore(Substitute.For<IFileRestoreCommand>());
 
             var updater = new LocalUpdater(selection, runner, restorer, logger);
 

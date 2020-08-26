@@ -22,7 +22,7 @@ namespace NuKeeper.Tests.Engine
 
             var packages = new List<PackageUpdateSet>();
 
-            var solutionRestore = new SolutionsRestore(cmd);
+            var solutionRestore = new SolutionRestore(cmd);
 
             await solutionRestore.CheckRestore(packages, folder, NuGetSources.GlobalFeed);
 
@@ -42,7 +42,7 @@ namespace NuKeeper.Tests.Engine
             var folder = Substitute.For<IFolder>();
             folder.Find(Arg.Any<string>()).Returns(new[] { sln });
 
-            var solutionRestore = new SolutionsRestore(cmd);
+            var solutionRestore = new SolutionRestore(cmd);
 
             await solutionRestore.CheckRestore(packages, folder, NuGetSources.GlobalFeed);
 
@@ -62,7 +62,7 @@ namespace NuKeeper.Tests.Engine
             var folder = Substitute.For<IFolder>();
             folder.Find(Arg.Any<string>()).Returns(new[] { sln });
 
-            var solutionRestore = new SolutionsRestore(cmd);
+            var solutionRestore = new SolutionRestore(cmd);
 
             await solutionRestore.CheckRestore(packages, folder, NuGetSources.GlobalFeed);
 
@@ -83,7 +83,7 @@ namespace NuKeeper.Tests.Engine
             var folder = Substitute.For<IFolder>();
             folder.Find(Arg.Any<string>()).Returns(new[] { sln1, sln2 });
 
-            var solutionRestore = new SolutionsRestore(cmd);
+            var solutionRestore = new SolutionRestore(cmd);
 
             await solutionRestore.CheckRestore(packages, folder, NuGetSources.GlobalFeed);
 
