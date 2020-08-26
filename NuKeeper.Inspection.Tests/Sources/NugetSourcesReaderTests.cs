@@ -15,7 +15,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 {
     public class NugetSourcesReaderTests
     {
-        private IFolder _uniqueTemporaryFolder = null;
+        private IFolder _uniqueTemporaryFolder;
 
         [SetUp] 
         public void Setup()
