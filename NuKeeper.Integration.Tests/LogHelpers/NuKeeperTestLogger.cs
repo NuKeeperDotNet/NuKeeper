@@ -26,7 +26,7 @@ namespace NuKeeper.Integration.Tests.LogHelpers
         {
             var test = TestContext.CurrentContext.Test.Name;
 
-            if (_buffer.Count > 0)
+            if (!_buffer.IsEmpty)
             {
                 TestContext.Error.WriteLine($"{test}: NuKeeper Log:");
                 while (_buffer.TryDequeue(out var line))

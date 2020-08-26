@@ -12,7 +12,7 @@ namespace NuKeeper.Update.Selection
     {
         private readonly INuKeeperLogger _logger;
         private FilterSettings _settings;
-        private DateTime? _maxPublishedDate = null;
+        private DateTime? _maxPublishedDate;
 
         public UpdateSelection(INuKeeperLogger logger)
         {
