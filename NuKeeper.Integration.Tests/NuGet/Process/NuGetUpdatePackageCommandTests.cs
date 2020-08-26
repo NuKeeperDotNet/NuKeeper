@@ -31,7 +31,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
         private readonly string _nugetConfig =
             @"<configuration><config><add key=""repositoryPath"" value="".\packages"" /></config></configuration>";
 
-        private IFolder _uniqueTemporaryFolder = null;
+        private IFolder _uniqueTemporaryFolder;
 
         [SetUp]
         public void Setup()
