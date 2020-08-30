@@ -59,7 +59,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Not.Empty);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.ContainsKey("foo"), Is.True);
+            Assert.That(results.ElementAt(0).Key.Id, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -106,10 +106,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 VersionChange.Major,
                 UsePrerelease.FromPrerelease);
 
+            var packages = results.Select(kvp => kvp.Key);
             Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(results.ContainsKey("foo"), Is.True);
-            Assert.That(results.ContainsKey("bar"), Is.True);
-            Assert.That(results.ContainsKey("fish"), Is.False);
+            Assert.That(packages, Has.Some.Matches<PackageIdentity>(pi => pi.Id == "foo"));
+            Assert.That(packages, Has.Some.Matches<PackageIdentity>(pi => pi.Id == "bar"));
+            Assert.That(packages, Has.None.Matches<PackageIdentity>(pi => pi.Id == "fish"));
         }
 
         [Test]
@@ -163,9 +164,10 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)),
                 Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
 
+            var packages = results.Select(kvp => kvp.Key);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.ContainsKey("foo"), Is.True);
-            Assert.That(results.ContainsKey("bar"), Is.False);
+            Assert.That(packages, Has.Some.Matches<PackageIdentity>(pi => pi.Id == "foo"));
+            Assert.That(packages, Has.None.Matches<PackageIdentity>(pi => pi.Id == "bar"));
         }
 
         private static void ApiHasNewVersionForPackage(IApiPackageLookup lookup, string packageName)
