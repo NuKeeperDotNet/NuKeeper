@@ -15,23 +15,20 @@ namespace NuKeeper.BitBucketLocal
     public class BitBucketLocalPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IHttpClientFactory _clientFactory;
         private AuthSettings _settings;
         private BitbucketLocalRestClient _client;
 
-        public BitBucketLocalPlatform(INuKeeperLogger nuKeeperLogger)
+        public BitBucketLocalPlatform(INuKeeperLogger nuKeeperLogger, IHttpClientFactory clientFactory)
         {
             _logger = nuKeeperLogger;
+            _clientFactory = clientFactory;
         }
 
         public void Initialise(AuthSettings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri($"{settings.ApiBase.Scheme}://{settings.ApiBase.Authority}")
-            };
-
-            _client = new BitbucketLocalRestClient(httpClient, _logger, settings.Username, settings.Token);
+            _client = new BitbucketLocalRestClient(_clientFactory, _logger, settings.Username, settings.Token, settings.ApiBase);
         }
 
         public Task<User> GetCurrentUser()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -31,7 +32,10 @@ namespace NuKeeper.Tests.Engine
 
             var readers = new List<ISettingsReader> { settingReader1, settingReader2 };
             var logger = Substitute.For<INuKeeperLogger>();
-            return new CollaborationFactory(readers, logger);
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(new HttpClient());
+
+            return new CollaborationFactory(readers, logger, httpClientFactory);
         }
 
         [Test]

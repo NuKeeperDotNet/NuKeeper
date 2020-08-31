@@ -15,7 +15,11 @@ using NuKeeper.Local;
 using NuKeeper.Update.Selection;
 using SimpleInjector;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NuKeeper.Commands;
 using NuKeeper.Update.Process;
 
@@ -27,12 +31,38 @@ namespace NuKeeper
         {
             var container = new Container();
 
+            RegisterHttpClient(container);
+
             Register(container);
             RegisterCommands(container);
             ContainerInspectionRegistration.Register(container);
             ContainerUpdateRegistration.Register(container);
 
+            container.Verify();
+
             return container;
+        }
+
+        private static void RegisterHttpClient(Container container)
+        {
+            var services = new ServiceCollection();
+            services.AddHttpClient(Options.DefaultName)
+                .ConfigurePrimaryHttpMessageHandler(serviceProvider =>
+                {
+                    var httpMessageHandler = new HttpClientHandler();
+                    if (httpMessageHandler.SupportsAutomaticDecompression)
+                    {
+                        // TODO: change to All when moving to .NET 5.0
+                        httpMessageHandler.AutomaticDecompression =
+                            DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    }
+
+                    return httpMessageHandler;
+                });
+            services
+                .AddSimpleInjector(container)
+                .BuildServiceProvider(validateScopes: true)
+                .UseSimpleInjector(container);
         }
 
         private static void RegisterCommands(Container container)

@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -20,7 +21,9 @@ namespace NuKeeper.Gitea.Tests
         {
             _environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
             _gitDiscovery = Substitute.For<IGitDiscoveryDriver>();
-            _giteaSettingsReader = new GiteaSettingsReader(_gitDiscovery, _environmentVariablesProvider);
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(new HttpClient());
+            _giteaSettingsReader = new GiteaSettingsReader(_gitDiscovery, _environmentVariablesProvider, httpClientFactory);
         }
 
         [Test]

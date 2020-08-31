@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using NUnit.Framework;
 using NSubstitute;
 using NuKeeper.Abstractions.Configuration;
@@ -12,7 +13,10 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public void Initialise()
         {
-            var platform = new AzureDevOpsPlatform(Substitute.For<INuKeeperLogger>());
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(new HttpClient());
+
+            var platform = new AzureDevOpsPlatform(Substitute.For<INuKeeperLogger>(), httpClientFactory);
             platform.Initialise(new AuthSettings(new Uri("https://uri.com"), "token"));
         }
     }

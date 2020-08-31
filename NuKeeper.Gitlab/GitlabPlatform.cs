@@ -16,11 +16,13 @@ namespace NuKeeper.Gitlab
     public class GitlabPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IHttpClientFactory _clientFactory;
         private GitlabRestClient _client;
 
-        public GitlabPlatform(INuKeeperLogger logger)
+        public GitlabPlatform(INuKeeperLogger logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            _clientFactory = clientFactory;
         }
 
         public void Initialise(AuthSettings settings)
@@ -30,11 +32,7 @@ namespace NuKeeper.Gitlab
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            var httpClient = new HttpClient
-            {
-                BaseAddress = settings.ApiBase
-            };
-            _client = new GitlabRestClient(httpClient, settings.Token, _logger);
+            _client = new GitlabRestClient(_clientFactory, settings.Token, _logger, settings.ApiBase);
         }
 
         public async Task<User> GetCurrentUser()

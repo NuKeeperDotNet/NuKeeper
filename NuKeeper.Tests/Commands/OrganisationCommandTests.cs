@@ -10,6 +10,7 @@ using NuKeeper.Inspection.Logging;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.AzureDevOps;
@@ -23,9 +24,13 @@ namespace NuKeeper.Tests.Commands
         {
             var environmentVariablesProvider = Substitute.For<IEnvironmentVariablesProvider>();
 
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(new HttpClient());
+
             return new CollaborationFactory(
                 new ISettingsReader[] { createSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
-                Substitute.For<INuKeeperLogger>()
+                Substitute.For<INuKeeperLogger>(),
+                httpClientFactory
             );
         }
 
