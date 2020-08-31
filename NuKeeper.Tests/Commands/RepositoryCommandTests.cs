@@ -548,7 +548,8 @@ namespace NuKeeper.Tests.Commands
         {
             return new CollaborationFactory(
                 settingReaders ?? new ISettingsReader[] { new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
-                Substitute.For<INuKeeperLogger>()
+                Substitute.For<INuKeeperLogger>(),
+                null
             );
         }
     }
