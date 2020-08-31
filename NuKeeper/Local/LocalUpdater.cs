@@ -18,18 +18,18 @@ namespace NuKeeper.Local
     {
         private readonly IUpdateSelection _selection;
         private readonly IUpdateRunner _updateRunner;
-        private readonly SolutionsRestore _solutionsRestore;
+        private readonly ISolutionRestore _solutionRestore;
         private readonly INuKeeperLogger _logger;
 
         public LocalUpdater(
             IUpdateSelection selection,
             IUpdateRunner updateRunner,
-            SolutionsRestore solutionsRestore,
+            ISolutionRestore solutionRestore,
             INuKeeperLogger logger)
         {
             _selection = selection;
             _updateRunner = updateRunner;
-            _solutionsRestore = solutionsRestore;
+            _solutionRestore = solutionRestore;
             _logger = logger;
         }
 
@@ -63,7 +63,7 @@ namespace NuKeeper.Local
 
         private async Task ApplyUpdates(IReadOnlyCollection<PackageUpdateSet> updates, IFolder workingFolder, NuGetSources sources)
         {
-            await _solutionsRestore.CheckRestore(updates, workingFolder, sources);
+            await _solutionRestore.CheckRestore(updates, workingFolder, sources);
 
             foreach (var update in updates)
             {

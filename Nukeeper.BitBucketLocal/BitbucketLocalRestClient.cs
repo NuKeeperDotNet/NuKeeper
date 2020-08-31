@@ -14,7 +14,7 @@ using NuKeeper.BitBucketLocal.Models;
 
 namespace NuKeeper.BitBucketLocal
 {
-    public class BitbucketLocalRestClient
+    internal class BitbucketLocalRestClient
     {
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -27,11 +27,13 @@ namespace NuKeeper.BitBucketLocal
         private const string ApiPath = @"rest/api/1.0";
         private const string ApiReviewersPath = @"rest/default-reviewers/1.0";
 
-        public BitbucketLocalRestClient(HttpClient client, INuKeeperLogger logger, string username, string appPassword)
+        public BitbucketLocalRestClient(IHttpClientFactory clientFactory, INuKeeperLogger logger, string username,
+            string appPassword, Uri apiBaseAddress)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
+            _client = clientFactory.CreateClient();
+            _client.BaseAddress = new Uri($"{apiBaseAddress.Scheme}://{apiBaseAddress.Authority}");
             var byteArray = Encoding.ASCII.GetBytes($"{username}:{appPassword}");
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -21,6 +22,7 @@ namespace NuKeeper.Collaboration
     {
         private readonly IEnumerable<ISettingsReader> _settingReaders;
         private readonly INuKeeperLogger _nuKeeperLogger;
+        private readonly IHttpClientFactory _httpClientFactory;
         private Platform? _platform;
 
         public IForkFinder ForkFinder { get; private set; }
@@ -34,10 +36,11 @@ namespace NuKeeper.Collaboration
         public CollaborationPlatformSettings Settings { get; }
 
         public CollaborationFactory(IEnumerable<ISettingsReader> settingReaders,
-            INuKeeperLogger nuKeeperLogger)
+            INuKeeperLogger nuKeeperLogger, IHttpClientFactory httpClientFactory)
         {
             _settingReaders = settingReaders;
             _nuKeeperLogger = nuKeeperLogger;
+            _httpClientFactory = httpClientFactory;
             Settings = new CollaborationPlatformSettings();
         }
 
@@ -133,7 +136,7 @@ namespace NuKeeper.Collaboration
             switch (_platform.Value)
             {
                 case Platform.AzureDevOps:
-                    CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new AzureDevOpsPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new AzureDevOpsRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings.Token);
                     ForkFinder = new AzureDevOpsForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
 
@@ -150,28 +153,28 @@ namespace NuKeeper.Collaboration
                     break;
 
                 case Platform.Bitbucket:
-                    CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new BitbucketCommitWorder();
                     break;
 
                 case Platform.BitbucketLocal:
-                    CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.GitLab:
-                    CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.Gitea:
-                    CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GiteaRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GiteaForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();

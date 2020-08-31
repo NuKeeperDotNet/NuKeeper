@@ -63,7 +63,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
   <Import Project=""$(MSBuildToolsPath)\Microsoft.CSharp.targets"" />
 </Project>";
 
-        private IFolder _uniqueTemporaryFolder = null;
+        private IFolder _uniqueTemporaryFolder;
 
         [SetUp]
         public void Setup()

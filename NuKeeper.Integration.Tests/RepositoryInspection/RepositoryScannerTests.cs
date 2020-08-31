@@ -48,7 +48,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
   </ItemGroup>
 </Project>";
 
-        private IFolder _uniqueTemporaryFolder = null;
+        private IFolder _uniqueTemporaryFolder;
 
         [SetUp]
         public void Setup()

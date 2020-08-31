@@ -13,7 +13,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
     [TestFixture]
     public class FileSettingsReaderTests
     {
-        private string _uniqueTemporaryFolder = null;
+        private string _uniqueTemporaryFolder;
 
         [SetUp]
         public void Setup()

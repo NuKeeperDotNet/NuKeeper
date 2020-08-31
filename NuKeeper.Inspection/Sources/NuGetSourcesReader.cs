@@ -6,11 +6,11 @@ namespace NuKeeper.Inspection.Sources
 {
     public class NuGetSourcesReader : INuGetSourcesReader
     {
-        private readonly NuGetConfigFileReader _reader;
+        private readonly INuGetConfigFileReader _reader;
         private readonly INuKeeperLogger _logger;
 
         public NuGetSourcesReader(
-            NuGetConfigFileReader reader,
+            INuGetConfigFileReader reader,
             INuKeeperLogger logger)
         {
             _reader = reader;

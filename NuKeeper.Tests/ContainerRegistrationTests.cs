@@ -14,9 +14,10 @@ namespace NuKeeper.Tests
         {
             var container = ContainerRegistration.Init();
 
-            var engine = container.GetInstance<CollaborationEngine>();
+            var engine = container.GetInstance<ICollaborationEngine>();
 
             Assert.That(engine, Is.Not.Null);
+            Assert.That(engine, Is.TypeOf<CollaborationEngine>());
         }
 
         [Test]
@@ -24,9 +25,10 @@ namespace NuKeeper.Tests
         {
             var container = ContainerRegistration.Init();
 
-            var inspector = container.GetInstance<LocalEngine>();
+            var inspector = container.GetInstance<ILocalEngine>();
 
             Assert.That(inspector, Is.Not.Null);
+            Assert.That(inspector, Is.TypeOf<LocalEngine>());
         }
 
         [TestCase(typeof(InspectCommand))]

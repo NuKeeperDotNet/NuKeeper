@@ -4,7 +4,7 @@ using NuKeeper.Abstractions.Logging;
 
 namespace NuKeeper.Abstractions.Configuration
 {
-    public class FileSettingsReader
+    public class FileSettingsReader : IFileSettingsReader
     {
         private readonly INuKeeperLogger _logger;
 
