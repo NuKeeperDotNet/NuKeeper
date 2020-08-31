@@ -28,6 +28,10 @@ namespace NuKeeper.Commands
             Description = "The maximum number of package updates to apply on one repository. Defaults to 3.")]
         public int? MaxPackageUpdates { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "maxopenpullrequests",
+            Description = "The maximum number of open pull requests for one repository. Defaults to 1 if `--consolidate` is specified, otherwise defaults to `--maxpackageupdates`.")]
+        public int? MaxOpenPullRequests { get; set; }
+
         [Option(CommandOptionType.NoValue, ShortName = "n", LongName = "consolidate",
             Description = "Consolidate updates into a single pull request. Defaults to false.")]
         public bool? Consolidate { get; set; }
@@ -106,12 +110,25 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure("The required access token was not found");
             }
 
-            settings.UserSettings.ConsolidateUpdatesInSinglePullRequest =
+            var consolidate = 
                 Concat.FirstValue(Consolidate, fileSettings.Consolidate, false);
 
+            settings.UserSettings.ConsolidateUpdatesInSinglePullRequest = consolidate;
+
             const int defaultMaxPackageUpdates = 3;
-            settings.PackageFilters.MaxPackageUpdates =
+            var maxPackageUpdates = 
                 Concat.FirstValue(MaxPackageUpdates, fileSettings.MaxPackageUpdates, defaultMaxPackageUpdates);
+
+            settings.PackageFilters.MaxPackageUpdates = maxPackageUpdates;
+
+            const int defaultMaxOpenPullRequests = 1;
+            settings.UserSettings.MaxOpenPullRequests = Concat.FirstValue(
+                MaxOpenPullRequests,
+                fileSettings.MaxOpenPullRequests,
+                consolidate ?
+                    defaultMaxOpenPullRequests
+                    : maxPackageUpdates
+            );
 
             var defaultLabels = new List<string> { "nukeeper" };
 

@@ -139,5 +139,10 @@ namespace NuKeeper.BitBucket
                     new Uri(repo.links.html.href),
                     null, false, null);
         }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

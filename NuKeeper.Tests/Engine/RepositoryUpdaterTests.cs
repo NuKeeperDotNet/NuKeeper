@@ -1,5 +1,8 @@
 using NSubstitute;
-using NuKeeper.Abstractions;
+using NUnit.Framework;
+using NuGet.Configuration;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -7,25 +10,55 @@ using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
+using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Abstractions.RepositoryInspection;
-using NuKeeper.Engine;
+using NuKeeper.Abstractions;
 using NuKeeper.Engine.Packages;
-using NuKeeper.Inspection;
+using NuKeeper.Engine;
 using NuKeeper.Inspection.Report;
+using NuKeeper.Inspection.Sort;
 using NuKeeper.Inspection.Sources;
-using NuKeeper.Update;
+using NuKeeper.Inspection;
 using NuKeeper.Update.Process;
-using NUnit.Framework;
-using System;
+using NuKeeper.Update.Selection;
+using NuKeeper.Update;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System;
 
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
     public class RepositoryUpdaterTests
     {
+        private INuGetSourcesReader _sourcesReader;
+        private INuKeeperLogger _nukeeperLogger;
+        private IUpdateFinder _updateFinder;
+        private IPackageUpdater _packageUpdater;
+        private List<PackageUpdateSet> _packagesToReturn;
+
+        [SetUp]
+        public void Initialize()
+        {
+            _packagesToReturn = new List<PackageUpdateSet>();
+
+            _sourcesReader = Substitute.For<INuGetSourcesReader>();
+            _nukeeperLogger = Substitute.For<INuKeeperLogger>();
+            _updateFinder = Substitute.For<IUpdateFinder>();
+            _packageUpdater = Substitute.For<IPackageUpdater>();
+            _updateFinder
+                .FindPackageUpdateSets(
+                    Arg.Any<IFolder>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<VersionChange>(),
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<Regex>()
+                )
+                .Returns(_packagesToReturn);
+        }
+
         [Test]
         public async Task WhenThereAreNoUpdates_CountIsZero()
         {
@@ -85,7 +118,14 @@ namespace NuKeeper.Tests.Engine
         [TestCase(1, 0, false, false, 1, 1)]
         [TestCase(1, 1, false, false, 0, 0)]
 
-        public async Task WhenThereAreUpdates_CountIsAsExpected(int numberOfUpdates, int existingCommitsPerBranch, bool consolidateUpdates, bool pullRequestExists, int expectedUpdates, int expectedPrs)
+        public async Task WhenThereAreUpdates_CountIsAsExpected(
+            int numberOfUpdates,
+            int existingCommitsPerBranch,
+            bool consolidateUpdates,
+            bool pullRequestExists,
+            int expectedUpdates,
+            int expectedPrs
+        )
         {
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
@@ -160,6 +200,101 @@ namespace NuKeeper.Tests.Engine
             await AssertDidNotReceiveMakeUpdate(packageUpdater);
         }
 
+        [Test]
+        public async Task Run_TwoUpdatesOneExistingPrAndMaxOpenPrIsGreaterThanOne_CreatesPrForSecondUpdate()
+        {
+            _packagesToReturn.Add(MakePackageUpdateSet("foo.bar", "1.0.0"));
+            _packagesToReturn.Add(MakePackageUpdateSet("notfoo.bar", "2.0.0"));
+            _packageUpdater
+                .MakeUpdatePullRequests(
+                    Arg.Any<IGitDriver>(),
+                    Arg.Any<RepositoryData>(),
+                    Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<SettingsContainer>()
+                )
+                .Returns((0, false), (1, false));
+            var repoData = MakeRepositoryData();
+            var settings = MakeSettings();
+            settings.UserSettings.MaxOpenPullRequests = 2;
+            settings.PackageFilters.MaxPackageUpdates = 1;
+            var sut = MakeRepositoryUpdater();
+
+            var result = await sut.Run(Substitute.For<IGitDriver>(), repoData, settings);
+
+            Assert.That(result, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task Run_MultipleUpdatesMaxPackageUpdatesIsOne_StillOnlyCreatesOnePr()
+        {
+            _packagesToReturn.Add(MakePackageUpdateSet("foo.bar", "1.0.0"));
+            _packagesToReturn.Add(MakePackageUpdateSet("notfoo.bar", "2.0.0"));
+            _packagesToReturn.Add(MakePackageUpdateSet("baz.bar", "3.0.0"));
+            _packageUpdater
+                .MakeUpdatePullRequests(
+                    Arg.Any<IGitDriver>(),
+                    Arg.Any<RepositoryData>(),
+                    Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<NuGetSources>(),
+                    Arg.Any<SettingsContainer>()
+                )
+                .Returns(ci => (((IReadOnlyCollection<PackageUpdateSet>)ci[2]).Count, false));
+            var repoData = MakeRepositoryData();
+            var settings = MakeSettings();
+            settings.UserSettings.MaxOpenPullRequests = 10;
+            settings.PackageFilters.MaxPackageUpdates = 1;
+            var sut = MakeRepositoryUpdater();
+
+            var result = await sut.Run(Substitute.For<IGitDriver>(), repoData, settings);
+
+            Assert.That(result, Is.EqualTo(1));
+        }
+
+        private static PackageUpdateSet MakePackageUpdateSet(string packageName, string version)
+        {
+            return new PackageUpdateSet(
+                new PackageLookupResult(
+                    VersionChange.Major,
+                    MakePackageSearchMetadata(packageName, version),
+                    null,
+                    null
+                ),
+                new List<PackageInProject>
+                {
+                    MakePackageInProject(packageName, version)
+                }
+            );
+        }
+
+        private static PackageInProject MakePackageInProject(string packageName, string version)
+        {
+            return new PackageInProject(
+                new PackageVersionRange(
+                    packageName,
+                    VersionRange.Parse(version)
+                ),
+                new PackagePath(
+                    "projectA",
+                    "MyFolder",
+                    PackageReferenceType.PackagesConfig
+                )
+            );
+        }
+
+        private static PackageSearchMetadata MakePackageSearchMetadata(string packageName, string version)
+        {
+            return new PackageSearchMetadata(
+                new PackageIdentity(
+                    packageName,
+                    NuGetVersion.Parse(version)
+                ),
+                new PackageSource("https://api.nuget.com/v3/"),
+                new DateTimeOffset(2019, 1, 12, 0, 0, 0, TimeSpan.Zero),
+                null
+            );
+        }
+
         private static async Task AssertReceivedMakeUpdate(
             IPackageUpdater packageUpdater,
             int count)
@@ -203,7 +338,9 @@ namespace NuKeeper.Tests.Engine
                 .Returns(new List<PackageUpdateSet>());
         }
 
-        private static SettingsContainer MakeSettings(bool consolidateUpdates = false)
+        private static SettingsContainer MakeSettings(
+            bool consolidateUpdates = false
+        )
         {
             return new SettingsContainer
             {
@@ -213,14 +350,22 @@ namespace NuKeeper.Tests.Engine
                 },
                 UserSettings = new UserSettings
                 {
+                    MaxOpenPullRequests = int.MaxValue,
                     ConsolidateUpdatesInSinglePullRequest = consolidateUpdates
                 },
-                BranchSettings = new BranchSettings()
+                BranchSettings = new BranchSettings(),
+                PackageFilters = new FilterSettings
+                {
+                    MaxPackageUpdates = 3,
+                    MinimumAge = new TimeSpan(7, 0, 0, 0),
+                }
             };
         }
 
-        private static
-            (IRepositoryUpdater repositoryUpdater, IPackageUpdater packageUpdater) MakeRepositoryUpdater(
+        private static (
+            IRepositoryUpdater repositoryUpdater,
+            IPackageUpdater packageUpdater
+        ) MakeRepositoryUpdater(
             IPackageUpdateSelection updateSelection,
             List<PackageUpdateSet> updates,
             IPackageUpdater packageUpdater = null)
@@ -246,7 +391,7 @@ namespace NuKeeper.Tests.Engine
                         Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                         Arg.Any<NuGetSources>(),
                         Arg.Any<SettingsContainer>())
-                    .Returns(1);
+                    .Returns((1, false));
             }
 
             var repoUpdater = new RepositoryUpdater(
@@ -255,6 +400,25 @@ namespace NuKeeper.Tests.Engine
                 reporter);
 
             return (repoUpdater, packageUpdater);
+        }
+
+        private RepositoryUpdater MakeRepositoryUpdater()
+        {
+            var packageUpdateSelector = new PackageUpdateSelection(
+                new PackageUpdateSetSort(_nukeeperLogger),
+                new UpdateSelection(_nukeeperLogger),
+                _nukeeperLogger
+            );
+
+            return new RepositoryUpdater(
+                _sourcesReader,
+                _updateFinder,
+                packageUpdateSelector,
+                _packageUpdater,
+                _nukeeperLogger,
+                Substitute.For<ISolutionRestore>(),
+                Substitute.For<IReporter>()
+            );
         }
 
         private static RepositoryData MakeRepositoryData()

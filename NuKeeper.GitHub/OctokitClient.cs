@@ -263,5 +263,10 @@ namespace NuKeeper.GitHub
                 throw new NuKeeperException(ex.Message, ex);
             }
         }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
+        }
     }
 }
