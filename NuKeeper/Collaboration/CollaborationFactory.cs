@@ -153,28 +153,28 @@ namespace NuKeeper.Collaboration
                     break;
 
                 case Platform.Bitbucket:
-                    CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new BitbucketCommitWorder();
                     break;
 
                 case Platform.BitbucketLocal:
-                    CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.GitLab:
-                    CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();
                     break;
 
                 case Platform.Gitea:
-                    CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger);
+                    CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GiteaRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GiteaForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
                     CommitWorder = new DefaultCommitWorder();

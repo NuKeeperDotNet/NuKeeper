@@ -18,11 +18,12 @@ namespace NuKeeper.Gitlab
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
 
-        public GitlabRestClient(HttpClient client, string token, INuKeeperLogger logger)
+        public GitlabRestClient(IHttpClientFactory clientFactory, string token, INuKeeperLogger logger, Uri apiBaseAddress)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
+            _client = clientFactory.CreateClient();
+            _client.BaseAddress = apiBaseAddress;
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add("Private-Token", token);
         }
