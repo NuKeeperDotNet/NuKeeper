@@ -14,6 +14,7 @@ To get a token for your *account* go to [**settings -> developer settings -> per
 1. Give it the following access rights:
   - Repo command: 
     - [x] Repo
+    - [x] user:email
   - Organisation command and Global command:
     - [x] Admin:org (read)
     - [x] Admin:public_key (read)  
