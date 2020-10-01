@@ -7,7 +7,6 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.RepositoryInspection;
 using NUnit.Framework;
 using NuKeeper.Abstractions.RepositoryInspection;
 

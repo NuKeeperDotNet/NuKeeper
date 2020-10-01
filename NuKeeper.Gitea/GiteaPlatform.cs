@@ -14,11 +14,13 @@ namespace NuKeeper.Gitea
     public class GiteaPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IHttpClientFactory _clientFactory;
         private GiteaRestClient _client;
 
-        public GiteaPlatform(INuKeeperLogger logger)
+        public GiteaPlatform(INuKeeperLogger logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            _clientFactory = clientFactory;
         }
 
         public void Initialise(AuthSettings settings)
@@ -28,12 +30,7 @@ namespace NuKeeper.Gitea
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            var httpClient = new HttpClient
-            {
-                BaseAddress = settings.ApiBase
-            };
-
-            _client = new GiteaRestClient(httpClient, settings.Token, _logger);
+            _client = new GiteaRestClient(_clientFactory, settings.Token, _logger, settings.ApiBase);
         }
 
         public async Task<User> GetCurrentUser()

@@ -1,7 +1,5 @@
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using NSubstitute;
 using NuGet.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
@@ -15,7 +13,7 @@ namespace NuKeeper.Inspection.Tests.Sources
 {
     public class NugetSourcesReaderTests
     {
-        private IFolder _uniqueTemporaryFolder = null;
+        private IFolder _uniqueTemporaryFolder;
 
         [SetUp] 
         public void Setup()

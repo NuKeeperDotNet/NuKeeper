@@ -1,5 +1,4 @@
 using NuKeeper.Abstractions.Logging;
-using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
 using NUnit.Framework;

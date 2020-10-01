@@ -1,7 +1,6 @@
 using NuGet.Common;
 using NUnit.Framework;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NuKeeper.Integration.Tests.LogHelpers
@@ -26,7 +25,7 @@ namespace NuKeeper.Integration.Tests.LogHelpers
         {
             var test = TestContext.CurrentContext.Test.Name;
 
-            if (_buffer.Count > 0)
+            if (!_buffer.IsEmpty)
             {
                 TestContext.Error.WriteLine($"{test}: NuKeeper Log:");
                 while (_buffer.TryDequeue(out var line))

@@ -21,11 +21,13 @@ namespace NuKeeper.BitBucket
         private readonly HttpClient _client;
         private readonly INuKeeperLogger _logger;
 
-        public BitbucketRestClient(HttpClient client, INuKeeperLogger logger, string username, string appPassword)
+        public BitbucketRestClient(IHttpClientFactory clientFactory, INuKeeperLogger logger, string username,
+            string appPassword, Uri apiBaseAddress)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger;
 
+            _client = clientFactory.CreateClient();
+            _client.BaseAddress = apiBaseAddress;
             var byteArray = Encoding.ASCII.GetBytes($"{username}:{appPassword}");
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));

@@ -12,11 +12,11 @@ namespace NuKeeper.Inspection.NuGetApi
     public class BulkPackageLookup : IBulkPackageLookup
     {
         private readonly IApiPackageLookup _packageLookup;
-        private readonly PackageLookupResultReporter _lookupReporter;
+        private readonly IPackageLookupResultReporter _lookupReporter;
 
         public BulkPackageLookup(
             IApiPackageLookup packageLookup,
-            PackageLookupResultReporter lookupReporter)
+            IPackageLookupResultReporter lookupReporter)
         {
             _packageLookup = packageLookup;
             _lookupReporter = lookupReporter;

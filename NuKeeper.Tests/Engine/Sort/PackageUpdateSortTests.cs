@@ -9,7 +9,6 @@ using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
-using NuKeeper.Inspection.RepositoryInspection;
 using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Tests.Engine.Sort

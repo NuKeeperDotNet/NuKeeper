@@ -17,10 +17,13 @@ namespace NuKeeper.Gitea
         private const string UrlPattern = "https://yourgiteaserver/{owner}/{repo}.git";
         private const string ApiBaseAdress = "api/v1/";
         private readonly IGitDiscoveryDriver _gitDriver;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public GiteaSettingsReader(IGitDiscoveryDriver gitDiscoveryDriver, IEnvironmentVariablesProvider environmentVariablesProvider)
+        public GiteaSettingsReader(IGitDiscoveryDriver gitDiscoveryDriver, IEnvironmentVariablesProvider environmentVariablesProvider,
+            IHttpClientFactory clientFactory)
         {
             _environmentVariablesProvider = environmentVariablesProvider;
+            _clientFactory = clientFactory;
             _gitDriver = gitDiscoveryDriver;
         }
 
@@ -34,11 +37,8 @@ namespace NuKeeper.Gitea
             try
             {
                 // There is no real identifier for gitea repos so try to get the gitea swagger json
-                var client = new HttpClient()
-                {
-                    BaseAddress = GetBaseAddress(repositoryUri)
-                };
-
+                var client = _clientFactory.CreateClient();
+                client.BaseAddress = GetBaseAddress(repositoryUri);
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
 

@@ -13,11 +13,13 @@ namespace NuKeeper.AzureDevOps
     public class AzureDevOpsPlatform : ICollaborationPlatform
     {
         private readonly INuKeeperLogger _logger;
+        private readonly IHttpClientFactory _clientFactory;
         private AzureDevOpsRestClient _client;
 
-        public AzureDevOpsPlatform(INuKeeperLogger logger)
+        public AzureDevOpsPlatform(INuKeeperLogger logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            _clientFactory = clientFactory;
         }
 
         public void Initialise(AuthSettings settings)
@@ -27,11 +29,7 @@ namespace NuKeeper.AzureDevOps
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            var httpClient = new HttpClient
-            {
-                BaseAddress = settings.ApiBase
-            };
-            _client = new AzureDevOpsRestClient(httpClient, _logger, settings.Token);
+            _client = new AzureDevOpsRestClient(_clientFactory, _logger, settings.Token, settings.ApiBase);
         }
 
         public Task<User> GetCurrentUser()

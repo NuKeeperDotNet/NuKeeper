@@ -21,7 +21,7 @@ namespace NuKeeper.Engine
         private readonly IPackageUpdateSelection _updateSelection;
         private readonly IPackageUpdater _packageUpdater;
         private readonly INuKeeperLogger _logger;
-        private readonly SolutionsRestore _solutionsRestore;
+        private readonly ISolutionRestore _solutionRestore;
         private readonly IReporter _reporter;
 
         public RepositoryUpdater(
@@ -30,7 +30,7 @@ namespace NuKeeper.Engine
             IPackageUpdateSelection updateSelection,
             IPackageUpdater packageUpdater,
             INuKeeperLogger logger,
-            SolutionsRestore solutionsRestore,
+            ISolutionRestore solutionRestore,
             IReporter reporter)
         {
             _nugetSourcesReader = nugetSourcesReader;
@@ -38,7 +38,7 @@ namespace NuKeeper.Engine
             _updateSelection = updateSelection;
             _packageUpdater = packageUpdater;
             _logger = logger;
-            _solutionsRestore = solutionsRestore;
+            _solutionRestore = solutionRestore;
             _reporter = reporter;
         }
 
@@ -113,7 +113,7 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            await _solutionsRestore.CheckRestore(targetUpdates, settings.WorkingFolder ?? git.WorkingFolder, sources);
+            await _solutionRestore.CheckRestore(targetUpdates, settings.WorkingFolder ?? git.WorkingFolder, sources);
 
             var updatesDone = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings);
 

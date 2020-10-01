@@ -8,11 +8,11 @@ using NuKeeper.Abstractions.RepositoryInspection;
 
 namespace NuKeeper.Update.Process
 {
-    public class SolutionsRestore
+    public class SolutionRestore : ISolutionRestore
     {
         private readonly IFileRestoreCommand _fileRestoreCommand;
 
-        public SolutionsRestore(IFileRestoreCommand fileRestoreCommand)
+        public SolutionRestore(IFileRestoreCommand fileRestoreCommand)
         {
             _fileRestoreCommand = fileRestoreCommand;
         }

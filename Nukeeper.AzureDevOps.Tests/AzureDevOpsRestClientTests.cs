@@ -21,7 +21,9 @@ namespace Nukeeper.AzureDevOps.Tests
         public void InitializesCorrectly()
         {
             var httpClient = new HttpClient();
-            var restClient = new AzureDevOpsRestClient(httpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(httpClient);
+            var restClient = new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", null);
 
             var encodedToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{string.Empty}:PAT"));
             Assert.IsTrue(httpClient.DefaultRequestHeaders.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/json")));
@@ -37,7 +39,9 @@ namespace Nukeeper.AzureDevOps.Tests
                 Content = new StringContent(JsonConvert.SerializeObject("<body>Login Page</body>"), Encoding.UTF8, "application/json")
             });
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) { BaseAddress = new Uri("https://fakebaseAddress.com/") };
-            var restClient = new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(fakeHttpClient);
+            var restClient = new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", fakeHttpClient.BaseAddress);
             var exception = Assert.ThrowsAsync<NuKeeperException>(async () => await restClient.GetGitRepositories("Project"));
         }
 
@@ -50,7 +54,9 @@ namespace Nukeeper.AzureDevOps.Tests
                 Content = new StringContent("", Encoding.UTF8, "application/json")
             });
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) { BaseAddress = new Uri("https://fakebaseAddress.com/") };
-            var restClient = new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(fakeHttpClient);
+            var restClient = new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", fakeHttpClient.BaseAddress);
             var exception = Assert.ThrowsAsync<NuKeeperException>(async () => await restClient.GetGitRepositories("Project"));
             Assert.IsTrue(exception.Message.Contains("Unauthorised", StringComparison.InvariantCultureIgnoreCase));
         }
@@ -64,7 +70,9 @@ namespace Nukeeper.AzureDevOps.Tests
                 Content = new StringContent("", Encoding.UTF8, "application/json")
             });
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) { BaseAddress = new Uri("https://fakebaseAddress.com/") };
-            var restClient = new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(fakeHttpClient);
+            var restClient = new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", fakeHttpClient.BaseAddress);
             var exception = Assert.ThrowsAsync<NuKeeperException>(async () => await restClient.GetGitRepositories("Project"));
             Assert.IsTrue(exception.Message.Contains("Forbidden", StringComparison.InvariantCultureIgnoreCase));
         }
@@ -78,7 +86,9 @@ namespace Nukeeper.AzureDevOps.Tests
                 Content = new StringContent("", Encoding.UTF8, "application/json")
             });
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) { BaseAddress = new Uri("https://fakebaseAddress.com/") };
-            var restClient = new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(fakeHttpClient);
+            var restClient = new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", fakeHttpClient.BaseAddress);
             var exception = Assert.ThrowsAsync<NuKeeperException>(async () => await restClient.GetGitRepositories("Project"));
             Assert.IsTrue(exception.Message.Contains("Error", StringComparison.InvariantCultureIgnoreCase));
         }
@@ -429,7 +439,9 @@ namespace Nukeeper.AzureDevOps.Tests
             });
 
             var fakeHttpClient = new HttpClient(fakeHttpMessageHandler) { BaseAddress = new Uri("https://fakebaseAddress.com/") };
-            return new AzureDevOpsRestClient(fakeHttpClient, Substitute.For<INuKeeperLogger>(), "PAT");
+            var httpClientFactory = Substitute.For<IHttpClientFactory>();
+            httpClientFactory.CreateClient().Returns(fakeHttpClient);
+            return new AzureDevOpsRestClient(httpClientFactory, Substitute.For<INuKeeperLogger>(), "PAT", fakeHttpClient.BaseAddress);
         }
     }
 }

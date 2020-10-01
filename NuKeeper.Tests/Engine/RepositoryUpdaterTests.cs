@@ -251,7 +251,7 @@ namespace NuKeeper.Tests.Engine
 
             var repoUpdater = new RepositoryUpdater(
                 sources, updateFinder, updateSelection, packageUpdater,
-                Substitute.For<INuKeeperLogger>(), new SolutionsRestore(fileRestore),
+                Substitute.For<INuKeeperLogger>(), new SolutionRestore(fileRestore),
                 reporter);
 
             return (repoUpdater, packageUpdater);
