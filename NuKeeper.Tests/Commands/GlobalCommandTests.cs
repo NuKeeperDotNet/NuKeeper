@@ -1,8 +1,12 @@
 using NSubstitute;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
+using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
+using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.AzureDevOps;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
 using NuKeeper.GitHub;
@@ -12,8 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using NuKeeper.Abstractions.Git;
-using NuKeeper.AzureDevOps;
 
 namespace NuKeeper.Tests.Commands
 {
@@ -30,7 +32,10 @@ namespace NuKeeper.Tests.Commands
             return new CollaborationFactory(
                 new ISettingsReader[] { createSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>(),
-                httpClientFactory
+                httpClientFactory,
+                Substitute.For<ITemplateValidator>(),
+                Substitute.For<IEnrichContext<PackageUpdateSet, UpdateMessageTemplate>>(),
+                Substitute.For<IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate>>()
             );
         }
 
@@ -158,6 +163,8 @@ namespace NuKeeper.Tests.Commands
             Assert.That(settings.UserSettings.NuGetSources, Is.Null);
             Assert.That(settings.UserSettings.OutputDestination, Is.EqualTo(OutputDestination.Console));
             Assert.That(settings.UserSettings.OutputFormat, Is.EqualTo(OutputFormat.Text));
+            Assert.That(settings.UserSettings.CommitMessageTemplate, Is.Null);
+            Assert.That(settings.UserSettings.Context, Is.Empty);
 
             Assert.That(settings.BranchSettings.BranchNameTemplate, Is.Null);
             Assert.That(settings.BranchSettings.DeleteBranchAfterMerge, Is.EqualTo(true));
