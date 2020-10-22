@@ -25,9 +25,10 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 packages, NuGetSources.GlobalFeed, VersionChange.Major,
                 UsePrerelease.FromPrerelease);
 
+            var updatedPackages = results.Select(p => p.Key);
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results, Does.ContainKey("Moq"));
+            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Moq"));
         }
 
         [Test]
@@ -45,10 +46,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 packages, NuGetSources.GlobalFeed, VersionChange.Major,
                 UsePrerelease.FromPrerelease);
 
+            var updatedPackages = results.Select(p => p.Key);
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(results, Does.ContainKey("Moq"));
-            Assert.That(results, Does.ContainKey("Newtonsoft.Json"));
+            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Moq"));
+            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Newtonsoft.Json"));
         }
 
         [Test]
@@ -68,8 +70,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results.ContainsKey("NUnit"), "results.ContainsKey('NUnit')");
-            Assert.That(results.ContainsKey("nunit"), "results.ContainsKey('nunit')");
         }
 
         [Test]
@@ -120,10 +120,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 packages, NuGetSources.GlobalFeed, VersionChange.Major,
                 UsePrerelease.FromPrerelease);
 
+            var updatedPackages = results.Select(p => p.Key);
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(results, Does.ContainKey("Moq"));
-            Assert.That(results, Does.ContainKey("Newtonsoft.Json"));
+            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Moq"));
+            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Newtonsoft.Json"));
         }
 
         private BulkPackageLookup BuildBulkPackageLookup()
