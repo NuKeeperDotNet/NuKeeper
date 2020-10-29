@@ -32,4 +32,4 @@ Now to run the command use
 ```sh
 nukeeper repo https://{YOUR_GITLAB_URL}/{PROJECT_NAME}/{REPOSITORY_NAME}.git {Token}
 ```
-Any additional arguments can be added after the app password, for more information checkout the [Configuration](/basics/configuration.md) page.
+Any additional arguments can be added after the app password, for more information checkout the [Configuration](/basics/configuration) page.
