@@ -80,7 +80,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *branchnametemplate* A template that can be used to set the name of the branch NuKeeper creates. Allows you to put those branches in a hierarchy or set your own naming strategy.
   It accepts the following tokens:
   
-  |Token            |Replacement
+  |Token       |Replacement                                                                      |
   |------------|---------------------------------------------------------------------------------|
   |`{Default}` |The default Nukeeper Branch Naming                                               |
   |`{Name}`    |The name of the updated Nuget or `Multiple-Packages` if more than one            |
