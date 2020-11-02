@@ -22,42 +22,56 @@ namespace NuKeeper.Inspection.NuGetApi
             _lookupReporter = lookupReporter;
         }
 
-        public async Task<IDictionary<string, PackageLookupResult>> FindVersionUpdates(
+        public async Task<IDictionary<PackageIdentity, PackageLookupResult>> FindVersionUpdates(
             IEnumerable<PackageIdentity> packages,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease)
+            UsePrerelease usePrerelease
+        )
         {
-            var latestOfEach = packages
-                .GroupBy(pi => pi.Id.ToUpperInvariant())
-                .Select(HighestVersion);
-
-            var lookupTasks = latestOfEach
-                .Select(id => _packageLookup.FindVersionUpdate(id, sources, allowedChange, usePrerelease))
+            var lookupTasks = packages
+                .Distinct()
+                .GroupBy(pi => (pi.Id, MaxVersion: GetMaxVersion(pi, allowedChange)))
+                .Select(HighestVersion)
+                .Select(id => new { Package = id, Update = _packageLookup.FindVersionUpdate(id, sources, allowedChange, usePrerelease) })
                 .ToList();
 
-            await Task.WhenAll(lookupTasks);
+            await Task.WhenAll(lookupTasks.Select(l => l.Update));
 
-            var result = new Dictionary<string, PackageLookupResult>(StringComparer.OrdinalIgnoreCase);
+            var result = new Dictionary<PackageIdentity, PackageLookupResult>();
 
             foreach (var lookupTask in lookupTasks)
             {
-                var serverVersions = lookupTask.Result;
-                ProcessLookupResult(serverVersions, result);
+                ProcessLookupResult(lookupTask.Package, lookupTask.Update.Result, result);
             }
 
             return result;
         }
 
-        private void ProcessLookupResult(PackageLookupResult packageLookup, IDictionary<string, PackageLookupResult> result)
+        private static string GetMaxVersion(PackageIdentity pi, VersionChange allowedChange)
+        {
+            return allowedChange switch
+            {
+                VersionChange.Major => "X.X.X",
+                VersionChange.Minor => $"{pi.Version.Major}.X.X",
+                VersionChange.Patch => $"{pi.Version.Major}.{pi.Version.Minor}.X",
+                VersionChange.None => $"{pi.Version.Major}.{pi.Version.Minor}.{pi.Version.Patch}",
+                _ => throw new ArgumentOutOfRangeException(nameof(allowedChange)),
+            };
+        }
+
+        private void ProcessLookupResult(
+            PackageIdentity package,
+            PackageLookupResult packageLookup,
+            IDictionary<PackageIdentity, PackageLookupResult> result
+        )
         {
             var selectedVersion = packageLookup.Selected();
 
             if (selectedVersion?.Identity?.Version != null)
             {
                 _lookupReporter.Report(packageLookup);
-                var packageId = selectedVersion.Identity.Id;
-                result.Add(packageId, packageLookup);
+                result.Add(package, packageLookup);
             }
         }
 
