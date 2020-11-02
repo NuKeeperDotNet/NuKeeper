@@ -16,7 +16,7 @@ namespace NuKeeper.Commands
     [Command("repo", "r", "repository", Description = "Performs version checks and generates pull requests for a single repository.")]
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
-        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "setautomergeflag",
+        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "setautomerge",
             Description = "Set automatically auto merge for created pull request. Works only for Azure Devops. Defaults to false.")]
         public bool? SetAutoMerge { get; set; }
 
