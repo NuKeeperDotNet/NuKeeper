@@ -86,7 +86,7 @@ namespace NuKeeper.Gitea.Tests
             Assert.AreEqual("SharpSteff", repositorySettings.RepositoryOwner);
             Assert.AreEqual("NuKeeper-TestFork", repositorySettings.RepositoryName);
             Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
-            Assert.AreEqual(false, repositorySettings.SetAutoComplete);
+            Assert.AreEqual(false, repositorySettings.SetAutoMerge);
         }
     }
 }

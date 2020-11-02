@@ -90,7 +90,7 @@ namespace NuKeeper.AzureDevOps
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
 
-            if (request.SetAutoComplete)
+            if (request.SetAutoMerge)
             {
                 await _client.SetAutoComplete(new PRRequest()
                     {

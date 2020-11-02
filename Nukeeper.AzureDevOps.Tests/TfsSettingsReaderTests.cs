@@ -90,7 +90,7 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual("https://user:--PasswordToReplace--@internalserver/tfs/project/_git/reponame/", settings.RepositoryUri.ToString());
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
-            Assert.AreEqual(settings.SetAutoComplete, true);
+            Assert.AreEqual(settings.SetAutoMerge, true);
         }
 
         [Test]

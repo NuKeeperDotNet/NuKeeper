@@ -89,7 +89,7 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/org/project/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
-            Assert.AreEqual(settings.SetAutoComplete, true);
+            Assert.AreEqual(settings.SetAutoMerge, true);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryUri, "https://dev.azure.com/owner/_git/reponame");
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "owner");
-            Assert.AreEqual(settings.SetAutoComplete, true);
+            Assert.AreEqual(settings.SetAutoMerge, true);
         }
 
         [Test]

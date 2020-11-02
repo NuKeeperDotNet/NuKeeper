@@ -33,6 +33,6 @@ namespace NuKeeper.Abstractions.Configuration
 
         public RemoteInfo RemoteInfo { get; set; }
 
-        public bool SetAutoComplete { get; set; }
+        public bool SetAutoMerge { get; set; }
     }
 }

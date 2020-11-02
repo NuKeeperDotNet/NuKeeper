@@ -80,7 +80,7 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual(new Uri("https://github.com/owner/reponame.git"), settings.RepositoryUri);
             Assert.AreEqual("reponame", settings.RepositoryName);
             Assert.AreEqual("owner", settings.RepositoryOwner);
-            Assert.AreEqual(false, settings.SetAutoComplete);
+            Assert.AreEqual(false, settings.SetAutoMerge);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace NuKeeper.GitHub.Tests
             Assert.AreEqual("owner", settings.RepositoryOwner);
             Assert.NotNull(settings.RemoteInfo);
             Assert.AreEqual("Feature1", settings.RemoteInfo.BranchName);
-            Assert.AreEqual(false, settings.SetAutoComplete);
+            Assert.AreEqual(false, settings.SetAutoMerge);
         }
 
         [TestCase(null)]

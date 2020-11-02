@@ -65,7 +65,7 @@ namespace NuKeeper.Gitlab.Tests
             Assert.AreEqual("user", repositorySettings.RepositoryOwner);
             Assert.AreEqual("projectname", repositorySettings.RepositoryName);
             Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
-            Assert.AreEqual(false, repositorySettings.SetAutoComplete);
+            Assert.AreEqual(false, repositorySettings.SetAutoMerge);
         }
     }
 }
