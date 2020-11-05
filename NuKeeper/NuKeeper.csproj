@@ -19,7 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NuGet.Credentials" Version="5.7.0" />
-    <PackageReference Include="SimpleInjector" Version="5.0.3" />
+    <PackageReference Include="SimpleInjector" Version="5.1.0" />
     <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
