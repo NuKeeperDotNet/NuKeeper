@@ -6,6 +6,7 @@
     <PackageId>nukeeper</PackageId>
     <ToolCommandName>nukeeper</ToolCommandName>
     <Description>Automagically update nuget packages in .NET projects</Description>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
@@ -38,6 +39,7 @@
     <None Update="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.7.0\tools\NuGet.exe">
