@@ -1,3 +1,4 @@
+using System;
 using NSubstitute;
 using NUnit.Framework;
 using NuGet.Configuration;
@@ -56,11 +57,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 UsePrerelease.Never
             );
 
-            var versionUpdates = result.Select(p => p.SelectedVersion.ToNormalizedString());
-#pragma warning disable CA1307 // Specify StringComparison
-            Assert.That(versionUpdates, Has.Some.Matches<string>(version => version.StartsWith("6.")));
-            Assert.That(versionUpdates, Has.Some.Matches<string>(version => version.StartsWith("10.")));
-#pragma warning restore CA1307 // Specify StringComparison
+            var versionUpdates = result.Select(p => p.SelectedVersion.ToNormalizedString()).ToList();
+            Assert.That(versionUpdates, Has.Some.Matches<string>(version => version.StartsWith("6.", StringComparison.OrdinalIgnoreCase)));
+            Assert.That(versionUpdates, Has.Some.Matches<string>(version => version.StartsWith("10.", StringComparison.OrdinalIgnoreCase)));
         }
 
         private static PackageLookupResult GetPackageLookupResult(
