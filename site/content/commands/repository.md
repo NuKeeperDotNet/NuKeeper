@@ -50,7 +50,7 @@ This is only available for azure devops and vsts
 ### Using a targetBranch
 
 {{% notice info %}}
-This is only available for azure devops, vsts and github right now
+This is only available for azure devops, azure devops server, vsts, tfs, and github right now
 {{% /notice %}}
 
 In some cases you want NuKeeper not to run on the default branch but on a specific (feature-)branch 
