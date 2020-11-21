@@ -207,7 +207,10 @@ namespace NuKeeper.Tests.Engine
         {
             return new SettingsContainer
             {
-                SourceControlServerSettings = new SourceControlServerSettings(),
+                SourceControlServerSettings = new SourceControlServerSettings()
+                {
+                    Repository = new RepositorySettings()
+                },
                 UserSettings = new UserSettings
                 {
                     ConsolidateUpdatesInSinglePullRequest = consolidateUpdates

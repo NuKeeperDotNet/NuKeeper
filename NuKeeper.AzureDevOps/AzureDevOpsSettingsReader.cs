@@ -38,7 +38,7 @@ namespace NuKeeper.AzureDevOps
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
@@ -54,12 +54,14 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
+            settings.SetAutoMerge = setAutoMerge;
+
             return settings;
         }
 
         private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
         {
-            // URL pattern is 
+            // URL pattern is
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
             // for a organisation or
             // https://dev.azure.com/{owner}/_git/{repo}
@@ -117,7 +119,7 @@ namespace NuKeeper.AzureDevOps
                 throw new NuKeeperException("No git repository found");
             }
 
-            // URL pattern is 
+            // URL pattern is
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
             // for a organisation or
             // https://dev.azure.com/{owner}/_git/{repo}

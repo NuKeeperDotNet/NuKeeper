@@ -16,6 +16,10 @@ namespace NuKeeper.Commands
     [Command("repo", "r", "repository", Description = "Performs version checks and generates pull requests for a single repository.")]
     internal class RepositoryCommand : CollaborationPlatformCommand
     {
+        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "setautomerge",
+            Description = "Set automatically auto merge for created pull request. Works only for Azure Devops. Defaults to false.")]
+        public bool? SetAutoMerge { get; set; }
+
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
 
         public RepositoryCommand(ICollaborationEngine engine, IConfigureLogger logger, IFileSettingsCache fileSettingsCache, ICollaborationFactory collaborationFactory, IEnumerable<ISettingsReader> settingsReaders)
@@ -59,7 +63,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
-            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, TargetBranch);
+            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, SetAutoMerge ?? false, TargetBranch);
 
             var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)

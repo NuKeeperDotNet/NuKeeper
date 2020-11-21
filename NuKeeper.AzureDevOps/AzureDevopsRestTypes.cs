@@ -74,6 +74,7 @@ namespace NuKeeper.AzureDevOps
         public string MergeId { get; set; }
         public string Url { get; set; }
         public bool SupportsIterations { get; set; }
+        public Creator CreatedBy { get; set; }
 
         // public CreatedBy CreatedBy { get; set; }
         // public Lastmergesourcecommit LastMergeSourceCommit { get; set; }
@@ -103,6 +104,7 @@ namespace NuKeeper.AzureDevOps
         public string title { get; set; }
         public string description { get; set; }
         public GitPullRequestCompletionOptions completionOptions { get; set; }
+        public Creator autoCompleteSetBy { get; set; }
     }
     public class GitPullRequestCompletionOptions
     {

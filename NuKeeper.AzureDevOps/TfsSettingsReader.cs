@@ -44,7 +44,7 @@ namespace NuKeeper.AzureDevOps
             return tfsInPath || tfsInHost;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, string targetBranch = null)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null)
         {
             if (repositoryUri == null)
             {
@@ -58,6 +58,8 @@ namespace NuKeeper.AzureDevOps
             {
                 throw new NuKeeperException($"The provided uri was is not in the correct format. Provided {repositoryUri.ToString()} and format should be {UrlPattern}");
             }
+
+            settings.SetAutoMerge = setAutoMerge;
 
             return settings;
         }

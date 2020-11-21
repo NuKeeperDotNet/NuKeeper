@@ -82,19 +82,20 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task RepositorySettings_GetsCorrectSettings()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"));
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://org.visualstudio.com/project/_git/reponame"), true);
 
             Assert.IsNotNull(settings);
             Assert.AreEqual("https://org.visualstudio.com/", settings.ApiUri.ToString());
             Assert.AreEqual("https://org.visualstudio.com/project/_git/reponame/", settings.RepositoryUri.ToString());
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
+            Assert.AreEqual(settings.SetAutoMerge, true);
         }
 
         [Test]
         public async Task RepositorySettings_ReturnsNull()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(null);
+            var settings = await _azureSettingsReader.RepositorySettings(null, true);
             Assert.IsNull(settings);
         }
 
@@ -103,7 +104,7 @@ namespace Nukeeper.AzureDevOps.Tests
         {
             Assert.ThrowsAsync<NuKeeperException>(() =>
                 _azureSettingsReader.RepositorySettings(
-                    new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/")));
+                    new Uri("https://org.visualstudio.com/project/_git/reponame/thisShouldNotBeHere/"), true));
         }
     }
 }

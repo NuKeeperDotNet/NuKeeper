@@ -78,7 +78,7 @@ namespace NuKeeper.Gitea.Tests
         public async Task GetsCorrectSettingsFromTheUrl(string targetBranch)
         {
             var repositoryUri = new Uri("https://try.gitea.io/SharpSteff/NuKeeper-TestFork");
-            var repositorySettings = await _giteaSettingsReader.RepositorySettings(repositoryUri, targetBranch);
+            var repositorySettings = await _giteaSettingsReader.RepositorySettings(repositoryUri, true, targetBranch);
 
             Assert.IsNotNull(repositorySettings);
             Assert.AreEqual(new Uri("https://try.gitea.io/api/v1/"), repositorySettings.ApiUri);
@@ -86,6 +86,7 @@ namespace NuKeeper.Gitea.Tests
             Assert.AreEqual("SharpSteff", repositorySettings.RepositoryOwner);
             Assert.AreEqual("NuKeeper-TestFork", repositorySettings.RepositoryName);
             Assert.AreEqual(targetBranch, repositorySettings.RemoteInfo?.BranchName);
+            Assert.AreEqual(false, repositorySettings.SetAutoMerge);
         }
     }
 }
