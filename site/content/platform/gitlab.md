@@ -3,6 +3,7 @@ title: "Gitlab"
 ---
 
 NuKeeper has [GitLab](https://gitlab.com) support. This means NuKeeper can create PR's to a *single* GitLab repository using the repository command and an access token.
+#### Note: this does not work with a self-managed GitLab.
 
 ## Getting the Access Token 
 
