@@ -41,7 +41,7 @@
     <None Include="..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.7.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.8.0\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
     </TfmSpecificPackageFile>
