@@ -109,14 +109,17 @@ namespace NuKeeper.Engine
                 new LibGit2SharpDriver(_logger, folder, credentials, user) as IGitDriver :
                 new GitCmdDriver(settings.UserSettings.GitPath, _logger, folder, credentials) as IGitDriver;
 
-            var updatesDone = await _repositoryUpdater.Run(git, repositoryData, settings);
-
-            if (!repository.IsLocalRepo)
+            try
             {
-                folder.TryDelete();
+                return await _repositoryUpdater.Run(git, repositoryData, settings);
             }
-
-            return updatesDone;
+            finally
+            {
+                if (!repository.IsLocalRepo)
+                {
+                    folder.TryDelete();
+                }
+            }
         }
 
         private async Task<RepositoryData> BuildGitRepositorySpec(
