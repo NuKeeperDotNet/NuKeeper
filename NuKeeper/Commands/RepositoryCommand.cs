@@ -32,7 +32,7 @@ namespace NuKeeper.Commands
         public string RepositoryUri { get; set; }
 
         [Option(CommandOptionType.SingleValue, LongName = "targetBranch",
-            Description = "Use another target branch than the currently active HEAD branch of the remote or local repository")]
+            Description = "If the target branch is another branch than that you are currently on, set this to the target")]
         public string TargetBranch { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "cdir", Description = "If you want NuKeeper to check out the repository to an alternate path, set it here (by default, a temporary directory is used).")]
