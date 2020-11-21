@@ -20,7 +20,7 @@
     </PackageReference>
     <PackageReference Include="NuGet.Credentials" Version="5.7.0" />
     <PackageReference Include="SimpleInjector" Version="5.1.0" />
-    <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.0.1" />
+    <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
