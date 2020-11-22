@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Credentials;
 using NuKeeper.Abstractions.CollaborationModels;
@@ -11,6 +8,9 @@ using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Git;
 using NuKeeper.Inspection.Files;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Engine
 {
@@ -60,72 +60,65 @@ namespace NuKeeper.Engine
 
             DefaultCredentialServiceUtility.SetupDefaultCredentialService(_nugetLogger, true);
 
-            try
+            var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);
+            if (repositoryData == null)
             {
-                var repositoryData = await BuildGitRepositorySpec(repository, credentials.Username);
-                if (repositoryData == null)
+                return 0;
+            }
+
+            // should perform the remote check for "is this a .NET repo"
+            // (and also not a github fork)
+            // only when we have multiple remote repos
+            // otherwise it's ok to work locally, and check there
+            if (!(settings.SourceControlServerSettings.Scope == ServerScope.Repository || repository.IsLocalRepo))
+            {
+                var remoteRepoContainsDotNet = await _repositoryFilter.ContainsDotNetProjects(repository);
+                if (!remoteRepoContainsDotNet)
                 {
                     return 0;
                 }
+            }
 
-                // should perform the remote check for "is this a .NET repo"
-                // (and also not a github fork)
-                // only when we have multiple remote repos
-                // otherwise it's ok to work locally, and check there
-                if (!(settings.SourceControlServerSettings.Scope == ServerScope.Repository || repository.IsLocalRepo))
-                {
-                    var remoteRepoContainsDotNet = await _repositoryFilter.ContainsDotNetProjects(repository);
-                    if (!remoteRepoContainsDotNet)
-                    {
-                        return 0;
-                    }
-                }
-
-                IFolder folder;
-                if (repository.IsLocalRepo)
-                {
-                    folder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath)));
-                    settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.WorkingFolder.AbsolutePath)));
-                    repositoryData.IsLocalRepo = repository.IsLocalRepo;
-
-                    if (!repositoryData.IsFork) //check if we are on a fork. If not on a fork we set the remote to the locally found remote
-                    {
-                        repositoryData.Remote = repository.RemoteInfo.RemoteName;
-                    }
-                }
-                else
-                {
-                    folder = !string.IsNullOrWhiteSpace(settings?.UserSettings?.Directory)
-                        ? _folderFactory.FolderFromPath(settings.UserSettings.Directory)
-                        : _folderFactory.UniqueTemporaryFolder();
-                    settings.WorkingFolder = folder;
-                }
-
-                if (!string.IsNullOrEmpty(repository.RemoteInfo?.BranchName))
-                {
-                    repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
-                }
-
+            IFolder folder;
+            if (repository.IsLocalRepo)
+            {
+                folder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.LocalRepositoryUri.AbsolutePath)));
+                settings.WorkingFolder = new Folder(_logger, new DirectoryInfo(Uri.UnescapeDataString(repository.RemoteInfo.WorkingFolder.AbsolutePath)));
                 repositoryData.IsLocalRepo = repository.IsLocalRepo;
-                IGitDriver git = string.IsNullOrWhiteSpace(settings?.UserSettings?.GitPath) ?
-                    new LibGit2SharpDriver(_logger, folder, credentials, user) as IGitDriver :
-                    new GitCmdDriver(settings.UserSettings.GitPath, _logger, folder, credentials) as IGitDriver;
 
-                var updatesDone = await _repositoryUpdater.Run(git, repositoryData, settings);
+                if (!repositoryData.IsFork) //check if we are on a fork. If not on a fork we set the remote to the locally found remote
+                {
+                    repositoryData.Remote = repository.RemoteInfo.RemoteName;
+                }
+            }
+            else
+            {
+                folder = !string.IsNullOrWhiteSpace(settings?.UserSettings?.Directory)
+                    ? _folderFactory.FolderFromPath(settings.UserSettings.Directory)
+                    : _folderFactory.UniqueTemporaryFolder();
+                settings.WorkingFolder = folder;
+            }
 
+            if (!string.IsNullOrEmpty(repository.RemoteInfo?.BranchName))
+            {
+                repositoryData.DefaultBranch = repository.RemoteInfo.BranchName;
+            }
+
+            repositoryData.IsLocalRepo = repository.IsLocalRepo;
+            IGitDriver git = string.IsNullOrWhiteSpace(settings?.UserSettings?.GitPath) ?
+                new LibGit2SharpDriver(_logger, folder, credentials, user) as IGitDriver :
+                new GitCmdDriver(settings.UserSettings.GitPath, _logger, folder, credentials) as IGitDriver;
+
+            try
+            {
+                return await _repositoryUpdater.Run(git, repositoryData, settings);
+            }
+            finally
+            {
                 if (!repository.IsLocalRepo)
                 {
                     folder.TryDelete();
                 }
-
-                return updatesDone;
-            }
-#pragma warning disable CA1031
-            catch (Exception ex)
-#pragma warning restore CA1031
-            {
-                _logger.Error($"Failed on repo {repository.RepositoryName}", ex);
-                return 1;
             }
         }
 

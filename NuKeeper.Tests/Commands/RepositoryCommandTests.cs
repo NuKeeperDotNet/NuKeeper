@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-
 using NSubstitute;
-
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
@@ -18,8 +12,11 @@ using NuKeeper.Engine;
 using NuKeeper.GitHub;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
-
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace NuKeeper.Tests.Commands
 {
@@ -341,7 +338,7 @@ namespace NuKeeper.Tests.Commands
             collaborationFactorySubstitute.ForkFinder.FindPushFork(Arg.Any<string>(), Arg.Any<ForkData>()).Returns(Task.FromResult(new ForkData(testUri, "nukeeper", "nukeeper")));
             var folderFactorySubstitute = Substitute.For<IFolderFactory>();
             folderFactorySubstitute.FolderFromPath(Arg.Any<string>())
-                .Returns(ci => new Folder(null, new System.IO.DirectoryInfo(ci.Arg<string>())));
+                .Returns(ci => new Folder(Substitute.For<INuKeeperLogger>(), new System.IO.DirectoryInfo(ci.Arg<string>())));
 
             var updater = Substitute.For<IRepositoryUpdater>();
             var gitEngine = new GitRepositoryEngine(updater, collaborationFactorySubstitute, folderFactorySubstitute,
