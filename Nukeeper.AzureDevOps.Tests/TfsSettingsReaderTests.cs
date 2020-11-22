@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using NSubstitute;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
@@ -7,6 +5,8 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.AzureDevOps;
 using NuKeeper.Tests;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Nukeeper.AzureDevOps.Tests
 {
@@ -120,5 +120,15 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual("project name", settings.RepositoryOwner);
         }
 
+        [Test]
+        public async Task RepositorySettings_WithRemoteUrlAndTargetBranch_ReturnsRemoteInfoWithSpecifiedBranchName()
+        {
+            var uri = new Uri("https://internalserver/tfs/project%20name/_git/repo%20name");
+            var targetBranch = "myTargetBranch";
+
+            var settings = await _azureSettingsReader.RepositorySettings(uri, false, targetBranch);
+
+            Assert.AreEqual("myTargetBranch", settings.RemoteInfo.BranchName);
+        }
     }
 }
