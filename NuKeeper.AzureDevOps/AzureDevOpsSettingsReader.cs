@@ -47,7 +47,7 @@ namespace NuKeeper.AzureDevOps
 
             var settings = repositoryUri.IsFile
                 ? await CreateSettingsFromLocal(repositoryUri, targetBranch)
-                : CreateSettingsFromRemote(repositoryUri);
+                : CreateSettingsFromRemote(repositoryUri, targetBranch);
 
             if (settings == null)
             {
@@ -59,7 +59,7 @@ namespace NuKeeper.AzureDevOps
             return settings;
         }
 
-        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri)
+        private static RepositorySettings CreateSettingsFromRemote(Uri repositoryUri, string targetBranch)
         {
             // URL pattern is
             // https://dev.azure.com/{org}/{project}/_git/{repo}/
@@ -80,8 +80,8 @@ namespace NuKeeper.AzureDevOps
                     pathParts[0],  //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[1]),  // project
-                    Uri.UnescapeDataString(pathParts[3])   // reponame
-                    );
+                    Uri.UnescapeDataString(pathParts[3]),   // reponame
+                    new RemoteInfo { BranchName = targetBranch });
             }
             else if (indexOfGit == 1 && pathParts.Length == 3)
             {
@@ -89,8 +89,8 @@ namespace NuKeeper.AzureDevOps
                     null,          //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[0]),  // project
-                    Uri.UnescapeDataString(pathParts[2])   // reponame
-                    );
+                    Uri.UnescapeDataString(pathParts[2]),   // reponame
+                    new RemoteInfo { BranchName = targetBranch });
             }
             return null;
         }

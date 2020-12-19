@@ -82,7 +82,7 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task RepositorySettings_GetsCorrectSettingsOrganisation()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"), true);
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/org/project/_git/reponame"), true, "develop");
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/org/");
@@ -90,12 +90,13 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "project");
             Assert.AreEqual(settings.SetAutoMerge, true);
+            Assert.AreEqual(settings.RemoteInfo.BranchName, "develop");
         }
 
         [Test]
         public async Task RepositorySettings_GetsCorrectSettingsPrivate()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true);
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true, "main");
 
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ApiUri, "https://dev.azure.com/");
@@ -103,6 +104,7 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual(settings.RepositoryName, "reponame");
             Assert.AreEqual(settings.RepositoryOwner, "owner");
             Assert.AreEqual(settings.SetAutoMerge, true);
+            Assert.AreEqual(settings.RemoteInfo.BranchName, "main");
         }
 
         [Test]
@@ -129,6 +131,5 @@ namespace Nukeeper.AzureDevOps.Tests
             Assert.AreEqual("repo name", settings.RepositoryName);
             Assert.AreEqual("project name", settings.RepositoryOwner);
         }
-
     }
 }
