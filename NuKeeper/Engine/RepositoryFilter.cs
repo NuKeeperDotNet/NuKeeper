@@ -26,7 +26,7 @@ namespace NuKeeper.Engine
                 throw new ArgumentNullException(nameof(repository));
             }
 
-            const string dotNetCodeFiles = "\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"";
+            const string dotNetCodeFiles = "packages.config OR NuGet.config OR .csproj OR .fsproj OR .vbproj";
 
             var repos = new List<SearchRepo>
             {
