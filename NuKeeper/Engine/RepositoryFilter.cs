@@ -3,6 +3,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using NuKeeper.Abstractions.CollaborationModels;
 
@@ -26,7 +27,7 @@ namespace NuKeeper.Engine
                 throw new ArgumentNullException(nameof(repository));
             }
 
-            const string dotNetCodeFiles = "\"packages.config\" OR \".csproj\" OR \".fsproj\" OR \".vbproj\"";
+            IEnumerable<string> dotNetCodeFiles = new ReadOnlyCollection<string>(new List<string>(){ ".sln", ".csproj", ".fsproj", ".vbproj" });
 
             var repos = new List<SearchRepo>
             {

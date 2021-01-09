@@ -208,9 +208,10 @@ namespace NuKeeper.GitHub
                 }
 
                 var result = await _client.Search.SearchCode(
-                    new Octokit.SearchCodeRequest(search.Term)
+                    new Octokit.SearchCodeRequest()
                     {
                         Repos = repos,
+                        Extensions = search.Extensions,
                         In = new[] { CodeInQualifier.Path },
                         PerPage = search.PerPage
                     });
