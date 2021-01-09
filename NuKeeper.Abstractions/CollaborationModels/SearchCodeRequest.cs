@@ -17,6 +17,12 @@ namespace NuKeeper.Abstractions.CollaborationModels
 
     public class SearchCodeRequest
     {
+        public SearchCodeRequest(IEnumerable<string> extensions, IEnumerable<SearchRepo> repos)
+        {
+            Extensions = extensions;
+            Repos = repos.ToList();
+        }
+
         public SearchCodeRequest(string term, IEnumerable<SearchRepo> repos)
         {
             Term = term;
@@ -24,6 +30,7 @@ namespace NuKeeper.Abstractions.CollaborationModels
         }
 
         public string Term { get; }
+        public IEnumerable<string> Extensions { get; }
         public IReadOnlyCollection<SearchRepo> Repos { get; }
         public int PerPage { get; set; }
     }
