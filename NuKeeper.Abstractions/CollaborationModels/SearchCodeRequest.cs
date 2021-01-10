@@ -17,15 +17,10 @@ namespace NuKeeper.Abstractions.CollaborationModels
 
     public class SearchCodeRequest
     {
-        public SearchCodeRequest(IEnumerable<string> extensions, IEnumerable<SearchRepo> repos)
-        {
-            Extensions = extensions;
-            Repos = repos.ToList();
-        }
-
-        public SearchCodeRequest(string term, IEnumerable<SearchRepo> repos)
+        public SearchCodeRequest(IEnumerable<SearchRepo> repos, string term, IEnumerable<string> extensions)
         {
             Term = term;
+            Extensions = extensions;
             Repos = repos.ToList();
         }
 
