@@ -32,6 +32,6 @@ namespace NuKeeper.AzureDevOps
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null);
+        public abstract Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, Abstractions.Configuration.GitPullRequestMergeStrategy gitPullRequestMergeStrategy = Abstractions.Configuration.GitPullRequestMergeStrategy.noFastForward);
     }
 }

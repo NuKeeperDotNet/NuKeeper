@@ -38,7 +38,7 @@ namespace NuKeeper.AzureDevOps
             return repositoryUri?.Host.Contains(PlatformHost, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, Abstractions.Configuration.GitPullRequestMergeStrategy gitPullRequestMergeStrategy = Abstractions.Configuration.GitPullRequestMergeStrategy.noFastForward)
         {
             if (repositoryUri == null)
             {
@@ -55,6 +55,7 @@ namespace NuKeeper.AzureDevOps
             }
 
             settings.SetAutoMerge = setAutoMerge;
+            settings.MergeStrategy = gitPullRequestMergeStrategy;
 
             return settings;
         }

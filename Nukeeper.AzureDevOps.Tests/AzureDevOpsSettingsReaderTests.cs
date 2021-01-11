@@ -106,6 +106,22 @@ namespace Nukeeper.AzureDevOps.Tests
         }
 
         [Test]
+        public async Task RepositorySettings_SetsCorrectPullRequestMergeStrategy()
+        {
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true, gitPullRequestMergeStrategy: GitPullRequestMergeStrategy.rebase);
+
+            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.rebase);
+        }
+
+        [Test]
+        public async Task RepositorySettings_MergeStrategyDefaultNoFastForward()
+        {
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true);
+
+            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.noFastForward);
+        }
+
+        [Test]
         public async Task RepositorySettings_ReturnsNull()
         {
             var settings = await _azureSettingsReader.RepositorySettings(null, true);

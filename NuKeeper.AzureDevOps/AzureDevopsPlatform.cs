@@ -82,23 +82,24 @@ namespace NuKeeper.AzureDevOps
                 sourceRefName = $"refs/heads/{request.Head}",
                 description = request.Body,
                 targetRefName = $"refs/heads/{request.BaseRef}",
-                completionOptions = new GitPullRequestCompletionOptions
-                {
-                    deleteSourceBranch = request.DeleteBranchAfterMerge
-                }
             };
 
             var pullRequest = await _client.CreatePullRequest(req, target.Owner, repo.id);
 
             if (request.SetAutoMerge)
             {
-                await _client.SetAutoComplete(new PRRequest()
+                await _client.PatchPullRequest(new PRRequest()
+                {
+                    autoCompleteSetBy = new Creator()
                     {
-                        autoCompleteSetBy = new Creator()
-                        {
-                            id = pullRequest.CreatedBy.id
-                        }
-                    }, target.Owner,
+                        id = pullRequest.CreatedBy.id
+                    },
+                    completionOptions = new GitPullRequestCompletionOptions
+                    {
+                        deleteSourceBranch = request.DeleteBranchAfterMerge,
+                        mergeStrategy = request.MergeStrategy.ToString(),
+                    },
+                }, target.Owner,
                     repo.id,
                     pullRequest.PullRequestId);
             }

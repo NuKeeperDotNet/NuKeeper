@@ -129,7 +129,8 @@ namespace NuKeeper.Engine.Packages
                     var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
                     var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
-                    var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge, settings.SourceControlServerSettings.Repository.SetAutoMerge) { Body = body };
+                    var repositorySettings = settings.SourceControlServerSettings.Repository;
+                    var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge, repositorySettings.SetAutoMerge, repositorySettings.MergeStrategy) { Body = body };
 
                     await _collaborationFactory.CollaborationPlatform.OpenPullRequest(repository.Pull, pullRequestRequest, settings.SourceControlServerSettings.Labels);
                 }

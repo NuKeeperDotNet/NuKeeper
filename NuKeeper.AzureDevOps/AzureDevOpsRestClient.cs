@@ -160,7 +160,7 @@ namespace NuKeeper.AzureDevOps
             return await PostResource<LabelResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}/labels", labelContent, true);
         }
 
-        public async Task<PullRequest> SetAutoComplete(PRRequest request, string projectName, string azureRepositoryId, int pullRequestId)
+        public async Task<PullRequest> PatchPullRequest(PRRequest request, string projectName, string azureRepositoryId, int pullRequestId)
         {
             var autoCompleteContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             return await PatchResource<PullRequest>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullRequests/{pullRequestId}", autoCompleteContent);

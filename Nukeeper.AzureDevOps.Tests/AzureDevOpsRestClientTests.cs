@@ -392,7 +392,7 @@ namespace Nukeeper.AzureDevOps.Tests
                 }
             };
 
-            var pullRequestResponse = await restClient.SetAutoComplete(prRequest, "ProjectName", "RepoId", 100);
+            var pullRequestResponse = await restClient.PatchPullRequest(prRequest, "ProjectName", "RepoId", 100);
             Assert.IsNotNull(pullRequestResponse);
         }
 

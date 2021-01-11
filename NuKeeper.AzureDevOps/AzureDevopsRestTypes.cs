@@ -109,6 +109,7 @@ namespace NuKeeper.AzureDevOps
     public class GitPullRequestCompletionOptions
     {
         public bool deleteSourceBranch { get; set; }
+        public string mergeStrategy { get; set; }
     }
 
     public class AzureRepository
