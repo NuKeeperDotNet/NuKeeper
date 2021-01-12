@@ -27,6 +27,7 @@ title: "Configuration"
 | fork             | f         | `repo`, `org`, `global`   | PreferFork              |
 | label            | l         | `repo`, `org`, `global`   | 'nukeeper'              |
 | maxpackageupdates| m         | `repo`, `org`, `global`, `update`| 3, or when the command is `update`, 1 |
+| maxopenpullrequests |           | `repo`, `org`, `global`| 1 if `consolidate`, else `maxpackageupdates` |
 | consolidate      | n         | `repo`, `org`, `global`   | false                   |
 | platform         |           | `repo`, `org`, `global`   | _null_                  |
 | gitclipath       | git       | `repo`, `org`, `global`   | _null_ (use default Lib2Git-Implementation)                  |
@@ -70,6 +71,14 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *fork* Values are `PreferFork`, `PreferSingleRepository` and `SingleRepositoryOnly`. Prefer to make branches on a fork of the target repository, or on that repository itself. See the section "Branches, forks and pull requests" below.
 * *label* Label to apply to GitHub pull requests. Can be specified multiple times.
 * *maxpackageupdates* The maximum number of package updates to apply. In `repo`,`org` and `global` commands, this limits the number of updates per repository. If the `--consolidate` flag is used, these wll be consolidated into one Pull Request. If not, then there will be one Pull Request per update applied. In the `update` command, The default value is 1. When changed, multiple updates can be applied in a single `update` run, up to this number.
+* *maxopenpullrequests* The maximum number of pull requests that can be active in one repository at a time. If the `--consolidate` flag is used, the default value is 1. If not, then the default will be `maxpackageupdates`. This currently only works for AzureDevops/TFS.
+
+  To be able to figure out the number of active pull requests, different strategies are used:
+
+  1. First, only pull requests created by the identity linked to the PAT are considered, however this is only possible for Azure Devops Services, and not the on-premise version, as it does not provide any (straightforward) API to be able to figure this out. The cloud version does provide an API that should allow us to figure out the current account, but this requires a token with a scope that can read identities/account information.
+  2. If no account or identity can be determined based on the PAT. Then, currently a hardcoded, user `nukeeper@bot.com` is considered. Again this requires a broader scope.
+  3. If no user identity was able to be fetched, then it will fetch all active PRs and consider only those with labels `nukeeper` attached to it.
+
 * *maxrepo* The maximum number of repositories to change. Used in Organisation and Global mode.
 * *consolidate* Consolidate updates into a single pull request, instead of the default of 1 pull request per package update applied.
 * *platform* One of `GitHub`, `AzureDevOps`, `Bitbucket`, `BitbucketLocal`, `Gitlab`, `Gitea`. Determines which kind of source control api will be used. This is typicaly infered from the api url structure, but since this does not always work, it can be specified here if neccessary.

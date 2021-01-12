@@ -43,6 +43,7 @@ namespace NuKeeper.Abstractions.Configuration
         public bool? DeleteBranchAfterMerge { get; set; }
 
         public string GitCliPath { get; set; }
+        public int? MaxOpenPullRequests { get; set; }
 
         public static FileSettings Empty()
         {

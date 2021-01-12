@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,42 @@ namespace NuKeeper.AzureDevOps
 #pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1707 // Identifiers should not contain underscores
 #pragma warning disable CA2227 // Collection properties should be read only
+
+    public class Resource<T>
+    {
+        public int count { get; set; }
+        public IEnumerable<T> value { get; set; }
+    }
+
+    public class Account
+    {
+        public string accountId { get; set; }
+        public string accountName { get; set; }
+        public string accountOwner { get; set; }
+        public Dictionary<string, object> properties { get; set; }
+        public string Mail
+        {
+            get
+            {
+                if (properties.ContainsKey("Mail"))
+                {
+                    switch (properties["Mail"])
+                    {
+                        case JObject mailObject:
+                            return mailObject.Property("$value").Value.ToString();
+
+                        case JProperty mailProp:
+                            return mailProp.Value.ToString();
+
+                        case string mailString:
+                            return mailString;
+                    }
+                }
+
+                return string.Empty;
+            }
+        }
+    }
 
     public class Avatar
     {
@@ -75,6 +112,7 @@ namespace NuKeeper.AzureDevOps
         public string Url { get; set; }
         public bool SupportsIterations { get; set; }
         public Creator CreatedBy { get; set; }
+        public IEnumerable<WebApiTagDefinition> labels { get; set; }
 
         // public CreatedBy CreatedBy { get; set; }
         // public Lastmergesourcecommit LastMergeSourceCommit { get; set; }
@@ -82,6 +120,15 @@ namespace NuKeeper.AzureDevOps
         // public Lastmergecommit LastMergeCommit { get; set; }
         // public IEnumerable<Reviewer> Reviewers { get; set; }
     }
+
+    public class WebApiTagDefinition
+    {
+        public bool active { get; set; }
+        public string id { get; set; }
+        public string name { get; set; }
+        public string url { get; set; }
+    }
+
     public class ProjectResource
     {
         public int Count { get; set; }

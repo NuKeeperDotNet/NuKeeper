@@ -126,5 +126,10 @@ namespace NuKeeper.Gitlab
             _logger.Error($"Search has not yet been implemented for GitLab.");
             throw new NotImplementedException();
         }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

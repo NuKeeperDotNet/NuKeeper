@@ -93,3 +93,5 @@ NuKeeper sorts the pull requests, using heuristics so that more impactful update
 `--change minor` Do not allow major version changes.
 
 `--age 10d` Do not apply any version change until it has been available for 10 days. The default is 7 days. You can also specify this value in weeks with e.g. `age=6w` or hours with e.g. `age=12h`.
+
+`--maxopenpullrequests 10` will ensure that no more than 10 pull requests can be active in a single repository at the same time. The default value is 1 if `consolidate` is specified, otherwise `maxpackageupdates`.

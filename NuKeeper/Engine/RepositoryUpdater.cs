@@ -11,6 +11,8 @@ using NuKeeper.Inspection.Sources;
 using NuKeeper.Update.Process;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace NuKeeper.Engine
 {
@@ -31,7 +33,8 @@ namespace NuKeeper.Engine
             IPackageUpdater packageUpdater,
             INuKeeperLogger logger,
             ISolutionRestore solutionRestore,
-            IReporter reporter)
+            IReporter reporter
+        )
         {
             _nugetSourcesReader = nugetSourcesReader;
             _updateFinder = updateFinder;
@@ -92,30 +95,54 @@ namespace NuKeeper.Engine
                 return 0;
             }
 
-            var targetUpdates = _updateSelection.SelectTargets(
-                           repository.Push,
-                           updates,
-                           settings.PackageFilters);
+            while (updates.Any())
+            {
+                var targetUpdates = _updateSelection.SelectTargets(
+                    repository.Push,
+                    updates,
+                    settings.PackageFilters
+                );
 
-            return await DoTargetUpdates(git, repository, targetUpdates,
-                sources, settings);
+                if (!targetUpdates.Any())
+                {
+                    _logger.Minimal("No updates can be applied. Exiting.");
+                    return 0;
+                }
+
+                var (updatesDone, thresholdReached) = await DoTargetUpdates(git, repository, targetUpdates,
+                    sources, settings);
+
+                if (updatesDone != 0)
+                {
+                    return updatesDone;
+                }
+
+                if (thresholdReached.GetValueOrDefault())
+                    return 0;
+
+                updates = new ReadOnlyCollection<PackageUpdateSet>(
+                    updates.Except(targetUpdates).ToList()
+                );
+            }
+
+            return 0;
         }
 
-        private async Task<int> DoTargetUpdates(
+        private async Task<(int UpdatesMade, bool? ThresholdReached)> DoTargetUpdates(
             IGitDriver git, RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> targetUpdates,
             NuGetSources sources,
-            SettingsContainer settings)
+            SettingsContainer settings
+        )
         {
             if (targetUpdates.Count == 0)
             {
-                _logger.Minimal("No updates can be applied. Exiting.");
-                return 0;
+                return (0, null);
             }
 
             await _solutionRestore.CheckRestore(targetUpdates, settings.WorkingFolder ?? git.WorkingFolder, sources);
 
-            var updatesDone = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings);
+            var (updatesDone, thresholdReached) = await _packageUpdater.MakeUpdatePullRequests(git, repository, targetUpdates, sources, settings);
 
             if (updatesDone < targetUpdates.Count)
             {
@@ -126,7 +153,7 @@ namespace NuKeeper.Engine
                 _logger.Normal($"Done {updatesDone} updates");
             }
 
-            return updatesDone;
+            return (updatesDone, thresholdReached);
         }
 
         private static async Task GitInit(IGitDriver git, RepositoryData repository)
