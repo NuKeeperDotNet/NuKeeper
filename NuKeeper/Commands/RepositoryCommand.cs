@@ -20,7 +20,7 @@ namespace NuKeeper.Commands
             Description = "Set automatically auto merge for created pull request. Works only for Azure Devops. Defaults to false.")]
         public bool? SetAutoMerge { get; set; }
 
-        [Option(CommandOptionType.SingleValue, ShortName = "mg", LongName = "mergestrategy",
+        [Option(CommandOptionType.SingleValue, ShortName = "ms", LongName = "mergestrategy",
             Description = "Sets the merge strategy. Works only for Azure Devops. Only effective in combination with 'setautomerge'. Allowed strategies: noFastForward, rebase, rebaseMerge, squash. Defaults to noFastForward.")]
         public GitPullRequestMergeStrategy? MergeStrategy { get; set; }
 

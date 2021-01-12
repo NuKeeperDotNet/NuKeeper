@@ -38,6 +38,7 @@ title: "Configuration"
 | branchnametemplate |           | `repo`, `org`, `global`, `update`| _null_           |
 | deletebranchaftermerge | d   | _all_                     | true                    |
 | setautomerge |    | `repo`                     | false                    |
+| mergestrategy | ms   | `repo`                     | noFastForward                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
@@ -73,14 +74,14 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *maxrepo* The maximum number of repositories to change. Used in Organisation and Global mode.
 * *consolidate* Consolidate updates into a single pull request, instead of the default of 1 pull request per package update applied.
 * *platform* One of `GitHub`, `AzureDevOps`, `Bitbucket`, `BitbucketLocal`, `Gitlab`, `Gitea`. Determines which kind of source control api will be used. This is typicaly infered from the api url structure, but since this does not always work, it can be specified here if neccessary.
-* *gitclipath* Path to `git` command line. Alternative use native git via cli instead of the default lib2gitsharp implementation. In special cases lib2gitsharp is not enough. E.g. in enviroments with company-proxies or self hosted git services signed certificates. For Windows it is typically `C:\Program Files\Git\bin\git.exe`. For Linux it is typically `/usr/bin/git`. 
+* *gitclipath* Path to `git` command line. Alternative use native git via cli instead of the default lib2gitsharp implementation. In special cases lib2gitsharp is not enough. E.g. in enviroments with company-proxies or self hosted git services signed certificates. For Windows it is typically `C:\Program Files\Git\bin\git.exe`. For Linux it is typically `/usr/bin/git`.
 
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 
 * *branchnametemplate* A template that can be used to set the name of the branch NuKeeper creates. Allows you to put those branches in a hierarchy or set your own naming strategy.
   It accepts the following tokens:
-  
+
   |Token       |Replacement                                                                      |
   |------------|---------------------------------------------------------------------------------|
   |`{Default}` |The default Nukeeper Branch Naming                                               |
@@ -88,15 +89,16 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
   |`{Version}` |The version of the updated Nuget or `Multiple-Versions` if more than one version |
   |`{Count}`   |The number of updated Nugets                                                     |
   |`{Hash}`    |An Unique hash over the updated nugets.                                          |
-  
+
   The default nukeeper branch naming is:
-  
+
   | | |
   |-|-|
   |Single Nuget   |`nukeeper-update-{Name}-to-{Version}`
   |Multiple Nugets|`nukeeper-update-{Count}-packages-{Hash}`
-  
+
   Note: The old and replaced option `branchnameprefix` can be simulated with `--branchnametemplate "YourBranchPrefix/{Default}"`
-  
+
 * *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.
 * *setautomerge* Specifies whether a pull request should be merged automatically after passing all checks. Currently only works with `Platform` equal to `AzureDevOps`.
+* *mergestrategy* Sets the merge strategy. Only effective in combination with `setautomerge`. Allowed strategies: `noFastForward`, `rebase`, `rebaseMerge`, `squash`. Defaults to `noFastForward`. Currently only works with `Platform` equal to `AzureDevOps`.
