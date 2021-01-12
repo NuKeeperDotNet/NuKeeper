@@ -101,4 +101,4 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 
 * *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.
 * *setautomerge* Specifies whether a pull request should be merged automatically after passing all checks. Currently only works with `Platform` equal to `AzureDevOps`.
-* *mergestrategy* Sets the merge strategy. Only effective in combination with `setautomerge`. Allowed strategies: `noFastForward`, `rebase`, `rebaseMerge`, `squash`. Defaults to `noFastForward`. Currently only works with `Platform` equal to `AzureDevOps`.
+* *mergestrategy* Sets the merge strategy. Only effective in combination with `setautomerge`. Allowed strategies: `NoFastForward`, `Rebase`, `RebaseMerge`, `Squash`. Defaults to `noFastForward`. Currently only works with `Platform` equal to `AzureDevOps`.

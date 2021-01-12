@@ -41,7 +41,7 @@ namespace NuKeeper.Gitlab
             settings.Token = Concat.FirstValue(envToken, settings.Token);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.noFastForward)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.NoFastForward)
         {
             if (repositoryUri == null)
             {

@@ -108,9 +108,9 @@ namespace Nukeeper.AzureDevOps.Tests
         [Test]
         public async Task RepositorySettings_SetsCorrectPullRequestMergeStrategy()
         {
-            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true, gitPullRequestMergeStrategy: GitPullRequestMergeStrategy.rebase);
+            var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true, gitPullRequestMergeStrategy: GitPullRequestMergeStrategy.Rebase);
 
-            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.rebase);
+            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.Rebase);
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace Nukeeper.AzureDevOps.Tests
         {
             var settings = await _azureSettingsReader.RepositorySettings(new Uri("https://dev.azure.com/owner/_git/reponame"), true);
 
-            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.noFastForward);
+            Assert.AreEqual(settings.MergeStrategy, GitPullRequestMergeStrategy.NoFastForward);
         }
 
         [Test]

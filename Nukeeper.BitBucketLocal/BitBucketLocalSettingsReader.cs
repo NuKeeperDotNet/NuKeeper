@@ -28,7 +28,7 @@ namespace NuKeeper.BitBucketLocal
                    repositoryUri.Host.Contains("bitbucket.org", StringComparison.OrdinalIgnoreCase) == false);
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.noFastForward)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.NoFastForward)
         {
             if (repositoryUri == null)
             {

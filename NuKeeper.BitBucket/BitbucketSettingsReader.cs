@@ -39,7 +39,7 @@ namespace NuKeeper.BitBucket
             settings.ForkMode = settings.ForkMode ?? ForkMode.SingleRepositoryOnly;
         }
 
-        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.noFastForward)
+        public Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.NoFastForward)
         {
             if (repositoryUri == null)
             {

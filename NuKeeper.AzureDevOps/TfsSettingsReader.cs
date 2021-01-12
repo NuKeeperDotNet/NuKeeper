@@ -44,7 +44,7 @@ namespace NuKeeper.AzureDevOps
             return tfsInPath || tfsInHost;
         }
 
-        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, Abstractions.Configuration.GitPullRequestMergeStrategy gitPullRequestMergeStrategy = Abstractions.Configuration.GitPullRequestMergeStrategy.noFastForward)
+        public override async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, Abstractions.Configuration.GitPullRequestMergeStrategy gitPullRequestMergeStrategy = Abstractions.Configuration.GitPullRequestMergeStrategy.NoFastForward)
         {
             if (repositoryUri == null)
             {

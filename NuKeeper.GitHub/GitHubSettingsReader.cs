@@ -53,7 +53,7 @@ namespace NuKeeper.GitHub
             settings.ForkMode ??= ForkMode.PreferFork;
         }
 
-        public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.noFastForward)
+        public async Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.NoFastForward)
         {
             if (repositoryUri == null)
             {

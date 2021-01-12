@@ -21,7 +21,7 @@ namespace NuKeeper.Commands
         public bool? SetAutoMerge { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "ms", LongName = "mergestrategy",
-            Description = "Sets the merge strategy. Works only for Azure Devops. Only effective in combination with 'setautomerge'. Allowed strategies: noFastForward, rebase, rebaseMerge, squash. Defaults to noFastForward.")]
+            Description = "Sets the merge strategy. Works only for Azure Devops. Only effective in combination with 'setautomerge'. Allowed strategies: NoFastForward, Rebase, RebaseMerge, Squash. Defaults to NoFastForward.")]
         public GitPullRequestMergeStrategy? MergeStrategy { get; set; }
 
         private readonly IEnumerable<ISettingsReader> _settingsReaders;
@@ -67,7 +67,7 @@ namespace NuKeeper.Commands
                 return ValidationResult.Failure($"Unable to work out which platform to use {RepositoryUri} could not be matched");
             }
 
-            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, SetAutoMerge ?? false, TargetBranch, MergeStrategy ?? GitPullRequestMergeStrategy.noFastForward);
+            settings.SourceControlServerSettings.Repository = await reader.RepositorySettings(repoUri, SetAutoMerge ?? false, TargetBranch, MergeStrategy ?? GitPullRequestMergeStrategy.NoFastForward);
 
             var baseResult = await base.PopulateSettings(settings);
             if (!baseResult.IsSuccess)

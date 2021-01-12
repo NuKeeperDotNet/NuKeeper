@@ -2,9 +2,9 @@ namespace NuKeeper.Abstractions.Configuration
 {
     public enum GitPullRequestMergeStrategy
     {
-        noFastForward,
-        rebase,
-        rebaseMerge,
-        squash
+        NoFastForward = 0,
+        Rebase = 1,
+        RebaseMerge = 2,
+        Squash = 3
     }
 }

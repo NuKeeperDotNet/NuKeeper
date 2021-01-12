@@ -10,7 +10,7 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
 
         Task<bool> CanRead(Uri repositoryUri);
 
-        Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.noFastForward);
+        Task<RepositorySettings> RepositorySettings(Uri repositoryUri, bool setAutoMerge, string targetBranch = null, GitPullRequestMergeStrategy gitPullRequestMergeStrategy = GitPullRequestMergeStrategy.NoFastForward);
 
         void UpdateCollaborationPlatformSettings(CollaborationPlatformSettings settings);
     }
