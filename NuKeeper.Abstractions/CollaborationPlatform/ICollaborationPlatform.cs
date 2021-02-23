@@ -26,5 +26,6 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
         Task<bool> RepositoryBranchExists(string userName, string repositoryName, string branchName);
 
         Task<SearchCodeResult> Search(SearchCodeRequest search);
+        Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName);
     }
 }

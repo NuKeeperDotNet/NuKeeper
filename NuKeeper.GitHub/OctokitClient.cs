@@ -208,7 +208,7 @@ namespace NuKeeper.GitHub
                 }
 
                 var result = await _client.Search.SearchCode(
-                    new Octokit.SearchCodeRequest
+                    new Octokit.SearchCodeRequest()
                     {
                         Repos = repos,
                         Extensions = search.Extensions,
@@ -263,6 +263,11 @@ namespace NuKeeper.GitHub
 
                 throw new NuKeeperException(ex.Message, ex);
             }
+        }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
         }
     }
 }

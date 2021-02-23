@@ -9,11 +9,12 @@ namespace NuKeeper.Engine.Packages
 {
     public interface IPackageUpdater
     {
-        Task<int> MakeUpdatePullRequests(
+        Task<(int UpdatesMade, bool ThresholdReached)> MakeUpdatePullRequests(
             IGitDriver git,
             RepositoryData repository,
             IReadOnlyCollection<PackageUpdateSet> updates,
             NuGetSources sources,
-            SettingsContainer settings);
+            SettingsContainer settings
+        );
     }
 }

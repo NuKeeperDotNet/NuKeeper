@@ -8,6 +8,7 @@ namespace NuKeeper.Abstractions.Configuration
         public NuGetSources NuGetSources { get; set; }
 
         public int MaxRepositoriesChanged { get; set; }
+        public int MaxOpenPullRequests { get; set; }
 
         public bool ConsolidateUpdatesInSinglePullRequest { get; set; }
 
