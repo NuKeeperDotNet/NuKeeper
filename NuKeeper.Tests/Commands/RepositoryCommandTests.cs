@@ -5,6 +5,7 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.Output;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.BitBucketLocal;
 using NuKeeper.Collaboration;
 using NuKeeper.Commands;
@@ -222,7 +223,12 @@ namespace NuKeeper.Tests.Commands
                     Arg.Is(new Uri("https://api.github.com")),
                     Arg.Is("abc"),
                     Arg.Is<ForkMode?>(ForkMode.PreferSingleRepository),
-                    Arg.Is((Platform?)null));
+                    Arg.Is((Platform?)null),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<Dictionary<string, object>>()
+                );
         }
 
         [Test]
@@ -257,7 +263,12 @@ namespace NuKeeper.Tests.Commands
                     Arg.Is(new Uri("https://api.github.com")),
                     Arg.Is("abc"),
                     Arg.Is<ForkMode?>(ForkMode.PreferFork),
-                    Arg.Is((Platform?)null));
+                    Arg.Is((Platform?)null),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<Dictionary<string, object>>()
+                );
         }
 
         [Test]
@@ -292,7 +303,12 @@ namespace NuKeeper.Tests.Commands
                     Arg.Is(new Uri("https://api.github.com")),
                     Arg.Is("abc"),
                     Arg.Is((ForkMode?)null),
-                    Arg.Is((Platform?)Platform.BitbucketLocal));
+                    Arg.Is((Platform?)Platform.BitbucketLocal),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<Dictionary<string, object>>()
+                );
         }
 
         [TestCase(Platform.BitbucketLocal, "https://myRepo.ch/")]
@@ -325,7 +341,12 @@ namespace NuKeeper.Tests.Commands
                     Arg.Is(new Uri(expectedApi)), // Is populated by the settings reader. Thus, can be used to check if the correct one was selected.
                     Arg.Is((string)null),
                     Arg.Is((ForkMode?)null),
-                    Arg.Is((Platform?)platform));
+                    Arg.Is((Platform?)platform),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<string>(),
+                    Arg.Any<Dictionary<string, object>>()
+                );
         }
 
         [Test]
@@ -603,7 +624,10 @@ namespace NuKeeper.Tests.Commands
             return new CollaborationFactory(
                 settingReaders ?? new ISettingsReader[] { new GitHubSettingsReader(new MockedGitDiscoveryDriver(), environmentVariablesProvider) },
                 Substitute.For<INuKeeperLogger>(),
-                null
+                null,
+                Substitute.For<ITemplateValidator>(),
+                Substitute.For<IEnrichContext<PackageUpdateSet, UpdateMessageTemplate>>(),
+                Substitute.For<IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate>>()
             );
         }
     }

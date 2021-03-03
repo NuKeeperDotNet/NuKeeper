@@ -144,7 +144,10 @@ namespace NuKeeper.Tests.Engine
             var packageUpdater = new PackageUpdater(collaborationFactory,
                 existingCommitFilder,
                 Substitute.For<IUpdateRunner>(),
-                Substitute.For<INuKeeperLogger>());
+                Substitute.For<IEnrichContext<PackageUpdateSet, UpdateMessageTemplate>>(),
+                Substitute.For<IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate>>(),
+                Substitute.For<INuKeeperLogger>()
+            );
 
             var updates = Enumerable.Range(1, numberOfUpdates)
                 .Select(_ => PackageUpdates.UpdateSet())

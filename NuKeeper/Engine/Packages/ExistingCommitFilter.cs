@@ -14,7 +14,10 @@ namespace NuKeeper.Engine.Packages
         private readonly ICollaborationFactory _collaborationFactory;
         private readonly INuKeeperLogger _logger;
 
-        public ExistingCommitFilter(ICollaborationFactory collaborationFactory, INuKeeperLogger logger)
+        public ExistingCommitFilter(
+            ICollaborationFactory collaborationFactory,
+            INuKeeperLogger logger
+        )
         {
             _collaborationFactory = collaborationFactory;
             _logger = logger;

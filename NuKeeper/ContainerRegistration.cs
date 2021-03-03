@@ -1,10 +1,15 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Git;
+using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.AzureDevOps;
 using NuKeeper.BitBucket;
 using NuKeeper.BitBucketLocal;
 using NuKeeper.Collaboration;
+using NuKeeper.Commands;
 using NuKeeper.Engine;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Git;
@@ -12,16 +17,15 @@ using NuKeeper.Gitea;
 using NuKeeper.GitHub;
 using NuKeeper.Gitlab;
 using NuKeeper.Local;
+using NuKeeper.Update.Process;
 using NuKeeper.Update.Selection;
+using NuKeeper.Validators;
 using SimpleInjector;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using NuKeeper.Commands;
-using NuKeeper.Update.Process;
 
 namespace NuKeeper
 {
@@ -96,6 +100,10 @@ namespace NuKeeper
             container.RegisterSingleton<IGitDiscoveryDriver, LibGit2SharpDiscoveryDriver>();
 
             container.RegisterSingleton<ICollaborationFactory, CollaborationFactory>();
+            container.RegisterSingleton<ITemplateRenderer, StubbleTemplateRenderer>();
+            container.RegisterSingleton<IEnrichContext<PackageUpdateSet, UpdateMessageTemplate>, PackageUpdateSetEnricher>();
+            container.RegisterSingleton<IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate>, PackageUpdateSetsEnricher>();
+            container.RegisterSingleton<ITemplateValidator, StubbleMustacheTemplateValidator>();
 
             var settingsRegistration = RegisterMultipleSingletons<ISettingsReader>(container, new[]
             {
@@ -107,6 +115,7 @@ namespace NuKeeper
                 typeof(GitlabSettingsReader).Assembly,
                 typeof(GiteaSettingsReader).Assembly
             });
+
 
             container.Collection.Register<ISettingsReader>(settingsRegistration);
         }
