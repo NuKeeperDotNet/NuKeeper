@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.NuGetApi;
@@ -16,20 +17,18 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
     public class ApiPackageLookupTests
     {
         [Test]
-        public async Task WhenNoPackagesAreFound()
+        public void WhenNoPackagesAreFound()
         {
             var allVersionsLookup = MockVersionLookup(new List<PackageSearchMetadata>());
             IApiPackageLookup lookup = new ApiPackageLookup(allVersionsLookup);
 
-            var updates = await lookup.FindVersionUpdate(
-                CurrentVersion123("TestPackage"),
-                NuGetSources.GlobalFeed,
-                VersionChange.Major,
-                UsePrerelease.FromPrerelease);
-
-            Assert.That(updates, Is.Not.Null);
-            Assert.That(updates.Major, Is.Null);
-            Assert.That(updates.Selected(), Is.Null);
+            var exception = Assert.ThrowsAsync<NuKeeperException>(async () =>
+                await lookup.FindVersionUpdate(
+                    CurrentVersion123("TestPackage"),
+                    NuGetSources.GlobalFeed,
+                    VersionChange.Major,
+                    UsePrerelease.FromPrerelease));
+            Assert.That(exception.Message, Is.EqualTo("Could not find package TestPackage.1.2.3 in these sources: https://api.nuget.org/v3/index.json"));
         }
 
         [Test]

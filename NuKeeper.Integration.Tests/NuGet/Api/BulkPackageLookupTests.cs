@@ -1,5 +1,6 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
@@ -73,7 +74,7 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         }
 
         [Test]
-        public async Task InvalidPackageIsIgnored()
+        public void InvalidPackageThrows()
         {
             var packages = new List<PackageIdentity>
             {
@@ -82,12 +83,11 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             var lookup = BuildBulkPackageLookup();
 
-            var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major,
-                UsePrerelease.FromPrerelease);
-
-            Assert.That(results, Is.Not.Null);
-            Assert.That(results, Is.Empty);
+            var exception = Assert.ThrowsAsync<NuKeeperException>(async () =>
+                await lookup.FindVersionUpdates(
+                    packages, NuGetSources.GlobalFeed, VersionChange.Major,
+                    UsePrerelease.FromPrerelease));
+            Assert.That(exception.Message, Does.Match("Could not find package (.+?) in these sources: https://api.nuget.org/v3/index.json"));
         }
 
         [Test]
@@ -101,30 +101,6 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
-        }
-
-        [Test]
-        public async Task ValidPackagesWorkDespiteInvalidPackages()
-        {
-            var packages = new List<PackageIdentity>
-            {
-                Current("Moq"),
-                Current(Guid.NewGuid().ToString()),
-                Current("Newtonsoft.Json"),
-                Current(Guid.NewGuid().ToString())
-            };
-
-            var lookup = BuildBulkPackageLookup();
-
-            var results = await lookup.FindVersionUpdates(
-                packages, NuGetSources.GlobalFeed, VersionChange.Major,
-                UsePrerelease.FromPrerelease);
-
-            var updatedPackages = results.Select(p => p.Key);
-            Assert.That(results, Is.Not.Null);
-            Assert.That(results.Count, Is.EqualTo(2));
-            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Moq"));
-            Assert.That(updatedPackages, Has.Some.Matches<PackageIdentity>(p => p.Id == "Newtonsoft.Json"));
         }
 
         private BulkPackageLookup BuildBulkPackageLookup()

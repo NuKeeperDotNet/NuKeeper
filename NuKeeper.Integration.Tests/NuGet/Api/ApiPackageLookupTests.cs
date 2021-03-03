@@ -1,5 +1,6 @@
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Inspection.NuGetApi;
@@ -33,19 +34,17 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
         }
 
         [Test]
-        public async Task UnknownPackageName_ShouldNotReturnResult()
+        public void UnknownPackageName_ShouldNotReturnResult()
         {
             var lookup = BuildPackageLookup();
 
-            var package = await lookup.FindVersionUpdate(
-                Current(Guid.NewGuid().ToString()),
-                NuGetSources.GlobalFeed,
-                VersionChange.Major,
-                UsePrerelease.FromPrerelease);
-
-            Assert.That(package, Is.Not.Null);
-            Assert.That(package.Major, Is.Null);
-            Assert.That(package.Selected(), Is.Null);
+            var exception = Assert.ThrowsAsync<NuKeeperException>(async () =>
+                await lookup.FindVersionUpdate(
+                    Current(Guid.NewGuid().ToString()),
+                    NuGetSources.GlobalFeed,
+                    VersionChange.Major,
+                    UsePrerelease.FromPrerelease));
+            Assert.That(exception.Message, Does.Match("Could not find package (.+?) in these sources: https://api.nuget.org/v3/index.json"));
         }
 
         [Test]
