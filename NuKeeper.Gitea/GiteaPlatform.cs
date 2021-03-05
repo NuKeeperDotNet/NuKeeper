@@ -148,5 +148,10 @@ namespace NuKeeper.Gitea
                 repo.IsFork,
                 repo.Parent != null ? MapRepository(repo.Parent) : null);
         }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

@@ -167,5 +167,10 @@ namespace NuKeeper.BitBucketLocal
 
             return new SearchCodeResult(totalCount);
         }
+
+        public Task<int> GetNumberOfOpenPullRequests(string projectName, string repositoryName)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

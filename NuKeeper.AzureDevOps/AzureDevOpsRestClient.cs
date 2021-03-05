@@ -115,6 +115,19 @@ namespace NuKeeper.AzureDevOps
                 : new Uri($"{relativePath}{separator}api-version=4.1", UriKind.Relative);
         }
 
+        // documentation is confusing, I think this won't work without memberId or ownerId
+        // https://docs.microsoft.com/en-us/rest/api/azure/devops/account/accounts/list?view=azure-devops-rest-6.0
+        public Task<Resource<Account>> GetCurrentUser()
+        {
+            return GetResource<Resource<Account>>("/_apis/accounts");
+        }
+
+        public Task<Resource<Account>> GetUserByMail(string email)
+        {
+            var encodedEmail = HttpUtility.UrlEncode(email);
+            return GetResource<Resource<Account>>($"/_apis/identities?searchFilter=MailAddress&filterValue={encodedEmail}");
+        }
+
         public async Task<IEnumerable<Project>> GetProjects()
         {
             var response = await GetResource<ProjectResource>("/_apis/projects");
@@ -144,6 +157,15 @@ namespace NuKeeper.AzureDevOps
             var encodedHeadBranch = HttpUtility.UrlEncode(headBranch);
 
             var response = await GetResource<PullRequestResource>($"{projectName}/_apis/git/repositories/{azureRepositoryId}/pullrequests?searchCriteria.sourceRefName={encodedHeadBranch}&searchCriteria.targetRefName={encodedBaseBranch}");
+
+            return response?.value.AsEnumerable();
+        }
+
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(string projectName, string repositoryName, string user)
+        {
+            var response = await GetResource<PullRequestResource>(
+                $"{projectName}/_apis/git/repositories/{repositoryName}/pullrequests?searchCriteria.creatorId={user}"
+            );
 
             return response?.value.AsEnumerable();
         }
