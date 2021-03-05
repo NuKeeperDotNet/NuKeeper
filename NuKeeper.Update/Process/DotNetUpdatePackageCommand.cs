@@ -37,20 +37,20 @@ namespace NuKeeper.Update.Process
             }
 
             var projectPath = currentPackage.Path.Info.DirectoryName;
-            var projectFileName = currentPackage.Path.Info.Name;
+            var projectFileNameCommandLine = ArgumentEscaper.EscapeAndConcatenate(new string[] { currentPackage.Path.Info.Name });
             var sourceUrl = UriEscapedForArgument(packageSource.SourceUri);
             var sources = allSources.CommandLine("-s");
 
-            var restoreCommand = $"restore {projectFileName} {sources}";
+            var restoreCommand = $"restore {projectFileNameCommandLine} {sources}";
             await _externalProcess.Run(projectPath, "dotnet", restoreCommand, true);
 
             if (currentPackage.Path.PackageReferenceType == PackageReferenceType.ProjectFileOldStyle)
             {
-                var removeCommand = $"remove {projectFileName} package {currentPackage.Id}";
+                var removeCommand = $"remove {projectFileNameCommandLine} package {currentPackage.Id}";
                 await _externalProcess.Run(projectPath, "dotnet", removeCommand, true);
             }
 
-            var addCommand = $"add {projectFileName} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
+            var addCommand = $"add {projectFileNameCommandLine} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
             await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
         }
 

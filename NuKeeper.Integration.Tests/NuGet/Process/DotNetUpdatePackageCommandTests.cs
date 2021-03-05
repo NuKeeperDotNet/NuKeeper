@@ -109,6 +109,13 @@ namespace NuKeeper.Integration.Tests.NuGet.Process
             await ExecuteValidUpdateTest(_testDotNetClassicProject, PackageReferenceType.ProjectFileOldStyle);
         }
 
+        [Test]
+        public async Task ShouldUpdateProjectFilenameWithSpaces()
+        {
+            await ExecuteValidUpdateTest(_testDotNetClassicProject, PackageReferenceType.ProjectFileOldStyle, "Project With Spaces.csproj");
+        }
+
+
         private async Task ExecuteValidUpdateTest(
             string testProjectContents,
             PackageReferenceType packageReferenceType,
