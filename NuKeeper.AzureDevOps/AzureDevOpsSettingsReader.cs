@@ -97,7 +97,10 @@ namespace NuKeeper.AzureDevOps
 
         private async Task<RepositorySettings> CreateSettingsFromLocal(Uri repositoryUri, string targetBranch)
         {
-            var remoteInfo = new RemoteInfo();
+            var remoteInfo = new RemoteInfo()
+            {
+                BranchName = targetBranch,
+            };
 
             var localCopy = repositoryUri;
             if (await _gitDriver.IsGitRepo(repositoryUri))
@@ -138,7 +141,8 @@ namespace NuKeeper.AzureDevOps
                     pathParts[0],  //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[1]),  // project
-                    Uri.UnescapeDataString(pathParts[3])   // reponame
+                    Uri.UnescapeDataString(pathParts[3]),   // reponame
+                    remoteInfo
                     );
             }
             else if (indexOfGit == 1 && pathParts.Length == 3)
@@ -147,7 +151,8 @@ namespace NuKeeper.AzureDevOps
                     null,          //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[0]),  // project
-                    Uri.UnescapeDataString(pathParts[2])   // reponame
+                    Uri.UnescapeDataString(pathParts[2]),   // reponame
+                    remoteInfo
                     );
             }
             return null;
