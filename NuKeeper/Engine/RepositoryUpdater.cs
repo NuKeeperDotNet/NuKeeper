@@ -67,6 +67,7 @@ namespace NuKeeper.Engine
 
             if (!repository.IsLocalRepo)
             {
+                _logger.Detailed("RepositoryUpdater.Run(git, repository)");
                 await GitInit(git, repository);
             }
 
