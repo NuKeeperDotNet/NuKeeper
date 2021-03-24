@@ -44,7 +44,6 @@ namespace NuKeeper.Git
 
         public async Task Clone(Uri pullEndpoint)
         {
-            _logger.Detailed("LibGit2ShaprDriver.Clone(Uri)");
             await Clone(pullEndpoint, null);
         }
 

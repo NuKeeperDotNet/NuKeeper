@@ -50,7 +50,7 @@ namespace NuKeeper.Update.Process
                 await _externalProcess.Run(projectPath, "dotnet", removeCommand, true);
             }
 
-            var addCommand = $"add {projectFileNameCommandLine} package {currentPackage.Id} -v {newVersion} -s {sourceUrl} -n";
+            var addCommand = $"add {projectFileNameCommandLine} package {currentPackage.Id} -v {newVersion} -s {sourceUrl}";
             await _externalProcess.Run(projectPath, "dotnet", addCommand, true);
         }
 
