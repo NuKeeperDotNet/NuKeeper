@@ -50,7 +50,6 @@ namespace NuKeeper.Git
 
         public Task Clone(Uri pullEndpoint, string branchName)
         {
-            _logger.Detailed("LibGit2ShaprDriver.Clone(Uri, branchName)");
             return Task.Run(() =>
             {
                 _logger.Normal($"Git clone {pullEndpoint}, branch {branchName ?? "default"}, to {WorkingFolder.FullPath}");
