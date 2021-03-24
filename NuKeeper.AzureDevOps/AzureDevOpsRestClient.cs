@@ -98,6 +98,7 @@ namespace NuKeeper.AzureDevOps
             {
                 msg = $"{caller} failed to parse json to {typeof(T)}: {ex.Message}";
                 _logger.Error(msg);
+                _logger.Detailed(responseBody);
                 throw new NuKeeperException($"Failed to parse json to {typeof(T)}", ex);
             }
         }
