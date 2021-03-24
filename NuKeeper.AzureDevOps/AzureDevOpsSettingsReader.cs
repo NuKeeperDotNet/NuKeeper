@@ -141,7 +141,7 @@ namespace NuKeeper.AzureDevOps
                     pathParts[0],  //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[1]),  // project
-                    Uri.UnescapeDataString(pathParts[3]),   // reponame
+                    Uri.UnescapeDataString(pathParts[3]),  // reponame
                     remoteInfo
                     );
             }
@@ -151,7 +151,7 @@ namespace NuKeeper.AzureDevOps
                     null,          //org
                     repositoryUri, //uri
                     Uri.UnescapeDataString(pathParts[0]),  // project
-                    Uri.UnescapeDataString(pathParts[2]),   // reponame
+                    Uri.UnescapeDataString(pathParts[2]),  // reponame
                     remoteInfo
                     );
             }
