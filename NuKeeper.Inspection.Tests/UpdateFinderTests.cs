@@ -35,7 +35,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease);
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, false);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(0));
@@ -63,7 +63,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease);
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, true);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -93,7 +93,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, new Regex("^somePackage"), null);
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, true, new Regex("^somePackage"), null);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -124,7 +124,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, new Regex("^andAnotherPackage"), new Regex("^anotherPackage"));
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, true, new Regex("^andAnotherPackage"), new Regex("^anotherPackage"));
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -154,7 +154,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, null, new Regex("^anotherPackage"));
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, true, null, new Regex("^anotherPackage"));
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -184,7 +184,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease);
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, false);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -216,7 +216,7 @@ namespace NuKeeper.Inspection.Tests
             var finder = new UpdateFinder(scanner, updater, logger);
 
             var results = await finder.FindPackageUpdateSets(
-                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease);
+                folder, NuGetSources.GlobalFeed, VersionChange.Major, UsePrerelease.FromPrerelease, false);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -236,7 +236,8 @@ namespace NuKeeper.Inspection.Tests
                     Arg.Any<IReadOnlyCollection<PackageInProject>>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
-                    Arg.Any<UsePrerelease>())
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>())
                 .Returns(a => a.ArgAt<IReadOnlyCollection<PackageInProject>>(0)
                     .Select(BuildPackageUpdateSet)
                     .ToList());

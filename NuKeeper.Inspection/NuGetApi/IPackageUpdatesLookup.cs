@@ -12,6 +12,7 @@ namespace NuKeeper.Inspection.NuGetApi
             IReadOnlyCollection<PackageInProject> packages,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease);
+            UsePrerelease usePrerelease,
+            bool throwOnGitError);
     }
 }

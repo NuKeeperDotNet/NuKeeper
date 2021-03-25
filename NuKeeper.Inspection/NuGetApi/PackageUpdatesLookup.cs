@@ -21,14 +21,15 @@ namespace NuKeeper.Inspection.NuGetApi
             IReadOnlyCollection<PackageInProject> packages,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease)
+            UsePrerelease usePrerelease,
+            bool throwOnGitError)
         {
             var packageIds = packages
                 .Select(p => p.Identity)
                 .Distinct();
 
             var latestVersions = await _bulkPackageLookup.FindVersionUpdates(
-                packageIds, sources, allowedChange, usePrerelease);
+                packageIds, sources, allowedChange, usePrerelease, throwOnGitError);
 
             var results = new List<PackageUpdateSet>();
 
