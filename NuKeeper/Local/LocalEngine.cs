@@ -65,6 +65,7 @@ namespace NuKeeper.Local
                 sources,
                 settings.UserSettings.AllowedChange,
                 settings.UserSettings.UsePrerelease,
+                settings.UserSettings.ThrowOnGitError,
                 settings.PackageFilters?.Includes,
                 settings.PackageFilters?.Excludes);
 
@@ -81,11 +82,12 @@ namespace NuKeeper.Local
             NuGetSources sources,
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
+            bool throwOnGitError,
             Regex includes,
             Regex excludes)
         {
             var updates = await _updateFinder.FindPackageUpdateSets(
-                folder, sources, allowedChange, usePrerelease, includes, excludes);
+                folder, sources, allowedChange, usePrerelease, throwOnGitError, includes, excludes);
 
             return _sorter.Sort(updates)
                 .ToList();

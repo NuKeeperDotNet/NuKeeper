@@ -26,14 +26,15 @@ namespace NuKeeper.Inspection.NuGetApi
             IEnumerable<PackageIdentity> packages,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease
+            UsePrerelease usePrerelease,
+            bool throwOnGitError
         )
         {
             var lookupTasks = packages
                 .Distinct()
                 .GroupBy(pi => (pi.Id, MaxVersion: GetMaxVersion(pi, allowedChange)))
                 .Select(HighestVersion)
-                .Select(id => new { Package = id, Update = _packageLookup.FindVersionUpdate(id, sources, allowedChange, usePrerelease) })
+                .Select(id => new { Package = id, Update = _packageLookup.FindVersionUpdate(id, sources, allowedChange, usePrerelease, throwOnGitError) })
                 .ToList();
 
             await Task.WhenAll(lookupTasks.Select(l => l.Update));
@@ -42,7 +43,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
             foreach (var lookupTask in lookupTasks)
             {
-                ProcessLookupResult(lookupTask.Package, lookupTask.Update.Result, result);
+                ProcessLookupResult(lookupTask.Package, await lookupTask.Update, result);
             }
 
             return result;

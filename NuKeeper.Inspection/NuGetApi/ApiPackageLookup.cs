@@ -21,7 +21,8 @@ namespace NuKeeper.Inspection.NuGetApi
             PackageIdentity package,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease)
+            UsePrerelease usePrerelease,
+            bool throwOnGitError)
         {
             if (package == null)
             {
@@ -30,7 +31,7 @@ namespace NuKeeper.Inspection.NuGetApi
 
             var includePrerelease = ShouldAllowPrerelease(package, usePrerelease);
 
-            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, includePrerelease, sources);
+            var foundVersions = await _packageVersionsLookup.Lookup(package.Id, includePrerelease, throwOnGitError, sources);
             return VersionChanges.MakeVersions(package.Version, foundVersions, allowedChange);
         }
 

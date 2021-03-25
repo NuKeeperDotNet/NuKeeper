@@ -26,7 +26,7 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         public async Task<IReadOnlyCollection<PackageSearchMetadata>> Lookup(
-            string packageName, bool includePrerelease,
+            string packageName, bool includePrerelease, bool throwOnGitError,
             NuGetSources sources)
         {
             if (sources == null)
@@ -34,7 +34,7 @@ namespace NuKeeper.Inspection.NuGetApi
                 throw new ArgumentNullException(nameof(sources));
             }
 
-            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, s));
+            var tasks = sources.Items.Select(s => RunFinderForSource(packageName, includePrerelease, throwOnGitError, s));
 
             var results = await Task.WhenAll(tasks);
 
@@ -45,7 +45,7 @@ namespace NuKeeper.Inspection.NuGetApi
         }
 
         private async Task<IEnumerable<PackageSearchMetadata>> RunFinderForSource(
-            string packageName, bool includePrerelease, PackageSource source)
+            string packageName, bool includePrerelease, bool throwOnGitError, PackageSource source)
         {
             var sourceRepository = _packageSources.Get(source);
             try
@@ -58,6 +58,9 @@ namespace NuKeeper.Inspection.NuGetApi
             catch (Exception ex)
 #pragma warning restore CA1031
             {
+                if (throwOnGitError)
+                    throw;
+
                 _nuKeeperLogger.Normal($"Getting {packageName} from {source} returned exception: {ex.Message}");
                 return Enumerable.Empty<PackageSearchMetadata>();
             }
