@@ -79,6 +79,7 @@ namespace NuKeeper.Engine
                 sources,
                 userSettings.AllowedChange,
                 userSettings.UsePrerelease,
+                userSettings.ThrowOnGitError,
                 settings.PackageFilters?.Includes,
                 settings.PackageFilters?.Excludes);
 

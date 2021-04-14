@@ -20,7 +20,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
             var package = await lookup.FindVersionUpdate(Current("AWSSDK"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -41,7 +42,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 Current(Guid.NewGuid().ToString()),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Null);
@@ -57,7 +59,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 Current("Newtonsoft.Json"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);
@@ -81,7 +84,8 @@ namespace NuKeeper.Integration.Tests.NuGet.Api
                 new PackageIdentity("Newtonsoft.Json", new NuGetVersion(8, 0, 1)),
                 NuGetSources.GlobalFeed,
                 VersionChange.Minor,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(package, Is.Not.Null);
             Assert.That(package.Major, Is.Not.Null);

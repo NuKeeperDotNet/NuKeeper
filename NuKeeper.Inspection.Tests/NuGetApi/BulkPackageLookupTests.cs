@@ -28,13 +28,14 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 Enumerable.Empty<PackageIdentity>(),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Empty);
 
             await apiLookup.DidNotReceive().FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>());
         }
 
         [Test]
@@ -54,7 +55,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Is.Not.Empty);
@@ -79,10 +81,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             await apiLookup.Received(1).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>());
         }
 
         [Test]
@@ -104,7 +107,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             var packages = results.Select(kvp => kvp.Key);
             Assert.That(results.Count, Is.EqualTo(2));
@@ -132,10 +136,11 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             await apiLookup.Received(2).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>());
         }
 
         [Test]
@@ -156,13 +161,14 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
             var results = await bulkLookup.FindVersionUpdates(queries,
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             await apiLookup.Received(1).FindVersionUpdate(
-                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
+                Arg.Any<PackageIdentity>(), Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>());
             await apiLookup.Received(1).FindVersionUpdate(Arg.Is<PackageIdentity>(
                 pi => pi.Id == "foo" && pi.Version == new NuGetVersion(1, 3, 4)),
-                Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>());
+                Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>());
 
             var packages = results.Select(kvp => kvp.Key);
             Assert.That(results.Count, Is.EqualTo(1));
@@ -177,7 +183,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 DateTimeOffset.Now, null);
 
             lookup.FindVersionUpdate(Arg.Is<PackageIdentity>(pm => pm.Id == packageName),
-                    Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>())
+                    Arg.Any<NuGetSources>(), Arg.Any<VersionChange>(), Arg.Any<UsePrerelease>(), Arg.Any<bool>())
                 .Returns(new PackageLookupResult(VersionChange.Major, responseMetaData, responseMetaData, responseMetaData));
         }
 

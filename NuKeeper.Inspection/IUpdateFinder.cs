@@ -17,6 +17,7 @@ namespace NuKeeper.Inspection
         /// <param name="sources"></param>
         /// <param name="allowedChange"></param>
         /// <param name="usePrerelease"></param>
+        /// <param name="throwOnGitError">Should an GIT error be thrown as Exception?</param>
         /// <param name="include">Optional, for no include pass null</param>
         /// <param name="exclude">Optional, for no exclude pass null</param>
         /// <returns></returns>
@@ -25,6 +26,7 @@ namespace NuKeeper.Inspection
             NuGetSources sources,
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
+            bool throwOnGitError,
             Regex include = null,
             Regex exclude = null);
     }

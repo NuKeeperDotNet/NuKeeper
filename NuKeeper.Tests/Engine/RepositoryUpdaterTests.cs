@@ -54,6 +54,7 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
                     Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>(),
                     Arg.Any<Regex>()
                 )
                 .Returns(_packagesToReturn);
@@ -379,7 +380,8 @@ namespace NuKeeper.Tests.Engine
                     Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
-                    Arg.Any<UsePrerelease>())
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>())
                 .Returns(updates);
 
             if (packageUpdater == null)

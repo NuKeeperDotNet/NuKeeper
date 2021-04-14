@@ -16,6 +16,7 @@ namespace NuKeeper.Abstractions.Configuration
 
         public UsePrerelease UsePrerelease { get; set; }
 
+        public bool ThrowOnGitError { get; set; }
 
         public OutputFormat OutputFormat { get; set; }
         public OutputDestination OutputDestination { get; set; }

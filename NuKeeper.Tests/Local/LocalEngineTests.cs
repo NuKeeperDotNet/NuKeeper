@@ -36,7 +36,8 @@ namespace NuKeeper.Tests.Local
                 .FindPackageUpdateSets(Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
-                    Arg.Any<UsePrerelease>());
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>());
 
             await updater.Received(0)
                 .ApplyUpdates(
@@ -64,7 +65,8 @@ namespace NuKeeper.Tests.Local
                 .FindPackageUpdateSets(Arg.Any<IFolder>(),
                     Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
-                    Arg.Any<UsePrerelease>());
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>());
 
             await updater
                 .Received(1)
@@ -81,7 +83,8 @@ namespace NuKeeper.Tests.Local
             finder.FindPackageUpdateSets(
                     Arg.Any<IFolder>(), Arg.Any<NuGetSources>(),
                     Arg.Any<VersionChange>(),
-                    Arg.Any<UsePrerelease>())
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>())
                 .Returns(new List<PackageUpdateSet>());
 
             var sorter = Substitute.For<IPackageUpdateSetSort>();

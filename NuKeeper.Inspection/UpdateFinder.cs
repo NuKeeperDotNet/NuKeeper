@@ -44,6 +44,7 @@ namespace NuKeeper.Inspection
             NuGetSources sources,
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
+            bool throwOnGitError,
             Regex includes = null,
             Regex excludes = null)
         {
@@ -57,7 +58,7 @@ namespace NuKeeper.Inspection
 
             // look for updates to these packages
             var updates = await _packageUpdatesLookup.FindUpdatesForPackages(
-                filtered, sources, allowedChange, usePrerelease);
+                filtered, sources, allowedChange, usePrerelease, throwOnGitError);
 
             _logger.Log(UpdatesLogger.Log(updates));
             return updates;

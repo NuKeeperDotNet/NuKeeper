@@ -85,6 +85,10 @@ namespace NuKeeper.Commands
             Description = "Path to git to use instead of lib2gitsharp implementation")]
         public string GitCliPath { get; set; }
 
+        [Option(CommandOptionType.NoValue, ShortName = "", LongName = "FailOnGitError",
+            Description = "Should this call fail on a GIT error? Defaults to false.")]
+        public bool? FailOnGitError { get; set; }
+
         protected CommandBase(IConfigureLogger logger, IFileSettingsCache fileSettingsCache)
         {
             _configureLogger = logger;
@@ -132,6 +136,7 @@ namespace NuKeeper.Commands
             var usePrerelease = Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchNameTemplate = Concat.FirstValue(BranchNameTemplate, fileSettings.BranchNameTemplate);
             var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
+            var throwOnGitError = Concat.FirstValue(FailOnGitError, fileSettings.ThrowOnGitError, false);
 
             var settings = new SettingsContainer
             {
@@ -142,7 +147,8 @@ namespace NuKeeper.Commands
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
                     NuGetSources = NuGetSources,
-                    GitPath = gitpath
+                    GitPath = gitpath,
+                    ThrowOnGitError = throwOnGitError,
                 },
                 BranchSettings = new BranchSettings
                 {
@@ -153,12 +159,14 @@ namespace NuKeeper.Commands
             return settings;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         protected virtual async Task<ValidationResult> PopulateSettings(SettingsContainer settings)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var minPackageAge = ReadMinPackageAge();
             if (!minPackageAge.HasValue)
             {
-                return await Task.FromResult(ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed"));
+                return ValidationResult.Failure($"Min package age '{MinimumPackageAge}' could not be parsed");
             }
 
             settings.PackageFilters.MinimumAge = minPackageAge.Value;
@@ -199,7 +207,7 @@ namespace NuKeeper.Commands
                 return branchNameTemplateValid;
             }
 
-            return await Task.FromResult(ValidationResult.Success);
+            return ValidationResult.Success;
         }
 
         private TimeSpan? ReadMinPackageAge()

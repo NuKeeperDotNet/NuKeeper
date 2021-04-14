@@ -25,7 +25,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 CurrentVersion123("TestPackage"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(updates, Is.Not.Null);
             Assert.That(updates.Major, Is.Null);
@@ -48,7 +49,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 CurrentVersion123("TestPackage"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             Assert.That(updates, Is.Not.Null);
 
@@ -74,7 +76,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 CurrentVersion123("TestPackage"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Major,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
             Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
@@ -98,7 +101,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 CurrentVersion123("TestPackage"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Minor,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
             Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
@@ -122,7 +126,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 CurrentVersion123("TestPackage"),
                 NuGetSources.GlobalFeed,
                 VersionChange.Patch,
-                UsePrerelease.FromPrerelease);
+                UsePrerelease.FromPrerelease,
+                true);
 
             AssertPackagesIdentityIs(updates, "TestPackage");
             Assert.That(updates.Selected().Identity.Version, Is.EqualTo(expectedUpdate));
@@ -132,7 +137,7 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMetadata> actualResults)
         {
             var allVersions = Substitute.For<IPackageVersionsLookup>();
-            allVersions.Lookup(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<NuGetSources>())
+            allVersions.Lookup(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<bool>(), Arg.Any<NuGetSources>())
                 .Returns(actualResults);
             return allVersions;
         }
