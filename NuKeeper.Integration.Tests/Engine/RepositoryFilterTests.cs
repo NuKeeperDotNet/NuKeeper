@@ -13,6 +13,7 @@ namespace NuKeeper.Integration.Tests.Engine
     public class RepositoryFilterTests : TestWithFailureLogging
     {
         [Test]
+        [Ignore("Public GIT token is expired, the project owner needs to create a new key")]
         public async Task ShouldFilterOutNonDotnetRepository()
         {
             IRepositoryFilter subject = MakeRepositoryFilter();
@@ -27,6 +28,7 @@ namespace NuKeeper.Integration.Tests.Engine
         }
 
         [Test]
+        [Ignore("Public GIT token is expired, the project owner needs to create a new key")]
         public async Task ShouldNotFilterOutADotnetRepository()
         {
             IRepositoryFilter subject = MakeRepositoryFilter();
