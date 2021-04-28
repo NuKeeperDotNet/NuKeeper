@@ -3,6 +3,7 @@ using SimpleInjector;
 using NuGet.Common;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
+using NuKeeper.Engine;
 using NuKeeper.Inspection;
 using NuKeeper.Inspection.Files;
 using NuKeeper.Inspection.Logging;
@@ -32,6 +33,7 @@ namespace NuKeeper
             container.Register<IPackageVersionsLookup, PackageVersionsLookup>();
             container.Register<IApiPackageLookup, ApiPackageLookup>();
             container.Register<IRepositoryScanner, RepositoryScanner>();
+            container.Register<INameTemplateInterpolater, NameTemplateInterpolater>();
 
             container.Register<ProjectFileReader>();
             container.Register<PackagesFileReader>();

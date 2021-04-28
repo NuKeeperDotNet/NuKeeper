@@ -7,6 +7,8 @@ namespace NuKeeper.Abstractions.CollaborationPlatform
     {
         string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates);
 
+        string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates, string userSettingsPullRequestNameTemplate);
+
         string MakeCommitMessage(PackageUpdateSet updates);
 
         string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates);

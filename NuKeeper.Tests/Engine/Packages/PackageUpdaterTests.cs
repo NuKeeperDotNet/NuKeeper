@@ -199,7 +199,8 @@ namespace NuKeeper.Tests.Engine.Packages
                 _collaborationFactory,
                 _existingCommitFilter,
                 _updateRunner,
-                Substitute.For<INuKeeperLogger>()
+                Substitute.For<INuKeeperLogger>(),
+                Substitute.For<INameTemplateInterpolater>()
             );
         }
 

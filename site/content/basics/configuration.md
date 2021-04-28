@@ -37,6 +37,7 @@ title: "Configuration"
 | excluderepos     |           | `org`, `global`           | _null_                  |
 |                  |           |                           |                         |
 | branchnametemplate |           | `repo`, `org`, `global`, `update`| _null_           |
+| pullrequestnametemplate |           | `repo`, `org`, `global`, `update`| _null_           |
 | deletebranchaftermerge | d   | _all_                     | true                    |
 | setautomerge |    | `repo`                     | false                    |
 
@@ -87,7 +88,7 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
 * *includerepos* A regex to filter repositories by name. Only consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 * *excluderepos* A regex to filter repositories by name. Do not consider repositories where the name matches this regex pattern. Used in Organisation and Global mode.
 
-* *branchnametemplate* A template that can be used to set the name of the branch NuKeeper creates. Allows you to put those branches in a hierarchy or set your own naming strategy.
+* *branchnametemplate* and *pullrequestnametemplate* A template that can be used to set the name of the branch/pull request or NuKeeper creates. Allows you to put those branches in a hierarchy or set your own naming strategy.
   It accepts the following tokens:
   
   |Token       |Replacement                                                                      |

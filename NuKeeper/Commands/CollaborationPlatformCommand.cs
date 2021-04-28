@@ -16,7 +16,7 @@ namespace NuKeeper.Commands
         public readonly ICollaborationFactory CollaborationFactory;
 
         [Argument(1, Name = "Token",
-            Description = "Personal access token to authorise access to server.")]
+            Description = "Personal access token to authorize access to server.")]
         public string PersonalAccessToken { get; set; }
 
         [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "fork",

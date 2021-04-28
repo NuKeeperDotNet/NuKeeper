@@ -142,42 +142,42 @@ namespace NuKeeper.Collaboration
 
                     // We go for the specific platform version of ICommitWorder
                     // here since Azure DevOps has different commit message limits compared to other platforms.
-                    CommitWorder = new AzureDevOpsCommitWorder();
+                    CommitWorder = new AzureDevOpsCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 case Platform.GitHub:
                     CollaborationPlatform = new OctokitClient(_nuKeeperLogger);
                     RepositoryDiscovery = new GitHubRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitHubForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new DefaultCommitWorder();
+                    CommitWorder = new DefaultCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 case Platform.Bitbucket:
                     CollaborationPlatform = new BitbucketPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketRepositoryDiscovery(_nuKeeperLogger);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new BitbucketCommitWorder();
+                    CommitWorder = new BitbucketCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 case Platform.BitbucketLocal:
                     CollaborationPlatform = new BitBucketLocalPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new BitbucketLocalRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform, Settings);
                     ForkFinder = new BitbucketForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new DefaultCommitWorder();
+                    CommitWorder = new DefaultCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 case Platform.GitLab:
                     CollaborationPlatform = new GitlabPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GitlabRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GitlabForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new DefaultCommitWorder();
+                    CommitWorder = new DefaultCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 case Platform.Gitea:
                     CollaborationPlatform = new GiteaPlatform(_nuKeeperLogger, _httpClientFactory);
                     RepositoryDiscovery = new GiteaRepositoryDiscovery(_nuKeeperLogger, CollaborationPlatform);
                     ForkFinder = new GiteaForkFinder(CollaborationPlatform, _nuKeeperLogger, forkMode);
-                    CommitWorder = new DefaultCommitWorder();
+                    CommitWorder = new DefaultCommitWorder(new NameTemplateInterpolater());
                     break;
 
                 default:

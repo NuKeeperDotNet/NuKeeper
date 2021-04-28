@@ -45,6 +45,8 @@ namespace NuKeeper.Abstractions.Configuration
         public string GitCliPath { get; set; }
         public int? MaxOpenPullRequests { get; set; }
 
+        public string PullRequestNameTemplate { get; set; }
+
         public static FileSettings Empty()
         {
             return new FileSettings();

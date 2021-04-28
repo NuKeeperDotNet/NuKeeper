@@ -43,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitea", "NuKeeper.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Gitea.Tests", "NuKeeper.Gitea.Tests\NuKeeper.Gitea.Tests.csproj", "{C39BD2F9-CF1E-4E0C-BA00-ADD65759161E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuKeeper.Git.Tests", "NuKeeper.Git.Tests\NuKeeper.Git.Tests.csproj", "{8718DFD0-71E0-4841-A91F-62CC8E726126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.Git.Tests", "NuKeeper.Git.Tests\NuKeeper.Git.Tests.csproj", "{8718DFD0-71E0-4841-A91F-62CC8E726126}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuKeeper.BitBucket.Tests", "NuKeeper.BitBucket.Tests\NuKeeper.BitBucket.Tests.csproj", "{343DE40B-69A6-464E-98EF-9FB7B8503962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{8718DFD0-71E0-4841-A91F-62CC8E726126}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8718DFD0-71E0-4841-A91F-62CC8E726126}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8718DFD0-71E0-4841-A91F-62CC8E726126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343DE40B-69A6-464E-98EF-9FB7B8503962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343DE40B-69A6-464E-98EF-9FB7B8503962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343DE40B-69A6-464E-98EF-9FB7B8503962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343DE40B-69A6-464E-98EF-9FB7B8503962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

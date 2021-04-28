@@ -59,6 +59,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
             Assert.That(data.BranchNameTemplate, Is.Null);
+            Assert.That(data.PullRequestNameTemplate, Is.Null);
             Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
@@ -91,6 +92,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogDestination, Is.Null);
             Assert.That(data.Platform, Is.Null);
             Assert.That(data.BranchNameTemplate, Is.Null);
+            Assert.That(data.PullRequestNameTemplate, Is.Null);
             Assert.That(data.DeleteBranchAfterMerge, Is.Null);
         }
 
@@ -104,6 +106,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""label"": [ ""foo"", ""bar"" ],
                ""logFile"":""somefile.log"",
                ""branchNameTemplate"": ""nukeeper/MyBranch"",
+               ""pullRequestNameTemplate"": ""pullRequestName"",
                ""maxPackageUpdates"": 42,
                ""maxOpenPullRequests"": 10,
                ""maxRepo"": 12,
@@ -138,6 +141,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.LogFile, Is.EqualTo("somefile.log"));
             Assert.That(data.OutputFileName, Is.EqualTo("out_42.txt"));
             Assert.That(data.BranchNameTemplate, Is.EqualTo("nukeeper/MyBranch"));
+            Assert.That(data.PullRequestNameTemplate, Is.EqualTo("pullRequestName"));
             Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
@@ -206,6 +210,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
                ""vErBoSiTy"": ""Q"",
                ""CHANGE"": ""PATCH"",
                ""bRanCHNamETempLATe"": ""nukeeper/MyBranch"",
+               ""pUlLREqUeStNamETempLATe"": ""pullRequestName"",
                ""deLeTEBranCHafTERMerge"": ""true""
             }";
 
@@ -228,7 +233,7 @@ namespace NuKeeper.Abstractions.Tests.Configuration
             Assert.That(data.MaxRepo, Is.EqualTo(3));
             Assert.That(data.Verbosity, Is.EqualTo(LogLevel.Quiet));
             Assert.That(data.Change, Is.EqualTo(VersionChange.Patch));
-            Assert.That(data.BranchNameTemplate, Is.EqualTo("nukeeper/MyBranch"));
+            Assert.That(data.PullRequestNameTemplate, Is.EqualTo("pullRequestName"));
             Assert.That(data.DeleteBranchAfterMerge, Is.EqualTo(true));
         }
 
