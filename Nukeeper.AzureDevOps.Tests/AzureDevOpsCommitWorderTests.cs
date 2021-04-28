@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.RepositoryInspection;
+using NuKeeper.Engine;
 using NuKeeper.Tests;
 using NUnit.Framework;
 
@@ -21,10 +23,13 @@ namespace NuKeeper.AzureDevOps.Tests
 
         private ICommitWorder _sut;
 
+        private INameTemplateInterpolater _nameTemplateInterpolater;
+
         [SetUp]
         public void TestInitialize()
         {
-            _sut = new AzureDevOpsCommitWorder();
+            _nameTemplateInterpolater = Substitute.For<INameTemplateInterpolater>();
+            _sut = new AzureDevOpsCommitWorder(_nameTemplateInterpolater);
         }
 
         [Test]
@@ -353,6 +358,19 @@ namespace NuKeeper.AzureDevOps.Tests
             Assert.That(report, Does.Not.Contain("[ "));
             Assert.That(report, Does.Not.Contain(" ]"));
             Assert.That(report, Does.Not.Contain("There is also a higher version"));
+        }
+
+        [Test]
+        public void MakeNameWithTemplateUsesNameTemplateInterpolater()
+        {
+            var expectedTitle = "PullRequestName";
+            var updates = PackageUpdates.ForInternalSource(MakePackageForV110()).InList();
+            var template = "{Default}";
+            _nameTemplateInterpolater.MakeName(updates, template).Returns(expectedTitle);
+
+            var makePullRequestTitle = _sut.MakePullRequestTitle(updates, template);
+
+            Assert.That(makePullRequestTitle, Is.EqualTo(expectedTitle));
         }
 
         private static PackageInProject MakePackageForV110(string packageName = "foo.bar")

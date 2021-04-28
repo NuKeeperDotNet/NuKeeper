@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace NuKeeper.Engine
 {
-    public static class BranchNamer
+    public class NameTemplateInterpolater : INameTemplateInterpolater
     {
         public static readonly string[] TemplateTokens = { "Default", "Name", "Version", "Count", "Hash" };
 
@@ -22,9 +22,9 @@ namespace NuKeeper.Engine
         /// Replaces the tokens in the branchname with the predefined values. 
         /// </summary>
         /// <param name="updates"></param>
-        /// <param name="branchTemplate"></param>
+        /// <param name="nameTemplate"></param>
         /// <returns></returns>
-        public static string MakeName(IReadOnlyCollection<PackageUpdateSet> updates, string branchTemplate = null)
+        public string MakeName(IReadOnlyCollection<PackageUpdateSet> updates, string nameTemplate = null)
         {
             if (updates == null)
             {
@@ -59,18 +59,18 @@ namespace NuKeeper.Engine
                 tokenValues.Add(token, value);
             }
 
-            return MakeName(tokenValues, branchTemplate);
+            return MakeName(tokenValues, nameTemplate);
         }
 
         /// <summary>
         /// Replaces the tokens in the branchname with the given values
         /// </summary>
         /// <param name="tokenValuePairs"></param>
-        /// <param name="branchTemplate"></param>
+        /// <param name="nameTemplate"></param>
         /// <returns></returns>
-        internal static string MakeName(Dictionary<string, string> tokenValuePairs, string branchTemplate)
+        internal static string MakeName(Dictionary<string, string> tokenValuePairs, string nameTemplate)
         {
-            var branchName = branchTemplate ?? "{default}";
+            var branchName = nameTemplate ?? "{default}";
 
             foreach (KeyValuePair<string, string> kvp in tokenValuePairs)
             {

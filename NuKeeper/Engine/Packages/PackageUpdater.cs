@@ -19,17 +19,19 @@ namespace NuKeeper.Engine.Packages
         private readonly IExistingCommitFilter _existingCommitFilter;
         private readonly INuKeeperLogger _logger;
         private readonly IUpdateRunner _updateRunner;
+        private readonly INameTemplateInterpolater _nameTemplateInterpolater;
 
-        public PackageUpdater(
-            ICollaborationFactory collaborationFactory,
+        public PackageUpdater(ICollaborationFactory collaborationFactory,
             IExistingCommitFilter existingCommitFilter,
             IUpdateRunner localUpdater,
-            INuKeeperLogger logger)
+            INuKeeperLogger logger,
+            INameTemplateInterpolater nameTemplateInterpolater)
         {
             _collaborationFactory = collaborationFactory;
             _existingCommitFilter = existingCommitFilter;
             _updateRunner = localUpdater;
             _logger = logger;
+            _nameTemplateInterpolater = nameTemplateInterpolater;
         }
 
         public async Task<(int UpdatesMade, bool ThresholdReached)> MakeUpdatePullRequests(
@@ -103,7 +105,7 @@ namespace NuKeeper.Engine.Packages
             await git.Checkout(repository.DefaultBranch);
 
             // branch
-            var branchWithChanges = BranchNamer.MakeName(updates, settings.BranchSettings.BranchNameTemplate);
+            var branchWithChanges = _nameTemplateInterpolater.MakeName(updates, settings.BranchSettings.BranchNameTemplate);
             _logger.Detailed($"Using branch name: '{branchWithChanges}'");
 
             var ditCheckOut = await git.CheckoutNewBranch(branchWithChanges);
@@ -151,7 +153,10 @@ namespace NuKeeper.Engine.Packages
 
                 if (!pullRequestExists)
                 {
-                    var title = _collaborationFactory.CommitWorder.MakePullRequestTitle(updates);
+                    var title = string.IsNullOrWhiteSpace(settings.UserSettings.PullRequestNameTemplate)
+                        ? _collaborationFactory.CommitWorder.MakePullRequestTitle(updates)
+                        : _collaborationFactory.CommitWorder.MakePullRequestTitle(updates, settings.UserSettings.PullRequestNameTemplate);
+
                     var body = _collaborationFactory.CommitWorder.MakeCommitDetails(updates);
 
                     var pullRequestRequest = new PullRequestRequest(qualifiedBranch, title, repository.DefaultBranch, settings.BranchSettings.DeleteBranchAfterMerge, settings.SourceControlServerSettings.Repository.SetAutoMerge) { Body = body };

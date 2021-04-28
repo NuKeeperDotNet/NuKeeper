@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using NSubstitute;
-using NSubstitute.Extensions;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationPlatform;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
+using NuKeeper.Tests;
 using NUnit.Framework;
 
-namespace NuKeeper.Tests.Engine
+namespace NuKeeper.BitBucket.Tests
 {
     [TestFixture]
-    public class DefaultCommitWorderTests
+    public class BitbucketCommitWorderTests
     {
         private ICommitWorder _sut;
 
@@ -23,7 +23,7 @@ namespace NuKeeper.Tests.Engine
         public void TestInitialize()
         {
             _nameTemplateInterpolater = Substitute.For<INameTemplateInterpolater>();
-            _sut = new DefaultCommitWorder(_nameTemplateInterpolater);
+            _sut = new BitbucketCommitWorder(_nameTemplateInterpolater);
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":📦: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":📦: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo(":📦: Automatic update of foo.bar to 1.2.3"));
         }
 
 
@@ -307,7 +307,7 @@ namespace NuKeeper.Tests.Engine
             var updates = PackageUpdates.ForInternalSource(MakePackageForV110()).InList();
             var template = "{Default}";
             _nameTemplateInterpolater.MakeName(updates, template).Returns(expectedTitle);
-            
+
             var makePullRequestTitle = _sut.MakePullRequestTitle(updates, template);
 
             Assert.That(makePullRequestTitle, Is.EqualTo(expectedTitle));
@@ -328,10 +328,6 @@ namespace NuKeeper.Tests.Engine
 
             Assert.That(report, Does.StartWith("2 packages were updated in 1 project:"));
             Assert.That(report, Does.Contain("`foo.bar`, `packageTwo`"));
-            Assert.That(report, Does.Contain("<details>"));
-            Assert.That(report, Does.Contain("</details>"));
-            Assert.That(report, Does.Contain("<summary>"));
-            Assert.That(report, Does.Contain("</summary>"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `foo.bar` to `2.1.1` from `1.1.0`"));
             Assert.That(report, Does.Contain("NuKeeper has generated a major update of `packageTwo` to `3.4.5` from `1.1.0`"));
         }

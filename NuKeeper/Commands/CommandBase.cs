@@ -81,6 +81,10 @@ namespace NuKeeper.Commands
             Description = "Template used for creating the branch name.")]
         public string BranchNameTemplate { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "pullrequestnametemplate",
+            Description = "Template used for creating the pull request name.")]
+        public string PullRequestNameTemplate { get; set; }
+
         [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
             Description = "Path to git to use instead of lib2gitsharp implementation")]
         public string GitCliPath { get; set; }
@@ -131,6 +135,7 @@ namespace NuKeeper.Commands
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
             var usePrerelease = Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchNameTemplate = Concat.FirstValue(BranchNameTemplate, fileSettings.BranchNameTemplate);
+            var pullRequestNameTemplate = Concat.FirstValue(PullRequestNameTemplate, fileSettings.PullRequestNameTemplate);
             var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
@@ -142,7 +147,8 @@ namespace NuKeeper.Commands
                     AllowedChange = allowedChange,
                     UsePrerelease = usePrerelease,
                     NuGetSources = NuGetSources,
-                    GitPath = gitpath
+                    GitPath = gitpath,
+                    PullRequestNameTemplate = pullRequestNameTemplate,
                 },
                 BranchSettings = new BranchSettings
                 {
@@ -285,7 +291,7 @@ namespace NuKeeper.Commands
             var tokenSet = Regex.Matches(value, @"{(\w+)}").Select(match => match.Groups[1].Value);
             foreach (var token in tokenSet)
             {
-                if (!BranchNamer.IsValidTemplateToken(token))
+                if (!NameTemplateInterpolater.IsValidTemplateToken(token))
                 {
                     tokenErrors.Append($",{token}");
                 }
@@ -301,12 +307,12 @@ namespace NuKeeper.Commands
             // Test if the generated branchname would be ok.
             // We assume tokens will be generated in valid values, so we use dummy values here
             var tokenValues = new Dictionary<string, string>();
-            foreach (var token in BranchNamer.TemplateTokens)
+            foreach (var token in NameTemplateInterpolater.TemplateTokens)
             {
                 tokenValues.Add(token, "dummy");
             }
 
-            var validationValue = BranchNamer.MakeName(tokenValues, value);
+            var validationValue = NameTemplateInterpolater.MakeName(tokenValues, value);
             if (!Regex.IsMatch(validationValue, @"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\000-\037\177 ~^:?*[]+/[^\000-\037\177 ~^:?*[]+(?<!\.lock|[/.])$"))
             {
                 return ValidationResult.Failure(

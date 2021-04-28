@@ -12,7 +12,13 @@ namespace NuKeeper.Engine
 {
     public class DefaultCommitWorder : ICommitWorder
     {
+        private readonly INameTemplateInterpolater _nameTemplateInterpolater;
         private const string CommitEmoji = "package";
+
+        public DefaultCommitWorder(INameTemplateInterpolater nameTemplateInterpolater)
+        {
+            _nameTemplateInterpolater = nameTemplateInterpolater;
+        }
 
         public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates)
         {
@@ -27,6 +33,11 @@ namespace NuKeeper.Engine
             }
 
             return $"Automatic update of {updates.Count} packages";
+        }
+
+        public string MakePullRequestTitle(IReadOnlyCollection<PackageUpdateSet> updates, string userSettingsPullRequestNameTemplate)
+        {
+            return _nameTemplateInterpolater.MakeName(updates, userSettingsPullRequestNameTemplate);
         }
 
         private static string PackageTitle(PackageUpdateSet updates)

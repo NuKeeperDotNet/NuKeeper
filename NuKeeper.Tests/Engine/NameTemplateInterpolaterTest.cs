@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace NuKeeper.Tests.Engine
 {
     [TestFixture]
-    public class BranchNamerTests
+    public class NameTemplateInterpolaterTest
     {
         private const string BranchNameTemplate = "nukeeper/{default}";
 
@@ -17,9 +17,10 @@ namespace NuKeeper.Tests.Engine
             var packages = PackageUpdates.MakeUpdateSet("SomePackage")
                 .InList();
 
-            var branchName = BranchNamer.MakeName(packages);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper-update-SomePackage-to-1.2.3"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper-update-SomePackage-to-1.2.3"));
         }
 
         [Test]
@@ -28,9 +29,10 @@ namespace NuKeeper.Tests.Engine
             var packages = PackageUpdates.MakeUpdateSet("SomePackage")
                 .InList();
 
-            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages, BranchNameTemplate);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-SomePackage-to-1.2.3"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper/nukeeper-update-SomePackage-to-1.2.3"));
         }
 
         [Test]
@@ -42,9 +44,10 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage")
             };
 
-            var branchName = BranchNamer.MakeName(packages);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
         }
 
         [Test]
@@ -56,9 +59,10 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage")
             };
 
-            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages, BranchNameTemplate);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper/nukeeper-update-2-packages-AA9F9828431C8BFB7A18D3D8F0CF229D"));
         }
 
         [Test]
@@ -71,9 +75,10 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("SomethingElse"),
             };
 
-            var branchName = BranchNamer.MakeName(packages);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
         }
 
         [Test]
@@ -86,9 +91,10 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("SomethingElse"),
             };
 
-            var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate = nameTemplateInterpolater.MakeName(packages, BranchNameTemplate);
 
-            Assert.That(branchName, Is.EqualTo("nukeeper/nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
+            Assert.That(nameTemplate, Is.EqualTo("nukeeper/nukeeper-update-3-packages-BBBB3BF2315D6111CFCBF6A4A7A29DD8"));
         }
 
         [Test]
@@ -106,10 +112,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1);
-            var branchName2 = BranchNamer.MakeName(packages2);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2);
 
-            Assert.That(branchName1, Is.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.EqualTo(nameTemplate2));
         }
 
         [Test]
@@ -127,10 +134,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1, BranchNameTemplate);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2, BranchNameTemplate);
 
-            Assert.That(branchName1, Is.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.EqualTo(nameTemplate2));
         }
 
         [Test]
@@ -148,10 +156,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.5")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1);
-            var branchName2 = BranchNamer.MakeName(packages2);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2);
 
-            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.Not.EqualTo(nameTemplate2));
         }
 
         [Test]
@@ -169,10 +178,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.5")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1, BranchNameTemplate);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2, BranchNameTemplate);
 
-            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.Not.EqualTo(nameTemplate2));
         }
 
         [Test]
@@ -190,10 +200,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1);
-            var branchName2 = BranchNamer.MakeName(packages2);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2);
 
-            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.Not.EqualTo(nameTemplate2));
         }
 
         [Test]
@@ -211,10 +222,11 @@ namespace NuKeeper.Tests.Engine
                 PackageUpdates.MakeUpdateSet("OtherPackage", "2.3.4")
             };
 
-            var branchName1 = BranchNamer.MakeName(packages1, BranchNameTemplate);
-            var branchName2 = BranchNamer.MakeName(packages2, BranchNameTemplate);
+            var nameTemplateInterpolater = new NameTemplateInterpolater();
+            var nameTemplate1 = nameTemplateInterpolater.MakeName(packages1, BranchNameTemplate);
+            var nameTemplate2 = nameTemplateInterpolater.MakeName(packages2, BranchNameTemplate);
 
-            Assert.That(branchName1, Is.Not.EqualTo(branchName2));
+            Assert.That(nameTemplate1, Is.Not.EqualTo(nameTemplate2));
         }
     }
 }
