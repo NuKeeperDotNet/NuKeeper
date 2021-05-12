@@ -138,10 +138,11 @@ namespace NuKeeper.BitBucketLocal
             return await HandleResponse<PullRequest>(response, caller);
         }
 
-        public async Task<IEnumerable<PullRequestReviewer>> GetBitBucketReviewers(string projectName, string repositoryName, [CallerMemberName] string caller = null)
+        public async Task<IEnumerable<PullRequestReviewer>> GetBitBucketReviewers(string projectName, string repositoryName, int repositoryId, string head, string baseRef, [CallerMemberName] string caller = null)
         {
-            var response = await GetResourceOrEmpty<List<Conditions>>($@"{ApiReviewersPath}/projects/{projectName}/repos/{repositoryName}/conditions", caller);
-            return response.SelectMany(c => c.Reviewers).Select(usr => new PullRequestReviewer() { User = usr });
+            var response = await GetResourceOrEmpty<List<Reviewer>>($@"{ApiReviewersPath}/projects/{projectName}/repos/{repositoryName}/reviewers?sourceRepoId={repositoryId}&targetRepoId={repositoryId}&sourceRefId={head}&targetRefId={baseRef}", caller);
+
+            return response.Where(r => r.Active).Select(user => new PullRequestReviewer { User = user });
         }
     }
 }

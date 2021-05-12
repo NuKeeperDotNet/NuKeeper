@@ -66,7 +66,7 @@ namespace NuKeeper.BitBucketLocal
             var repositories = await _client.GetGitRepositories(target.Owner);
             var targetRepository = repositories.FirstOrDefault(x => x.Name.Equals(target.Name, StringComparison.InvariantCultureIgnoreCase));
 
-            var reviewers = await _client.GetBitBucketReviewers(target.Owner, targetRepository.Name);
+            var reviewers = await _client.GetBitBucketReviewers(target.Owner, targetRepository.Name, targetRepository.Id, request.Head, request.BaseRef);
 
             var pullReq = new PullRequest
             {
