@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -13,6 +14,9 @@ namespace NuKeeper.Inspection.RepositoryInspection
         private const string VisualStudioLegacyProjectNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private readonly INuKeeperLogger _logger;
         private readonly PackageInProjectReader _packageInProjectReader;
+        private readonly Dictionary<string, HashSet<string>> _projectReferences = new();
+
+        public IReadOnlyDictionary<string, IReadOnlyCollection<string>> ProjectReferences => GetProjectReferences();
 
         public ProjectFileReader(INuKeeperLogger logger)
         {
@@ -66,6 +70,15 @@ namespace NuKeeper.Inspection.RepositoryInspection
                 .Select(el => MakeProjectPath(el, path.FullName))
                 .ToList();
 
+            var pathString = path.FullName;
+            foreach (var referencedProjectPath in projectRefs)
+            {
+                if (!_projectReferences.ContainsKey(pathString))
+                    _projectReferences[pathString] = new();
+
+                _projectReferences[pathString].Add(referencedProjectPath);
+            }
+
             var packageRefs = itemGroups.SelectMany(ig => ig.Elements(ns + "PackageReference"));
             projectFileResults.AddRange(
                 packageRefs
@@ -88,6 +101,13 @@ namespace NuKeeper.Inspection.RepositoryInspection
             );
 
             return projectFileResults;
+        }
+
+        private IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetProjectReferences()
+        {
+            var projectReferences = _projectReferences.ToDictionary(project => project.Key, project => (IReadOnlyCollection<string>)project.Value);
+
+            return new ReadOnlyDictionary<string, IReadOnlyCollection<string>>(projectReferences);
         }
 
         private static string MakeProjectPath(XElement el, string currentPath)

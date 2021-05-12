@@ -45,7 +45,7 @@ namespace NuKeeper.Update
                 throw new ArgumentNullException(nameof(updateSet));
             }
 
-            var sortedUpdates = Sort(updateSet.CurrentPackages);
+            var sortedUpdates = updateSet.CurrentPackages;
 
             _logger.Detailed($"Updating '{updateSet.SelectedId}' to {updateSet.SelectedVersion} in {sortedUpdates.Count} projects");
 
@@ -59,13 +59,6 @@ namespace NuKeeper.Update
                         sources);
                 }
             }
-        }
-
-        private IReadOnlyCollection<PackageInProject> Sort(IReadOnlyCollection<PackageInProject> packages)
-        {
-            var sorter = new PackageInProjectTopologicalSort(_logger);
-            return sorter.Sort(packages)
-                .ToList();
         }
 
         private IReadOnlyCollection<IPackageCommand> GetUpdateCommands(

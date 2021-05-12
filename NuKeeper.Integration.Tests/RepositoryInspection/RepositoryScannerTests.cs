@@ -261,6 +261,7 @@ namespace NuKeeper.Integration.Tests.RepositoryInspection
         {
             var logger = NukeeperLogger;
             return new RepositoryScanner(
+                logger,
                 new ProjectFileReader(logger),
                 new PackagesFileReader(logger),
                 new NuspecFileReader(logger),
