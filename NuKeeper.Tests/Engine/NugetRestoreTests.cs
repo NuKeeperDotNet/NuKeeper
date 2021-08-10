@@ -28,6 +28,7 @@ namespace NuKeeper.Tests.Engine
             }
             else
             {
+                monoExecuter.CanRun().Returns(true);
                 monoExecuter.Run(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<bool>()).Returns(new ProcessOutput("", "", 0));
             }
             var cmd = new NuGetFileRestoreCommand(logger, nuGetPath, monoExecuter, externalProcess);
@@ -41,10 +42,10 @@ namespace NuKeeper.Tests.Engine
             }
             else
             {
+                logger.DidNotReceiveWithAnyArgs().Error(Arg.Any<string>(), Arg.Any<System.Exception>());
                 await monoExecuter.Received(1).Run(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<bool>());
                 await monoExecuter.ReceivedWithAnyArgs().Run(Arg.Any<string>(), Arg.Any<string>(), $"restore {file.Name} - Source ${NuGetSources.GlobalFeed} -NonInteractive -PackagesDirectory ..\\packages", Arg.Any<bool>());
             }
-
         }
     }
 }
