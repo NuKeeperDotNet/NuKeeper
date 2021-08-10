@@ -43,7 +43,7 @@ namespace NuKeeper.GitHub
             Credentials creds;
             if (string.IsNullOrWhiteSpace(settings.Token))
             {
-                creds = new Credentials(settings.Token, AuthenticationType.Anonymous);
+                creds = Credentials.Anonymous;
             }
             else
             {
