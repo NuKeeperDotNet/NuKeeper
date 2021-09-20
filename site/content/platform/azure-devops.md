@@ -18,35 +18,35 @@ Azure Devops gives us the option to do it either in editor mode, or in yaml.
 #### Yaml
 1. Add a new build pipeline and select yaml.
 1. Add the following **yaml** file and adjust where necessary:
-    ```yml
-    trigger: none # don't run as CI build
+```yml
+trigger: none # don't run as CI build
 
-    schedules:
-    - cron: "0 0 * * *" # run daily at UTC midnight
-      displayName: Check for updated dependencies
-      branches:
-        include:
-        - master
-      always: true # regardless of changes
+schedules:
+- cron: "0 0 * * *" # run daily at UTC midnight
+  displayName: Check for updated dependencies
+  branches:
+    include:
+    - master
+  always: true # regardless of changes
 
-    resources:
-       - repo: self # point to its own repo, change it if you don't want that
+resources:
+   - repo: self # point to its own repo, change it if you don't want that
 
-    pool:
-        name: Hosted VS2017 # can be anything you want
+pool:
+    name: Hosted VS2017 # can be anything you want
 
-    steps:
-      - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
-        displayName: NuKeeper
-    ```    
-1. Optionally add extra arguments, The extension just calls the **repo** command, so any arguments extra for your repo command can be added here.
-    ```yml
-    steps:
-    - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
+steps:
+  - task: nukeeper.nukeeper.nukeeper.NuKeeper@0
     displayName: NuKeeper
-    inputs:
-        arguments: '-m 3 -v d'
-    ```
+```
+1. Optionally add extra arguments, The extension just calls the **repo** command, so any arguments extra for your repo command can be added here.
+```yml
+steps:
+- task: nukeeper.nukeeper.nukeeper.NuKeeper@0
+displayName: NuKeeper
+inputs:
+    arguments: '-m 3 -v d'
+```
 1. Finally give the **build service user** the required *[Permissions](#permissions)* and take it for a spin by qeueing a new build!
 
 #### Editor mode
