@@ -1,7 +1,7 @@
 strategy:
   matrix:
     Linux:
-      imageName: 'ubuntu-16.04'
+      imageName: 'ubuntu-latest'
     Windows:
       imageName: 'windows-2019'
     Mac:
