@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <PackageId>nukeeper</PackageId>
@@ -13,14 +13,14 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.8.0">
+    <PackageReference Include="NuGet.CommandLine" Version="5.11.0">
       <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="NuGet.Credentials" Version="5.8.0" />
-    <PackageReference Include="SimpleInjector" Version="5.1.0" />
-    <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.0.1" />
+    <PackageReference Include="NuGet.Credentials" Version="5.11.0" />
+    <PackageReference Include="SimpleInjector" Version="5.3.2" />
+    <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
@@ -41,7 +41,7 @@
     <None Include="..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.8.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.11.0\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
     </TfmSpecificPackageFile>
