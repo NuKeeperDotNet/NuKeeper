@@ -199,6 +199,8 @@ namespace NuKeeper.Tests.Engine.Packages
                 _collaborationFactory,
                 _existingCommitFilter,
                 _updateRunner,
+                Substitute.For<IEnrichContext<PackageUpdateSet, UpdateMessageTemplate>>(),
+                Substitute.For<IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate>>(),
                 Substitute.For<INuKeeperLogger>()
             );
         }

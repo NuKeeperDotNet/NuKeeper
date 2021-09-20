@@ -18,7 +18,6 @@ namespace NuKeeper.Abstractions.NuGetApi
         }
 
         public VersionChange AllowedChange { get; }
-
         public PackageSearchMetadata Major { get; }
         public PackageSearchMetadata Minor { get; }
         public PackageSearchMetadata Patch { get; }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -9,6 +6,9 @@ using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Abstractions.RepositoryInspection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NuKeeper.Tests
 {
@@ -58,7 +58,13 @@ namespace NuKeeper.Tests
 
         public static PackageUpdateSet For(params PackageInProject[] packages)
         {
-            var newPackage = new PackageIdentity("foo.bar", new NuGetVersion("1.2.3"));
+            var newPackage = new PackageIdentity(packages?.First()?.Id ?? "foo.bar", new NuGetVersion("1.2.3"));
+            return ForNewVersion(newPackage, packages);
+        }
+
+        public static PackageUpdateSet For(string packageName, params PackageInProject[] packages)
+        {
+            var newPackage = new PackageIdentity(packageName, new NuGetVersion("1.2.3"));
             return ForNewVersion(newPackage, packages);
         }
 

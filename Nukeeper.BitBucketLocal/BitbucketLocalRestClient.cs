@@ -1,3 +1,7 @@
+using Newtonsoft.Json;
+using NuKeeper.Abstractions;
+using NuKeeper.Abstractions.Logging;
+using NuKeeper.BitBucketLocal.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +11,6 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using NuKeeper.Abstractions;
-using NuKeeper.Abstractions.Logging;
-using NuKeeper.BitBucketLocal.Models;
 
 namespace NuKeeper.BitBucketLocal
 {
@@ -124,8 +124,8 @@ namespace NuKeeper.BitBucketLocal
 
             return response.Values
                 .Where(p => p.Open
-                && p.FromRef.Id.Equals(headBranch,StringComparison.InvariantCultureIgnoreCase)
-                && p.ToRef.Id.Equals(baseBranch,StringComparison.InvariantCultureIgnoreCase));
+                && p.FromRef.Id.Equals(headBranch, StringComparison.InvariantCultureIgnoreCase)
+                && p.ToRef.Id.Equals(baseBranch, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public async Task<PullRequest> CreatePullRequest(PullRequest pullReq, string projectName, string repositoryName, [CallerMemberName] string caller = null)

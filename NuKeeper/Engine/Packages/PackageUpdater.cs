@@ -19,16 +19,23 @@ namespace NuKeeper.Engine.Packages
         private readonly IExistingCommitFilter _existingCommitFilter;
         private readonly INuKeeperLogger _logger;
         private readonly IUpdateRunner _updateRunner;
+        private readonly IEnrichContext<PackageUpdateSet, UpdateMessageTemplate> _enricher;
+        private readonly IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate> _multiEnricher;
 
         public PackageUpdater(
             ICollaborationFactory collaborationFactory,
             IExistingCommitFilter existingCommitFilter,
             IUpdateRunner localUpdater,
-            INuKeeperLogger logger)
+            IEnrichContext<PackageUpdateSet, UpdateMessageTemplate> enricher,
+            IEnrichContext<IReadOnlyCollection<PackageUpdateSet>, UpdateMessageTemplate> multiEnricher,
+            INuKeeperLogger logger
+        )
         {
             _collaborationFactory = collaborationFactory;
             _existingCommitFilter = existingCommitFilter;
             _updateRunner = localUpdater;
+            _enricher = enricher;
+            _multiEnricher = multiEnricher;
             _logger = logger;
         }
 
