@@ -40,12 +40,20 @@ namespace NuKeeper.GitHub
             }
 
             _apiBase = settings.ApiBase;
+            Credentials creds;
+            if (string.IsNullOrWhiteSpace(settings.Token))
+            {
+                creds = Credentials.Anonymous;
+            }
+            else
+            {
+                creds = new Credentials(settings.Token, AuthenticationType.Oauth);
+            }
 
             _client = new GitHubClient(new ProductHeaderValue("NuKeeper"), _apiBase)
             {
-                Credentials = new Credentials(settings.Token)
+                Credentials = creds
             };
-
             _initialised = true;
         }
 
@@ -206,7 +214,6 @@ namespace NuKeeper.GitHub
                 {
                     repos.Add(repo.Owner, repo.Name);
                 }
-
                 var result = await _client.Search.SearchCode(
                     new Octokit.SearchCodeRequest()
                     {
