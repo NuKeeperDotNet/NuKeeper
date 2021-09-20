@@ -12,7 +12,7 @@
     <CodeAnalysisRuleSet>..\CodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NuGet.CommandLine" Version="5.8.0">
       <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
