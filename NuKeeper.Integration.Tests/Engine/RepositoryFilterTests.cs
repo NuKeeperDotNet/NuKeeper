@@ -37,12 +37,10 @@ namespace NuKeeper.Integration.Tests.Engine
         }
 
         private RepositoryFilter MakeRepositoryFilter()
-        {
-            const string testKeyWithOnlyPublicAccess = "c13d2ce7774d39ae99ddaad46bd69c3d459b9992";
-
+        {            
             var collaborationFactory = Substitute.For<ICollaborationFactory>();
             var gitHubClient = new OctokitClient(NukeeperLogger);
-            gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), testKeyWithOnlyPublicAccess));
+            gitHubClient.Initialise(new AuthSettings(new Uri("https://api.github.com"), ""));
             collaborationFactory.CollaborationPlatform.Returns(gitHubClient);
 
             return new RepositoryFilter(collaborationFactory, NukeeperLogger);
