@@ -13,7 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.8.0">
+    <PackageReference Include="NuGet.CommandLine" Version="5.11.0">
       <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -41,7 +41,7 @@
     <None Include="..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.8.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.11.0\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
     </TfmSpecificPackageFile>
