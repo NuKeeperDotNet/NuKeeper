@@ -12,7 +12,6 @@ using NuKeeper.Abstractions.Logging;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.NuGetApi;
 using NuKeeper.Abstractions.RepositoryInspection;
-using NuKeeper.Abstractions;
 using NuKeeper.Engine.Packages;
 using NuKeeper.Engine;
 using NuKeeper.Inspection.Report;
@@ -84,8 +83,10 @@ namespace NuKeeper.Tests.Engine
             var updateSelection = Substitute.For<IPackageUpdateSelection>();
             UpdateSelectionAll(updateSelection);
 
-            var updates = PackageUpdates.UpdateSet()
-                .InList();
+            var updates = new List<PackageUpdateSet>
+            {
+                PackageUpdates.UpdateSet()
+            };
 
             var (repoUpdater, packageUpdater) = MakeRepositoryUpdater(
                 updateSelection, updates);

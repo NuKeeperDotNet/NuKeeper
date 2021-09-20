@@ -1,5 +1,4 @@
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.Logging;
@@ -40,8 +39,10 @@ namespace NuKeeper.Tests.Local
         [Test]
         public async Task SingleItemCase()
         {
-            var updates = PackageUpdates.MakeUpdateSet("foo")
-                .InList();
+            var updates = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("foo")
+            };
 
             var selection = Substitute.For<IUpdateSelection>();
             FilterIsPassThrough(selection);

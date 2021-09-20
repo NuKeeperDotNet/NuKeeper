@@ -1,5 +1,4 @@
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.CollaborationModels;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.Logging;
@@ -32,8 +31,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void WhenThereIsOneInput_ItIsTheTarget()
         {
-            var updateSets = PackageUpdates.UpdateFooFromOneVersion()
-                .InList();
+            var updateSets = new List<PackageUpdateSet>
+            {
+                PackageUpdates.UpdateFooFromOneVersion()
+            };
 
             var target = MakeSelection();
 

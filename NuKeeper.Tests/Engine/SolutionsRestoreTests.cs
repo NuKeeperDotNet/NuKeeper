@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Inspections.Files;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.RepositoryInspection;
@@ -33,8 +32,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreNoMatchingPackagesTheCommandIsNotCalled()
         {
-            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.ProjectFile)
-                .InList();
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.ForPackageRefType(PackageReferenceType.ProjectFile)
+            };
 
             var sln = new FileInfo("foo.sln");
 
@@ -53,8 +54,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereIsOneSolutionsTheCommandIsCalled()
         {
-            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
-                .InList();
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
+            };
 
             var sln = new FileInfo("foo.sln");
 
@@ -73,8 +76,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public async Task WhenThereAreTwoSolutionsTheCommandIsCalledForEachOfThem()
         {
-            var packages = PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
-                .InList();
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.ForPackageRefType(PackageReferenceType.PackagesConfig)
+            };
 
             var sln1 = new FileInfo("foo.sln");
             var sln2 = new FileInfo("bar.sln");

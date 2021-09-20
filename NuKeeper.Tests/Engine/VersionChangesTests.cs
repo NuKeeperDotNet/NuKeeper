@@ -33,8 +33,10 @@ namespace NuKeeper.Tests.Engine
         public void WhenThereIsANewMajorVersion()
         {
             var current = new NuGetVersion(1, 2, 3);
-            var candidates = MetadataForVersion(2, 3, 4)
-                .InList();
+            var candidates = new List<PackageSearchMetadata>
+            {
+                MetadataForVersion(2, 3, 4)
+            };
 
             var result = VersionChanges.MakeVersions(current, candidates, VersionChange.Major);
 

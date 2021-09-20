@@ -4,7 +4,6 @@ using System.Linq;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Configuration;
 using NuKeeper.Abstractions.NuGet;
 using NuKeeper.Abstractions.NuGetApi;
@@ -34,8 +33,10 @@ namespace NuKeeper.Tests
 
             var packages = new PackageLookupResult(VersionChange.Major, latest, null, null);
 
-            var pip = new PackageInProject(packageId, MakePackagePath(packageRefType), null)
-                .InList();
+            var pip = new List<PackageInProject>
+            {
+                new(packageId, MakePackagePath(packageRefType), null)
+            };
 
             return new PackageUpdateSet(packages, pip);
         }

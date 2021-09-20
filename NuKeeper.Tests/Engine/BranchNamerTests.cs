@@ -1,4 +1,3 @@
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
 using NUnit.Framework;
@@ -14,8 +13,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TestWithSinglePackage()
         {
-            var packages = PackageUpdates.MakeUpdateSet("SomePackage")
-                .InList();
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage")
+            };
 
             var branchName = BranchNamer.MakeName(packages);
 
@@ -25,8 +26,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void TestWithSinglePackageAndBranchNamePrefix()
         {
-            var packages = PackageUpdates.MakeUpdateSet("SomePackage")
-                .InList();
+            var packages = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("SomePackage")
+            };
 
             var branchName = BranchNamer.MakeName(packages, BranchNameTemplate);
 

@@ -133,7 +133,7 @@ namespace NuKeeper.Commands
             var defaultLabels = new List<string> { "nukeeper" };
 
             settings.SourceControlServerSettings.Labels =
-                Concat.FirstPopulatedList(Label, fileSettings.Label, defaultLabels);
+                Concat.FirstNonEmptyCollection(Label, fileSettings.Label, defaultLabels);
 
             var deleteBranchAfterMergeValid = PopulateDeleteBranchAfterMerge(settings);
             if (!deleteBranchAfterMergeValid.IsSuccess)

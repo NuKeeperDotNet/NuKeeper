@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.RepositoryInspection;
 using NuKeeper.Engine;
 using NUnit.Framework;
@@ -13,8 +12,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void WhenOneItemIsConsolidated()
         {
-            var items = PackageUpdates.MakeUpdateSet("foo")
-                .InList();
+            var items = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("foo")
+            };
 
             var output = UpdateConsolidator.Consolidate(items, true);
 
@@ -28,8 +29,10 @@ namespace NuKeeper.Tests.Engine
         [Test]
         public void WhenOneItemIsNotConsolidated()
         {
-            var items = PackageUpdates.MakeUpdateSet("foo")
-                .InList();
+            var items = new List<PackageUpdateSet>
+            {
+                PackageUpdates.MakeUpdateSet("foo")
+            };
 
             var output = UpdateConsolidator.Consolidate(items, false);
 

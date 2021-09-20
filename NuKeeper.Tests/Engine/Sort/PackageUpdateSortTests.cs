@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
-using NuKeeper.Abstractions;
 using NuKeeper.Abstractions.Logging;
 using NuKeeper.Inspection.Sort;
 using NuKeeper.Abstractions.RepositoryInspection;
@@ -31,8 +30,10 @@ namespace NuKeeper.Tests.Engine.Sort
         [Test]
         public void CanSortOneItem()
         {
-            var items = OnePackageUpdateSet(1)
-                .InList();
+            var items = new List<PackageUpdateSet>
+            {
+                OnePackageUpdateSet(1)
+            };
 
             var output = Sort(items);
 

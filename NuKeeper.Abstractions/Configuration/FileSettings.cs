@@ -4,6 +4,7 @@ using NuKeeper.Abstractions.Output;
 using System.Collections.Generic;
 
 #pragma warning disable CA2227
+#pragma warning disable CA1002
 
 namespace NuKeeper.Abstractions.Configuration
 {

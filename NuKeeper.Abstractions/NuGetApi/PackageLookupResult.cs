@@ -40,7 +40,7 @@ namespace NuKeeper.Abstractions.NuGetApi
                     return null;
 
                 default:
-                    throw new Exception($"Unknown version change {AllowedChange}");
+                    throw new NuKeeperException($"Unknown version change {AllowedChange}");
             }
         }
     }
