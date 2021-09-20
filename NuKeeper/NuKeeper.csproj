@@ -13,7 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.8.0">
+    <PackageReference Include="NuGet.CommandLine" Version="5.11.0">
       <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
