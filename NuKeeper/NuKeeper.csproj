@@ -13,14 +13,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NuGet.CommandLine" Version="5.11.0">
-      <!-- Warning! This needs to match TfmSpecificPackageFile lower down or packaging will fail -->
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="NuGet.Credentials" Version="5.11.0" />
     <PackageReference Include="SimpleInjector" Version="5.3.2" />
     <PackageReference Include="SimpleInjector.Integration.ServiceCollection" Version="5.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Ship NuGet CLI -->
+    <PackageReference Include="NuGet.CommandLine" Version="5.11.0" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
@@ -41,7 +40,7 @@
     <None Include="..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
-    <TfmSpecificPackageFile Include="$(NuGetPackageRoot)\nuget.commandline\5.11.0\tools\NuGet.exe">
+    <TfmSpecificPackageFile Include="$(PkgNuGet_CommandLine)\tools\NuGet.exe">
       <Pack>true</Pack>
       <PackagePath>tools\$(TargetFramework)\any\NuGet.exe</PackagePath>
     </TfmSpecificPackageFile>
