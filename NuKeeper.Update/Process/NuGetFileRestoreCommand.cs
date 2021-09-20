@@ -55,8 +55,13 @@ namespace NuKeeper.Update.Process
 
             var fileNameCommandLine = ArgumentEscaper.EscapeAndConcatenate(new[] { file.Name });
             var sourcesCommandLine = sources.CommandLine("-Source");
+            string restoreCommand = $"restore {fileNameCommandLine} {sourcesCommandLine} -NonInteractive";
 
-            var restoreCommand = $"restore {fileNameCommandLine} {sourcesCommandLine}  -NonInteractive";
+            // see: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-restore
+            if (string.Equals(file.Name, "packages.config", StringComparison.OrdinalIgnoreCase))
+            {
+                restoreCommand = $"{restoreCommand} -PackagesDirectory ..\\packages";
+            }
 
             ProcessOutput processOutput;
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
