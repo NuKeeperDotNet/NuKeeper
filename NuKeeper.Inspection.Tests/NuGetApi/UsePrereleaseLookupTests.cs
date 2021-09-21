@@ -203,9 +203,9 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
         private static IPackageVersionsLookup MockVersionLookup(List<PackageSearchMetadata> actualResults)
         {
             var allVersions = Substitute.For<IPackageVersionsLookup>();
-            allVersions.Lookup(Arg.Any<string>(), false, Arg.Any<bool>(), Arg.Any<NuGetSources>())
+            allVersions.Lookup(Arg.Any<string>(), false, true, Arg.Any<NuGetSources>())
                 .Returns(actualResults.Where(x => !x.Identity.Version.IsPrerelease).ToList());
-            allVersions.Lookup(Arg.Any<string>(), true, Arg.Any<bool>(), Arg.Any<NuGetSources>())
+            allVersions.Lookup(Arg.Any<string>(), true, true, Arg.Any<NuGetSources>())
                 .Returns(actualResults);
             return allVersions;
         }
