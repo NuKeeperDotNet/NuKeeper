@@ -30,7 +30,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                     Arg.Any<PackageIdentity>(),
                     Arg.Any<NuGetSources>(),
                     VersionChange.Minor,
-                    Arg.Any<UsePrerelease>()
+                    Arg.Any<UsePrerelease>(),
+                    Arg.Any<bool>()
                 )
                 .Returns(ci =>
                     GetPackageLookupResult(
@@ -54,7 +55,8 @@ namespace NuKeeper.Inspection.Tests.NuGetApi
                 packagesInProjects,
                 new NuGetSources("https://api.nuget.com/"),
                 VersionChange.Minor,
-                UsePrerelease.Never
+                UsePrerelease.Never,
+                true
             );
 
             var versionUpdates = result.Select(p => p.SelectedVersion.ToNormalizedString()).ToList();

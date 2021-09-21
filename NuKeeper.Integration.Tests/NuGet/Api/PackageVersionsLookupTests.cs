@@ -16,7 +16,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Newtonsoft.Json", false, true, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -30,7 +30,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Newtonsoft.Json", false, true, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -54,7 +54,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Moq", true, NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Moq", true, true, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -81,7 +81,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         {
             var lookup = BuildPackageLookup();
 
-            var packages = await lookup.Lookup("Moq", false, NuGetSources.GlobalFeed);
+            var packages = await lookup.Lookup("Moq", false, true, NuGetSources.GlobalFeed);
 
             Assert.That(packages, Is.Not.Null);
 
@@ -99,10 +99,10 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
         public async Task CanBeCalledTwice()
         {
             var lookup = BuildPackageLookup();
-            var packages1 = await lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+            var packages1 = await lookup.Lookup("Newtonsoft.Json", false, true, NuGetSources.GlobalFeed);
             Assert.That(packages1, Is.Not.Null);
 
-            var packages2 = await lookup.Lookup("Moq", false, NuGetSources.GlobalFeed);
+            var packages2 = await lookup.Lookup("Moq", false, true, NuGetSources.GlobalFeed);
             Assert.That(packages2, Is.Not.Null);
         }
 
@@ -115,7 +115,7 @@ namespace NuKeeper.Integration.Tests.Nuget.Api
 
             for (int i = 0; i < 10; i++)
             {
-                var task = lookup.Lookup("Newtonsoft.Json", false, NuGetSources.GlobalFeed);
+                var task = lookup.Lookup("Newtonsoft.Json", false, true, NuGetSources.GlobalFeed);
                 tasks.Add(task);
             }
 

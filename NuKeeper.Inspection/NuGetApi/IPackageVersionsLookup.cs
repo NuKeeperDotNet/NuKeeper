@@ -8,7 +8,7 @@ namespace NuKeeper.Inspection.NuGetApi
     public interface IPackageVersionsLookup
     {
         Task<IReadOnlyCollection<PackageSearchMetadata>> Lookup(
-            string packageName, bool includePrerelease,
+            string packageName, bool includePrerelease, bool throwOnGitError,
             NuGetSources sources);
     }
 }

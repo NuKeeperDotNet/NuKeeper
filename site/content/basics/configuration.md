@@ -27,7 +27,7 @@ title: "Configuration"
 | fork             | f         | `repo`, `org`, `global`   | PreferFork              |
 | label            | l         | `repo`, `org`, `global`   | 'nukeeper'              |
 | maxpackageupdates| m         | `repo`, `org`, `global`, `update`| 3, or when the command is `update`, 1 |
-| maxopenpullrequests |           | `repo`, `org`, `global`| 1 if `consolidate`, else `maxpackageupdates` |
+| maxopenpullrequests |        | `repo`, `org`, `global`| 1 if `consolidate`, else `maxpackageupdates` |
 | consolidate      | n         | `repo`, `org`, `global`   | false                   |
 | platform         |           | `repo`, `org`, `global`   | _null_                  |
 | gitclipath       | git       | `repo`, `org`, `global`   | _null_ (use default Lib2Git-Implementation)                  |
@@ -36,9 +36,10 @@ title: "Configuration"
 | includerepos     |           | `org`, `global`           | _null_                  |
 | excluderepos     |           | `org`, `global`           | _null_                  |
 |                  |           |                           |                         |
-| branchnametemplate |           | `repo`, `org`, `global`, `update`| _null_           |
+| branchnametemplate |         | `repo`, `org`, `global`, `update`| _null_           |
 | deletebranchaftermerge | d   | _all_                     | true                    |
-| setautomerge |    | `repo`                     | false                    |
+| setautomerge     |           | `repo`                    | false                    |
+| failongiterror   |           | _all_                     | false                    |
 
 * *age* The minimum package age. In order to not consume packages immediately after they are released, exclude updates that do not meet a minimum age.  The default is 7 days. This age is the duration between the published date of the selected package update and now.
  A value can be expressed in command options as an integer and a unit suffix,
@@ -109,3 +110,4 @@ Examples: `0` = zero, `12h` = 12 hours, `3d` = 3 days, `2w` = two weeks.
   
 * *deletebranchaftermerge* Specifies whether a branch should be automatically deleted or not once the branch has been merged. Currently only works with `Platform` equal to `AzureDevOps`, `Gitlab` or `Bitbucket`.
 * *setautomerge* Specifies whether a pull request should be merged automatically after passing all checks. Currently only works with `Platform` equal to `AzureDevOps`.
+* *failongiterror* Specified that NuKeeper should fail if git reports an error.
