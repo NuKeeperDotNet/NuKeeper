@@ -55,14 +55,14 @@ namespace NuKeeper.Gitlab
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
-            if (pathParts.Count != 2)
+            if (pathParts.Count < 2)
             {
                 throw new NuKeeperException(
                     $"The provided uri was is not in the correct format. Provided {repositoryUri} and format should be {UrlPattern}");
             }
 
-            var repoOwner = pathParts[0];
-            var repoName = pathParts[1].Replace(".git", string.Empty);
+            var repoOwner = string.Join("/", pathParts.Take(pathParts.Count - 1));
+            var repoName = pathParts.Last().Replace(".git", string.Empty);
 
             var uriBuilder = new UriBuilder(repositoryUri) { Path = "/api/v4/" };
 
