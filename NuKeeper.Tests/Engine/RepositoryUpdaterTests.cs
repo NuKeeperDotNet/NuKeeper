@@ -152,7 +152,7 @@ namespace NuKeeper.Tests.Engine
 
             var filteredUpdates = updates.Skip(existingCommitsPerBranch).ToList().AsReadOnly();
 
-            existingCommitFilder.Filter(Arg.Any<IGitDriver>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(), Arg.Any<string>(), Arg.Any<string>()).Returns(filteredUpdates);
+            existingCommitFilder.Filter(Arg.Any<IGitDriver>(), Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(filteredUpdates);
 
             var settings = MakeSettings(consolidateUpdates);
 
@@ -358,6 +358,10 @@ namespace NuKeeper.Tests.Engine
                 {
                     MaxPackageUpdates = 3,
                     MinimumAge = new TimeSpan(7, 0, 0, 0),
+                },
+                CommitSettings = new CommitSettings
+                {
+                    CommitMessagePrefix = string.Empty
                 }
             };
         }

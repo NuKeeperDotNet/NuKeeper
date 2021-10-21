@@ -20,7 +20,7 @@ namespace NuKeeper.Engine.Packages
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(IGitDriver git, IReadOnlyCollection<PackageUpdateSet> updates, string baseBranch, string headBranch)
+        public async Task<IReadOnlyCollection<PackageUpdateSet>> Filter(IGitDriver git, IReadOnlyCollection<PackageUpdateSet> updates, string baseBranch, string headBranch, string commitMessagePrefix)
         {
             if (git == null)
             {
@@ -41,7 +41,7 @@ namespace NuKeeper.Engine.Packages
 
                 foreach (var update in updates)
                 {
-                    var updateCommitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(update);
+                    var updateCommitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(update, commitMessagePrefix);
                     var compactUpdateCommitMessage = new string(updateCommitMessage.Where(c => !char.IsWhiteSpace(c)).ToArray());
 
                     if (!compactCommitMessages.Contains(compactUpdateCommitMessage))

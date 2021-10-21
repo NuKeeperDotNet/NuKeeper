@@ -11,6 +11,7 @@ namespace NuKeeper.Engine.Packages
             IGitDriver git,
             IReadOnlyCollection<PackageUpdateSet> updates,
             string baseBranch,
-            string headBranch);
+            string headBranch,
+            string commitMessagePrefix);
     }
 }

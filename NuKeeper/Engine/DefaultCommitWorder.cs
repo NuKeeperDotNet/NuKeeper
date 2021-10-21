@@ -34,14 +34,14 @@ namespace NuKeeper.Engine
             return $"Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
-        public string MakeCommitMessage(PackageUpdateSet updates)
+        public string MakeCommitMessage(PackageUpdateSet updates, string commitMessagePrefix)
         {
             if (updates == null)
             {
                 throw new ArgumentNullException(nameof(updates));
             }
 
-            return $":{CommitEmoji}: {PackageTitle(updates)}";
+            return $"{commitMessagePrefix}:{CommitEmoji}: {PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)

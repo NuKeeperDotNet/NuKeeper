@@ -38,7 +38,7 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var subject = MakeExistingCommitFilter();
 
-            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
+            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head", string.Empty);
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("First.Nuget", result.FirstOrDefault()?.SelectedId);
@@ -64,7 +64,7 @@ namespace NuKeeper.Integration.Tests.Engine
 
             var subject = MakeExistingCommitFilter();
 
-            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head");
+            var result = await subject.Filter(git, updates.AsReadOnly(), "base", "head", string.Empty);
 
             Assert.AreEqual(2, result.Count);
         }
@@ -77,7 +77,7 @@ namespace NuKeeper.Integration.Tests.Engine
             collaborationFactory.CollaborationPlatform.Returns(gitClient);
 
             var commitWorder = Substitute.For<ICommitWorder>();
-            commitWorder.MakeCommitMessage(Arg.Any<PackageUpdateSet>()).Returns(p => $"Automatic update of {((PackageUpdateSet)p[0]).SelectedId} to {((PackageUpdateSet)p[0]).SelectedVersion}");
+            commitWorder.MakeCommitMessage(Arg.Any<PackageUpdateSet>(), Arg.Any<string>()).Returns(p => $"Automatic update of {((PackageUpdateSet)p[0]).SelectedId} to {((PackageUpdateSet)p[0]).SelectedVersion}");
             collaborationFactory.CommitWorder.Returns(commitWorder);
 
             return new ExistingCommitFilter(collaborationFactory, NukeeperLogger);

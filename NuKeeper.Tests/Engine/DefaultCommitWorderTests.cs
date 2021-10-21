@@ -39,11 +39,11 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = PackageUpdates.For(MakePackageForV110());
 
-            var report = _sut.MakeCommitMessage(updates);
+            var report = _sut.MakeCommitMessage(updates, "someprefix: ");
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo("someprefix: :package: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -51,11 +51,11 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV100());
 
-            var report = _sut.MakeCommitMessage(updates);
+            var report = _sut.MakeCommitMessage(updates, "someprefix: ");
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo("someprefix: :package: Automatic update of foo.bar to 1.2.3"));
         }
 
         [Test]
@@ -63,11 +63,11 @@ namespace NuKeeper.Tests.Engine
         {
             var updates = PackageUpdates.For(MakePackageForV110(), MakePackageForV110InProject3());
 
-            var report = _sut.MakeCommitMessage(updates);
+            var report = _sut.MakeCommitMessage(updates, "someprefix: ");
 
             Assert.That(report, Is.Not.Null);
             Assert.That(report, Is.Not.Empty);
-            Assert.That(report, Is.EqualTo(":package: Automatic update of foo.bar to 1.2.3"));
+            Assert.That(report, Is.EqualTo("someprefix: :package: Automatic update of foo.bar to 1.2.3"));
         }
 
 

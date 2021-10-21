@@ -39,6 +39,7 @@ namespace NuKeeper.Tests.Engine.Packages
                     Arg.Any<IGitDriver>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
                     Arg.Any<string>(),
+                    Arg.Any<string>(),
                     Arg.Any<string>()
                 )
                 .Returns(ci => ((IReadOnlyCollection<PackageUpdateSet>)ci[1]));
@@ -114,6 +115,7 @@ namespace NuKeeper.Tests.Engine.Packages
                 .Filter(
                     Arg.Any<IGitDriver>(),
                     Arg.Any<IReadOnlyCollection<PackageUpdateSet>>(),
+                    Arg.Any<string>(),
                     Arg.Any<string>(),
                     Arg.Any<string>()
                 )
@@ -245,6 +247,10 @@ namespace NuKeeper.Tests.Engine.Packages
                 {
                     MaxPackageUpdates = 3,
                     MinimumAge = new TimeSpan(7, 0, 0, 0),
+                },
+                CommitSettings = new CommitSettings
+                {
+                    CommitMessagePrefix = string.Empty
                 }
             };
         }
