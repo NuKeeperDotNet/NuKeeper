@@ -53,6 +53,10 @@ namespace NuKeeper.Commands
             Description = "Do not consider packages matching this regex pattern.")]
         public string Exclude { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "iv", LongName = "includeversion",
+            Description = "Include package version in regex pattern search")]
+        public string IncludeVersion { get; set; }
+
         [Option(CommandOptionType.SingleValue, ShortName = "v", LongName = "verbosity",
             Description = "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed].")]
         public LogLevel? Verbosity { get; set; }
@@ -175,6 +179,12 @@ namespace NuKeeper.Commands
                 return regexExcludeValid;
             }
 
+            var includeVersionIsvalid = PopulateIsVersion(settings);
+            if (!includeVersionIsvalid.IsSuccess)
+            {
+                return includeVersionIsvalid;
+            }
+
             var settingsFromFile = FileSettingsCache.GetSettings();
 
             var defaultOutputDestination = string.IsNullOrWhiteSpace(OutputFileName)
@@ -259,6 +269,33 @@ namespace NuKeeper.Commands
                 {
                     return ValidationResult.Failure(
                         $"Unable to parse regex '{value}' for Exclude: {ex.Message}");
+                }
+            }
+
+            return ValidationResult.Success;
+        }
+
+        private ValidationResult PopulateIsVersion(
+            SettingsContainer settings)
+        {
+            var settingsFromFile = FileSettingsCache.GetSettings();
+            var value = Concat.FirstValue(IncludeVersion, settingsFromFile.Includeversion);
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                settings.PackageFilters.IncludeVersion = false;
+                return ValidationResult.Success;
+            }
+
+            try
+            {
+                settings.PackageFilters.IncludeVersion = bool.Parse(value);
+            }
+            catch (ArgumentException ex)
+            {
+                {
+                    return ValidationResult.Failure(
+                        $"Unable to parse bool '{value}' for Include Version: {ex.Message}");
                 }
             }
 

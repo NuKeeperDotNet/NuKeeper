@@ -80,7 +80,8 @@ namespace NuKeeper.Engine
                 userSettings.AllowedChange,
                 userSettings.UsePrerelease,
                 settings.PackageFilters?.Includes,
-                settings.PackageFilters?.Excludes);
+                settings.PackageFilters?.Excludes,
+                settings.PackageFilters?.IncludeVersion ?? false);
 
             _reporter.Report(
                 userSettings.OutputDestination,

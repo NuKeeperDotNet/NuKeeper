@@ -13,6 +13,7 @@ namespace NuKeeper.Abstractions.Configuration
         public string Api { get; set; }
         public string Include { get; set; }
         public string Exclude { get; set; }
+        public string Includeversion { get; set; }
         public LogLevel? Verbosity { get; set; }
         public VersionChange? Change { get; set; }
 

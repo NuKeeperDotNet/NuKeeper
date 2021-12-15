@@ -19,6 +19,7 @@ namespace NuKeeper.Inspection
         /// <param name="usePrerelease"></param>
         /// <param name="include">Optional, for no include pass null</param>
         /// <param name="exclude">Optional, for no exclude pass null</param>
+        /// <param name="includeVersion">Optional, include version in package name</param>
         /// <returns></returns>
         Task<IReadOnlyCollection<PackageUpdateSet>> FindPackageUpdateSets(
             IFolder workingFolder,
@@ -26,6 +27,7 @@ namespace NuKeeper.Inspection
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
             Regex include = null,
-            Regex exclude = null);
+            Regex exclude = null,
+            bool includeVersion = false);
     }
 }

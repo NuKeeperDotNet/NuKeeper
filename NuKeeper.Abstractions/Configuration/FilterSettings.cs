@@ -9,5 +9,6 @@ namespace NuKeeper.Abstractions.Configuration
         public int MaxPackageUpdates { get; set; }
         public Regex Excludes { get; set; }
         public Regex Includes { get; set; }
+        public bool IncludeVersion { get; set; }
     }
 }

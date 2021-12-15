@@ -45,13 +45,14 @@ namespace NuKeeper.Inspection
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
             Regex includes = null,
-            Regex excludes = null)
+            Regex excludes = null,
+            bool includeVersion = false)
         {
             var packages = FindPackages(workingFolder);
 
             _logger.Normal($"Found {packages.Count} packages");
 
-            var filtered = FilteredByIncludeExclude(packages, includes, excludes);
+            var filtered = FilteredByIncludeExclude(packages, includes, excludes, includeVersion);
 
             _logger.Log(PackagesFoundLogger.Log(filtered));
 
@@ -63,11 +64,18 @@ namespace NuKeeper.Inspection
             return updates;
         }
 
-
-        private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(IReadOnlyCollection<PackageInProject> all, Regex includes, Regex excludes)
+        private IReadOnlyCollection<PackageInProject> FilteredByIncludeExclude(
+            IReadOnlyCollection<PackageInProject> all,
+            Regex includes,
+            Regex excludes,
+            bool includeVersion)
         {
             var filteredByIncludeExclude = all
-                .Where(package => RegexMatch.IncludeExclude(package.Id, includes, excludes))
+                .Where(package => {
+                    var packageName = includeVersion is false ? package.Id : $"{package.Id}.{package.Version}";
+
+                    return RegexMatch.IncludeExclude(packageName, includes, excludes);
+                })
                 .ToList();
 
             if (filteredByIncludeExclude.Count < all.Count)

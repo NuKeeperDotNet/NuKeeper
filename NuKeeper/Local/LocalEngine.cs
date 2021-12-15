@@ -66,7 +66,8 @@ namespace NuKeeper.Local
                 settings.UserSettings.AllowedChange,
                 settings.UserSettings.UsePrerelease,
                 settings.PackageFilters?.Includes,
-                settings.PackageFilters?.Excludes);
+                settings.PackageFilters?.Excludes,
+                settings.PackageFilters?.IncludeVersion ?? false);
 
             Report(settings.UserSettings, sortedUpdates);
 
@@ -82,10 +83,11 @@ namespace NuKeeper.Local
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
             Regex includes,
-            Regex excludes)
+            Regex excludes,
+            bool includeVersion)
         {
             var updates = await _updateFinder.FindPackageUpdateSets(
-                folder, sources, allowedChange, usePrerelease, includes, excludes);
+                folder, sources, allowedChange, usePrerelease, includes, excludes, includeVersion);
 
             return _sorter.Sort(updates)
                 .ToList();
