@@ -7,9 +7,7 @@
 
 ### NuKeeper
 
-#### Why is NuKeeper Archived
-
-[NuKeeper's future](https://github.com/NuKeeperDotNet/NuKeeper/issues/1155)
+#### [Why is NuKeeper Archived](https://github.com/NuKeeperDotNet/NuKeeper/issues/1155)
 
 Automagically update NuGet packages in all .NET projects.
 
