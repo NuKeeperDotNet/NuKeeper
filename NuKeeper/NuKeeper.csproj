@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Ship NuGet CLI -->
-    <PackageReference Include="NuGet.CommandLine" Version="5.11.0" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="NuGet.CommandLine" Version="5.11.2" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NuKeeper.Abstractions\NuKeeper.Abstractions.csproj" />
