@@ -8,5 +8,6 @@ namespace NuKeeper
         Success = 0,
         UnknownError = 1 << 0,
         InvalidArguments = 1 << 1,
+        OtherError = 1 << 2,
     }
 }
