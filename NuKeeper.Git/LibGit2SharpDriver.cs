@@ -180,12 +180,19 @@ namespace NuKeeper.Git
         {
             return Task.Run(() =>
             {
-                _logger.Detailed($"Git commit with message '{message}'");
-                using (var repo = MakeRepo())
+                try
                 {
-                    var signature = GetSignature(repo);
-                    GitCommands.Stage(repo, "*");
-                    repo.Commit(message, signature, signature);
+                    _logger.Detailed($"Git commit with message '{message}'");
+                    using (var repo = MakeRepo())
+                    {
+                        var signature = GetSignature(repo);
+                        GitCommands.Stage(repo, "*");
+                        repo.Commit(message, signature, signature);
+                    }
+                }
+                catch (EmptyCommitException)
+                {
+                    _logger.Normal($"Empty commit with message '{message}' is ignored");
                 }
             });
         }

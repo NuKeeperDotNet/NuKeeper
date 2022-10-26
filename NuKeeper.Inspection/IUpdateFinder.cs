@@ -25,6 +25,7 @@ namespace NuKeeper.Inspection
             NuGetSources sources,
             VersionChange allowedChange,
             UsePrerelease usePrerelease,
+            bool throwOnGitError,
             Regex include = null,
             Regex exclude = null);
     }

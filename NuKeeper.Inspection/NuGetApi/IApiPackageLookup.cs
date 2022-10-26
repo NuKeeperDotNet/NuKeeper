@@ -12,6 +12,7 @@ namespace NuKeeper.Inspection.NuGetApi
             PackageIdentity package,
             NuGetSources sources,
             VersionChange allowedChange,
-            UsePrerelease usePrerelease);
+            UsePrerelease usePrerelease,
+            bool throwOnGitError);
     }
 }
