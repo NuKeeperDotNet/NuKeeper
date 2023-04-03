@@ -38,14 +38,14 @@ namespace NuKeeper.AzureDevOps
             return $"{CommitEmoji} Automatic update of {updates.SelectedId} to {updates.SelectedVersion}";
         }
 
-        public string MakeCommitMessage(PackageUpdateSet updates)
+        public string MakeCommitMessage(PackageUpdateSet updates, string commitMessagePrefix)
         {
             if (updates == null)
             {
                 throw new ArgumentNullException(nameof(updates));
             }
 
-            return $"{PackageTitle(updates)}";
+            return $"{commitMessagePrefix}{PackageTitle(updates)}";
         }
 
         public string MakeCommitDetails(IReadOnlyCollection<PackageUpdateSet> updates)

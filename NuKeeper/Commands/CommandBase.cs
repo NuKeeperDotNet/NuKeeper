@@ -81,6 +81,10 @@ namespace NuKeeper.Commands
             Description = "Template used for creating the branch name.")]
         public string BranchNameTemplate { get; set; }
 
+        [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "commitmessageprefix",
+            Description = "Prefix used for the package update commit messages, e. g. an issue number")]
+        public string CommitMessagePrefix { get; set; }
+
         [Option(CommandOptionType.SingleValue, ShortName = "git", LongName = "gitclipath",
             Description = "Path to git to use instead of lib2gitsharp implementation")]
         public string GitCliPath { get; set; }
@@ -131,6 +135,7 @@ namespace NuKeeper.Commands
             var allowedChange = Concat.FirstValue(AllowedChange, fileSettings.Change, VersionChange.Major);
             var usePrerelease = Concat.FirstValue(UsePrerelease, fileSettings.UsePrerelease, Abstractions.Configuration.UsePrerelease.FromPrerelease);
             var branchNameTemplate = Concat.FirstValue(BranchNameTemplate, fileSettings.BranchNameTemplate);
+            var commitMessagePrefix = Concat.FirstValue(CommitMessagePrefix, fileSettings.CommitMessagePrefix);
             var gitpath = Concat.FirstValue(GitCliPath, fileSettings.GitCliPath);
 
             var settings = new SettingsContainer
@@ -147,6 +152,10 @@ namespace NuKeeper.Commands
                 BranchSettings = new BranchSettings
                 {
                     BranchNameTemplate = branchNameTemplate
+                },
+                CommitSettings = new CommitSettings
+                {
+                    CommitMessagePrefix = commitMessagePrefix
                 }
             };
 

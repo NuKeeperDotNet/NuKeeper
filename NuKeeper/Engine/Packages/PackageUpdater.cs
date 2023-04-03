@@ -112,18 +112,18 @@ namespace NuKeeper.Engine.Packages
                 await git.CheckoutRemoteToLocal(branchWithChanges);
             }
 
-            var filteredUpdates = await _existingCommitFilter.Filter(git, updates, repository.DefaultBranch, branchWithChanges);
+            var filteredUpdates = await _existingCommitFilter.Filter(git, updates, repository.DefaultBranch, branchWithChanges, settings.CommitSettings.CommitMessagePrefix);
 
             foreach (var filtered in updates.Where(u => !filteredUpdates.Contains(u)))
             {
-                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(filtered);
+                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(filtered, settings.CommitSettings.CommitMessagePrefix);
                 _logger.Normal($"Commit '{commitMessage}' already in branch '{branchWithChanges}'");
             }
 
             var haveUpdates = filteredUpdates.Any();
             foreach (var updateSet in filteredUpdates)
             {
-                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet);
+                var commitMessage = _collaborationFactory.CommitWorder.MakeCommitMessage(updateSet, settings.CommitSettings.CommitMessagePrefix);
 
                 await _updateRunner.Update(updateSet, sources);
 
